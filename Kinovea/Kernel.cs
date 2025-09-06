@@ -582,8 +582,12 @@ namespace Kinovea.Root
             NotificationCenter.RaiseStopPlayback(this);
 
             string path = FilePicker.OpenReplayWatcher();
-            if (path == null || !Directory.Exists(Path.GetDirectoryName(path)))
+            if (path == null || !Directory.Exists(path))
                 return;
+
+            path = Path.Combine(path, "*");
+
+            // TODO: add to capture folders and open that.
 
             OpenFromPath(path);
         }

@@ -161,6 +161,26 @@ namespace Kinovea.Services
             Save();
         }
 
+        /// <summary>
+        /// Add a capture folder if it doesn't exist yet.
+        /// This does not resolve variables, use on pure file system folders.
+        /// Returns the found capture folder or the newly inserted one.
+        /// </summary>
+        public CaptureFolder AddCaptureFolder(string path)
+        {
+            var ccff = CapturePathConfiguration.CaptureFolders;
+            var foundCf = ccff.FirstOrDefault(cf => cf.Path == path);
+            if (foundCf != null)
+            {
+                return foundCf;
+            }
+
+            CaptureFolder captureFolder = new CaptureFolder();
+            captureFolder.Path = path;
+            ccff.Insert(0, captureFolder);
+            return captureFolder;
+        }
+
         #region Serialization
         public void WriteXML(XmlWriter writer)
         {

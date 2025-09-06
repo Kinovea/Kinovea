@@ -89,7 +89,18 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnVideoType, toolTipText);
                 toolTips.SetToolTip(lblFilename, toolTipText);
 
+                string shortName = "";
+                var cf = FilesystemHelper.GetCaptureFolder(screenDescriptor.FullPath);
+                if (cf != null)
+                    shortName = cf.ShortName;
+
                 mnuStopWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StopWatcher, watchedFolder);
+                if (!string.IsNullOrEmpty(shortName))
+                {
+                    // FIXME: handle RTL writing systems.
+                    mnuStopWatcher.Text += string.Format(" ({0})", shortName);
+                }
+
                 popMenu.Items.Add(mnuStopWatcher);
                 
                 if (!string.IsNullOrEmpty(parentFolder) && parentFolder != watchedFolder)
@@ -125,19 +136,17 @@ namespace Kinovea.ScreenManager
                 ToolStripMenuItem mnuCaptureFolder = new ToolStripMenuItem();
                 mnuCaptureFolder.Image = Properties.Resources.camera_video;
                 
-                // Note: instead of hiding the corresponding menu we just check it.
-                // This provides feedback of which capture folder is being watched.
-                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher && screenDescriptor.FullPath == captureFolder.Id.ToString())
+                // Hide the current capture folder, we already added its short name to the "stop watching" menu above,
+                // this gives feedback about the current watched folder.
+                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher && 
+                    screenDescriptor.FullPath == captureFolder.Id.ToString())
                 {
-                    mnuCaptureFolder.Text = string.Format("Observing folder: {0}", captureFolder.FriendlyName);
-                    mnuCaptureFolder.Checked = true;
+                    continue;
                 }
-                else
-                {
-                    mnuCaptureFolder.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, captureFolder.FriendlyName);
-                    mnuCaptureFolder.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(captureFolder));
-                }
-
+                
+                mnuCaptureFolder.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, captureFolder.FriendlyName);
+                mnuCaptureFolder.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(captureFolder));
+                
                 popMenu.Items.Add(mnuCaptureFolder);
             }
 

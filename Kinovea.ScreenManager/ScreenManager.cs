@@ -915,19 +915,24 @@ namespace Kinovea.ScreenManager
         private void Player_OpenReplayWatcherAsked(object sender, EventArgs<CaptureFolder> e)
         {
             // Replay watcher asked from the context menu in the player screen.
+
             ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
             string path = "";
             if (e.Value == null)
             {
+                // Open a random folder on the file system.
                 path = FilePicker.OpenReplayWatcher();
                 if (string.IsNullOrEmpty(path))
                     return;
 
-                sdp.FullPath = path;
+                // Add it to capture folders.
+                CaptureFolder cf = PreferencesManager.CapturePreferences.AddCaptureFolder(path);
+                sdp.FullPath = cf.Id.ToString();
+                path = Path.Combine(path, "*");
             }
             else
             {
-                // Capture folder.
+                // Open a known capture folder.
                 string id = e.Value.Id.ToString();
                 CaptureFolder cf = FilesystemHelper.GetCaptureFolder(id);
                 if (cf == null)
@@ -947,7 +952,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 // If the watched folder doesn't exist we create it.
-                // This may happen when we have a path with a date and it's the first session of the day.
+                // This may happen when we have a dynamic path with a date and it's the first session of the day.
                 // The capture screen would only create the folder on the first recording, it would be too late.
                 // The watcher needs an actual folder to watch before the capture puts the recording in it.
                 if (!Directory.Exists(path))

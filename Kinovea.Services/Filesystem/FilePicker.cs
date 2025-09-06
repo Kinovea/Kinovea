@@ -43,7 +43,6 @@ namespace Kinovea.Services
             if (path == null || !Directory.Exists(path))
                 return null;
 
-            path = Path.Combine(path, "*");
             return path;
         }
 
