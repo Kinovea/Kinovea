@@ -1886,6 +1886,9 @@ namespace Kinovea.ScreenManager
                     mnuProfile.Click += (s, e) => {
                         table.CurrentKey = key;
                         CheckCurrentProfileKey(mnuTable);
+
+                        // TODO: save the new profile to preferences.
+                        // TODO: Alert other Kinovea windows of the change in the global context.
                     };
 
                     mnuTable.DropDownItems.Add(mnuProfile);
@@ -3089,6 +3092,8 @@ namespace Kinovea.ScreenManager
             profileManager.LoadFile(target);
             BuildVariablesMenu();
             OrganizeMenus();
+
+            // TODO: alert the other instances that they need to reload the variables from the file system.
         }
         #endregion
         #endregion
@@ -3277,6 +3282,9 @@ namespace Kinovea.ScreenManager
 
             switch (tokens[0])
             {
+                case "Window":
+                    // Handled in Kernel.cs.
+                    break;
                 case "CaptureScreen":
                     {
                         CaptureScreenCommands command;

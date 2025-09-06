@@ -163,4 +163,15 @@ namespace Kinovea.Services
         DecreaseDelayHalfSecond,
     }
 
+    /// <summary>
+    /// These commands are used for inter-process communication.
+    /// </summary>
+    public enum WindowCommand
+    {
+        /// <summary>
+        /// The preferences were updated in another window.
+        /// </summary>
+        PreferencesUpdated,
+    }
+
 }

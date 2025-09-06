@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -446,6 +447,32 @@ namespace Kinovea.Services
             NativeMethods.SetForegroundWindow(handle);
         }
 
+
+        public static void SendMessage(string msg)
+        {
+            int dwData = 0;
+            
+            var cds = NativeMethods.COPYDATASTRUCT.CreateForString(dwData, msg);
+
+            foreach (var d in windowDescriptors)
+            {
+                // Ignore myself.
+                if (d == ActiveWindow)
+                    continue;
+
+                string titleName = string.IsNullOrEmpty(d.Name) ? GetIdName(d) : d.Name;
+                string title = string.Format("Kinovea [{0}]", titleName);
+                IntPtr handle = NativeMethods.FindWindow(null, title);
+                
+                // Ignore dormant.
+                if (handle == IntPtr.Zero)
+                    continue;
+                
+                NativeMethods.SendMessage(handle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ref cds);
+            }
+
+            cds.Dispose();
+        }
 
 
         /// <summary>

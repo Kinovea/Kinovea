@@ -171,6 +171,7 @@ namespace Kinovea.Root
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
             NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
             NotificationCenter.WakeUpAsked += NotificationCenter_WakeUpAsked;
+            NotificationCenter.ExternalCommand += NotificationCenter_ExternalCommand;
 
             log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
             ExtendMenu(mainWindow.menuStrip);
@@ -259,13 +260,28 @@ namespace Kinovea.Root
             
             log.Debug("RefreshUICulture - Whole tree culture reloaded.");
         }
+
         public void PreferencesUpdated()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// After the preferences are updated asks all modules to refresh their UI.
+        /// Optionally send the alert to all other windows as well.
+        /// </summary>
+        private void PreferencesUpdated(bool sendMessage)
         {
             RefreshUICulture();
             
             navigationPanel.PreferencesUpdated();
             updater.PreferencesUpdated();
             screenManager.PreferencesUpdated();
+
+            if (sendMessage)
+            {
+                WindowManager.SendMessage("Kinovea:Window.PreferencesUpdated");
+            }
         }
         public bool CloseSubModules()
         {
@@ -733,6 +749,9 @@ namespace Kinovea.Root
                 Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
 
                 RefreshUICulture();
+
+                // Make sure all the other windows are updated immediately.
+                WindowManager.SendMessage("Kinovea:Window.PreferencesUpdated");
             }
             catch (ArgumentException)
             {
@@ -766,7 +785,7 @@ namespace Kinovea.Root
                 // Refresh the UI.
                 log.Debug("Setting current UI culture.");
                 Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-                PreferencesUpdated();
+                PreferencesUpdated(true);
             }
         }
 
@@ -836,6 +855,9 @@ namespace Kinovea.Root
 
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
+
+            // Make sure all the other windows are updated immediately.
+            WindowManager.SendMessage("Kinovea:Window.PreferencesUpdated");
         }
         #endregion
 
@@ -947,7 +969,7 @@ namespace Kinovea.Root
             if (fp.DialogResult == DialogResult.OK)
             {
                 Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-                PreferencesUpdated();
+                PreferencesUpdated(true);
             }
         }
 
@@ -955,8 +977,64 @@ namespace Kinovea.Root
         {
             WindowManager.WakeUp(mainWindow.Handle);
         }
+
+        private void NotificationCenter_ExternalCommand(object sender, ExternalCommandEventArgs e)
+        {
+            string[] tokens = e.Name.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length != 2)
+            {
+                log.ErrorFormat("Malformed external command. \"{0\"}", e.Name);
+                return;
+            }
+
+            switch (tokens[0])
+            {
+                case "Window":
+                    {
+                        WindowCommand command;
+                        bool parsed = Enum.TryParse(tokens[1], out command);
+                        if (!parsed)
+                        {
+                            log.ErrorFormat("Unsupported window command \"{0}\".", tokens[1]);
+                            return;
+                        }
+
+                        ExecuteWindowCommand(command);
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
        
         #region Lower Level Methods
+        private void ExecuteWindowCommand(WindowCommand cmd)
+        {
+            switch (cmd)
+            {
+                case WindowCommand.PreferencesUpdated:
+
+                    // An external window has updated the shared core preferences.
+                    // At this point we should already have detected the date change on the file.
+                    // Make sure we reload the file and import the new preferences.
+                    log.DebugFormat("Preferences updated in an other window.");
+                    PreferencesManager.BeforeRead();
+
+                    // Special handling if the culture changed.
+                    CultureInfo oldCulture = Thread.CurrentThread.CurrentUICulture;
+                    CultureInfo newCulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+                    if (oldCulture.Name != newCulture.Name)
+                    {
+                        Thread.CurrentThread.CurrentUICulture = newCulture;
+                    }
+
+                    // Trigger a local update in this instance to make sure the UI is up to date.
+                    PreferencesUpdated(false);
+                    break;
+                default:
+                    break;
+            }
+        }
         private void OpenFromPath(string path)
         {
             if (Path.GetFileName(path).Contains("*"))
