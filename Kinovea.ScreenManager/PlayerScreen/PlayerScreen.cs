@@ -524,6 +524,8 @@ namespace Kinovea.ScreenManager
                 // Add the parent folder to the list of capture folders and make the screen descriptor point to it.
                 var cf = PreferencesManager.CapturePreferences.AddCaptureFolder(Path.GetDirectoryName(currentFile));
                 sdp.FullPath = cf.Id.ToString();
+
+                // TODO: trigger preference update.
             }
             else
             {

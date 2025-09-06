@@ -547,6 +547,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\explorer_video.png" />
     <None Include="Resources\eye-16.png" />
     <None Include="Resources\variable-16.png" />
     <None Include="Resources\add-16.png" />

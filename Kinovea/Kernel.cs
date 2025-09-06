@@ -63,6 +63,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenReplayWatcherFolder = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHistory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHistoryReset = new ToolStripMenuItem();
         private ToolStripMenuItem mnuQuit = new ToolStripMenuItem();
@@ -310,7 +311,8 @@ namespace Kinovea.Root
             mnuOpenFile.Click += mnuOpenFileOnClick;
 
             mnuOpenReplayWatcher.Image = Properties.Resources.user_detective;
-            mnuOpenReplayWatcher.Click += mnuOpenReplayWatcherOnClick;
+            mnuOpenReplayWatcherFolder.Image = Properties.Resources.folder;
+            mnuOpenReplayWatcherFolder.Click += mnuOpenReplayWatcherFolderOnClick;
 
             mnuHistory.Image = Properties.Resources.time;
             
@@ -508,7 +510,10 @@ namespace Kinovea.Root
         {
             mnuFile.Text = RootLang.mnuFile;
             mnuOpenFile.Text = ScreenManagerLang.mnuOpenVideo;
+
+            BuildReplayWatcherMenus();
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
+            mnuOpenReplayWatcherFolder.Text = "Open folder…";
             mnuHistory.Text = RootLang.mnuHistory;
             mnuHistoryReset.Text = RootLang.mnuHistoryReset;
             mnuQuit.Text = RootLang.Generic_Quit;
@@ -577,7 +582,7 @@ namespace Kinovea.Root
             if (!string.IsNullOrEmpty(filename))
                 OpenFromPath(filename);
         }
-        private void mnuOpenReplayWatcherOnClick(object sender, EventArgs e)
+        private void mnuOpenReplayWatcherFolderOnClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseStopPlayback(this);
 
@@ -587,6 +592,9 @@ namespace Kinovea.Root
 
             var cf = PreferencesManager.CapturePreferences.AddCaptureFolder(path);
             OpenFromPath(cf.Id.ToString());
+
+            // Make sure capture screens here and in other windows see the new capture folder.
+            PreferencesUpdated(true);
         }
 
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
@@ -1052,7 +1060,7 @@ namespace Kinovea.Root
 
                 screenManager.OrganizeScreens();
             }
-            else if (Path.GetFileName(path).Contains("*"))
+            else if (FilesystemHelper.IsReplayWatcher(path))
             {
                 // Replay watcher on a random file system folder.
                 // This shouldn't happen anymore.
@@ -1156,6 +1164,48 @@ namespace Kinovea.Root
 
                 mnuPointer.DropDownItems.Add(mnuCustomPointer);
             }
+        }
+
+        private void BuildReplayWatcherMenus()
+        {
+            // Note: these two functions are quasi-duplicates from the ones in player screen ui control.
+            mnuOpenReplayWatcher.DropDown.Items.Clear();
+            mnuOpenReplayWatcher.DropDown.Items.Add(mnuOpenReplayWatcherFolder);
+            mnuOpenReplayWatcher.DropDown.Items.Add(new ToolStripSeparator());
+
+            List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
+            if (ccff.Count == 0)
+            {
+                AddConfigureCaptureFoldersMenu(mnuOpenReplayWatcher);
+                return;
+            }
+
+            foreach (var cf in ccff)
+            {
+                CaptureFolder captureFolder = cf;
+                ToolStripMenuItem mnuCaptureFolder = new ToolStripMenuItem();
+                mnuCaptureFolder.Image = Properties.Resources.camera_video;
+                mnuCaptureFolder.Text = captureFolder.FriendlyName;
+                mnuCaptureFolder.Click += (s, e) => OpenFromPath(captureFolder.Id.ToString());
+                
+                mnuOpenReplayWatcher.DropDown.Items.Add(mnuCaptureFolder);
+            }
+
+            AddConfigureCaptureFoldersMenu(mnuOpenReplayWatcher);
+        }
+
+        private void AddConfigureCaptureFoldersMenu(ToolStripMenuItem mnu)
+        {
+            ToolStripMenuItem mnuConfigureCaptureFolders = new ToolStripMenuItem();
+            mnuConfigureCaptureFolders.Image = Properties.Resources.explorer_video;
+            mnuConfigureCaptureFolders.Text = "Configure capture folders";
+
+            mnuConfigureCaptureFolders.Click += (s, e) => {
+                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_Paths);
+            };
+
+            mnu.DropDown.Items.Add(new ToolStripSeparator());
+            mnu.DropDown.Items.Add(mnuConfigureCaptureFolders);
         }
 
         private void mnuPointer_OnClick(object sender, EventArgs e)

@@ -167,9 +167,12 @@ namespace Kinovea.Services
         /// This does not resolve variables for the matching against the existing ones.
         /// Returns the found capture folder or the newly inserted one.
         /// If two capture folders point to the same folder the first one is returned.
+        /// Callers should then trigger preferences update to signal to other windows.
         /// </summary>
         public CaptureFolder AddCaptureFolder(string path)
         {
+            BeforeRead();
+
             var ccff = CapturePathConfiguration.CaptureFolders;
             var foundCf = ccff.FirstOrDefault(cf => cf.Path == path);
             if (foundCf != null)
@@ -180,6 +183,8 @@ namespace Kinovea.Services
             CaptureFolder captureFolder = new CaptureFolder();
             captureFolder.Path = path;
             ccff.Insert(0, captureFolder);
+
+            Save();
             return captureFolder;
         }
 

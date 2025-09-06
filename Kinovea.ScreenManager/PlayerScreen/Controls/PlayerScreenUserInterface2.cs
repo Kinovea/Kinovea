@@ -3522,7 +3522,6 @@ namespace Kinovea.ScreenManager
             mnuOpenReplayWatcher.DropDown.Items.Add(mnuOpenReplayWatcherFolder);
             mnuOpenReplayWatcher.DropDown.Items.Add(new ToolStripSeparator());
 
-            // Menus for the capture folders.
             List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
             if (ccff.Count == 0)
             {

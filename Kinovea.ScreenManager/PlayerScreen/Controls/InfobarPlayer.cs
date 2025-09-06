@@ -85,22 +85,21 @@ namespace Kinovea.ScreenManager
 
             if (isReplayWatcher)
             {
-                string toolTipText = string.Format(ScreenManagerLang.Infobar_Player_Observing, watchedFolder);
-                toolTips.SetToolTip(btnVideoType, toolTipText);
-                toolTips.SetToolTip(lblFilename, toolTipText);
-
                 string shortName = "";
                 var cf = FilesystemHelper.GetCaptureFolder(screenDescriptor.FullPath);
                 if (cf != null)
                     shortName = cf.ShortName;
 
-                mnuStopWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StopWatcher, watchedFolder);
+                string infoName = watchedFolder;
                 if (!string.IsNullOrEmpty(shortName))
                 {
-                    // FIXME: handle RTL writing systems.
-                    mnuStopWatcher.Text += string.Format(" ({0})", shortName);
+                    infoName = string.Format("{0} ({1})", shortName, watchedFolder);
                 }
 
+                string toolTipText = string.Format(ScreenManagerLang.Infobar_Player_Observing, infoName);
+                toolTips.SetToolTip(btnVideoType, toolTipText);
+                toolTips.SetToolTip(lblFilename, toolTipText);
+                mnuStopWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StopWatcher, infoName);
                 popMenu.Items.Add(mnuStopWatcher);
                 
                 if (!string.IsNullOrEmpty(parentFolder) && parentFolder != watchedFolder)

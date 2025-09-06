@@ -931,6 +931,8 @@ namespace Kinovea.ScreenManager
                 CaptureFolder cf = PreferencesManager.CapturePreferences.AddCaptureFolder(path);
                 sdp.FullPath = cf.Id.ToString();
                 path = sdp.FullPath;
+
+                // TODO: trigger preferences updated.
             }
             else
             {
