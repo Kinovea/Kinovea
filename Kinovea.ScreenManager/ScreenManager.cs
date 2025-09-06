@@ -219,7 +219,6 @@ namespace Kinovea.ScreenManager
             // The variable tables should be loaded before the screens are initialized as part of the workspace, 
             // since they may contain variables used in the default kva paths to load with the screens.
             VariablesRepository.Initialize();
-            BuildVariablesMenu();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
@@ -708,7 +707,7 @@ namespace Kinovea.ScreenManager
             // ----         = 5
             // Preferences  = 6
 
-            mnuVariables.Image = Properties.Resources.group_16;
+            mnuVariables.Image = Properties.Capture.contact2_16;
             mnuVariables.MergeIndex = 4;
             mnuVariables.MergeAction = MergeAction.Insert;
             mnuImportVariables.Image = Properties.Resources.folder;
@@ -1574,6 +1573,8 @@ namespace Kinovea.ScreenManager
             mnuExportVideoSideBySide.Enabled = canSaveSideBySide;
 
             #endregion
+
+            BuildVariablesMenu();
         }
 
         /// <summary>
@@ -1928,9 +1929,7 @@ namespace Kinovea.ScreenManager
                     mnuProfile.Click += (s, e) => {
                         table.CurrentKey = key;
                         CheckCurrentProfileKey(mnuTable);
-
-                        // TODO: save the new profile to preferences.
-                        // TODO: Alert other Kinovea windows of the change in the global context.
+                        VariablesRepository.SaveContext();
                     };
 
                     mnuTable.DropDownItems.Add(mnuProfile);
@@ -2130,7 +2129,7 @@ namespace Kinovea.ScreenManager
             mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
 
             // Options
-            mnuVariables.Text = "Variables";
+            mnuVariables.Text = "Context";
             mnuImportVariables.Text = "Import…";
         }
 
@@ -3132,7 +3131,6 @@ namespace Kinovea.ScreenManager
 
             // Load the variable table.
             VariablesRepository.LoadFile(target);
-            BuildVariablesMenu();
             OrganizeMenus();
 
             // TODO: alert the other instances that they need to reload the variables from the file system.

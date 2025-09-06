@@ -174,6 +174,7 @@ namespace Kinovea.Root
             NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
             NotificationCenter.WakeUpAsked += NotificationCenter_WakeUpAsked;
             NotificationCenter.ExternalCommand += NotificationCenter_ExternalCommand;
+            NotificationCenter.TriggerPreferencesUpdated += (s, e) => PreferencesUpdated(e.Value);
 
             log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
             ExtendMenu(mainWindow.menuStrip);
@@ -285,6 +286,8 @@ namespace Kinovea.Root
 
             if (sendMessage)
             {
+                // Send to other windows.
+                // The recipient side of this is below in ExecuteWindowCommand().
                 WindowManager.SendMessage("Kinovea:Window.PreferencesUpdated");
             }
         }
@@ -1035,6 +1038,8 @@ namespace Kinovea.Root
                     {
                         Thread.CurrentThread.CurrentUICulture = newCulture;
                     }
+
+                    VariablesRepository.SetContextFromString(PreferencesManager.CapturePreferences.ContextString);
 
                     // Trigger a local update in this instance to make sure the UI is up to date.
                     PreferencesUpdated(false);

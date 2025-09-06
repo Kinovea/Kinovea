@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.IO;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
@@ -56,6 +56,15 @@ namespace Kinovea.ScreenManager
                 return tbFilename.Text;
             }
         }
+
+        /// <summary>
+        /// Return true if we are manually changing the context in this screen.
+        /// Used to avoid disconnecting/reconnecting the camera.
+        /// </summary>
+        public bool ChangingContext
+        {
+            get { return changingContext; }
+        }
         #endregion
 
         #region Events
@@ -71,6 +80,9 @@ namespace Kinovea.ScreenManager
         private bool delayedDisplay = true;
         private bool delayUpdating;
         private bool contextEnabled = true;
+        private bool changingContext;
+        private Func<bool, string> buildRecordingPath;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public CaptureScreenView(CaptureScreen presenter)
@@ -104,6 +116,11 @@ namespace Kinovea.ScreenManager
         }
 
         #region Public methods
+        public void SetBuildRecordingPathDelegate(Func<bool, string> buildRecordingPath)
+        {
+            this.buildRecordingPath = buildRecordingPath;
+        }
+
         public void DisplayAsActiveScreen(bool active)
         {
         }
@@ -117,25 +134,8 @@ namespace Kinovea.ScreenManager
             capturedFilesView.RefreshUICulture();
             ReloadTooltipsCulture();
 
-            // Reload the capture folder selector after a possible change in preferences.
-            CaptureFolder memoCaptureFolder = this.CaptureFolder;
-
-            // The selected capture folder may be null if it's the first time loading.
-            // In this case we'll set it to the first value but we'll get the true value
-            // from the window descriptor later in ForcePopulate().
-            cbCaptureFolder.Items.Clear();
-            List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
-            foreach (var cf in ccff)
-            {
-                cbCaptureFolder.Items.Add(cf);
-                if (memoCaptureFolder != null && cf.Id == memoCaptureFolder.Id)
-                    cbCaptureFolder.SelectedItem = cf;
-            }
-
-            if (cbCaptureFolder.SelectedIndex < 0 && cbCaptureFolder.Items.Count > 0)
-            {
-                cbCaptureFolder.SelectedIndex = 0;
-            }
+            UpdateContextBar();
+            UpdateCaptureFolder();
         }
         
         public void AddImageDrawing(string filename, bool svg)
@@ -184,6 +184,11 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void UpdateContextBar()
         {
+            if (changingContext)
+                return;
+
+            log.DebugFormat("UpdateContextBar: contextEnabled={0}, HasVariables={1}", contextEnabled, VariablesRepository.HasVariables);
+
             pnlContext.Controls.Clear();
             pnlContext.Controls.Add(btnContextInfo);
             toolTips.SetToolTip(btnContextToggle, contextEnabled ? "Disable capture context" : "Enable capture context");
@@ -203,17 +208,6 @@ namespace Kinovea.ScreenManager
                     cb.TabIndex = 0;
                     cb.Items.Clear();
                     cb.Margin = new Padding(10, 2, 0, 2);
-                    cb.SelectedIndexChanged += (s, e) =>
-                    {
-                        if (cb.SelectedItem != null)
-                        {
-                            //string variable = cb.SelectedItem.ToString();
-                            //presenter.View_ContextVariableChanged(tablePair.Key, variable);
-
-                            tablePair.Value.CurrentKey = cb.SelectedItem.ToString();
-
-                        }
-                    };
 
                     // A table may have multiple variables (columns) but only the 
                     // first one is used for context selection.
@@ -221,10 +215,25 @@ namespace Kinovea.ScreenManager
                     foreach (var variable in tablePair.Value.Keys)
                     {
                         cb.Items.Add(variable);
+
+                        if (variable == tablePair.Value.CurrentKey)
+                            cb.SelectedItem = variable;
                     }
 
-                    // FIXME: select the correct entry.
-                    cb.SelectedIndex = 0;
+                    // Only assign the event handler after setting the initial value,
+                    // to avoid triggering the preferences save (and signal to other instances) during initialization.
+                    cb.SelectedIndexChanged += (s, e) =>
+                    {
+                        if (cb.SelectedItem != null)
+                        {
+                            // Guard this with a flag as it will trigger a global "preferences updated" event,
+                            // that we'll want to ignore in certain places.
+                            changingContext = true;
+                            tablePair.Value.CurrentKey = cb.SelectedItem.ToString();
+                            VariablesRepository.SaveContext();
+                            changingContext = false;
+                        }
+                    };
 
                     toolTips.SetToolTip(cb, tablePair.Key.ToString());
 
@@ -359,16 +368,7 @@ namespace Kinovea.ScreenManager
             float maxDuration = Math.Min(Math.Max(sdc.MaxDuration, (float)nudDuration.Minimum), (float)nudDuration.Maximum);
             nudDuration.Value = (decimal)maxDuration;
 
-            // Capture folder
-            foreach (var item in cbCaptureFolder.Items)
-            {
-                CaptureFolder cf = (CaptureFolder)item;
-                if (cf.Id == sdc.CaptureFolder)
-                {
-                    cbCaptureFolder.SelectedItem = item;
-                    break;
-                }
-            }
+            SelectCaptureFolder(sdc.CaptureFolder);
 
             tbFilename.Text = sdc.FileName; 
         }
@@ -472,10 +472,6 @@ namespace Kinovea.ScreenManager
         {
             
         }
-        private void btnCaptureFolders_Click(object sender, EventArgs e)
-        {
-            presenter.View_OpenPreferences(PreferenceTab.Capture_Paths);
-        }
 
         private void BtnSnapshot_Click(object sender, EventArgs e)
         {
@@ -553,6 +549,69 @@ namespace Kinovea.ScreenManager
 
             toolTips.SetToolTip(btnCaptureFolders, "Configure capture folders");
         }
+        #endregion
+
+        #region Capture folder
+        /// <summary>
+        /// Initialize or re-initialize the capture folder selector.
+        /// </summary>
+        public void UpdateCaptureFolder()
+        {
+            CaptureFolder memoCaptureFolder = this.CaptureFolder;
+
+            // Rebuild the drop down.
+            cbCaptureFolder.Items.Clear();
+            List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
+            foreach (var cf in ccff)
+            {
+                cbCaptureFolder.Items.Add(cf);
+                if (memoCaptureFolder != null && cf.Id == memoCaptureFolder.Id)
+                    cbCaptureFolder.SelectedItem = cf;
+            }
+
+            // The selected capture folder may be null if it's the first time loading.
+            // In this case we'll set it to the first value but we'll get the true value
+            // from the window descriptor later in ForcePopulate().
+            if (cbCaptureFolder.SelectedIndex < 0 && cbCaptureFolder.Items.Count > 0)
+            {
+                cbCaptureFolder.SelectedIndex = 0;
+            }
+        }
+
+        /// <summary>
+        /// Force the selection of the capture folder.
+        /// </summary>
+        private void SelectCaptureFolder(Guid selected)
+        {
+            foreach (var item in cbCaptureFolder.Items)
+            {
+                CaptureFolder cf = (CaptureFolder)item;
+                if (cf.Id == selected)
+                {
+                    cbCaptureFolder.SelectedItem = item;
+                    break;
+                }
+            }
+        }
+
+        private void btnCaptureFolders_Click(object sender, EventArgs e)
+        {
+            presenter.View_OpenPreferences(PreferenceTab.Capture_Paths);
+        }
+
+        private void cbCaptureFolder_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Update the tooltip to show the resolved folder path.
+            if (cbCaptureFolder.SelectedItem != null)
+            {
+                if (buildRecordingPath != null)
+                {
+                    string path = buildRecordingPath(true);
+                    toolTips.SetToolTip(cbCaptureFolder, Path.GetDirectoryName(path));
+                }
+            }
+        }
+
         #endregion
 
         #region Commands

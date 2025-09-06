@@ -223,6 +223,7 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructing a CaptureScreen.");
             view = new CaptureScreenView(this);
+            view.SetBuildRecordingPathDelegate(BuildRecordingPath);
             viewportController = new ViewportController();
             viewportController.SetBuildRecordingPathDelegate(BuildRecordingPath);
 
@@ -387,12 +388,23 @@ namespace Kinovea.ScreenManager
             // through connect() for proper initialization of threads and timers.
             if (!cameraConnected)
                 return;
+
+            // Bail out if we are currently manually changing the context in the screen.
+            // Changing the context triggers a preferences update that can be ignored here.
+            if (view.ChangingContext)
+                return;
             
-            log.DebugFormat("Master preferences changed, reconnecting the camera.");
+            // If we are just changing the context from the main menu or from another instance
+            // we wouldn't technically have to disconnect but there is no easy way to know 
+            // if another preference changed that requires a reconnect.
+            log.DebugFormat("Core preferences changed, reconnecting the camera.");
             Disconnect();
             Connect();
 
             UpdateArmableTrigger();
+
+            // Update the context.
+            view.RefreshUICulture();
         }
         public override void BeforeClose()
         {
@@ -2231,6 +2243,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private Dictionary<string, string> BuildCaptureContext()
         {
+            if (cameraSummary == null || cameraGrabber == null || pipelineManager == null)
+                return new Dictionary<string, string>();
+
             Dictionary<string, string> context = DynamicPathResolver.BuildDateContext(true);
             context["camalias"]     = cameraSummary.Alias;
             context["camfps"]       = string.Format("{0:0.00}", cameraGrabber.Framerate);

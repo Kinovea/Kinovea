@@ -112,6 +112,16 @@ namespace Kinovea.Services
             get { BeforeRead(); return captureKVA; }
             set { captureKVA = value; Save(); }
         }
+        public bool ContextEnabled
+        {
+            get { BeforeRead(); return contextEnabled; }
+            set { contextEnabled = value; Save(); }
+        }
+        public string ContextString
+        {
+            get { BeforeRead(); return contextString; }
+            set { contextString = value; Save(); }
+        }
         #endregion
 
         #region Members
@@ -131,6 +141,8 @@ namespace Kinovea.Services
         private KVAExportFlags exportFlags = KVAExportFlags.DefaultCaptureRecording;
         private string postRecordCommand;
         private string captureKVA;
+        private bool contextEnabled = true;
+        private string contextString;
         #endregion
 
         private void Save()
@@ -237,6 +249,8 @@ namespace Kinovea.Services
 
             writer.WriteElementString("PostRecordCommand", postRecordCommand);
             writer.WriteElementString("CaptureKVA", captureKVA);
+            writer.WriteElementString("ContextEnabled", XmlHelper.WriteBoolean(contextEnabled));
+            writer.WriteElementString("ContextString", contextString);
         }
 
         public void ReadXML(XmlReader reader)
@@ -301,6 +315,12 @@ namespace Kinovea.Services
                         break;
                     case "CaptureKVA":
                         captureKVA = reader.ReadElementContentAsString();
+                        break;
+                    case "ContextEnabled":
+                        contextEnabled = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "ContextString":
+                        contextString = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

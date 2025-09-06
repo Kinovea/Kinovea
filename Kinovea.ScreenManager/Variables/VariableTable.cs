@@ -65,8 +65,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         /// <summary>
-        /// Import a CSV file containing profiles.
-        /// Always unload the current set of profiles loaded into this object.
+        /// Import a CSV file containing variables and their values.
         /// </summary>
         public bool Import(string csvFile)
         {
@@ -76,7 +75,7 @@ namespace Kinovea.ScreenManager
             {
                 if (!File.Exists(csvFile))
                 {
-                    log.Error("Profile not found.");
+                    log.Error("File not found.");
                     return false;
                 }
 
@@ -162,7 +161,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Clear all profile data.
+        /// Clear all data.
         /// </summary>
         private void Clear()
         {

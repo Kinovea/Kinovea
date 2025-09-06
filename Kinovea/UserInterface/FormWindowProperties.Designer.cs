@@ -33,6 +33,9 @@
       this.grpStartup = new System.Windows.Forms.GroupBox();
       this.grpScreenList = new System.Windows.Forms.GroupBox();
       this.pnlScreenList = new System.Windows.Forms.Panel();
+      this.lblScreen2 = new System.Windows.Forms.Label();
+      this.btnScreen2 = new System.Windows.Forms.Button();
+      this.lblScreen1 = new System.Windows.Forms.Label();
       this.btnScreen1 = new System.Windows.Forms.Button();
       this.btnUseCurrent = new System.Windows.Forms.Button();
       this.rbContinue = new System.Windows.Forms.RadioButton();
@@ -40,9 +43,7 @@
       this.rbOpenExplorer = new System.Windows.Forms.RadioButton();
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
-      this.lblScreen1 = new System.Windows.Forms.Label();
-      this.lblScreen2 = new System.Windows.Forms.Label();
-      this.btnScreen2 = new System.Windows.Forms.Button();
+      this.lblId = new System.Windows.Forms.Label();
       this.grpIdentifier.SuspendLayout();
       this.grpStartup.SuspendLayout();
       this.grpScreenList.SuspendLayout();
@@ -53,6 +54,7 @@
       // 
       this.grpIdentifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.grpIdentifier.Controls.Add(this.lblId);
       this.grpIdentifier.Controls.Add(this.tbName);
       this.grpIdentifier.Location = new System.Drawing.Point(12, 12);
       this.grpIdentifier.Name = "grpIdentifier";
@@ -72,6 +74,7 @@
       this.tbName.Size = new System.Drawing.Size(409, 26);
       this.tbName.TabIndex = 39;
       this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
+      this.tbName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbName_KeyDown);
       // 
       // grpStartup
       // 
@@ -119,6 +122,36 @@
       this.pnlScreenList.Name = "pnlScreenList";
       this.pnlScreenList.Size = new System.Drawing.Size(366, 79);
       this.pnlScreenList.TabIndex = 66;
+      // 
+      // lblScreen2
+      // 
+      this.lblScreen2.AutoSize = true;
+      this.lblScreen2.Location = new System.Drawing.Point(47, 52);
+      this.lblScreen2.Name = "lblScreen2";
+      this.lblScreen2.Size = new System.Drawing.Size(128, 13);
+      this.lblScreen2.TabIndex = 70;
+      this.lblScreen2.Text = "Playback: video file name";
+      // 
+      // btnScreen2
+      // 
+      this.btnScreen2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.btnScreen2.FlatAppearance.BorderSize = 0;
+      this.btnScreen2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnScreen2.Image = global::Kinovea.Root.Properties.Resources.television;
+      this.btnScreen2.Location = new System.Drawing.Point(14, 44);
+      this.btnScreen2.Name = "btnScreen2";
+      this.btnScreen2.Size = new System.Drawing.Size(25, 25);
+      this.btnScreen2.TabIndex = 69;
+      this.btnScreen2.UseVisualStyleBackColor = true;
+      // 
+      // lblScreen1
+      // 
+      this.lblScreen1.AutoSize = true;
+      this.lblScreen1.Location = new System.Drawing.Point(47, 19);
+      this.lblScreen1.Name = "lblScreen1";
+      this.lblScreen1.Size = new System.Drawing.Size(109, 13);
+      this.lblScreen1.TabIndex = 68;
+      this.lblScreen1.Text = "Capture: camera alias";
       // 
       // btnScreen1
       // 
@@ -202,35 +235,17 @@
       this.btnCancel.Text = "Cancel";
       this.btnCancel.UseVisualStyleBackColor = true;
       // 
-      // lblScreen1
+      // lblId
       // 
-      this.lblScreen1.AutoSize = true;
-      this.lblScreen1.Location = new System.Drawing.Point(47, 19);
-      this.lblScreen1.Name = "lblScreen1";
-      this.lblScreen1.Size = new System.Drawing.Size(109, 13);
-      this.lblScreen1.TabIndex = 68;
-      this.lblScreen1.Text = "Capture: camera alias";
-      // 
-      // lblScreen2
-      // 
-      this.lblScreen2.AutoSize = true;
-      this.lblScreen2.Location = new System.Drawing.Point(47, 52);
-      this.lblScreen2.Name = "lblScreen2";
-      this.lblScreen2.Size = new System.Drawing.Size(128, 13);
-      this.lblScreen2.TabIndex = 70;
-      this.lblScreen2.Text = "Playback: video file name";
-      // 
-      // btnScreen2
-      // 
-      this.btnScreen2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.btnScreen2.FlatAppearance.BorderSize = 0;
-      this.btnScreen2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnScreen2.Image = global::Kinovea.Root.Properties.Resources.television;
-      this.btnScreen2.Location = new System.Drawing.Point(14, 44);
-      this.btnScreen2.Name = "btnScreen2";
-      this.btnScreen2.Size = new System.Drawing.Size(25, 25);
-      this.btnScreen2.TabIndex = 69;
-      this.btnScreen2.UseVisualStyleBackColor = true;
+      this.lblId.AutoSize = true;
+      this.lblId.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblId.ForeColor = System.Drawing.Color.Silver;
+      this.lblId.Location = new System.Drawing.Point(376, 53);
+      this.lblId.Name = "lblId";
+      this.lblId.Size = new System.Drawing.Size(55, 13);
+      this.lblId.TabIndex = 40;
+      this.lblId.Text = "00000000";
+      this.lblId.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // FormWindowProperties
       // 
@@ -278,5 +293,6 @@
         private System.Windows.Forms.Label lblScreen1;
         private System.Windows.Forms.Label lblScreen2;
         private System.Windows.Forms.Button btnScreen2;
+        private System.Windows.Forms.Label lblId;
     }
 }

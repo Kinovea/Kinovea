@@ -55,6 +55,9 @@ namespace Kinovea.Root
 
             manualUpdate = false;
 
+            lblId.Text = string.Format("{0}", 
+                WindowManager.ActiveWindow.Id.ToString().Substring(0, 8));
+
             PopulateScreenList();
         }
 
@@ -145,6 +148,22 @@ namespace Kinovea.Root
         #region OK/Cancel/Close
         private void btnOK_Click(object sender, EventArgs e)
         {
+            Commit();
+        }
+        #endregion
+
+        private void tbName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                Commit();
+                this.DialogResult = DialogResult.OK;
+                Close();
+            }
+        }
+
+        private void Commit()
+        {
             // Commit the local copy to the active window descriptor.
             WindowDescriptor descriptor = WindowManager.ActiveWindow;
             descriptor.Name = name;
@@ -155,6 +174,5 @@ namespace Kinovea.Root
 
             WindowManager.SetTitleName();
         }
-        #endregion
     }
 }

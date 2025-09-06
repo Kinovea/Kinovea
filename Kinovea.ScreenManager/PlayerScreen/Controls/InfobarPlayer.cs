@@ -101,26 +101,33 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(lblFilename, toolTipText);
                 mnuStopWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StopWatcher, infoName);
                 popMenu.Items.Add(mnuStopWatcher);
-                
-                if (!string.IsNullOrEmpty(parentFolder) && parentFolder != watchedFolder)
-                {
-                    mnuStartWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, parentFolder);
-                    popMenu.Items.Add(mnuStartWatcher);
-                }
+
+                // Note: we no longer allow starting a watcher on the current folder from here.
+                // This was super confusing because it wouldn't reverse-resolve to the capture folder.
+                // Instead it would start observing on the static path of the capture folder, not the 
+                // dynamic path, and worse, it would add the static path as a new capture folder.
+                // It's still possible to start a watcher on a random folder but only from the "Open folder"
+                // dialog or from the navigation pane file lister.
+                //if (!string.IsNullOrEmpty(parentFolder) && parentFolder != watchedFolder)
+                //{
+                //    mnuStartWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, parentFolder);
+                //    popMenu.Items.Add(mnuStartWatcher);
+                //}
             }
             else
             {
                 toolTips.SetToolTip(btnVideoType, null);
                 toolTips.SetToolTip(lblFilename, null);
 
-                if (parentFolder != null)
-                {
-                    mnuStartWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, parentFolder);
-                    popMenu.Items.Add(mnuStartWatcher);
-                }
+                // Note: we no longer allow starting a watcher on the current folder from here.
+                // See note above.
+                //if (parentFolder != null)
+                //{
+                //    mnuStartWatcher.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, parentFolder);
+                //    popMenu.Items.Add(mnuStartWatcher);
+                //}
             }
 
-            // Capture folders.
             List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
             if (ccff.Count == 0)
             {
@@ -128,7 +135,12 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            popMenu.Items.Add(new ToolStripSeparator());
+            if (popMenu.Items.Count > 0)
+            {
+                popMenu.Items.Add(new ToolStripSeparator());
+            }
+
+            // Add entries for the capture folders.
             foreach (var cf in ccff)
             {
                 CaptureFolder captureFolder = cf;

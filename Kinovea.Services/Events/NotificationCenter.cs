@@ -138,6 +138,20 @@ namespace Kinovea.Services
                 PreferencesOpened(sender, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// This event is asking the root to refresh the whole UI and optionally 
+        /// send a message to other instances.
+        /// This should be called after changes in individual modules that require
+        /// to be reflected globally. Ex: changing the context in the capture screen.
+        /// </summary>
+        public static EventHandler<EventArgs<bool>> TriggerPreferencesUpdated;
+        public static void RaiseTriggerPreferencesUpdated(object sender, bool sendMessage)
+        {
+            TriggerPreferencesUpdated?.Invoke(sender, new EventArgs<bool>(sendMessage));
+        }
+
+
+
         public static EventHandler<ExternalCommandEventArgs> ExternalCommand;
         public static void RaiseExternalCommand(object sender, string name)
         {

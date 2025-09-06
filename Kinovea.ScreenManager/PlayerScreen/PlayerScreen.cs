@@ -683,7 +683,13 @@ namespace Kinovea.ScreenManager
 
                             log.DebugFormat("Replay watcher target path changed from preferences.");
                             log.DebugFormat("Switching watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetFolder));
+                            
+                            view.StopPlaying();
+                            replayWatcher.Stop();
                             StartReplayWatcher(null);
+
+                            // Toast notification with the new path for confirmation.
+                            view.ToastMessage(replayWatcher.WatchedFolder, 2000);
                         }
                     }
                 }
@@ -1050,6 +1056,9 @@ namespace Kinovea.ScreenManager
             view.UpdateReplayWatcher(replayWatcher.WatchedFolder);
         }
 
+        /// <summary>
+        /// Stop watching the folder and switch back the infobar to a regular player.
+        /// </summary>
         public void StopReplayWatcher()
         {
             replayWatcher.Stop();

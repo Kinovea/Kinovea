@@ -5573,6 +5573,11 @@ namespace Kinovea.ScreenManager
             m_MessageToaster.SetDuration(750);
             m_MessageToaster.Show(message);
         }
+        public void ToastMessage(string message, int duration)
+        {
+            m_MessageToaster.SetDuration(duration);
+            m_MessageToaster.Show(message);
+        }
         #endregion
 
         #region Synchronisation specifics

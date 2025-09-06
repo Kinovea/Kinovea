@@ -467,7 +467,7 @@ namespace Kinovea.Services
             foreach (var d in windowDescriptors)
             {
                 // Ignore myself.
-                if (d == ActiveWindow)
+                if (d.Id == ActiveWindow.Id || d.Name == ActiveWindow.Name)
                     continue;
 
                 string titleName = string.IsNullOrEmpty(d.Name) ? GetIdName(d) : d.Name;
