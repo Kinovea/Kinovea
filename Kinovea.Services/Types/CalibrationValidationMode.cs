@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kinovea.Services.Types
+namespace Kinovea.Services
 {
     /// <summary>
     /// Validation mode used in the calibration validation dialog.

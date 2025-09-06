@@ -214,17 +214,20 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TurboJpegNet">
-      <HintPath>..\Refs\TurboJpeg\TurboJpegNet.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bitmap\TJPEG\TJCS.cs" />
+    <Compile Include="Bitmap\TJPEG\TJFLAG.cs" />
+    <Compile Include="Bitmap\TJPEG\tjnet.cs" />
+    <Compile Include="Bitmap\TJPEG\TJPF.cs" />
+    <Compile Include="Bitmap\TJPEG\TJSAMP.cs" />
+    <Compile Include="Bitmap\TJPEG\TJXOP.cs" />
     <Compile Include="Filesystem\AlphanumComparator.cs" />
     <Compile Include="Filesystem\FileComparator.cs" />
     <Compile Include="Filesystem\FilePicker.cs" />
     <Compile Include="Filesystem\FolderNavigationType.cs" />
     <Compile Include="Filesystem\FileSortAxis.cs" />
-    <Compile Include="Infrastructure\BitmapHelper.cs" />
+    <Compile Include="Bitmap\BitmapHelper.cs" />
     <Compile Include="Types\UserCommand.cs" />
     <Compile Include="Preferences\PreferencesHelper.cs" />
     <Compile Include="Types\CalibrationValidationMode.cs" />

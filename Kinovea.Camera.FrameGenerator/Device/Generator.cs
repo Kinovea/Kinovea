@@ -9,7 +9,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using Kinovea.Pipeline;
 using Kinovea.Services;
-using TurboJpegNet;
+using Kinovea.Services.TurboJpeg;
 
 namespace Kinovea.Camera.FrameGenerator
 {

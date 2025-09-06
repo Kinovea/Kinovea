@@ -10,7 +10,6 @@ using Kinovea.ScreenManager.Languages;
 using System.Drawing.Drawing2D;
 using Kinovea.Services;
 using BrightIdeasSoftware;
-using Kinovea.Services.Types;
 using System.Globalization;
 using FastColoredTextBoxNS;
 using System.Text.RegularExpressions;
