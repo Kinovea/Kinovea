@@ -340,10 +340,23 @@ namespace Kinovea.Root
 
         private void InitTabPaths()
         {
-            tabPaths.Text = "Paths";
+            tabPaths.Text = "Folders";
+            grpCaptureFolders.Text = "Capture folders";
+            grpCaptureFolderDetails.Text = "Capture folder details";
             lblCaptureFolderShortName.Text = "Short name:";
             lblCaptureFolderPath.Text = "Path:";
-            btnCaptureFolderInsertVariable.Text = "Insert variable...";
+            btnCaptureFolderInsertVariable.Text = "Insert a variable…";
+
+            toolTip1.SetToolTip(btnCaptureFolderInsertBackslash, "Insert a backslash");
+            toolTip1.SetToolTip(btnCaptureFolderInsertDash, "Insert a hyphen");
+            toolTip1.SetToolTip(btnCaptureFolderInsertUnderscore, "Insert an underscore");
+            toolTip1.SetToolTip(btnCaptureFolderInterpolate, "Show final path");
+            toolTip1.SetToolTip(btnCaptureFolderBrowse, "Browse for folder");
+            toolTip1.SetToolTip(btnDeleteCaptureFolder, "Remove the capture folder from the list");
+            toolTip1.SetToolTip(btnAddCaptureFolder, "Add a new capture folder");
+            toolTip1.SetToolTip(btnSortFolderUp, "Move up");
+            toolTip1.SetToolTip(btnSortFolderDown, "Move down");
+
             PrepareCaptureFoldersList();
             PopulateCaptureFolderList();
             if (capturePathConfiguration.CaptureFolders.Count > 0)
