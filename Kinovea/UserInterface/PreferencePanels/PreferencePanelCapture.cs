@@ -31,6 +31,7 @@ using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
+using BrightIdeasSoftware;
 
 namespace Kinovea.Root
 {
@@ -96,11 +97,11 @@ namespace Kinovea.Root
         private bool defaultTriggerArmed = false;
 
         // Naming and formats
-        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
-        private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private FilenameHelper filenameHelper = new FilenameHelper();
-        private FormPatterns formPatterns;
-        private bool formPatternsVisible;
+        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
+        private CaptureFolder selectedCaptureFolder;
+        //private FormPatterns formPatterns;
+        //private bool formPatternsVisible;
 
         // Automation
         private bool ignoreOverwriteWarning;
@@ -198,11 +199,8 @@ namespace Kinovea.Root
             InitTabMemory();
             InitTabRecording();
             InitTabTrigger();
-            InitTabImageNaming();
-            InitTabVideoNaming();
+            InitTabPaths();
             InitTabAutomation();
-
-            InitNamingTextBoxes();
         }
 
         private void InitTabGeneral()
@@ -343,48 +341,16 @@ namespace Kinovea.Root
             cmbDefaultTriggerState.SelectedIndex = defaultTriggerArmed ? 0 : 1;
         }
 
-        private void InitTabImageNaming()
+        private void InitTabPaths()
         {
-            tabImageNaming.Text = RootLang.dlgPreferences_Capture_ImageNaming;
-
-            grpLeftImage.Text = RootLang.dlgPreferences_Capture_Left;
-            grpRightImage.Text = RootLang.dlgPreferences_Capture_Right;
-
-            lblLeftImageRoot.Text = RootLang.dlgPreferences_Capture_Root;
-            lblLeftImageSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
-            lblLeftImageFile.Text = RootLang.dlgPreferences_Capture_File;
-            lblRightImageRoot.Text = RootLang.dlgPreferences_Capture_Root;
-            lblRightImageSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
-            lblRightImageFile.Text = RootLang.dlgPreferences_Capture_File;
-            
-            tbLeftImageRoot.Text = capturePathConfiguration.LeftImageRoot;
-            tbLeftImageSubdir.Text = capturePathConfiguration.LeftImageSubdir;
-            tbLeftImageFile.Text = capturePathConfiguration.LeftImageFile;
-            tbRightImageRoot.Text = capturePathConfiguration.RightImageRoot;
-            tbRightImageSubdir.Text = capturePathConfiguration.RightImageSubdir;
-            tbRightImageFile.Text = capturePathConfiguration.RightImageFile;
-        }
-
-        private void InitTabVideoNaming()
-        {
-            tabVideoNaming.Text = RootLang.dlgPreferences_Capture_VideoNaming;
-
-            grpLeftVideo.Text = RootLang.dlgPreferences_Capture_Left;
-            grpRightVideo.Text = RootLang.dlgPreferences_Capture_Right;
-
-            lblLeftVideoRoot.Text = RootLang.dlgPreferences_Capture_Root;
-            lblLeftVideoSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
-            lblLeftVideoFile.Text = RootLang.dlgPreferences_Capture_File;
-            lblRightVideoRoot.Text = RootLang.dlgPreferences_Capture_Root;
-            lblRightVideoSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
-            lblRightVideoFile.Text = RootLang.dlgPreferences_Capture_File;
-            
-            tbLeftVideoRoot.Text = capturePathConfiguration.LeftVideoRoot;
-            tbLeftVideoSubdir.Text = capturePathConfiguration.LeftVideoSubdir;
-            tbLeftVideoFile.Text = capturePathConfiguration.LeftVideoFile;
-            tbRightVideoRoot.Text = capturePathConfiguration.RightVideoRoot;
-            tbRightVideoSubdir.Text = capturePathConfiguration.RightVideoSubdir;
-            tbRightVideoFile.Text = capturePathConfiguration.RightVideoFile;
+            tabPaths.Text = "Paths";
+            lblCaptureFolderShortName.Text = "Short name:";
+            lblCaptureFolderPath.Text = "Path:";
+            btnCaptureFolderInsertVariable.Text = "Insert variable...";
+            PrepareCaptureFoldersList();
+            PopulateCaptureFolderList();
+            if (capturePathConfiguration.CaptureFolders.Count > 0)
+                olvCaptureFolders.SelectedIndex = 0;
         }
 
         private void InitTabAutomation()
@@ -393,33 +359,6 @@ namespace Kinovea.Root
             
             lblPostRecordCommand.Text = RootLang.dlgPreferences_Capture_lblPostRecordingCommand; 
             tbPostRecordCommand.Text = postRecordCommand;
-        }
-
-        private void InitNamingTextBoxes()
-        {
-            namingTextBoxes[CaptureVariable.LeftImageRoot] = tbLeftImageRoot;
-            namingTextBoxes[CaptureVariable.LeftImageSubdir] = tbLeftImageSubdir;
-            namingTextBoxes[CaptureVariable.LeftImageFile] = tbLeftImageFile;
-            namingTextBoxes[CaptureVariable.RightImageRoot] = tbRightImageRoot;
-            namingTextBoxes[CaptureVariable.RightImageSubdir] = tbRightImageSubdir;
-            namingTextBoxes[CaptureVariable.RightImageFile] = tbRightImageFile;
-            namingTextBoxes[CaptureVariable.LeftVideoRoot] = tbLeftVideoRoot;
-            namingTextBoxes[CaptureVariable.LeftVideoSubdir] = tbLeftVideoSubdir;
-            namingTextBoxes[CaptureVariable.LeftVideoFile] = tbLeftVideoFile;
-            namingTextBoxes[CaptureVariable.RightVideoRoot] = tbRightVideoRoot;
-            namingTextBoxes[CaptureVariable.RightVideoSubdir] = tbRightVideoSubdir;
-            namingTextBoxes[CaptureVariable.RightVideoFile] = tbRightVideoFile;
-
-            foreach (CaptureVariable v in namingTextBoxes.Keys)
-            {
-                namingTextBoxes[v].TextChanged += tbNamingVariable_TextChanged;
-                namingTextBoxes[v].Tag = v;
-            }
-
-            btnLeftImageRoot.Tag = CaptureVariable.LeftImageRoot;
-            btnRightImageRoot.Tag = CaptureVariable.RightImageRoot;
-            btnLeftVideoRoot.Tag = CaptureVariable.LeftVideoRoot;
-            btnRightVideoRoot.Tag = CaptureVariable.RightVideoRoot;
         }
         #endregion
         
@@ -475,89 +414,103 @@ namespace Kinovea.Root
         #endregion
 
         #region Tabs naming
-        private void tbNamingVariable_TextChanged(object sender, EventArgs e)
+        private void olvCaptureFolders_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Control tb = sender as Control;
-            if (tb == null)
+            var item = olvCaptureFolders.GetItem(olvCaptureFolders.SelectedIndex);
+            if (item == null)
                 return;
 
-            CaptureVariable v = (CaptureVariable)tb.Tag;
-            WriteVariable(v, tb.Text);
+            CaptureFolder cf = item.RowObject as CaptureFolder;
+            selectedCaptureFolder = cf;
+
+            PopulateCaptureFolderDetails(cf);
         }
 
-        private void WriteVariable(CaptureVariable v, string text)
+        private void btnSortFolderUp_Click(object sender, EventArgs e)
         {
-            switch (v)
+            int index = olvCaptureFolders.SelectedIndex;
+            if (index <= 0)
+                return;
+
+            var temp = capturePathConfiguration.CaptureFolders[index - 1];
+            capturePathConfiguration.CaptureFolders[index - 1] = capturePathConfiguration.CaptureFolders[index];
+            capturePathConfiguration.CaptureFolders[index] = temp;
+            PopulateCaptureFolderList();
+            olvCaptureFolders.SelectedIndex = index - 1;
+        }
+
+        private void btnSortFolderDown_Click(object sender, EventArgs e)
+        {
+            int index = olvCaptureFolders.SelectedIndex;
+            if (index >= capturePathConfiguration.CaptureFolders.Count - 1)
+                return;
+
+            var temp = capturePathConfiguration.CaptureFolders[index + 1];
+            capturePathConfiguration.CaptureFolders[index + 1] = capturePathConfiguration.CaptureFolders[index];
+            capturePathConfiguration.CaptureFolders[index] = temp;
+            PopulateCaptureFolderList();
+            olvCaptureFolders.SelectedIndex = index + 1;
+        }
+
+        private void btnAddCaptureFolder_Click(object sender, EventArgs e)
+        {
+            // Insert a new capture folder at the top and select it.
+            CaptureFolder captureFolder = new CaptureFolder();
+            capturePathConfiguration.CaptureFolders.Insert(0, captureFolder);
+            PopulateCaptureFolderList();
+            olvCaptureFolders.SelectedObject = captureFolder;
+        }
+
+        private void btnDeleteCaptureFolder_Click(object sender, EventArgs e)
+        {
+            if (selectedCaptureFolder == null)
+                return;
+
+            int memoSelectedIndex = olvCaptureFolders.SelectedIndex;
+
+            // TODO: here we could validate against the list of windows if 
+            // any of them is using this capture folder.
+            capturePathConfiguration.CaptureFolders.Remove(selectedCaptureFolder);
+            PopulateCaptureFolderList();
+
+            if (capturePathConfiguration.CaptureFolders.Count == 0)
             {
-                case CaptureVariable.LeftImageRoot:
-                    capturePathConfiguration.LeftImageRoot = text;
-                    break;
-                case CaptureVariable.LeftImageSubdir:
-                    capturePathConfiguration.LeftImageSubdir = text;
-                    break;
-                case CaptureVariable.LeftImageFile:
-                    capturePathConfiguration.LeftImageFile = text;
-                    break;
-                case CaptureVariable.RightImageRoot:
-                    capturePathConfiguration.RightImageRoot = text;
-                    break;
-                case CaptureVariable.RightImageSubdir:
-                    capturePathConfiguration.RightImageSubdir = text;
-                    break;
-                case CaptureVariable.RightImageFile:
-                    capturePathConfiguration.RightImageFile = text;
-                    break;
-                case CaptureVariable.LeftVideoRoot:
-                    capturePathConfiguration.LeftVideoRoot = text;
-                    break;
-                case CaptureVariable.LeftVideoSubdir:
-                    capturePathConfiguration.LeftVideoSubdir = text;
-                    break;
-                case CaptureVariable.LeftVideoFile:
-                    capturePathConfiguration.LeftVideoFile = text;
-                    break;
-                case CaptureVariable.RightVideoRoot:
-                    capturePathConfiguration.RightVideoRoot = text;
-                    break;
-                case CaptureVariable.RightVideoSubdir:
-                    capturePathConfiguration.RightVideoSubdir = text;
-                    break;
-                case CaptureVariable.RightVideoFile:
-                    capturePathConfiguration.RightVideoFile = text;
-                    break;
+                selectedCaptureFolder = null;
+                PopulateCaptureFolderDetails(null);
+            }
+            else
+            {
+                if (memoSelectedIndex >= capturePathConfiguration.CaptureFolders.Count)
+                    memoSelectedIndex = capturePathConfiguration.CaptureFolders.Count - 1;
+                olvCaptureFolders.SelectedIndex = memoSelectedIndex;
             }
         }
 
-        private void btnFolderSelection_Click(object sender, EventArgs e)
+        private void tbCaptureFolderShortName_TextChanged(object sender, EventArgs e)
         {
-            Control button = sender as Control;
-            CaptureVariable captureVariable = (CaptureVariable)button.Tag;
-            if (!namingTextBoxes.ContainsKey(captureVariable))
+            if (selectedCaptureFolder == null)
                 return;
 
-            TextBox tb = namingTextBoxes[captureVariable];
+            string shortName = tbCaptureFolderShortName.Text.Trim();
+            selectedCaptureFolder.ShortName = shortName;
 
-            string initialDirectory = null;
-            if (Directory.Exists(tb.Text))
-                initialDirectory = tb.Text;
-            else
-                initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            string path = FilesystemHelper.OpenFolderBrowserDialog(initialDirectory);
-            if (!string.IsNullOrEmpty(path))
-                tb.Text = path;
+            olvCaptureFolders.RefreshObject(selectedCaptureFolder);
         }
 
-        private void btnMacroReference_Click(object sender, EventArgs e)
+        private void tbCaptureFolderPath_TextChanged(object sender, EventArgs e)
         {
-            if (formPatternsVisible)
+            if (selectedCaptureFolder == null)
                 return;
 
-            formPatterns = new FormPatterns(PatternSymbolsFile.Symbols);
-            formPatterns.FormClosed += formPatterns_FormClosed;
-            formPatternsVisible = true;
-            formPatterns.Show(this);
+            // Should we do some validation here?
+            // The path will be created if it does not exist when we start a recording.
+            // But it should be a valid filename, unless we have variables.
+            string path = tbCaptureFolderPath.Text.Trim();
+            selectedCaptureFolder.Path = path;
+
+            olvCaptureFolders.RefreshObject(selectedCaptureFolder);
         }
+
         #endregion
 
         #region Tab Memory
@@ -700,13 +653,13 @@ namespace Kinovea.Root
 
         private void btnPostRecordCommand_Click(object sender, EventArgs e)
         {
-            if (formPatternsVisible)
-                return;
+            //if (formPatternsVisible)
+            //    return;
 
-            formPatterns = new FormPatterns(PatternSymbolsCommand.Symbols);
-            formPatterns.FormClosed += formPatterns_FormClosed;
-            formPatternsVisible = true;
-            formPatterns.Show(this);
+            //formPatterns = new FormPatterns(PatternSymbolsCommand.Symbols);
+            //formPatterns.FormClosed += formPatterns_FormClosed;
+            //formPatternsVisible = true;
+            //formPatterns.Show(this);
         }
 
         private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
@@ -773,6 +726,62 @@ namespace Kinovea.Root
         }
         #endregion
 
+        #region CaptureFolders
+        private void PrepareCaptureFoldersList()
+        {
+            var colName = new OLVColumn();
+            colName.AspectName = "ShortName";
+            colName.Groupable = false;
+            colName.Sortable = false;
+            colName.IsEditable = false;
+            colName.MinimumWidth = 100;
+            colName.FillsFreeSpace = true;
+            colName.FreeSpaceProportion = 2;
+            colName.TextAlign = HorizontalAlignment.Left;
+            colName.AspectGetter = delegate (object rowObject)
+            {
+                if (string.IsNullOrEmpty(((CaptureFolder)rowObject).ShortName))
+                    return ((CaptureFolder)rowObject).Path;
+
+                return ((CaptureFolder)rowObject).ShortName;
+            };
+
+            olvCaptureFolders.AllColumns.AddRange(new OLVColumn[] {
+                colName,
+                });
+
+            olvCaptureFolders.Columns.AddRange(new ColumnHeader[] {
+                colName,
+                });
+
+            // List view level options
+            olvCaptureFolders.HeaderStyle = ColumnHeaderStyle.None;
+            olvCaptureFolders.FullRowSelect = true;
+        }
+
+        private void PopulateCaptureFolderList()
+        {
+            olvCaptureFolders.Items.Clear();
+            selectedCaptureFolder = null;
+            olvCaptureFolders.SetObjects(capturePathConfiguration.CaptureFolders);
+        }
+
+        private void PopulateCaptureFolderDetails(CaptureFolder cf)
+        {
+            if (cf == null)
+            {
+                tbCaptureFolderShortName.Text = "";
+                tbCaptureFolderPath.Text = "";
+                grpCaptureFolderDetails.Enabled = false;
+                return;
+            }
+
+            grpCaptureFolderDetails.Enabled = true;
+            tbCaptureFolderShortName.Text = cf.ShortName;
+            tbCaptureFolderPath.Text = cf.Path;
+        }
+        #endregion
+
         public void CommitChanges()
         {
             // General
@@ -809,8 +818,8 @@ namespace Kinovea.Root
 
         private void formPatterns_FormClosed(object sender, FormClosedEventArgs e)
         {
-            formPatterns.FormClosed -= formPatterns_FormClosed;
-            formPatternsVisible = false;
+            //formPatterns.FormClosed -= formPatterns_FormClosed;
+            //formPatternsVisible = false;
         }
     }
 }

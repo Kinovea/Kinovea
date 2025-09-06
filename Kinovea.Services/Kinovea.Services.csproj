@@ -229,6 +229,7 @@
     <Compile Include="Types\CalibrationValidationMode.cs" />
     <Compile Include="Types\CameraMotionFeatureType.cs" />
     <Compile Include="Types\CameraMotionParameters.cs" />
+    <Compile Include="Types\CaptureFolder.cs" />
     <Compile Include="Types\CSVDecimalSeparator.cs" />
     <Compile Include="Types\ExportSpace.cs" />
     <Compile Include="Types\HSVRange.cs" />

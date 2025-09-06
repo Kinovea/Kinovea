@@ -547,6 +547,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\add-16.png" />
+    <None Include="Resources\folder_add.png" />
     <None Include="Resources\circled-play-green2-16.png" />
     <None Include="Resources\start3-16.png" />
     <None Include="Resources\circled-play-green-16.png" />

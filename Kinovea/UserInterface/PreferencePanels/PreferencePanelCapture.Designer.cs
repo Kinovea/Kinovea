@@ -93,60 +93,35 @@ namespace Kinovea.Root
       this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
       this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
       this.lblInputDevice = new System.Windows.Forms.Label();
-      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.cmbInputDevice = new System.Windows.Forms.ComboBox();
       this.lblAudioTriggerHits = new System.Windows.Forms.Label();
       this.lblTriggerAction = new System.Windows.Forms.Label();
       this.lblQuietPeriod = new System.Windows.Forms.Label();
       this.nudQuietPeriod = new System.Windows.Forms.NumericUpDown();
-      this.tabImageNaming = new System.Windows.Forms.TabPage();
-      this.grpRightImage = new System.Windows.Forms.GroupBox();
-      this.btnRightImageFile = new System.Windows.Forms.Button();
-      this.btnRightImageSubdir = new System.Windows.Forms.Button();
+      this.tabPaths = new System.Windows.Forms.TabPage();
+      this.grpCaptureFolderDetails = new System.Windows.Forms.GroupBox();
+      this.button5 = new System.Windows.Forms.Button();
+      this.button3 = new System.Windows.Forms.Button();
+      this.btnCaptureFolderInsertBackslash = new System.Windows.Forms.Button();
+      this.btnCaptureFolderInsertVariable = new System.Windows.Forms.Button();
       this.btnRightImageRoot = new System.Windows.Forms.Button();
-      this.lblRightImageFile = new System.Windows.Forms.Label();
-      this.tbRightImageFile = new System.Windows.Forms.TextBox();
-      this.lblRightImageSubdir = new System.Windows.Forms.Label();
-      this.tbRightImageSubdir = new System.Windows.Forms.TextBox();
-      this.lblRightImageRoot = new System.Windows.Forms.Label();
-      this.tbRightImageRoot = new System.Windows.Forms.TextBox();
+      this.lblCaptureFolderPath = new System.Windows.Forms.Label();
+      this.tbCaptureFolderPath = new System.Windows.Forms.TextBox();
+      this.lblCaptureFolderShortName = new System.Windows.Forms.Label();
+      this.tbCaptureFolderShortName = new System.Windows.Forms.TextBox();
       this.grpLeftImage = new System.Windows.Forms.GroupBox();
-      this.btnLeftImageFile = new System.Windows.Forms.Button();
-      this.btnLeftImageSubdir = new System.Windows.Forms.Button();
-      this.lblLeftImageFile = new System.Windows.Forms.Label();
-      this.tbLeftImageFile = new System.Windows.Forms.TextBox();
-      this.lblLeftImageSubdir = new System.Windows.Forms.Label();
-      this.tbLeftImageSubdir = new System.Windows.Forms.TextBox();
-      this.lblLeftImageRoot = new System.Windows.Forms.Label();
-      this.tbLeftImageRoot = new System.Windows.Forms.TextBox();
-      this.btnLeftImageRoot = new System.Windows.Forms.Button();
-      this.tabVideoNaming = new System.Windows.Forms.TabPage();
-      this.grpRightVideo = new System.Windows.Forms.GroupBox();
-      this.btnRightVideoFile = new System.Windows.Forms.Button();
-      this.btnRightVideoSubdir = new System.Windows.Forms.Button();
-      this.btnRightVideoRoot = new System.Windows.Forms.Button();
-      this.lblRightVideoFile = new System.Windows.Forms.Label();
-      this.tbRightVideoFile = new System.Windows.Forms.TextBox();
-      this.lblRightVideoSubdir = new System.Windows.Forms.Label();
-      this.tbRightVideoSubdir = new System.Windows.Forms.TextBox();
-      this.lblRightVideoRoot = new System.Windows.Forms.Label();
-      this.tbRightVideoRoot = new System.Windows.Forms.TextBox();
-      this.grpLeftVideo = new System.Windows.Forms.GroupBox();
-      this.btnLeftVideoRoot = new System.Windows.Forms.Button();
-      this.btnLeftVideoFile = new System.Windows.Forms.Button();
-      this.btnLeftVideoSubdir = new System.Windows.Forms.Button();
-      this.lblLeftVideoFile = new System.Windows.Forms.Label();
-      this.tbLeftVideoFile = new System.Windows.Forms.TextBox();
-      this.lblLeftVideoSubdir = new System.Windows.Forms.Label();
-      this.tbLeftVideoSubdir = new System.Windows.Forms.TextBox();
-      this.lblLeftVideoRoot = new System.Windows.Forms.Label();
-      this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
+      this.btnAddCaptureFolder = new System.Windows.Forms.Button();
+      this.btnDeleteCaptureFolder = new System.Windows.Forms.Button();
+      this.btnSortFolderDown = new System.Windows.Forms.Button();
+      this.olvCaptureFolders = new BrightIdeasSoftware.ObjectListView();
+      this.btnSortFolderUp = new System.Windows.Forms.Button();
       this.tabAutomation = new System.Windows.Forms.TabPage();
       this.label1 = new System.Windows.Forms.Label();
       this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.btnPostRecordCommand = new System.Windows.Forms.Button();
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
+      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.grpFormats.SuspendLayout();
@@ -164,12 +139,10 @@ namespace Kinovea.Root
       this.gbAudioTrigger.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).BeginInit();
-      this.tabImageNaming.SuspendLayout();
-      this.grpRightImage.SuspendLayout();
+      this.tabPaths.SuspendLayout();
+      this.grpCaptureFolderDetails.SuspendLayout();
       this.grpLeftImage.SuspendLayout();
-      this.tabVideoNaming.SuspendLayout();
-      this.grpRightVideo.SuspendLayout();
-      this.grpLeftVideo.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.olvCaptureFolders)).BeginInit();
       this.tabAutomation.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -179,8 +152,7 @@ namespace Kinovea.Root
       this.tabSubPages.Controls.Add(this.tabMemory);
       this.tabSubPages.Controls.Add(this.tabRecording);
       this.tabSubPages.Controls.Add(this.tabTrigger);
-      this.tabSubPages.Controls.Add(this.tabImageNaming);
-      this.tabSubPages.Controls.Add(this.tabVideoNaming);
+      this.tabSubPages.Controls.Add(this.tabPaths);
       this.tabSubPages.Controls.Add(this.tabAutomation);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
@@ -717,20 +689,6 @@ namespace Kinovea.Root
       this.lblInputDevice.TabIndex = 47;
       this.lblInputDevice.Text = "Preferred input device:";
       // 
-      // vumeter
-      // 
-      this.vumeter.Amplitude = 0F;
-      this.vumeter.BackColor = System.Drawing.Color.White;
-      this.vumeter.DecibelRange = 60F;
-      this.vumeter.Location = new System.Drawing.Point(249, 70);
-      this.vumeter.Name = "vumeter";
-      this.vumeter.Size = new System.Drawing.Size(175, 21);
-      this.vumeter.TabIndex = 51;
-      this.vumeter.Text = "volumeMeterThreshold1";
-      this.vumeter.Threshold = 0.001F;
-      this.vumeter.ThresholdLinear = 0F;
-      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
-      // 
       // cmbInputDevice
       // 
       this.cmbInputDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -783,71 +741,71 @@ namespace Kinovea.Root
       this.nudQuietPeriod.TabIndex = 59;
       this.nudQuietPeriod.ValueChanged += new System.EventHandler(this.nudQuietPeriod_ValueChanged);
       // 
-      // tabImageNaming
+      // tabPaths
       // 
-      this.tabImageNaming.Controls.Add(this.grpRightImage);
-      this.tabImageNaming.Controls.Add(this.grpLeftImage);
-      this.tabImageNaming.Location = new System.Drawing.Point(4, 22);
-      this.tabImageNaming.Name = "tabImageNaming";
-      this.tabImageNaming.Padding = new System.Windows.Forms.Padding(3);
-      this.tabImageNaming.Size = new System.Drawing.Size(482, 296);
-      this.tabImageNaming.TabIndex = 1;
-      this.tabImageNaming.Text = "Image naming";
-      this.tabImageNaming.UseVisualStyleBackColor = true;
+      this.tabPaths.Controls.Add(this.grpCaptureFolderDetails);
+      this.tabPaths.Controls.Add(this.grpLeftImage);
+      this.tabPaths.Location = new System.Drawing.Point(4, 22);
+      this.tabPaths.Name = "tabPaths";
+      this.tabPaths.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPaths.Size = new System.Drawing.Size(482, 296);
+      this.tabPaths.TabIndex = 1;
+      this.tabPaths.Text = "Paths";
+      this.tabPaths.UseVisualStyleBackColor = true;
       // 
-      // grpRightImage
+      // grpCaptureFolderDetails
       // 
-      this.grpRightImage.Controls.Add(this.btnRightImageFile);
-      this.grpRightImage.Controls.Add(this.btnRightImageSubdir);
-      this.grpRightImage.Controls.Add(this.btnRightImageRoot);
-      this.grpRightImage.Controls.Add(this.lblRightImageFile);
-      this.grpRightImage.Controls.Add(this.tbRightImageFile);
-      this.grpRightImage.Controls.Add(this.lblRightImageSubdir);
-      this.grpRightImage.Controls.Add(this.tbRightImageSubdir);
-      this.grpRightImage.Controls.Add(this.lblRightImageRoot);
-      this.grpRightImage.Controls.Add(this.tbRightImageRoot);
-      this.grpRightImage.Location = new System.Drawing.Point(6, 106);
-      this.grpRightImage.Name = "grpRightImage";
-      this.grpRightImage.Size = new System.Drawing.Size(470, 94);
-      this.grpRightImage.TabIndex = 47;
-      this.grpRightImage.TabStop = false;
-      this.grpRightImage.Text = "Right";
+      this.grpCaptureFolderDetails.Controls.Add(this.button5);
+      this.grpCaptureFolderDetails.Controls.Add(this.button3);
+      this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertBackslash);
+      this.grpCaptureFolderDetails.Controls.Add(this.btnCaptureFolderInsertVariable);
+      this.grpCaptureFolderDetails.Controls.Add(this.btnRightImageRoot);
+      this.grpCaptureFolderDetails.Controls.Add(this.lblCaptureFolderPath);
+      this.grpCaptureFolderDetails.Controls.Add(this.tbCaptureFolderPath);
+      this.grpCaptureFolderDetails.Controls.Add(this.lblCaptureFolderShortName);
+      this.grpCaptureFolderDetails.Controls.Add(this.tbCaptureFolderShortName);
+      this.grpCaptureFolderDetails.Location = new System.Drawing.Point(6, 170);
+      this.grpCaptureFolderDetails.Name = "grpCaptureFolderDetails";
+      this.grpCaptureFolderDetails.Size = new System.Drawing.Size(470, 120);
+      this.grpCaptureFolderDetails.TabIndex = 47;
+      this.grpCaptureFolderDetails.TabStop = false;
+      this.grpCaptureFolderDetails.Text = "Folder detail";
       // 
-      // btnRightImageFile
+      // button5
       // 
-      this.btnRightImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRightImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnRightImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRightImageFile.FlatAppearance.BorderSize = 0;
-      this.btnRightImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnRightImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRightImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightImageFile.Location = new System.Drawing.Point(440, 64);
-      this.btnRightImageFile.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnRightImageFile.Name = "btnRightImageFile";
-      this.btnRightImageFile.Size = new System.Drawing.Size(20, 20);
-      this.btnRightImageFile.TabIndex = 51;
-      this.btnRightImageFile.Tag = "";
-      this.btnRightImageFile.UseVisualStyleBackColor = true;
-      this.btnRightImageFile.Click += new System.EventHandler(this.btnMacroReference_Click);
+      this.button5.Location = new System.Drawing.Point(346, 87);
+      this.button5.Name = "button5";
+      this.button5.Size = new System.Drawing.Size(26, 23);
+      this.button5.TabIndex = 54;
+      this.button5.Text = "_";
+      this.button5.UseVisualStyleBackColor = true;
       // 
-      // btnRightImageSubdir
+      // button3
       // 
-      this.btnRightImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRightImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnRightImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRightImageSubdir.FlatAppearance.BorderSize = 0;
-      this.btnRightImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnRightImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRightImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightImageSubdir.Location = new System.Drawing.Point(440, 38);
-      this.btnRightImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnRightImageSubdir.Name = "btnRightImageSubdir";
-      this.btnRightImageSubdir.Size = new System.Drawing.Size(20, 20);
-      this.btnRightImageSubdir.TabIndex = 50;
-      this.btnRightImageSubdir.Tag = "";
-      this.btnRightImageSubdir.UseVisualStyleBackColor = true;
-      this.btnRightImageSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
+      this.button3.Location = new System.Drawing.Point(314, 87);
+      this.button3.Name = "button3";
+      this.button3.Size = new System.Drawing.Size(26, 23);
+      this.button3.TabIndex = 53;
+      this.button3.Text = "-";
+      this.button3.UseVisualStyleBackColor = true;
+      // 
+      // btnCaptureFolderInsertBackslash
+      // 
+      this.btnCaptureFolderInsertBackslash.Location = new System.Drawing.Point(282, 87);
+      this.btnCaptureFolderInsertBackslash.Name = "btnCaptureFolderInsertBackslash";
+      this.btnCaptureFolderInsertBackslash.Size = new System.Drawing.Size(26, 23);
+      this.btnCaptureFolderInsertBackslash.TabIndex = 52;
+      this.btnCaptureFolderInsertBackslash.Text = "\\";
+      this.btnCaptureFolderInsertBackslash.UseVisualStyleBackColor = true;
+      // 
+      // btnCaptureFolderInsertVariable
+      // 
+      this.btnCaptureFolderInsertVariable.Location = new System.Drawing.Point(145, 87);
+      this.btnCaptureFolderInsertVariable.Name = "btnCaptureFolderInsertVariable";
+      this.btnCaptureFolderInsertVariable.Size = new System.Drawing.Size(131, 23);
+      this.btnCaptureFolderInsertVariable.TabIndex = 51;
+      this.btnCaptureFolderInsertVariable.Text = "Insert variable…";
+      this.btnCaptureFolderInsertVariable.UseVisualStyleBackColor = true;
       // 
       // btnRightImageRoot
       // 
@@ -858,458 +816,150 @@ namespace Kinovea.Root
       this.btnRightImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnRightImageRoot.Location = new System.Drawing.Point(440, 12);
+      this.btnRightImageRoot.Location = new System.Drawing.Point(440, 60);
       this.btnRightImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightImageRoot.Name = "btnRightImageRoot";
       this.btnRightImageRoot.Size = new System.Drawing.Size(20, 20);
       this.btnRightImageRoot.TabIndex = 49;
       this.btnRightImageRoot.Tag = "";
       this.btnRightImageRoot.UseVisualStyleBackColor = true;
-      this.btnRightImageRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
+      this.btnRightImageRoot.Click += new System.EventHandler(this.btnSortFolderUp_Click);
       // 
-      // lblRightImageFile
+      // lblCaptureFolderPath
       // 
-      this.lblRightImageFile.AutoSize = true;
-      this.lblRightImageFile.Location = new System.Drawing.Point(6, 68);
-      this.lblRightImageFile.Name = "lblRightImageFile";
-      this.lblRightImageFile.Size = new System.Drawing.Size(29, 13);
-      this.lblRightImageFile.TabIndex = 45;
-      this.lblRightImageFile.Text = "File :";
+      this.lblCaptureFolderPath.AutoSize = true;
+      this.lblCaptureFolderPath.Location = new System.Drawing.Point(20, 63);
+      this.lblCaptureFolderPath.Name = "lblCaptureFolderPath";
+      this.lblCaptureFolderPath.Size = new System.Drawing.Size(32, 13);
+      this.lblCaptureFolderPath.TabIndex = 43;
+      this.lblCaptureFolderPath.Text = "Path:";
       // 
-      // tbRightImageFile
+      // tbCaptureFolderPath
       // 
-      this.tbRightImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tbCaptureFolderPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbRightImageFile.Location = new System.Drawing.Point(145, 65);
-      this.tbRightImageFile.Name = "tbRightImageFile";
-      this.tbRightImageFile.Size = new System.Drawing.Size(289, 20);
-      this.tbRightImageFile.TabIndex = 46;
+      this.tbCaptureFolderPath.Location = new System.Drawing.Point(145, 60);
+      this.tbCaptureFolderPath.Name = "tbCaptureFolderPath";
+      this.tbCaptureFolderPath.Size = new System.Drawing.Size(289, 20);
+      this.tbCaptureFolderPath.TabIndex = 44;
+      this.tbCaptureFolderPath.TextChanged += new System.EventHandler(this.tbCaptureFolderPath_TextChanged);
       // 
-      // lblRightImageSubdir
+      // lblCaptureFolderShortName
       // 
-      this.lblRightImageSubdir.AutoSize = true;
-      this.lblRightImageSubdir.Location = new System.Drawing.Point(6, 42);
-      this.lblRightImageSubdir.Name = "lblRightImageSubdir";
-      this.lblRightImageSubdir.Size = new System.Drawing.Size(75, 13);
-      this.lblRightImageSubdir.TabIndex = 43;
-      this.lblRightImageSubdir.Text = "Sub directory :";
+      this.lblCaptureFolderShortName.AutoSize = true;
+      this.lblCaptureFolderShortName.Location = new System.Drawing.Point(20, 26);
+      this.lblCaptureFolderShortName.Name = "lblCaptureFolderShortName";
+      this.lblCaptureFolderShortName.Size = new System.Drawing.Size(64, 13);
+      this.lblCaptureFolderShortName.TabIndex = 38;
+      this.lblCaptureFolderShortName.Text = "Short name:";
       // 
-      // tbRightImageSubdir
+      // tbCaptureFolderShortName
       // 
-      this.tbRightImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tbCaptureFolderShortName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbRightImageSubdir.Location = new System.Drawing.Point(145, 39);
-      this.tbRightImageSubdir.Name = "tbRightImageSubdir";
-      this.tbRightImageSubdir.Size = new System.Drawing.Size(289, 20);
-      this.tbRightImageSubdir.TabIndex = 44;
-      // 
-      // lblRightImageRoot
-      // 
-      this.lblRightImageRoot.AutoSize = true;
-      this.lblRightImageRoot.Location = new System.Drawing.Point(6, 16);
-      this.lblRightImageRoot.Name = "lblRightImageRoot";
-      this.lblRightImageRoot.Size = new System.Drawing.Size(36, 13);
-      this.lblRightImageRoot.TabIndex = 38;
-      this.lblRightImageRoot.Text = "Root :";
-      // 
-      // tbRightImageRoot
-      // 
-      this.tbRightImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbRightImageRoot.Location = new System.Drawing.Point(145, 13);
-      this.tbRightImageRoot.Name = "tbRightImageRoot";
-      this.tbRightImageRoot.Size = new System.Drawing.Size(289, 20);
-      this.tbRightImageRoot.TabIndex = 40;
+      this.tbCaptureFolderShortName.Location = new System.Drawing.Point(145, 23);
+      this.tbCaptureFolderShortName.Name = "tbCaptureFolderShortName";
+      this.tbCaptureFolderShortName.Size = new System.Drawing.Size(289, 20);
+      this.tbCaptureFolderShortName.TabIndex = 40;
+      this.tbCaptureFolderShortName.TextChanged += new System.EventHandler(this.tbCaptureFolderShortName_TextChanged);
       // 
       // grpLeftImage
       // 
-      this.grpLeftImage.Controls.Add(this.btnLeftImageFile);
-      this.grpLeftImage.Controls.Add(this.btnLeftImageSubdir);
-      this.grpLeftImage.Controls.Add(this.lblLeftImageFile);
-      this.grpLeftImage.Controls.Add(this.tbLeftImageFile);
-      this.grpLeftImage.Controls.Add(this.lblLeftImageSubdir);
-      this.grpLeftImage.Controls.Add(this.tbLeftImageSubdir);
-      this.grpLeftImage.Controls.Add(this.lblLeftImageRoot);
-      this.grpLeftImage.Controls.Add(this.tbLeftImageRoot);
-      this.grpLeftImage.Controls.Add(this.btnLeftImageRoot);
+      this.grpLeftImage.Controls.Add(this.btnAddCaptureFolder);
+      this.grpLeftImage.Controls.Add(this.btnDeleteCaptureFolder);
+      this.grpLeftImage.Controls.Add(this.btnSortFolderDown);
+      this.grpLeftImage.Controls.Add(this.olvCaptureFolders);
+      this.grpLeftImage.Controls.Add(this.btnSortFolderUp);
       this.grpLeftImage.Location = new System.Drawing.Point(6, 6);
       this.grpLeftImage.Name = "grpLeftImage";
-      this.grpLeftImage.Size = new System.Drawing.Size(470, 94);
+      this.grpLeftImage.Size = new System.Drawing.Size(470, 158);
       this.grpLeftImage.TabIndex = 44;
       this.grpLeftImage.TabStop = false;
-      this.grpLeftImage.Text = "Left";
+      this.grpLeftImage.Text = "Capture folders";
       // 
-      // btnLeftImageFile
+      // btnAddCaptureFolder
       // 
-      this.btnLeftImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnLeftImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnLeftImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnLeftImageFile.FlatAppearance.BorderSize = 0;
-      this.btnLeftImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnLeftImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnLeftImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftImageFile.Location = new System.Drawing.Point(440, 64);
-      this.btnLeftImageFile.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnLeftImageFile.Name = "btnLeftImageFile";
-      this.btnLeftImageFile.Size = new System.Drawing.Size(20, 20);
-      this.btnLeftImageFile.TabIndex = 48;
-      this.btnLeftImageFile.Tag = "";
-      this.btnLeftImageFile.UseVisualStyleBackColor = true;
-      this.btnLeftImageFile.Click += new System.EventHandler(this.btnMacroReference_Click);
+      this.btnAddCaptureFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnAddCaptureFolder.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnAddCaptureFolder.FlatAppearance.BorderSize = 0;
+      this.btnAddCaptureFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnAddCaptureFolder.Image = global::Kinovea.Root.Properties.Resources.add_16;
+      this.btnAddCaptureFolder.Location = new System.Drawing.Point(439, 79);
+      this.btnAddCaptureFolder.Name = "btnAddCaptureFolder";
+      this.btnAddCaptureFolder.Size = new System.Drawing.Size(25, 25);
+      this.btnAddCaptureFolder.TabIndex = 79;
+      this.btnAddCaptureFolder.UseVisualStyleBackColor = true;
+      this.btnAddCaptureFolder.Click += new System.EventHandler(this.btnAddCaptureFolder_Click);
       // 
-      // btnLeftImageSubdir
+      // btnDeleteCaptureFolder
       // 
-      this.btnLeftImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnLeftImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnLeftImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnLeftImageSubdir.FlatAppearance.BorderSize = 0;
-      this.btnLeftImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnLeftImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnLeftImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftImageSubdir.Location = new System.Drawing.Point(440, 38);
-      this.btnLeftImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnLeftImageSubdir.Name = "btnLeftImageSubdir";
-      this.btnLeftImageSubdir.Size = new System.Drawing.Size(20, 20);
-      this.btnLeftImageSubdir.TabIndex = 47;
-      this.btnLeftImageSubdir.Tag = "";
-      this.btnLeftImageSubdir.UseVisualStyleBackColor = true;
-      this.btnLeftImageSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
+      this.btnDeleteCaptureFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnDeleteCaptureFolder.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnDeleteCaptureFolder.FlatAppearance.BorderSize = 0;
+      this.btnDeleteCaptureFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnDeleteCaptureFolder.Image = global::Kinovea.Root.Properties.Resources.bin_empty;
+      this.btnDeleteCaptureFolder.Location = new System.Drawing.Point(439, 121);
+      this.btnDeleteCaptureFolder.Name = "btnDeleteCaptureFolder";
+      this.btnDeleteCaptureFolder.Size = new System.Drawing.Size(25, 25);
+      this.btnDeleteCaptureFolder.TabIndex = 78;
+      this.btnDeleteCaptureFolder.UseVisualStyleBackColor = true;
+      this.btnDeleteCaptureFolder.Click += new System.EventHandler(this.btnDeleteCaptureFolder_Click);
       // 
-      // lblLeftImageFile
+      // btnSortFolderDown
       // 
-      this.lblLeftImageFile.AutoSize = true;
-      this.lblLeftImageFile.Location = new System.Drawing.Point(6, 68);
-      this.lblLeftImageFile.Name = "lblLeftImageFile";
-      this.lblLeftImageFile.Size = new System.Drawing.Size(29, 13);
-      this.lblLeftImageFile.TabIndex = 45;
-      this.lblLeftImageFile.Text = "File :";
+      this.btnSortFolderDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSortFolderDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnSortFolderDown.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnSortFolderDown.FlatAppearance.BorderSize = 0;
+      this.btnSortFolderDown.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnSortFolderDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSortFolderDown.Image = global::Kinovea.Root.Properties.Resources.thick_arrow_pointing_down_16;
+      this.btnSortFolderDown.Location = new System.Drawing.Point(440, 53);
+      this.btnSortFolderDown.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnSortFolderDown.Name = "btnSortFolderDown";
+      this.btnSortFolderDown.Size = new System.Drawing.Size(20, 20);
+      this.btnSortFolderDown.TabIndex = 77;
+      this.btnSortFolderDown.Tag = "";
+      this.btnSortFolderDown.UseVisualStyleBackColor = true;
+      this.btnSortFolderDown.Click += new System.EventHandler(this.btnSortFolderDown_Click);
       // 
-      // tbLeftImageFile
+      // olvCaptureFolders
       // 
-      this.tbLeftImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.olvCaptureFolders.AlternateRowBackColor = System.Drawing.Color.Gainsboro;
+      this.olvCaptureFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbLeftImageFile.Location = new System.Drawing.Point(145, 65);
-      this.tbLeftImageFile.Name = "tbLeftImageFile";
-      this.tbLeftImageFile.Size = new System.Drawing.Size(289, 20);
-      this.tbLeftImageFile.TabIndex = 46;
+      this.olvCaptureFolders.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClickAlways;
+      this.olvCaptureFolders.CellEditUseWholeCell = false;
+      this.olvCaptureFolders.Cursor = System.Windows.Forms.Cursors.Default;
+      this.olvCaptureFolders.FullRowSelect = true;
+      this.olvCaptureFolders.GridLines = true;
+      this.olvCaptureFolders.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.olvCaptureFolders.HideSelection = false;
+      this.olvCaptureFolders.Location = new System.Drawing.Point(13, 23);
+      this.olvCaptureFolders.Name = "olvCaptureFolders";
+      this.olvCaptureFolders.Size = new System.Drawing.Size(421, 123);
+      this.olvCaptureFolders.TabIndex = 76;
+      this.olvCaptureFolders.UseCompatibleStateImageBehavior = false;
+      this.olvCaptureFolders.View = System.Windows.Forms.View.Details;
+      this.olvCaptureFolders.SelectedIndexChanged += new System.EventHandler(this.olvCaptureFolders_SelectedIndexChanged);
       // 
-      // lblLeftImageSubdir
+      // btnSortFolderUp
       // 
-      this.lblLeftImageSubdir.AutoSize = true;
-      this.lblLeftImageSubdir.Location = new System.Drawing.Point(6, 42);
-      this.lblLeftImageSubdir.Name = "lblLeftImageSubdir";
-      this.lblLeftImageSubdir.Size = new System.Drawing.Size(75, 13);
-      this.lblLeftImageSubdir.TabIndex = 43;
-      this.lblLeftImageSubdir.Text = "Sub directory :";
-      // 
-      // tbLeftImageSubdir
-      // 
-      this.tbLeftImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbLeftImageSubdir.Location = new System.Drawing.Point(145, 39);
-      this.tbLeftImageSubdir.Name = "tbLeftImageSubdir";
-      this.tbLeftImageSubdir.Size = new System.Drawing.Size(289, 20);
-      this.tbLeftImageSubdir.TabIndex = 44;
-      // 
-      // lblLeftImageRoot
-      // 
-      this.lblLeftImageRoot.AutoSize = true;
-      this.lblLeftImageRoot.Location = new System.Drawing.Point(6, 16);
-      this.lblLeftImageRoot.Name = "lblLeftImageRoot";
-      this.lblLeftImageRoot.Size = new System.Drawing.Size(36, 13);
-      this.lblLeftImageRoot.TabIndex = 38;
-      this.lblLeftImageRoot.Text = "Root :";
-      // 
-      // tbLeftImageRoot
-      // 
-      this.tbLeftImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbLeftImageRoot.Location = new System.Drawing.Point(145, 13);
-      this.tbLeftImageRoot.Name = "tbLeftImageRoot";
-      this.tbLeftImageRoot.Size = new System.Drawing.Size(289, 20);
-      this.tbLeftImageRoot.TabIndex = 40;
-      // 
-      // btnLeftImageRoot
-      // 
-      this.btnLeftImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnLeftImageRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnLeftImageRoot.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnLeftImageRoot.FlatAppearance.BorderSize = 0;
-      this.btnLeftImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnLeftImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnLeftImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnLeftImageRoot.Location = new System.Drawing.Point(440, 12);
-      this.btnLeftImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnLeftImageRoot.Name = "btnLeftImageRoot";
-      this.btnLeftImageRoot.Size = new System.Drawing.Size(20, 20);
-      this.btnLeftImageRoot.TabIndex = 42;
-      this.btnLeftImageRoot.Tag = "";
-      this.btnLeftImageRoot.UseVisualStyleBackColor = true;
-      this.btnLeftImageRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
-      // 
-      // tabVideoNaming
-      // 
-      this.tabVideoNaming.Controls.Add(this.grpRightVideo);
-      this.tabVideoNaming.Controls.Add(this.grpLeftVideo);
-      this.tabVideoNaming.Location = new System.Drawing.Point(4, 22);
-      this.tabVideoNaming.Name = "tabVideoNaming";
-      this.tabVideoNaming.Padding = new System.Windows.Forms.Padding(3);
-      this.tabVideoNaming.Size = new System.Drawing.Size(482, 296);
-      this.tabVideoNaming.TabIndex = 3;
-      this.tabVideoNaming.Text = "Video naming";
-      this.tabVideoNaming.UseVisualStyleBackColor = true;
-      // 
-      // grpRightVideo
-      // 
-      this.grpRightVideo.Controls.Add(this.btnRightVideoFile);
-      this.grpRightVideo.Controls.Add(this.btnRightVideoSubdir);
-      this.grpRightVideo.Controls.Add(this.btnRightVideoRoot);
-      this.grpRightVideo.Controls.Add(this.lblRightVideoFile);
-      this.grpRightVideo.Controls.Add(this.tbRightVideoFile);
-      this.grpRightVideo.Controls.Add(this.lblRightVideoSubdir);
-      this.grpRightVideo.Controls.Add(this.tbRightVideoSubdir);
-      this.grpRightVideo.Controls.Add(this.lblRightVideoRoot);
-      this.grpRightVideo.Controls.Add(this.tbRightVideoRoot);
-      this.grpRightVideo.Location = new System.Drawing.Point(6, 106);
-      this.grpRightVideo.Name = "grpRightVideo";
-      this.grpRightVideo.Size = new System.Drawing.Size(470, 94);
-      this.grpRightVideo.TabIndex = 49;
-      this.grpRightVideo.TabStop = false;
-      this.grpRightVideo.Text = "Right";
-      // 
-      // btnRightVideoFile
-      // 
-      this.btnRightVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRightVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnRightVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRightVideoFile.FlatAppearance.BorderSize = 0;
-      this.btnRightVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnRightVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRightVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightVideoFile.Location = new System.Drawing.Point(440, 64);
-      this.btnRightVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnRightVideoFile.Name = "btnRightVideoFile";
-      this.btnRightVideoFile.Size = new System.Drawing.Size(20, 20);
-      this.btnRightVideoFile.TabIndex = 51;
-      this.btnRightVideoFile.Tag = "";
-      this.btnRightVideoFile.UseVisualStyleBackColor = true;
-      this.btnRightVideoFile.Click += new System.EventHandler(this.btnMacroReference_Click);
-      // 
-      // btnRightVideoSubdir
-      // 
-      this.btnRightVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRightVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnRightVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRightVideoSubdir.FlatAppearance.BorderSize = 0;
-      this.btnRightVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnRightVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRightVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightVideoSubdir.Location = new System.Drawing.Point(440, 38);
-      this.btnRightVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnRightVideoSubdir.Name = "btnRightVideoSubdir";
-      this.btnRightVideoSubdir.Size = new System.Drawing.Size(20, 20);
-      this.btnRightVideoSubdir.TabIndex = 50;
-      this.btnRightVideoSubdir.Tag = "";
-      this.btnRightVideoSubdir.UseVisualStyleBackColor = true;
-      this.btnRightVideoSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
-      // 
-      // btnRightVideoRoot
-      // 
-      this.btnRightVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnRightVideoRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnRightVideoRoot.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnRightVideoRoot.FlatAppearance.BorderSize = 0;
-      this.btnRightVideoRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnRightVideoRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnRightVideoRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnRightVideoRoot.Location = new System.Drawing.Point(440, 12);
-      this.btnRightVideoRoot.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnRightVideoRoot.Name = "btnRightVideoRoot";
-      this.btnRightVideoRoot.Size = new System.Drawing.Size(20, 20);
-      this.btnRightVideoRoot.TabIndex = 49;
-      this.btnRightVideoRoot.Tag = "";
-      this.btnRightVideoRoot.UseVisualStyleBackColor = true;
-      this.btnRightVideoRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
-      // 
-      // lblRightVideoFile
-      // 
-      this.lblRightVideoFile.AutoSize = true;
-      this.lblRightVideoFile.Location = new System.Drawing.Point(6, 68);
-      this.lblRightVideoFile.Name = "lblRightVideoFile";
-      this.lblRightVideoFile.Size = new System.Drawing.Size(29, 13);
-      this.lblRightVideoFile.TabIndex = 45;
-      this.lblRightVideoFile.Text = "File :";
-      // 
-      // tbRightVideoFile
-      // 
-      this.tbRightVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbRightVideoFile.Location = new System.Drawing.Point(145, 65);
-      this.tbRightVideoFile.Name = "tbRightVideoFile";
-      this.tbRightVideoFile.Size = new System.Drawing.Size(289, 20);
-      this.tbRightVideoFile.TabIndex = 46;
-      // 
-      // lblRightVideoSubdir
-      // 
-      this.lblRightVideoSubdir.AutoSize = true;
-      this.lblRightVideoSubdir.Location = new System.Drawing.Point(6, 42);
-      this.lblRightVideoSubdir.Name = "lblRightVideoSubdir";
-      this.lblRightVideoSubdir.Size = new System.Drawing.Size(75, 13);
-      this.lblRightVideoSubdir.TabIndex = 43;
-      this.lblRightVideoSubdir.Text = "Sub directory :";
-      // 
-      // tbRightVideoSubdir
-      // 
-      this.tbRightVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbRightVideoSubdir.Location = new System.Drawing.Point(145, 39);
-      this.tbRightVideoSubdir.Name = "tbRightVideoSubdir";
-      this.tbRightVideoSubdir.Size = new System.Drawing.Size(289, 20);
-      this.tbRightVideoSubdir.TabIndex = 44;
-      // 
-      // lblRightVideoRoot
-      // 
-      this.lblRightVideoRoot.AutoSize = true;
-      this.lblRightVideoRoot.Location = new System.Drawing.Point(6, 16);
-      this.lblRightVideoRoot.Name = "lblRightVideoRoot";
-      this.lblRightVideoRoot.Size = new System.Drawing.Size(36, 13);
-      this.lblRightVideoRoot.TabIndex = 38;
-      this.lblRightVideoRoot.Text = "Root :";
-      // 
-      // tbRightVideoRoot
-      // 
-      this.tbRightVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbRightVideoRoot.Location = new System.Drawing.Point(145, 13);
-      this.tbRightVideoRoot.Name = "tbRightVideoRoot";
-      this.tbRightVideoRoot.Size = new System.Drawing.Size(289, 20);
-      this.tbRightVideoRoot.TabIndex = 40;
-      // 
-      // grpLeftVideo
-      // 
-      this.grpLeftVideo.Controls.Add(this.btnLeftVideoRoot);
-      this.grpLeftVideo.Controls.Add(this.btnLeftVideoFile);
-      this.grpLeftVideo.Controls.Add(this.btnLeftVideoSubdir);
-      this.grpLeftVideo.Controls.Add(this.lblLeftVideoFile);
-      this.grpLeftVideo.Controls.Add(this.tbLeftVideoFile);
-      this.grpLeftVideo.Controls.Add(this.lblLeftVideoSubdir);
-      this.grpLeftVideo.Controls.Add(this.tbLeftVideoSubdir);
-      this.grpLeftVideo.Controls.Add(this.lblLeftVideoRoot);
-      this.grpLeftVideo.Controls.Add(this.tbLeftVideoRoot);
-      this.grpLeftVideo.Location = new System.Drawing.Point(6, 6);
-      this.grpLeftVideo.Name = "grpLeftVideo";
-      this.grpLeftVideo.Size = new System.Drawing.Size(470, 94);
-      this.grpLeftVideo.TabIndex = 48;
-      this.grpLeftVideo.TabStop = false;
-      this.grpLeftVideo.Text = "Left";
-      // 
-      // btnLeftVideoRoot
-      // 
-      this.btnLeftVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnLeftVideoRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnLeftVideoRoot.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnLeftVideoRoot.FlatAppearance.BorderSize = 0;
-      this.btnLeftVideoRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnLeftVideoRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnLeftVideoRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnLeftVideoRoot.Location = new System.Drawing.Point(440, 12);
-      this.btnLeftVideoRoot.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnLeftVideoRoot.Name = "btnLeftVideoRoot";
-      this.btnLeftVideoRoot.Size = new System.Drawing.Size(20, 20);
-      this.btnLeftVideoRoot.TabIndex = 49;
-      this.btnLeftVideoRoot.Tag = "";
-      this.btnLeftVideoRoot.UseVisualStyleBackColor = true;
-      this.btnLeftVideoRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
-      // 
-      // btnLeftVideoFile
-      // 
-      this.btnLeftVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnLeftVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnLeftVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnLeftVideoFile.FlatAppearance.BorderSize = 0;
-      this.btnLeftVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnLeftVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnLeftVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftVideoFile.Location = new System.Drawing.Point(440, 64);
-      this.btnLeftVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnLeftVideoFile.Name = "btnLeftVideoFile";
-      this.btnLeftVideoFile.Size = new System.Drawing.Size(20, 20);
-      this.btnLeftVideoFile.TabIndex = 48;
-      this.btnLeftVideoFile.Tag = "";
-      this.btnLeftVideoFile.UseVisualStyleBackColor = true;
-      this.btnLeftVideoFile.Click += new System.EventHandler(this.btnMacroReference_Click);
-      // 
-      // btnLeftVideoSubdir
-      // 
-      this.btnLeftVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnLeftVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnLeftVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnLeftVideoSubdir.FlatAppearance.BorderSize = 0;
-      this.btnLeftVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-      this.btnLeftVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnLeftVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftVideoSubdir.Location = new System.Drawing.Point(440, 38);
-      this.btnLeftVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-      this.btnLeftVideoSubdir.Name = "btnLeftVideoSubdir";
-      this.btnLeftVideoSubdir.Size = new System.Drawing.Size(20, 20);
-      this.btnLeftVideoSubdir.TabIndex = 47;
-      this.btnLeftVideoSubdir.Tag = "";
-      this.btnLeftVideoSubdir.UseVisualStyleBackColor = true;
-      this.btnLeftVideoSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
-      // 
-      // lblLeftVideoFile
-      // 
-      this.lblLeftVideoFile.AutoSize = true;
-      this.lblLeftVideoFile.Location = new System.Drawing.Point(6, 68);
-      this.lblLeftVideoFile.Name = "lblLeftVideoFile";
-      this.lblLeftVideoFile.Size = new System.Drawing.Size(29, 13);
-      this.lblLeftVideoFile.TabIndex = 45;
-      this.lblLeftVideoFile.Text = "File :";
-      // 
-      // tbLeftVideoFile
-      // 
-      this.tbLeftVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbLeftVideoFile.Location = new System.Drawing.Point(145, 65);
-      this.tbLeftVideoFile.Name = "tbLeftVideoFile";
-      this.tbLeftVideoFile.Size = new System.Drawing.Size(289, 20);
-      this.tbLeftVideoFile.TabIndex = 46;
-      // 
-      // lblLeftVideoSubdir
-      // 
-      this.lblLeftVideoSubdir.AutoSize = true;
-      this.lblLeftVideoSubdir.Location = new System.Drawing.Point(6, 42);
-      this.lblLeftVideoSubdir.Name = "lblLeftVideoSubdir";
-      this.lblLeftVideoSubdir.Size = new System.Drawing.Size(75, 13);
-      this.lblLeftVideoSubdir.TabIndex = 43;
-      this.lblLeftVideoSubdir.Text = "Sub directory :";
-      // 
-      // tbLeftVideoSubdir
-      // 
-      this.tbLeftVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbLeftVideoSubdir.Location = new System.Drawing.Point(145, 39);
-      this.tbLeftVideoSubdir.Name = "tbLeftVideoSubdir";
-      this.tbLeftVideoSubdir.Size = new System.Drawing.Size(289, 20);
-      this.tbLeftVideoSubdir.TabIndex = 44;
-      // 
-      // lblLeftVideoRoot
-      // 
-      this.lblLeftVideoRoot.AutoSize = true;
-      this.lblLeftVideoRoot.Location = new System.Drawing.Point(6, 16);
-      this.lblLeftVideoRoot.Name = "lblLeftVideoRoot";
-      this.lblLeftVideoRoot.Size = new System.Drawing.Size(36, 13);
-      this.lblLeftVideoRoot.TabIndex = 38;
-      this.lblLeftVideoRoot.Text = "Root :";
-      // 
-      // tbLeftVideoRoot
-      // 
-      this.tbLeftVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbLeftVideoRoot.Location = new System.Drawing.Point(145, 13);
-      this.tbLeftVideoRoot.Name = "tbLeftVideoRoot";
-      this.tbLeftVideoRoot.Size = new System.Drawing.Size(289, 20);
-      this.tbLeftVideoRoot.TabIndex = 40;
+      this.btnSortFolderUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSortFolderUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnSortFolderUp.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnSortFolderUp.FlatAppearance.BorderSize = 0;
+      this.btnSortFolderUp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnSortFolderUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnSortFolderUp.Image = global::Kinovea.Root.Properties.Resources.thick_arrow_pointing_up_16;
+      this.btnSortFolderUp.Location = new System.Drawing.Point(440, 27);
+      this.btnSortFolderUp.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnSortFolderUp.Name = "btnSortFolderUp";
+      this.btnSortFolderUp.Size = new System.Drawing.Size(20, 20);
+      this.btnSortFolderUp.TabIndex = 42;
+      this.btnSortFolderUp.Tag = "";
+      this.btnSortFolderUp.UseVisualStyleBackColor = true;
+      this.btnSortFolderUp.Click += new System.EventHandler(this.btnSortFolderUp_Click);
       // 
       // tabAutomation
       // 
@@ -1380,6 +1030,20 @@ namespace Kinovea.Root
       this.tbPostRecordCommand.TabIndex = 53;
       this.tbPostRecordCommand.TextChanged += new System.EventHandler(this.tbPostRecordCommand_TextChanged);
       // 
+      // vumeter
+      // 
+      this.vumeter.Amplitude = 0F;
+      this.vumeter.BackColor = System.Drawing.Color.White;
+      this.vumeter.DecibelRange = 60F;
+      this.vumeter.Location = new System.Drawing.Point(249, 70);
+      this.vumeter.Name = "vumeter";
+      this.vumeter.Size = new System.Drawing.Size(175, 21);
+      this.vumeter.TabIndex = 51;
+      this.vumeter.Text = "volumeMeterThreshold1";
+      this.vumeter.Threshold = 0.001F;
+      this.vumeter.ThresholdLinear = 0F;
+      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
+      // 
       // PreferencePanelCapture
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1413,16 +1077,11 @@ namespace Kinovea.Root
       this.gbAudioTrigger.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudQuietPeriod)).EndInit();
-      this.tabImageNaming.ResumeLayout(false);
-      this.grpRightImage.ResumeLayout(false);
-      this.grpRightImage.PerformLayout();
+      this.tabPaths.ResumeLayout(false);
+      this.grpCaptureFolderDetails.ResumeLayout(false);
+      this.grpCaptureFolderDetails.PerformLayout();
       this.grpLeftImage.ResumeLayout(false);
-      this.grpLeftImage.PerformLayout();
-      this.tabVideoNaming.ResumeLayout(false);
-      this.grpRightVideo.ResumeLayout(false);
-      this.grpRightVideo.PerformLayout();
-      this.grpLeftVideo.ResumeLayout(false);
-      this.grpLeftVideo.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.olvCaptureFolders)).EndInit();
       this.tabAutomation.ResumeLayout(false);
       this.tabAutomation.PerformLayout();
       this.ResumeLayout(false);
@@ -1435,52 +1094,13 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbImageFormat;
 		private System.Windows.Forms.TabControl tabSubPages;
 		private System.Windows.Forms.TabPage tabGeneral;
-		private System.Windows.Forms.TabPage tabImageNaming;
+		private System.Windows.Forms.TabPage tabPaths;
         private System.Windows.Forms.Label lblFramerate;
         private System.Windows.Forms.TextBox tbFramerate;
         private System.Windows.Forms.ComboBox cmbVideoFormat;
         private System.Windows.Forms.Label lblVideoFormat;
-        private System.Windows.Forms.GroupBox grpRightImage;
-        private System.Windows.Forms.Label lblRightImageFile;
-        private System.Windows.Forms.TextBox tbRightImageFile;
-        private System.Windows.Forms.Label lblRightImageSubdir;
-        private System.Windows.Forms.TextBox tbRightImageSubdir;
-        private System.Windows.Forms.Label lblRightImageRoot;
-        private System.Windows.Forms.TextBox tbRightImageRoot;
         private System.Windows.Forms.GroupBox grpLeftImage;
-        private System.Windows.Forms.Label lblLeftImageFile;
-        private System.Windows.Forms.TextBox tbLeftImageFile;
-        private System.Windows.Forms.Label lblLeftImageSubdir;
-        private System.Windows.Forms.TextBox tbLeftImageSubdir;
-        private System.Windows.Forms.Label lblLeftImageRoot;
-        private System.Windows.Forms.TextBox tbLeftImageRoot;
-        private System.Windows.Forms.Button btnLeftImageRoot;
-        private System.Windows.Forms.Button btnRightImageFile;
-        private System.Windows.Forms.Button btnRightImageSubdir;
-        private System.Windows.Forms.Button btnRightImageRoot;
-        private System.Windows.Forms.Button btnLeftImageFile;
-        private System.Windows.Forms.Button btnLeftImageSubdir;
-        private System.Windows.Forms.TabPage tabVideoNaming;
-        private System.Windows.Forms.GroupBox grpRightVideo;
-        private System.Windows.Forms.Button btnRightVideoFile;
-        private System.Windows.Forms.Button btnRightVideoSubdir;
-        private System.Windows.Forms.Button btnRightVideoRoot;
-        private System.Windows.Forms.Label lblRightVideoFile;
-        private System.Windows.Forms.TextBox tbRightVideoFile;
-        private System.Windows.Forms.Label lblRightVideoSubdir;
-        private System.Windows.Forms.TextBox tbRightVideoSubdir;
-        private System.Windows.Forms.Label lblRightVideoRoot;
-        private System.Windows.Forms.TextBox tbRightVideoRoot;
-        private System.Windows.Forms.GroupBox grpLeftVideo;
-        private System.Windows.Forms.Button btnLeftVideoFile;
-        private System.Windows.Forms.Button btnLeftVideoSubdir;
-        private System.Windows.Forms.Label lblLeftVideoFile;
-        private System.Windows.Forms.TextBox tbLeftVideoFile;
-        private System.Windows.Forms.Label lblLeftVideoSubdir;
-        private System.Windows.Forms.TextBox tbLeftVideoSubdir;
-        private System.Windows.Forms.Label lblLeftVideoRoot;
-        private System.Windows.Forms.TextBox tbLeftVideoRoot;
-        private System.Windows.Forms.Button btnLeftVideoRoot;
+        private System.Windows.Forms.Button btnSortFolderUp;
         private System.Windows.Forms.TabPage tabRecording;
         private System.Windows.Forms.GroupBox grpRecordingMode;
         private System.Windows.Forms.RadioButton rbRecordingDelayed;
@@ -1527,5 +1147,19 @@ namespace Kinovea.Root
         private System.Windows.Forms.CheckBox chkExportCalibration;
         private System.Windows.Forms.CheckBox chkExportDrawings;
         private System.Windows.Forms.GroupBox grpFormats;
+        private System.Windows.Forms.GroupBox grpCaptureFolderDetails;
+        private System.Windows.Forms.Button btnRightImageRoot;
+        private System.Windows.Forms.Label lblCaptureFolderPath;
+        private System.Windows.Forms.TextBox tbCaptureFolderPath;
+        private System.Windows.Forms.Label lblCaptureFolderShortName;
+        private System.Windows.Forms.TextBox tbCaptureFolderShortName;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnCaptureFolderInsertBackslash;
+        private System.Windows.Forms.Button btnCaptureFolderInsertVariable;
+        private BrightIdeasSoftware.ObjectListView olvCaptureFolders;
+        private System.Windows.Forms.Button btnSortFolderDown;
+        private System.Windows.Forms.Button btnDeleteCaptureFolder;
+        private System.Windows.Forms.Button btnAddCaptureFolder;
+        private System.Windows.Forms.Button button5;
     }
 }
