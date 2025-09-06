@@ -524,10 +524,8 @@ namespace Kinovea.ScreenManager
 
             ToolStripItem[] subScreens = new ToolStripItem[] { 		mnuOnePlayer,
                                                                     mnuTwoPlayers,
-                                                                    new ToolStripSeparator(),
                                                                     mnuOneCapture,
                                                                     mnuTwoCaptures,
-                                                                    new ToolStripSeparator(),
                                                                     mnuTwoMixed,
                                                                     new ToolStripSeparator(),
                                                                     mnuSwapScreens,

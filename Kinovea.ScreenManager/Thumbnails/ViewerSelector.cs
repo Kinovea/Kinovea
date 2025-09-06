@@ -38,12 +38,13 @@ namespace Kinovea.ScreenManager
         
         private List<ViewerSelectorOption> options;
         private ViewerSelectorOption selected = null;
-        
+        private ToolTip toolTip = new ToolTip();
+
         public ViewerSelector()
         {
-            ViewerSelectorOption optionFiles = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_video, "", ThumbnailViewerType.Files);
-            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(ScreenManager.Properties.Resources.star, "", ThumbnailViewerType.Shortcuts);
-            ViewerSelectorOption optionCameras = new ViewerSelectorOption(ScreenManager.Properties.Resources.webcam2b_16, "", ThumbnailViewerType.Cameras);
+            ViewerSelectorOption optionFiles = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_video, "File system", ThumbnailViewerType.Files);
+            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(ScreenManager.Properties.Resources.star, "Shortcuts", ThumbnailViewerType.Shortcuts);
+            ViewerSelectorOption optionCameras = new ViewerSelectorOption(ScreenManager.Properties.Resources.webcam2b_16, "Cameras", ThumbnailViewerType.Cameras);
 
             List<ViewerSelectorOption> options = new List<ViewerSelectorOption>();
             options.Add(optionFiles);
@@ -53,7 +54,6 @@ namespace Kinovea.ScreenManager
             int defaultSelection = 0;
                 
             InitializeComponent();
-            
             this.options = options;
             
             int index = 0;
@@ -75,7 +75,8 @@ namespace Kinovea.ScreenManager
                 btn.Tag = option;
                 btn.Click += OptionButton_Click;
                 this.Controls.Add(btn);
-                if(index == defaultSelection)
+                toolTip.SetToolTip(btn, option.Text);
+                if (index == defaultSelection)
                     selected = option;
 
                 left = btn.Right + spacing;
