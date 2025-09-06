@@ -323,6 +323,9 @@ namespace Kinovea.ScreenManager
                     case "TimeOrigin":
                         inputTimeOrigin = r.ReadElementContentAsLong();
                         break;
+                    case "Context":
+                        metadata.ContextString = r.ReadElementContentAsString();
+                        break;
                     case "Calibration":
                         metadata.CalibrationHelper.ReadXml(r, scaling, inputImageSize);
                         break;
@@ -615,6 +618,9 @@ namespace Kinovea.ScreenManager
             }
             
             w.WriteElementString("TimeOrigin", metadata.TimeOrigin.ToString());
+
+            if (!string.IsNullOrEmpty(metadata.ContextString))
+                w.WriteElementString("Context", metadata.ContextString);
         }
 
         private void WriteKeyframes(XmlWriter w, SerializationFilter filter)

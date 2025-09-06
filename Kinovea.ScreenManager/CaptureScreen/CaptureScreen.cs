@@ -1870,9 +1870,18 @@ namespace Kinovea.ScreenManager
             metadata.TimeOrigin = 0;
             if (cameraConnected && (recordingMode == CaptureRecordingMode.Delay || recordingMode == CaptureRecordingMode.Scheduled) && delay > 0)
                 metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
+
+
+            string contextString = null;
+            if (PreferencesManager.CapturePreferences.ContextEnabled && VariablesRepository.HasVariables)
+            {
+                contextString = PreferencesManager.CapturePreferences.ContextString;
+            }
             
+            metadata.ContextString = contextString;
+
             // Only save the kva if there is interesting information that can't be found from the video file alone.
-            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0 || 
+            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0 || !string.IsNullOrEmpty(contextString) ||
                 metadata.ImageAspect != ImageAspectRatio.Auto || metadata.ImageRotation != ImageRotation.Rotate0 || metadata.Mirrored)
             {
                 MetadataSerializer serializer = new MetadataSerializer();

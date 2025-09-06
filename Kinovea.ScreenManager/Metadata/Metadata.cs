@@ -405,7 +405,6 @@ namespace Kinovea.ScreenManager
             set { baselineFrameInterval = value; }
         }
 
-
         public long AverageTimeStampsPerFrame
         {
             get { return averageTimeStampsPerFrame; }
@@ -447,6 +446,16 @@ namespace Kinovea.ScreenManager
         {
             get { return timeOrigin; }
             set { timeOrigin = value; }
+        }
+
+        /// <summary>
+        /// The current context string at the time of recording, 
+        /// null if disabled or no context set.
+        /// </summary>
+        public string ContextString
+        {
+            get { return contextString; }
+            set { contextString = value; }
         }
 
         public bool TestGridVisible
@@ -517,6 +526,7 @@ namespace Kinovea.ScreenManager
         private bool kvaImporting;
         private int referenceHash;
         private string lastKVAPath;
+        private string contextString;
 
         // Video related info.
         private string videoPath;
