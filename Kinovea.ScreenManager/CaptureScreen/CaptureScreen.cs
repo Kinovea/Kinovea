@@ -168,7 +168,7 @@ namespace Kinovea.ScreenManager
         private ICaptureSource cameraGrabber;
         private Stopwatch stopwatchDiscovery = new Stopwatch();
         private const long discoveryTimeout = 5000;
-        private ScreenDescriptorCapture screenDescriptor;
+        private ScreenDescriptorCapture screenDescriptor = new ScreenDescriptorCapture();
         private PipelineManager pipelineManager = new PipelineManager();
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
         private ConsumerRealtime consumerRealtime;
@@ -2005,12 +2005,16 @@ namespace Kinovea.ScreenManager
             foreach (var instruction in screenDescriptor.UserCommand.Instructions)
             {
                 var line = instruction.Trim();
-                if (string.IsNullOrEmpty(line) || line.StartsWith("//"))
+                if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
                     continue;
 
                 line = DynamicPathResolver.Resolve(line, context);
                 instructions.Add(line);
             }
+
+            // Bail out if it was only comments and blank lines.
+            if (instructions.Count == 0)
+                return;
 
             // Run the collection of instructions in the background.
             await RunPostRecordingInstructionsSequentialAsync(instructions);
@@ -2196,35 +2200,15 @@ namespace Kinovea.ScreenManager
         #region Context variables
 
         /// <summary>
-        /// Generate a map of builtin variables and their current value.
+        /// Build-in values for capture context.
         /// </summary>
         private Dictionary<string, string> BuildCaptureContext()
         {
-            Dictionary<string, string> context = new Dictionary<string, string>();
-
-            DateTime now = DateTime.Now;
-
-            // Date. Suitable for folders and files.
-            context["date"]         = string.Format("{0:yyyy-MM-dd}", now);
-            context["dateb"]         = string.Format("{0:yyyyMMdd}", now);
-            context["year"]         = string.Format("{0:yyyy}", now);
-            context["month"]        = string.Format("{0:MM}", now);
-            context["day"]          = string.Format("{0:dd}", now);
-
-            // Time. Suitable for files.
-            context["time"]         = string.Format("{0:HHmmss}", now);
-            context["hour"]         = string.Format("{0:HH}", now);
-            context["minute"]       = string.Format("{0:mm}", now);
-            context["second"]       = string.Format("{0:ss}", now);
-            context["millisecond"]  = string.Format("{0:fff}", now);
-
-            // Camera info. Suitable for files.
+            Dictionary<string, string> context = DynamicPathResolver.BuildDateContext(true);
             context["camalias"]     = cameraSummary.Alias;
             context["camfps"]       = string.Format("{0:0.00}", cameraGrabber.Framerate);
             context["recvfps"]      = string.Format("{0:0.00}", pipelineManager.Frequency);
-
-            context[""]            = "";
-
+            context[""]             = "";
             return context;
         }
 
@@ -2233,9 +2217,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private Dictionary<string, string> BuildPostRecordingCommandContext(string path)
         {
-            Dictionary<string, string> context = new Dictionary<string, string>();
-            context["directory"]    = Path.GetDirectoryName(path);
+            // We don't automatically insert quotes in case the user wants to build a path
+            // from smaller parts, they need to handle the enclosing quotes themselves.
+            Dictionary<string, string> context = DynamicPathResolver.BuildDateContext(true);
+            context["filepath"]     = path;
+            context["folderpath"]   = Path.GetDirectoryName(path);
             context["filename"]     = Path.GetFileName(path);
+            context["foldername"]   = Path.GetFileName(Path.GetDirectoryName(path));
             context["kva"]          = Path.GetFileNameWithoutExtension(path) + ".kva";
             return context;
         }

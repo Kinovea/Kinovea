@@ -12,6 +12,8 @@ using Kinovea.Services;
 using BrightIdeasSoftware;
 using Kinovea.Services.Types;
 using System.Globalization;
+using FastColoredTextBoxNS;
+using System.Text.RegularExpressions;
 
 namespace Kinovea.ScreenManager
 {
@@ -21,6 +23,25 @@ namespace Kinovea.ScreenManager
         private bool enablePRC;
         private UserCommand userCommand = null;
         private ScreenDescriptorCapture sdc;
+
+        #region styles
+        // Syntax highlighting styles.
+        //private Style commentStyle = new TextStyle(new SolidBrush(Color.FromArgb(0, 128, 0)), null, FontStyle.Italic);
+        //private Style commandStyle = new TextStyle(new SolidBrush(Color.FromArgb(0, 0, 255)), null, FontStyle.Bold);
+        //private Style variableStyle = new TextStyle(new SolidBrush(Color.FromArgb(175, 0, 220)), null, FontStyle.Regular);
+        
+        //private Style commentStyle = new TextStyle(new SolidBrush(Color.FromArgb(165, 159, 160)), null, FontStyle.Italic);
+        //private Style commandStyle = new TextStyle(new SolidBrush(Color.FromArgb(28, 140, 168)), null, FontStyle.Regular);
+        //private Style variableStyle = new TextStyle(new SolidBrush(Color.FromArgb(204, 122, 10)), null, FontStyle.Regular);
+
+        private Style commentStyle = new TextStyle(new SolidBrush(Color.FromArgb(165, 159, 160)), null, FontStyle.Italic);
+        private Style commandStyle = new TextStyle(new SolidBrush(Color.FromArgb(225, 71, 117)), null, FontStyle.Bold);
+        private Style variableStyle = new TextStyle(new SolidBrush(Color.FromArgb(28, 140, 168)), null, FontStyle.Regular);
+
+        private Color backgroundColor = Color.FromArgb(254, 250, 249);
+        private List<Style> styles;
+        #endregion
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -30,6 +51,8 @@ namespace Kinovea.ScreenManager
             this.enablePRC = sdc.EnableCommand;
             this.userCommand = sdc.UserCommand.Clone();
 
+            styles = new List<Style>() { commentStyle, commandStyle, variableStyle };
+            
             InitializeComponent();
             LocalizeForm();
             Populate();
@@ -48,16 +71,25 @@ namespace Kinovea.ScreenManager
         private void Populate()
         {
             cbEnable.Checked = !this.enablePRC;
-            if (userCommand.Instructions.Count > 0)
+
+            bool singleEmptyLine = userCommand.Instructions.Count == 1 && string.IsNullOrEmpty(userCommand.Instructions[0].Trim());
+
+            if (userCommand.Instructions.Count > 0 && !singleEmptyLine)
             {
                 fastColoredTextBox1.Text = string.Join("\n", userCommand.Instructions.ToArray());
             }
             else
             {
-                fastColoredTextBox1.Text = "";
+                // Add buit-in documentation.
+                var text = new StringBuilder();
+                text.AppendLine("# Add calls to external programs, one call per line.");
+                text.AppendLine("# Lines starting with # are comments.");
+                text.AppendLine("# Context variables like %filepath% will be replaced at run time.");
+                fastColoredTextBox1.Text = text.ToString();
             }
 
             fastColoredTextBox1.WordWrap = true;
+            fastColoredTextBox1.BackColor = backgroundColor;
         }
 
         private void cbEnable_CheckedChanged(object sender, EventArgs e)
@@ -112,6 +144,28 @@ namespace Kinovea.ScreenManager
             windowScreen.EnableCommand = sdc.EnableCommand;
             windowScreen.UserCommand = sdc.UserCommand.Clone();
             WindowManager.SaveActiveWindow();
+        }
+
+        private void fastColoredTextBox1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Syntax highlighting.
+            //clear previous highlighting
+            e.ChangedRange.ClearStyle(styles.ToArray());
+            
+            // Comments. 
+            // Start with # until the end of the line.
+            e.ChangedRange.SetStyle(commentStyle, @"^\s*#.*$", RegexOptions.Multiline);
+
+            // Command name.
+            // First word of the line. Starts with a letter but may include a dot later (ex: python.exe).
+            e.ChangedRange.SetStyle(commandStyle, @"^\s*\w[\w\.]+", RegexOptions.Multiline);
+
+            // Variables.
+            // Any word enclosed in %%.
+            // That will include windows built-in variables like %appdata%.
+            e.ChangedRange.SetStyle(variableStyle, @"%\w+%");
+
+
         }
     }
 }

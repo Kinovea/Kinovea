@@ -45,7 +45,7 @@
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(318, 345);
+      this.btnOK.Location = new System.Drawing.Point(365, 345);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 31;
@@ -57,7 +57,7 @@
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(423, 345);
+      this.btnCancel.Location = new System.Drawing.Point(470, 345);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 32;
@@ -74,7 +74,7 @@
       this.gpCommand.Controls.Add(this.btnInsertVariable);
       this.gpCommand.Location = new System.Drawing.Point(12, 12);
       this.gpCommand.Name = "gpCommand";
-      this.gpCommand.Size = new System.Drawing.Size(510, 327);
+      this.gpCommand.Size = new System.Drawing.Size(557, 327);
       this.gpCommand.TabIndex = 52;
       this.gpCommand.TabStop = false;
       // 
@@ -105,29 +105,30 @@
         '\"',
         '\'',
         '\''};
-      this.fastColoredTextBox1.AutoScrollMinSize = new System.Drawing.Size(179, 14);
+      this.fastColoredTextBox1.AutoScrollMinSize = new System.Drawing.Size(228, 30);
       this.fastColoredTextBox1.BackBrush = null;
       this.fastColoredTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.fastColoredTextBox1.CharHeight = 14;
-      this.fastColoredTextBox1.CharWidth = 8;
+      this.fastColoredTextBox1.CharHeight = 15;
+      this.fastColoredTextBox1.CharWidth = 7;
       this.fastColoredTextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
       this.fastColoredTextBox1.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-      this.fastColoredTextBox1.Font = new System.Drawing.Font("Courier New", 9.75F);
+      this.fastColoredTextBox1.Font = new System.Drawing.Font("Consolas", 9.75F);
       this.fastColoredTextBox1.IsReplaceMode = false;
       this.fastColoredTextBox1.Location = new System.Drawing.Point(15, 55);
       this.fastColoredTextBox1.Name = "fastColoredTextBox1";
       this.fastColoredTextBox1.Paddings = new System.Windows.Forms.Padding(0);
       this.fastColoredTextBox1.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
       this.fastColoredTextBox1.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("fastColoredTextBox1.ServiceColors")));
-      this.fastColoredTextBox1.Size = new System.Drawing.Size(478, 218);
+      this.fastColoredTextBox1.Size = new System.Drawing.Size(525, 218);
       this.fastColoredTextBox1.TabIndex = 57;
-      this.fastColoredTextBox1.Text = "fastColoredTextBox1";
+      this.fastColoredTextBox1.Text = "# Comment\r\nprogram -argument %variable% ";
       this.fastColoredTextBox1.Zoom = 100;
+      this.fastColoredTextBox1.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.fastColoredTextBox1_TextChanged);
       // 
       // btnInsertVariable
       // 
       this.btnInsertVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnInsertVariable.Location = new System.Drawing.Point(362, 279);
+      this.btnInsertVariable.Location = new System.Drawing.Point(409, 279);
       this.btnInsertVariable.Name = "btnInsertVariable";
       this.btnInsertVariable.Size = new System.Drawing.Size(131, 23);
       this.btnInsertVariable.TabIndex = 56;
@@ -150,7 +151,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(534, 381);
+      this.ClientSize = new System.Drawing.Size(581, 381);
       this.Controls.Add(this.btnSaveAndContinue);
       this.Controls.Add(this.gpCommand);
       this.Controls.Add(this.btnOK);
