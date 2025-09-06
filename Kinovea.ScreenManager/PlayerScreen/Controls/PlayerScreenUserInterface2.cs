@@ -1177,6 +1177,7 @@ namespace Kinovea.ScreenManager
         private void ResetData()
         {
             m_iFramesToDecode = 1;
+            workingZoneLoaded = false;
 
             m_bIsCurrentlyPlaying = false;
             m_ePlayingMode = PlayingMode.Loop;
