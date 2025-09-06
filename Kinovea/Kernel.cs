@@ -1035,6 +1035,9 @@ namespace Kinovea.Root
                     // Trigger a local update in this instance to make sure the UI is up to date.
                     PreferencesUpdated(false);
                     break;
+                case WindowCommand.Close:
+                    Application.Exit();
+                    break;
                 default:
                     break;
             }

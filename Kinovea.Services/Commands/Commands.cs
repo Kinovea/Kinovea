@@ -172,6 +172,11 @@ namespace Kinovea.Services
         /// The preferences were updated in another window.
         /// </summary>
         PreferencesUpdated,
+
+        /// <summary>
+        /// Another instance is asking us to close.
+        /// </summary>
+        Close,
     }
 
 }

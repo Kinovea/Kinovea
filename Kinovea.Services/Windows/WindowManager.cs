@@ -288,10 +288,10 @@ namespace Kinovea.Services
             IntPtr handle = NativeMethods.FindWindow(null, title);
             if (handle != IntPtr.Zero)
             {
-                uint pid = 0;
-                NativeMethods.GetWindowThreadProcessId(handle, out pid);
-                var process = Process.GetProcessById((int)pid);
-                process.Kill();
+                // Instead of process.Kill(), gently ask the window to close itself.
+                // This way it can handle any unsaved data and properly save its 
+                // own state in the window descriptor, including last use date.
+                SendMessage("Kinovea:Window.Close", handle);
             }
         }
 
@@ -447,8 +447,18 @@ namespace Kinovea.Services
             NativeMethods.SetForegroundWindow(handle);
         }
 
-
+        /// <summary>
+        /// Send a message to all live instances.
+        /// </summary>
         public static void SendMessage(string msg)
+        {
+            SendMessage(msg, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Send a message to one or all instances.
+        /// </summary>
+        private static void SendMessage(string msg, IntPtr targetHandle)
         {
             int dwData = 0;
             
@@ -466,6 +476,10 @@ namespace Kinovea.Services
                 
                 // Ignore dormant.
                 if (handle == IntPtr.Zero)
+                    continue;
+
+                // Ignore non-target.
+                if (targetHandle != IntPtr.Zero && handle != targetHandle)
                     continue;
                 
                 NativeMethods.SendMessage(handle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ref cds);
