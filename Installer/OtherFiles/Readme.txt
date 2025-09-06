@@ -49,6 +49,7 @@ Changelog:
     Added - Capture: custom variables system describing the context of recordings.
     Added - Capture: capture folders management.
     Added - Capture: capture trigger via UDP.
+    Added - Capture: multi-instruction post-recording commands.
     Improved - General: core preferences are now shared and synchronized between windows.
     Improved - General: window name can be set directly from the user interface.
     Improved - General: window startup options: file browser, continue where you left off or start on a specific set of screens.
@@ -86,13 +87,18 @@ Changelog:
     Improved - Capture: improved stability of camera discovery.
     Improved - Capture: capture folders and post-recording command can use custom variables.
     Improved - Capture: toolbox to insert variables and common characters in folder paths.
-    Improved - Capture: Option to disable the auto-numbering of file names when not using dynamic file names.
+    Improved - Capture: option to disable the auto-numbering of file names when not using dynamic file names.
+    Improved - Capture: post-recording now starts in a background thread.
+    Improved - Capture: post-recording command supports multiple calls to external programs per command.
+    Improved - Capture: post-recording command can be disabled without deleting the command.
+    Improved - Capture: post-recording command now uses a text editor with line numbers and wrapping, and custom syntax highlighting.
+    Improved - Capture: post-recording command supports comments and blank lines.
     Improved - Capture: button to switch between live view and delayed view.
     Improved - Capture: max duration of recording is now directly accessible on the user interface.
     Improved - Capture: combined image and video capture folder selector.
     Improved - Capture: added option to exclude drawings and calibration from the exported kva.
     Improved - Capture: added option to set the default trigger arming state.
-    Improved - Capture: added `kva` built-in variable to post-recording command.
+    Improved - Capture: added `kva` built-in variable to post-recording command and homogenized naming between paths and file names.
     Fixed - General: in preferences, capture folders selectors were not working.
     Fixed - General: using the portable version from within a synchronized OneDrive directory could cause a crash.
     Fixed - General: saving a workspace with high speed camera configuration wasn't working properly.
