@@ -14,7 +14,7 @@ using BrightIdeasSoftware;
 namespace Kinovea.Root
 {
     /// <summary>
-    /// Form to edit the properties of the active window.
+    /// Form to start, delete and inspect the existing windows.
     /// </summary>
     public partial class FormWindowManager : Form
     {
@@ -41,6 +41,8 @@ namespace Kinovea.Root
             public InstanceStatus InstanceStatus { get; set; }
             public ScreenLayout ScreenLayout { get; set; }
             public string Name { get; set; }
+
+            public DateTime LastSave { get; set; }
 
             public WindowDescriptor Tag { get; set; }
         }
@@ -104,7 +106,7 @@ namespace Kinovea.Root
                 switch (lvwd.InstanceStatus)
                 {
                     case InstanceStatus.Myself:
-                        return "myself";
+                        return "running";
                     case InstanceStatus.Running:
                         return "running";
                     case InstanceStatus.Sleeping:
@@ -203,9 +205,22 @@ namespace Kinovea.Root
                 lvwd.Name = GetName(descriptor);
                 lvwd.InstanceStatus = GetInstanceStatus(descriptor);
                 lvwd.ScreenLayout = GetScreenLayout(descriptor);
+                lvwd.LastSave = descriptor.LastSave;
                 lvwd.Tag = descriptor;
                 rows.Add(lvwd);
             }
+
+            // Sort strategy.
+            // Primary sort by instance status (active < running < sleeping).
+            // Secondary sort by last save date.
+            rows.Sort((x, y) =>
+            {
+                int a = x.InstanceStatus.CompareTo(y.InstanceStatus);
+                if (a != 0 )
+                    return a;
+
+                return y.LastSave.CompareTo(x.LastSave);
+            });
 
             olvWindows.SetObjects(rows);
 

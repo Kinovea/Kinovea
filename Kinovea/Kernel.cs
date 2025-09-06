@@ -37,6 +37,7 @@ using Kinovea.Services;
 using Kinovea.Updater;
 using Kinovea.Video;
 using Kinovea.Camera;
+using System.Linq;
 
 namespace Kinovea.Root
 {
@@ -658,7 +659,10 @@ namespace Kinovea.Root
             mnuReopenWindow.DropDownItems.Add(mnuRefresh);
             mnuReopenWindow.DropDownItems.Add(new ToolStripSeparator());
 
-            foreach (WindowDescriptor d in WindowManager.WindowDescriptors)
+            List<WindowDescriptor> sorted = WindowManager.WindowDescriptors.ToList();
+            sorted.Sort((x, y) => y.LastSave.CompareTo(x.LastSave));
+
+            foreach (var d in sorted)
             {
                 // Filter out our own instance.
                 if (d.Id == WindowManager.ActiveWindow.Id)
