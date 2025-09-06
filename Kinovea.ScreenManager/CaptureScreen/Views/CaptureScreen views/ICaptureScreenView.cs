@@ -29,8 +29,8 @@ namespace Kinovea.ScreenManager
     {
         event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
 
-        string CurrentImageFilename { get; }
-        string CurrentVideoFilename { get; }
+        CaptureFolder CaptureFolder { get; }
+        string CurrentFilename { get; }
 
         void DisplayAsActiveScreen(bool active);
         void FullScreen(bool fullScreen);
@@ -55,7 +55,6 @@ namespace Kinovea.ScreenManager
         void UpdateDelayedDisplay(bool delayed);
         void UpdateArmedStatus(bool armed);
         void UpdateDelayMax(double delaySeconds, int delayFrames);
-        void UpdateNextImageFilename(string filename);
         void UpdateNextVideoFilename(string filename);
 
         void ForceDelaySeconds(float delaySeconds);

@@ -17,16 +17,15 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Gets the full path to save recorded images or videos.
-        /// This includes the root directory, filename and extension.
-        /// The root, subdir and filename may contain variables to be interpolated.
+        /// This includes the directory, filename and extension.
+        /// The directory and filename may contain variables to be interpolated.
         /// </summary>
-        public static string ResolveOutputFilePath(string root, string subdir, string filename, string extension, ProfileManager profileManager, Dictionary<string, string> context)
+        public static string ResolveOutputFilePath(string folder, string filename, string extension, ProfileManager profileManager, Dictionary<string, string> context)
         {
-            root = ReplacePatterns(root, profileManager, context);
-            subdir = ReplacePatterns(subdir, profileManager, context);
+            folder = ReplacePatterns(folder, profileManager, context);
             filename = ReplacePatterns(filename, profileManager, context);
 
-            return Path.Combine(root, Path.Combine(subdir, filename + extension));
+            return Path.Combine(folder, filename + extension);
         }
 
         /// <summary>
@@ -86,7 +85,6 @@ namespace Kinovea.ScreenManager
         {
             return ReplacePatterns(path, profileManager, null);
         }
-
 
         /// <summary>
         /// Gets the next filename to allow continued recording without requiring the user to update the filename manually.
@@ -195,7 +193,7 @@ namespace Kinovea.ScreenManager
             var sortedContext = context.OrderBy(pair => -pair.Value.Length);
             foreach (var pair in sortedContext)
             {
-                string symbol = "%" + pair.Key;
+                string symbol = string.Format("%{0}%", pair.Key);
                 result = result.Replace(symbol, pair.Value);
             }
 
@@ -222,7 +220,7 @@ namespace Kinovea.ScreenManager
                 foreach (var variable in variableTable.Variables)
                 {
                     // We keep them verbatim so this is case sensitive.
-                    string symbol = "%" + variable;
+                    string symbol = string.Format("%{0}%", variable);
                     text = text.Replace(symbol, variableTable.GetValue(variable));
                 }
             }

@@ -46,6 +46,12 @@ namespace Kinovea.Services
             return clone;
         }
 
+        public override string ToString()
+        {
+            return string.IsNullOrEmpty(ShortName) ? Path : ShortName;
+        }
+
+
         #region Serialization
         public void WriteXML(XmlWriter w)
         {

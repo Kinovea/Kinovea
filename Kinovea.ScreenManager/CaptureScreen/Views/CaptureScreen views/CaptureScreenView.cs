@@ -23,6 +23,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -36,14 +38,23 @@ namespace Kinovea.ScreenManager
     public partial class CaptureScreenView : KinoveaControl, ICaptureScreenView
     {
         #region Properties
-        public string CurrentImageFilename
+        public CaptureFolder CaptureFolder
         {
-            get { return fnbImage.Filename; }
+            get 
+            {
+                if (cbCaptureFolder.SelectedItem == null)
+                    return null;
+                
+                return (CaptureFolder)cbCaptureFolder.SelectedItem; 
+            }
         }
-
-        public string CurrentVideoFilename
+        
+        public string CurrentFilename
         {
-            get { return fnbVideo.Filename; }
+            get 
+            { 
+                return tbFilename.Text;
+            }
         }
         #endregion
 
@@ -95,6 +106,21 @@ namespace Kinovea.ScreenManager
         {
             capturedFilesView.RefreshUICulture();
             ReloadTooltipsCulture();
+
+            // Reload the capture folder selector.
+
+            cbCaptureFolder.Items.Clear();
+            List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
+            foreach (var cf in ccff)
+            {
+                cbCaptureFolder.Items.Add(cf);
+            }
+
+            if (cbCaptureFolder.Items.Count > 0)
+            {
+                cbCaptureFolder.SelectedIndex = 0;
+            }
+
         }
         
         public void AddImageDrawing(string filename, bool svg)
@@ -216,8 +242,10 @@ namespace Kinovea.ScreenManager
             }
             
             btnSettings.Enabled = !recording;
-            fnbImage.Enabled = !recording;
-            fnbVideo.Enabled = !recording;
+
+            btnCaptureFolders.Enabled = !recording;
+            cbCaptureFolder.Enabled = !recording;
+            tbFilename.Enabled = !recording;
         }
         public void UpdateDelayMax(double delaySeconds, int delayFrames)
         {
@@ -248,15 +276,10 @@ namespace Kinovea.ScreenManager
             UpdateDelayedDisplay(delayedDisplay);
         }
 
-        public void UpdateNextImageFilename(string filename)
-        {
-            fnbImage.Filename = filename;
-            fnbImage.Editable = true;
-        }
         public void UpdateNextVideoFilename(string filename)
         {
-            fnbVideo.Filename = filename;
-            fnbVideo.Editable = true;
+            tbFilename.Text = filename;
+            tbFilename.Enabled = true;
         }
         
         public void ShowThumbnails()
@@ -340,20 +363,17 @@ namespace Kinovea.ScreenManager
         }
         private void FNBImage_ImageClick(object sender, EventArgs e)
         {
-            presenter.View_EditPathConfiguration(false);
+            
         }
         private void FNBVideo_ImageClick(object sender, EventArgs e)
         {
-            presenter.View_EditPathConfiguration(true);
+            
         }
-        private void FnbImage_FilenameChanged(object sender, EventArgs e)
+        private void btnCaptureFolders_Click(object sender, EventArgs e)
         {
-            presenter.View_ValidateFilename(fnbImage.Filename);
+            presenter.View_OpenPreferences(PreferenceTab.Capture_Paths);
         }
-        private void FnbVideo_FilenameChanged(object sender, EventArgs e)
-        {
-            presenter.View_ValidateFilename(fnbVideo.Filename);
-        }
+
         private void BtnSnapshot_Click(object sender, EventArgs e)
         {
             presenter.View_SnapshotAsked();
@@ -422,7 +442,7 @@ namespace Kinovea.ScreenManager
         #region Commands
         protected override bool ExecuteCommand(int commandCode)
         {
-            if (fnbImage.Focused || fnbVideo.Focused)
+            if (tbFilename.Focused)
                 return false;
 
             if (capturedFilesView.Editing)
@@ -558,6 +578,5 @@ namespace Kinovea.ScreenManager
             return true;
         }
         #endregion
-
     }
 }

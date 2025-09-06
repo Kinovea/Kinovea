@@ -25,9 +25,8 @@ namespace Kinovea.Services
         Capture_General,
         Capture_Memory,
         Capture_Recording,
+        Capture_Paths,
         Capture_Trigger,
-        Capture_ImageNaming,
-        Capture_VideoNaming,
         Capture_Automation,
 
         Keyboard_General

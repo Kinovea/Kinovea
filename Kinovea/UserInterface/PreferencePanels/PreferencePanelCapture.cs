@@ -59,9 +59,8 @@ namespace Kinovea.Root
             PreferenceTab.Capture_General, 
             PreferenceTab.Capture_Memory, 
             PreferenceTab.Capture_Recording,
+            PreferenceTab.Capture_Paths, 
             PreferenceTab.Capture_Trigger,
-            PreferenceTab.Capture_ImageNaming, 
-            PreferenceTab.Capture_VideoNaming, 
             PreferenceTab.Capture_Automation
         };
         

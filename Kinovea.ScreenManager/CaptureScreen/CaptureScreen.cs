@@ -544,12 +544,9 @@ namespace Kinovea.ScreenManager
             if (!FilenameHelper.IsFilenameValid(filename, allowEmpty))
                 ScreenManagerKernel.AlertInvalidFileName();
         }
-        public void View_EditPathConfiguration(bool video)
+        public void View_OpenPreferences(PreferenceTab tab)
         {
-            if (video)
-                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_VideoNaming);
-            else
-                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_ImageNaming);
+            NotificationCenter.RaisePreferenceTabAsked(this, tab);
         }
         public void View_DeselectTool()
         {
@@ -1441,26 +1438,10 @@ namespace Kinovea.ScreenManager
         #region Recording/Snapshoting
         private void InitializeCaptureFilenames()
         {
-            string defaultName = "Capture";
-            
-            string image;
-            string video;
-
-            if (index == 0)
-            {
-                image = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile;
-                video = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile;
-            }
-            else
-            {
-                image = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageFile;
-                video = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoFile;
-            }
-
-            string nextImage = string.IsNullOrEmpty(image) ? defaultName : Filenamer.ComputeNextFilename(image);
-            view.UpdateNextImageFilename(nextImage);
-
-            string nextVideo = string.IsNullOrEmpty(video) ? defaultName : Filenamer.ComputeNextFilename(video);
+            // FIXME: get the file name from the saved state of the window.
+            // If no state (first time launch) then from preferences.
+            string defaultFileName = "%date%-%time%";
+            string nextVideo = Filenamer.ComputeNextFilename(defaultFileName);
             view.UpdateNextVideoFilename(nextVideo);
         }
         
@@ -1473,25 +1454,14 @@ namespace Kinovea.ScreenManager
             if (bitmap == null)
                 return;
 
-            string root;
-            string subdir;
-            if (index == 0)
-            {
-                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageRoot;
-                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageSubdir;
-            }
-            else
-            {
-                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageRoot;
-                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageSubdir;
-            }
-
-            string filenameWithoutExtension = view.CurrentImageFilename;
-            string extension = Filenamer.GetImageFileExtension();
-
             // Interpolate the filename variables with the current context.
+            CaptureFolder cf = view.CaptureFolder;
+            if (cf == null)
+                return;
+            string filenameWithoutExtension = view.CurrentFilename;
+            string extension = Filenamer.GetImageFileExtension();
             Dictionary<string, string> context = BuildCaptureContext();
-            string path = Filenamer.ResolveOutputFilePath(root, subdir, filenameWithoutExtension, extension, ProfileManager, context);
+            string path = Filenamer.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, ProfileManager, context);
             
             if (!DirectoryExistsCheck(path) || !FilePathSanityCheck(path) || !OverwriteCheck(path))
             {
@@ -1506,16 +1476,9 @@ namespace Kinovea.ScreenManager
             AddCapturedFile(path, bitmap, false);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
-            if (index == 0)
-                PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile = filenameWithoutExtension;
-            else
-                PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageFile = filenameWithoutExtension;
-
-            PreferencesManager.Save();
- 
-            // Compute next name for user feedback.
+            // Compute next name for user feedback in case it contains an auto counter.
             string next = Filenamer.ComputeNextFilename(filenameWithoutExtension);
-            view.UpdateNextImageFilename(next);
+            view.UpdateNextVideoFilename(next);
 
             bitmap.Dispose();
         }
@@ -1621,27 +1584,18 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || recording)
                 return;
 
-            string root;
-            string subdir;
-
-            if (index == 0)
+            // Interpolate the filename variables with the current context.
+            CaptureFolder cf = view.CaptureFolder;
+            if (cf == null)
             {
-                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoRoot;
-                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoSubdir;
+                log.ErrorFormat("Cannot start recording. No capture folder defined.");
+                return;
             }
-            else
-            {
-                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoRoot;
-                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoSubdir;
-            }
-            
-            string filenameWithoutExtension = view.CurrentVideoFilename;
+            string filenameWithoutExtension = view.CurrentFilename;
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string extension = Filenamer.GetVideoFileExtension(uncompressed);
-
-            // Interpolate the filename variables with the current context.
             Dictionary<string, string> context = BuildCaptureContext();
-            string path = Filenamer.ResolveOutputFilePath(root, subdir, filenameWithoutExtension, extension, ProfileManager, context);
+            string path = Filenamer.ResolveOutputFilePath(cf.Path, filenameWithoutExtension, extension, ProfileManager, context);
 
             log.DebugFormat("Recording target file: {0}", path);
 
@@ -1810,31 +1764,13 @@ namespace Kinovea.ScreenManager
             PreferencesManager.FileExplorerPreferences.AddRecentCapturedFile(finalFilename);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
-            //--------------------------------------------
-            // FIXME: restore this option later.
-            // For now we disable the metadata watcher.
-            //--------------------------------------------
-            // Start watching changes in the exported KVA.
-            // We do this before running the post-recording command in case it wants to modify the data.
-            //if (!string.IsNullOrEmpty(lastExportedMetadata))
-            //    metadataWatcher.Start(lastExportedMetadata);
-            //--------------------------------------------
-
             // Execute post-recording command.
             string command = PreferencesManager.CapturePreferences.PostRecordCommand;
             if (!string.IsNullOrEmpty(command))
                 ExecutePostCaptureCommand(command, finalFilename);
             
             // We need to use the original filename with patterns still in it.
-            string filenamePattern = view.CurrentVideoFilename;
-
-            if (index == 0)
-                PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile = filenamePattern;
-            else
-                PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoFile = filenamePattern;
-
-            PreferencesManager.Save();
-
+            string filenamePattern = view.CurrentFilename;
             string next = Filenamer.ComputeNextFilename(filenamePattern);
             view.UpdateNextVideoFilename(next);
 

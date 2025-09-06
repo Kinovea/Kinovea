@@ -36,6 +36,9 @@ namespace Kinovea.ScreenManager
         {
       this.components = new System.ComponentModel.Container();
       this.pnlControls = new System.Windows.Forms.Panel();
+      this.tbFilename = new System.Windows.Forms.TextBox();
+      this.cbCaptureFolder = new System.Windows.Forms.ComboBox();
+      this.btnCaptureFolders = new System.Windows.Forms.Button();
       this.btnDuration = new System.Windows.Forms.Button();
       this.nudDuration = new System.Windows.Forms.NumericUpDown();
       this.btnDelay = new System.Windows.Forms.Button();
@@ -58,8 +61,6 @@ namespace Kinovea.ScreenManager
       this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
       this.sldrDelay = new Kinovea.ScreenManager.SliderLinear();
-      this.fnbVideo = new Kinovea.ScreenManager.FilenameBox();
-      this.fnbImage = new Kinovea.ScreenManager.FilenameBox();
       this.pnlControls.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudDuration)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudDelay)).BeginInit();
@@ -71,13 +72,14 @@ namespace Kinovea.ScreenManager
       // pnlControls
       // 
       this.pnlControls.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.pnlControls.Controls.Add(this.tbFilename);
+      this.pnlControls.Controls.Add(this.cbCaptureFolder);
+      this.pnlControls.Controls.Add(this.btnCaptureFolders);
       this.pnlControls.Controls.Add(this.btnDuration);
       this.pnlControls.Controls.Add(this.nudDuration);
       this.pnlControls.Controls.Add(this.btnDelay);
       this.pnlControls.Controls.Add(this.nudDelay);
       this.pnlControls.Controls.Add(this.sldrDelay);
-      this.pnlControls.Controls.Add(this.fnbVideo);
-      this.pnlControls.Controls.Add(this.fnbImage);
       this.pnlControls.Controls.Add(this.pnlCaptureDock);
       this.pnlControls.Dock = System.Windows.Forms.DockStyle.Bottom;
       this.pnlControls.Location = new System.Drawing.Point(0, 446);
@@ -85,6 +87,43 @@ namespace Kinovea.ScreenManager
       this.pnlControls.Name = "pnlControls";
       this.pnlControls.Size = new System.Drawing.Size(865, 92);
       this.pnlControls.TabIndex = 3;
+      // 
+      // tbFilename
+      // 
+      this.tbFilename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.tbFilename.Location = new System.Drawing.Point(263, 62);
+      this.tbFilename.Name = "tbFilename";
+      this.tbFilename.Size = new System.Drawing.Size(148, 20);
+      this.tbFilename.TabIndex = 53;
+      this.tbFilename.Text = "%date%-%time%";
+      // 
+      // cbCaptureFolder
+      // 
+      this.cbCaptureFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.cbCaptureFolder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cbCaptureFolder.FormattingEnabled = true;
+      this.cbCaptureFolder.Location = new System.Drawing.Point(41, 61);
+      this.cbCaptureFolder.Name = "cbCaptureFolder";
+      this.cbCaptureFolder.Size = new System.Drawing.Size(207, 21);
+      this.cbCaptureFolder.TabIndex = 52;
+      // 
+      // btnCaptureFolders
+      // 
+      this.btnCaptureFolders.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.btnCaptureFolders.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnCaptureFolders.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCaptureFolders.FlatAppearance.BorderSize = 0;
+      this.btnCaptureFolders.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnCaptureFolders.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCaptureFolders.Image = global::Kinovea.ScreenManager.Properties.Capture.explorer_video;
+      this.btnCaptureFolders.Location = new System.Drawing.Point(5, 58);
+      this.btnCaptureFolders.MinimumSize = new System.Drawing.Size(25, 25);
+      this.btnCaptureFolders.Name = "btnCaptureFolders";
+      this.btnCaptureFolders.Size = new System.Drawing.Size(30, 25);
+      this.btnCaptureFolders.TabIndex = 51;
+      this.btnCaptureFolders.Tag = "";
+      this.btnCaptureFolders.UseVisualStyleBackColor = true;
+      this.btnCaptureFolders.Click += new System.EventHandler(this.btnCaptureFolders_Click);
       // 
       // btnDuration
       // 
@@ -96,7 +135,7 @@ namespace Kinovea.ScreenManager
       this.btnDuration.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnDuration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnDuration.Image = global::Kinovea.ScreenManager.Properties.Capture.stop2_16;
-      this.btnDuration.Location = new System.Drawing.Point(487, 13);
+      this.btnDuration.Location = new System.Drawing.Point(484, 13);
       this.btnDuration.MinimumSize = new System.Drawing.Size(25, 25);
       this.btnDuration.Name = "btnDuration";
       this.btnDuration.Size = new System.Drawing.Size(25, 25);
@@ -106,7 +145,7 @@ namespace Kinovea.ScreenManager
       // nudDuration
       // 
       this.nudDuration.DecimalPlaces = 2;
-      this.nudDuration.Location = new System.Drawing.Point(518, 16);
+      this.nudDuration.Location = new System.Drawing.Point(515, 16);
       this.nudDuration.Maximum = new decimal(new int[] {
             300,
             0,
@@ -397,40 +436,12 @@ namespace Kinovea.ScreenManager
       this.sldrDelay.Maximum = 100D;
       this.sldrDelay.Minimum = 0D;
       this.sldrDelay.Name = "sldrDelay";
-      this.sldrDelay.Size = new System.Drawing.Size(156, 23);
+      this.sldrDelay.Size = new System.Drawing.Size(153, 23);
       this.sldrDelay.Sticky = false;
       this.sldrDelay.StickyValue = 0D;
       this.sldrDelay.TabIndex = 43;
       this.sldrDelay.Text = "sliderLinear1";
       this.sldrDelay.Value = 0D;
-      // 
-      // fnbVideo
-      // 
-      this.fnbVideo.BackColor = System.Drawing.Color.Transparent;
-      this.fnbVideo.Editable = true;
-      this.fnbVideo.Filename = "";
-      this.fnbVideo.Image = global::Kinovea.ScreenManager.Properties.Capture.explorer_video;
-      this.fnbVideo.InfoText = "Video:";
-      this.fnbVideo.Location = new System.Drawing.Point(296, 56);
-      this.fnbVideo.Name = "fnbVideo";
-      this.fnbVideo.Size = new System.Drawing.Size(250, 27);
-      this.fnbVideo.TabIndex = 42;
-      this.fnbVideo.ImageClick += new System.EventHandler(this.FNBVideo_ImageClick);
-      this.fnbVideo.FilenameChanged += new System.EventHandler(this.FnbVideo_FilenameChanged);
-      // 
-      // fnbImage
-      // 
-      this.fnbImage.BackColor = System.Drawing.Color.Transparent;
-      this.fnbImage.Editable = true;
-      this.fnbImage.Filename = "";
-      this.fnbImage.Image = global::Kinovea.ScreenManager.Properties.Capture.explorer_video;
-      this.fnbImage.InfoText = "Image:";
-      this.fnbImage.Location = new System.Drawing.Point(12, 56);
-      this.fnbImage.Name = "fnbImage";
-      this.fnbImage.Size = new System.Drawing.Size(250, 27);
-      this.fnbImage.TabIndex = 41;
-      this.fnbImage.ImageClick += new System.EventHandler(this.FNBImage_ImageClick);
-      this.fnbImage.FilenameChanged += new System.EventHandler(this.FnbImage_FilenameChanged);
       // 
       // CaptureScreenView
       // 
@@ -445,6 +456,7 @@ namespace Kinovea.ScreenManager
       this.Name = "CaptureScreenView";
       this.Size = new System.Drawing.Size(865, 538);
       this.pnlControls.ResumeLayout(false);
+      this.pnlControls.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudDuration)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudDelay)).EndInit();
       this.pnlCaptureDock.ResumeLayout(false);
@@ -456,8 +468,6 @@ namespace Kinovea.ScreenManager
         }
         //private Kinovea.ScreenManager.SliderLogScale sldrDelay;
         private Kinovea.ScreenManager.SliderLinear sldrDelay;
-        private Kinovea.ScreenManager.FilenameBox fnbImage;
-        private Kinovea.ScreenManager.FilenameBox fnbVideo;
         private System.Windows.Forms.Button btnFoldCapturedVideosPanel;
         private System.Windows.Forms.Panel pnlDrawingToolsBar;
         private System.Windows.Forms.Label lblCameraTitle;
@@ -480,5 +490,8 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnDuration;
         private System.Windows.Forms.NumericUpDown nudDuration;
         private System.Windows.Forms.Button btnDelay;
+        private System.Windows.Forms.Button btnCaptureFolders;
+        private System.Windows.Forms.ComboBox cbCaptureFolder;
+        private System.Windows.Forms.TextBox tbFilename;
     }
 }
