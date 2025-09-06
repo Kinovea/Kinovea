@@ -52,7 +52,7 @@ namespace Kinovea.ScreenManager
         private List<SummaryLoader> loaders = new List<SummaryLoader>();
         private List<ThumbnailFile> thumbnails = new List<ThumbnailFile>();
         private string path;
-        private List<string> files;
+        private List<string> files = new List<string>();
         private ThumbnailFile selectedThumbnail;
         private bool editing;
         private bool externalSelection;

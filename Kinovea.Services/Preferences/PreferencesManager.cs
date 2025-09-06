@@ -341,7 +341,10 @@ namespace Kinovea.Services
                 }
                 else
                 {
-                    lastImport = DateTime.MinValue;
+                    // The file doesn't exist yet, we are the very first window to launch.
+                    // We'll use all the default values and pretend we just imported.
+                    log.Debug("Very first initialization of the preferences");
+                    lastImport = DateTime.UtcNow;
                 }
             
                 log.DebugFormat("Imported prefs in {0} ms", stopwatch.ElapsedMilliseconds);

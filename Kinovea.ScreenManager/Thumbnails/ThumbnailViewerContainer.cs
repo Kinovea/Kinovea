@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private string path;
-        private List<string> files;
+        private List<string> files = new List<string>();
         private ThumbnailViewerType currentViewerType = ThumbnailViewerType.Files;
         private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles("[files]");
         private ThumbnailViewerFiles viewerShortcuts = new ThumbnailViewerFiles("[shortcuts]");
