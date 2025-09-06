@@ -477,6 +477,8 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnDelayedDisplay, "The view is delayed");
             else
                 toolTips.SetToolTip(btnDelayedDisplay, "The view is live");
+
+            toolTips.SetToolTip(btnCaptureFolders, "Configure capture folders");
         }
         #endregion
 

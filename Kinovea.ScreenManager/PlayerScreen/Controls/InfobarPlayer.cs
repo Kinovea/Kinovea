@@ -110,13 +110,15 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            // Add menus for the capture folders.
+            // Capture folders.
             List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
             if (ccff.Count == 0)
+            {
+                AddConfigureCaptureFoldersMenu();
                 return;
+            }
 
             popMenu.Items.Add(new ToolStripSeparator());
-            
             foreach (var cf in ccff)
             {
                 CaptureFolder captureFolder = cf;
@@ -138,6 +140,22 @@ namespace Kinovea.ScreenManager
 
                 popMenu.Items.Add(mnuCaptureFolder);
             }
+
+            AddConfigureCaptureFoldersMenu();
+        }
+
+        private void AddConfigureCaptureFoldersMenu()
+        {
+            ToolStripMenuItem mnuConfigureCaptureFolders = new ToolStripMenuItem();
+            mnuConfigureCaptureFolders.Image = Properties.Capture.explorer_video;
+            mnuConfigureCaptureFolders.Text = "Configure capture folders";
+
+            mnuConfigureCaptureFolders.Click += (s, e) => {
+                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_Paths);
+            };
+
+            popMenu.Items.Add(new ToolStripSeparator());
+            popMenu.Items.Add(mnuConfigureCaptureFolders);
         }
 
         private void BuildContextMenus()

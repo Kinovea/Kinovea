@@ -656,6 +656,24 @@ namespace Kinovea.ScreenManager
         }
         public override void RefreshUICulture()
         {
+            // After preferences change, the actual folder pointed by a replay watcher may have changed.
+            // We need to restart the watcher on the new folder.
+            if (replayWatcher.IsEnabled && view.ScreenDescriptor.IsReplayWatcher)
+            {
+                CaptureFolder cf = FilesystemHelper.GetCaptureFolder(view.ScreenDescriptor.FullPath);
+                if (cf != null)
+                {
+                    // FIXME: resolve path variables.
+                    string targetDir = cf.Path;
+                    if (replayWatcher.WatchedFolder != targetDir)
+                    {
+                        log.DebugFormat("Mismatch detected between the replay watcher and the screen descriptor.");
+                        log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetDir));
+                        StartReplayWatcher(null);
+                    }
+                }
+            }
+
             view.RefreshUICulture();
             drawingToolbarPresenter.RefreshUICulture();
         }
@@ -940,7 +958,6 @@ namespace Kinovea.ScreenManager
                     {
                         // This happens when we are opening a watcher in an existing watcher.
                         // The screen descriptor has been updated to the new folder already.
-                        // This happens in 
                         log.DebugFormat("Switch watcher from watching \"{0}\" to watching \"{1}\".", Path.GetFileName(replayWatcher.WatchedFolder), Path.GetFileName(targetDir));
                         StartReplayWatcher(FilePath);
                     }

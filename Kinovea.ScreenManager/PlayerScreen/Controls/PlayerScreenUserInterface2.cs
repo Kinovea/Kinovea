@@ -2997,7 +2997,7 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
-            mnuOpenReplayWatcherFolder.Text = "Open folder";
+            mnuOpenReplayWatcherFolder.Text = "Open folder…";
             mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
@@ -3521,7 +3521,14 @@ namespace Kinovea.ScreenManager
             mnuOpenReplayWatcher.DropDown.Items.Add(new ToolStripSeparator());
 
             // Menus for the capture folders.
-            foreach (var cf in PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders)
+            List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
+            if (ccff.Count == 0)
+            {
+                AddConfigureCaptureFoldersMenu(mnuOpenReplayWatcher);
+                return;
+            }
+
+            foreach (var cf in ccff)
             {
                 CaptureFolder captureFolder = cf;
                 ToolStripMenuItem mnuCaptureFolder = new ToolStripMenuItem();
@@ -3537,11 +3544,26 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     mnuCaptureFolder.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, new EventArgs<CaptureFolder>(captureFolder));
-                    //mnuCaptureFolder.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(captureFolder));
                 }
 
                 mnuOpenReplayWatcher.DropDown.Items.Add(mnuCaptureFolder);
             }
+
+            AddConfigureCaptureFoldersMenu(mnuOpenReplayWatcher);
+        }
+
+        private void AddConfigureCaptureFoldersMenu(ToolStripMenuItem mnu)
+        {
+            ToolStripMenuItem mnuConfigureCaptureFolders = new ToolStripMenuItem();
+            mnuConfigureCaptureFolders.Image = Properties.Capture.explorer_video;
+            mnuConfigureCaptureFolders.Text = "Configure capture folders";
+
+            mnuConfigureCaptureFolders.Click += (s, e) => {
+                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_Paths);
+            };
+
+            mnu.DropDown.Items.Add(new ToolStripSeparator());
+            mnu.DropDown.Items.Add(mnuConfigureCaptureFolders);
         }
 
         private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
