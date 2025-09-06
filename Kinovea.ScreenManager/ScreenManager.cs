@@ -699,7 +699,7 @@ namespace Kinovea.ScreenManager
 
             #region Options
             ToolStripMenuItem mnuCatchOptions = new ToolStripMenuItem();
-            mnuCatchOptions.MergeIndex = 6;
+            mnuCatchOptions.MergeIndex = 7;
             mnuCatchOptions.MergeAction = MergeAction.MatchOnly;
 
             // Language     = 0

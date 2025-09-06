@@ -83,6 +83,13 @@ namespace Kinovea.Root
         // Tools
         private ToolStripMenuItem mnuTools = new ToolStripMenuItem();
 
+        // Window
+        private ToolStripMenuItem mnuWindow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuWindowProperties = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenNewWindow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuReopenWindow = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuManageWindows = new ToolStripMenuItem();
+
         // Options
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
@@ -98,13 +105,6 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPointer = new ToolStripMenuItem();
-
-        // Window
-        private ToolStripMenuItem mnuWindow = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuWindowProperties = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuOpenNewWindow = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuReopenWindow = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuManageWindows = new ToolStripMenuItem();
 
         // Help
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
@@ -359,6 +359,25 @@ namespace Kinovea.Root
             mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleNavigationPanel, mnuFullScreen, new ToolStripSeparator() });
             #endregion
 
+            #region Window
+            mnuWindowProperties.Image = Properties.Resources.application_form;
+            mnuOpenNewWindow.Image = Properties.Resources.application_add;
+            mnuReopenWindow.Image = Properties.Resources.application_cascade;
+            mnuManageWindows.Image = Properties.Resources.application_edit;
+            BuildReopenWindowsMenus();
+
+            mnuWindowProperties.Click += mnuWindowProperties_Click;
+            mnuOpenNewWindow.Click += mnuOpenNewWindow_Click;
+            mnuManageWindows.Click += mnuManageWindows_Click;
+
+            mnuWindow.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuWindowProperties,
+                new ToolStripSeparator(),
+                mnuOpenNewWindow,
+                mnuReopenWindow,
+                mnuManageWindows});
+
+            #endregion
 
             #region Options
             mnuLanguages.Image = Properties.Resources.international;
@@ -404,28 +423,6 @@ namespace Kinovea.Root
                 mnuPreferences});
             #endregion
 
-            #region Window
-
-
-            mnuWindowProperties.Image = Properties.Resources.application_form;
-            mnuOpenNewWindow.Image = Properties.Resources.application_add;
-            mnuReopenWindow.Image = Properties.Resources.application_cascade;
-            mnuManageWindows.Image = Properties.Resources.application_edit;
-            BuildReopenWindowsMenus();
-
-            mnuWindowProperties.Click += mnuWindowProperties_Click;
-            mnuOpenNewWindow.Click += mnuOpenNewWindow_Click;
-            mnuManageWindows.Click += mnuManageWindows_Click;
-
-            mnuWindow.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuOpenNewWindow,
-                mnuReopenWindow,
-                new ToolStripSeparator(),
-                mnuWindowProperties,
-                mnuManageWindows});
-
-            #endregion
-
             #region Help
             mnuHelpContents.Image = Properties.Resources.book_open;
             mnuHelpContents.ShortcutKeys = Keys.F1;
@@ -458,7 +455,7 @@ namespace Kinovea.Root
 
             // Top level merge.
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuWindow, mnuHelp });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuWindow, mnuOptions, mnuHelp });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, menu);
@@ -596,6 +593,122 @@ namespace Kinovea.Root
         }
         #endregion
 
+        #region Window
+        private void mnuOpenNewWindow_Click(object sender, EventArgs e)
+        {
+            WindowManager.OpenNewWindow();
+
+            // Note: we can't really trigger a refresh of the "Reopen" menu here.
+            // The new window hasn't had time to create the descriptor file yet.
+        }
+
+        private void mnuWindowProperties_Click(object sender, EventArgs e)
+        {
+            string memoName = WindowManager.TitleName;
+
+            FormWindowProperties fwp = new FormWindowProperties(this);
+            fwp.StartPosition = FormStartPosition.CenterScreen;
+            fwp.ShowDialog();
+            fwp.Dispose();
+
+            if (fwp.DialogResult == DialogResult.OK)
+            {
+                WindowManager.SaveActiveWindow();
+                if (memoName != WindowManager.TitleName)
+                    mainWindow.UpdateTitle();
+
+                // The only thing we may have changed here is our own instance
+                // so we don't need to refresh the "Reopen" menu.
+            }
+        }
+
+        private void BuildReopenWindowsMenus()
+        {
+            mnuReopenWindow.DropDownItems.Clear();
+
+            ToolStripMenuItem mnuRefresh = new ToolStripMenuItem();
+            mnuRefresh.Text = "Refresh";
+            mnuRefresh.Image = Properties.Resources.arrow_refresh;
+            mnuRefresh.Click += (s, e) =>
+            {
+                WindowManager.ReadAllDescriptors();
+
+                // Trigger a rebuild of this whole drop down.
+                // In theory when we exit this closure the original mnuRefresh can be garbage collected.
+                BuildReopenWindowsMenus();
+            };
+
+            mnuReopenWindow.DropDownItems.Add(mnuRefresh);
+            mnuReopenWindow.DropDownItems.Add(new ToolStripSeparator());
+
+            foreach (WindowDescriptor d in WindowManager.WindowDescriptors)
+            {
+                // Filter out our own instance.
+                if (d.Id == WindowManager.ActiveWindow.Id)
+                    continue;
+
+                ToolStripMenuItem mnuWindowDescriptor = new ToolStripMenuItem();
+                string name = d.Name;
+                if (string.IsNullOrEmpty(name))
+                    name = string.Format("[{0}]", WindowManager.GetIdName(d));
+
+                mnuWindowDescriptor.Text = name;
+
+                // Use a custom icon based on the last known screen list.
+                if (d.ScreenList.Count == 0)
+                {
+                    mnuWindowDescriptor.Image = Properties.Resources.home3;
+                }
+                else if (d.ScreenList.Count == 1)
+                {
+                    if (d.ScreenList[0].ScreenType == ScreenType.Playback)
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.television;
+                    }
+                    else
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.camera_video;
+                    }
+                }
+                else if (d.ScreenList.Count == 2)
+                {
+                    if (d.ScreenList[0].ScreenType == ScreenType.Playback && d.ScreenList[1].ScreenType == ScreenType.Playback)
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.dualplayback;
+                    }
+                    else if (d.ScreenList[0].ScreenType == ScreenType.Capture && d.ScreenList[1].ScreenType == ScreenType.Capture)
+                    {
+                        mnuWindowDescriptor.Image = Properties.Resources.dualcapture2;
+                    }
+                    else
+                    {
+                        // Mixed.
+                        mnuWindowDescriptor.Image = Properties.Resources.dualmixed3;
+                    }
+                }
+
+                WindowDescriptor desc = d;
+                mnuWindowDescriptor.Click += (s, e) =>
+                {
+                    if (desc != null)
+                        WindowManager.ReopenWindow(d);
+                };
+
+                mnuReopenWindow.DropDownItems.Add(mnuWindowDescriptor);
+            }
+        }
+
+        private void mnuManageWindows_Click(object sender, EventArgs e)
+        {
+            FormWindowManager fwm = new FormWindowManager(this);
+            fwm.StartPosition = FormStartPosition.CenterScreen;
+            fwm.ShowDialog();
+            fwm.Dispose();
+
+            RefreshCultureMenu();
+        }
+        #endregion
+
         #region Options
         private void mnuLanguage_OnClick(object sender, EventArgs e)
         {
@@ -724,124 +837,6 @@ namespace Kinovea.Root
             RefreshUICulture();
         }
         #endregion
-
-        #region Window
-        private void mnuOpenNewWindow_Click(object sender, EventArgs e)
-        {
-            WindowManager.OpenNewWindow();
-
-            // Note: we can't really trigger a refresh of the "Reopen" menu here.
-            // The new window hasn't had time to create the descriptor file yet.
-        }
-
-        private void mnuWindowProperties_Click(object sender, EventArgs e)
-        {
-            string memoName = WindowManager.TitleName;
-
-            FormWindowProperties fwp = new FormWindowProperties(this);
-            fwp.StartPosition = FormStartPosition.CenterScreen;
-            fwp.ShowDialog();
-            fwp.Dispose();
-
-            if (fwp.DialogResult == DialogResult.OK)
-            {
-                WindowManager.SaveActiveWindow();
-                if (memoName != WindowManager.TitleName)
-                    mainWindow.UpdateTitle();
-
-                // The only thing we may have changed here is our own instance
-                // so we don't need to refresh the "Reopen" menu.
-            }
-        }
-
-        private void BuildReopenWindowsMenus()
-        {
-            mnuReopenWindow.DropDownItems.Clear();
-
-            ToolStripMenuItem mnuRefresh = new ToolStripMenuItem();
-            mnuRefresh.Text = "Refresh";
-            mnuRefresh.Image = Properties.Resources.arrow_refresh;
-            mnuRefresh.Click += (s, e) =>
-            {
-                WindowManager.ReadAllDescriptors();
-
-                // Trigger a rebuild of this whole drop down.
-                // In theory when we exit this closure the original mnuRefresh can be garbage collected.
-                BuildReopenWindowsMenus();
-            };
-
-            mnuReopenWindow.DropDownItems.Add(mnuRefresh);
-            mnuReopenWindow.DropDownItems.Add(new ToolStripSeparator());
-
-            foreach (WindowDescriptor d in WindowManager.WindowDescriptors)
-            {
-                // Filter out our own instance.
-                if (d.Id == WindowManager.ActiveWindow.Id)
-                    continue;
-
-                ToolStripMenuItem mnuWindowDescriptor = new ToolStripMenuItem();
-                string name = d.Name;
-                if (string.IsNullOrEmpty(name))
-                    name = string.Format("[{0}]", WindowManager.GetIdName(d));
-
-                mnuWindowDescriptor.Text = name;
-
-                // Use a custom icon based on the last known screen list.
-                if (d.ScreenList.Count == 0)
-                {
-                    mnuWindowDescriptor.Image = Properties.Resources.home3;
-                }
-                else if (d.ScreenList.Count == 1)
-                {
-                    if (d.ScreenList[0].ScreenType ==  ScreenType.Playback)
-                    {
-                        mnuWindowDescriptor.Image = Properties.Resources.television;
-                    }
-                    else
-                    {
-                        mnuWindowDescriptor.Image = Properties.Resources.camera_video;
-                    }
-                }
-                else if (d.ScreenList.Count == 2)
-                {
-                    if (d.ScreenList[0].ScreenType == ScreenType.Playback && d.ScreenList[1].ScreenType == ScreenType.Playback)
-                    {
-                        mnuWindowDescriptor.Image = Properties.Resources.dualplayback;
-                    }
-                    else if (d.ScreenList[0].ScreenType == ScreenType.Capture && d.ScreenList[1].ScreenType == ScreenType.Capture)
-                    {
-                        mnuWindowDescriptor.Image = Properties.Resources.dualcapture2;
-                    }
-                    else
-                    {
-                        // Mixed.
-                        mnuWindowDescriptor.Image = Properties.Resources.dualmixed3;
-                    }
-                }
-
-                WindowDescriptor desc = d;
-                mnuWindowDescriptor.Click += (s, e) =>
-                {
-                    if (desc != null)
-                        WindowManager.ReopenWindow(d);
-                };
-
-                mnuReopenWindow.DropDownItems.Add(mnuWindowDescriptor);
-            }
-        }
-
-        private void mnuManageWindows_Click(object sender, EventArgs e)
-        {
-            FormWindowManager fwm = new FormWindowManager(this);
-            fwm.StartPosition = FormStartPosition.CenterScreen;
-            fwm.ShowDialog();
-            fwm.Dispose();
-
-            RefreshCultureMenu();
-        }
-
-        #endregion
-
 
         #region Help
         private void mnuHelpContents_OnClick(object sender, EventArgs e)
