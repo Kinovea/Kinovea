@@ -433,6 +433,21 @@ namespace Kinovea.Services
             return false;
         }
 
+        public static void WakeUp(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero)
+                return;
+            
+            // Restore if minimized.
+            if (NativeMethods.IsIconic(handle))
+                NativeMethods.ShowWindow(handle, NativeMethods.SW_RESTORE);
+
+            // Bring to front.
+            NativeMethods.SetForegroundWindow(handle);
+        }
+
+
+
         /// <summary>
         /// Read one descriptor, add it to the list and possibly update last closed window.
         /// </summary>

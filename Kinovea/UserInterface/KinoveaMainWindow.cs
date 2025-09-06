@@ -71,7 +71,7 @@ namespace Kinovea.Root
             log.DebugFormat("Restoring window state: {0}, window rectangle: {1}", WindowManager.ActiveWindow.WindowState, WindowManager.ActiveWindow.WindowRectangle);
             if (Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(WindowManager.ActiveWindow.WindowRectangle)))
             {
-                // The screen it was on is still here, move it to this screen and then restore the state.
+                // The monitor it was on is still here, move it to this monitor and then restore the state.
                 this.StartPosition = FormStartPosition.Manual;
                 this.DesktopBounds = WindowManager.ActiveWindow.WindowRectangle;
                 this.WindowState = WindowManager.ActiveWindow.WindowState;

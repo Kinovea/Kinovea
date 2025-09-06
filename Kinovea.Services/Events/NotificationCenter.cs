@@ -118,6 +118,12 @@ namespace Kinovea.Services
                 FullScreenToggle(sender, EventArgs.Empty);
         }
 
+        public static EventHandler WakeUpAsked;
+        public static void RaiseWakeUpAsked(object sender)
+        {
+            WakeUpAsked?.Invoke(sender, EventArgs.Empty);
+        }
+
         public static EventHandler<PreferenceTabEventArgs> PreferenceTabAsked;
         public static void RaisePreferenceTabAsked(object sender, PreferenceTab tab)
         {

@@ -169,7 +169,8 @@ namespace Kinovea.Root
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
-            NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked; 
+            NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
+            NotificationCenter.WakeUpAsked += NotificationCenter_WakeUpAsked;
 
             log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
             ExtendMenu(mainWindow.menuStrip);
@@ -948,6 +949,11 @@ namespace Kinovea.Root
                 Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
                 PreferencesUpdated();
             }
+        }
+
+        private void NotificationCenter_WakeUpAsked(object sender, EventArgs e)
+        {
+            WindowManager.WakeUp(mainWindow.Handle);
         }
        
         #region Lower Level Methods

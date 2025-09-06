@@ -931,6 +931,12 @@ namespace Kinovea.ScreenManager
         {
             RaiseActivated(EventArgs.Empty);
 
+            if (view.ScreenDescriptor != null && view.ScreenDescriptor.IsReplayWatcher)
+            {
+                // Bring the whole window back if it was minimized or behind other windows.
+                NotificationCenter.RaiseWakeUpAsked(this);
+            }
+
             // Make sure the watcher is watching the right folder.
             if (replayWatcher.IsEnabled)
             {
