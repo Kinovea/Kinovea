@@ -75,6 +75,10 @@ namespace Kinovea.ScreenManager
         public CaptureScreenView(CaptureScreen presenter)
         {
             InitializeComponent();
+
+
+
+
             lblCameraTitle.Text = "";
             this.presenter = presenter;
             ToggleCapturedVideosPanel();
@@ -140,27 +144,6 @@ namespace Kinovea.ScreenManager
         
         public void BeforeClose()
         {
-            // FIXME: we currently do not read that back anywhere.
-            // When we add an empty capture screen or load a camera into an 
-            // existing one we always start from defaults.
-            // See: ScreenManager.DoLoadCameraInScreen().
-
-            // Save the state of the screen to the window descriptor.
-            // This is NOT the main screen descriptor that we save to the screen list
-            // and reload in the context of "continue where you left off" or "load specfiic screens". 
-            // We save the current "state" of the screen so that if the user closes 
-            // and reopens the screen during the same session we restore that state.
-            // Or, in "continue where you left off" mode, if they close the screen, close the window,
-            // and later reopen the window, and reopen a screen, present them with values they were using last time.
-            //WindowDescriptor d = WindowManager.ActiveWindow;
-            //d.LastCaptureDelay = (float)nudDelay.Value;
-            //d.LastCaptureDelayedDisplay = this.delayedDisplay;
-            //d.LastCaptureMaxDuration = (float)nudDuration.Value;
-            //if (this.CaptureFolder != null)
-            //    d.LastCaptureFolder = this.CaptureFolder.Id;
-            //d.LastCaptureFileName = this.CurrentFilename;
-
-            //WindowManager.SaveActiveWindow();
         }
 
         public void SetViewport(Viewport viewport)
@@ -450,14 +433,15 @@ namespace Kinovea.ScreenManager
             {
                 btnFoldCapturedVideosPanel.BackgroundImage = Properties.Capture.section_fold;
                 pnlDrawingToolsBar.Top = pnlCapturedVideos.Top - pnlDrawingToolsBar.Height;
-                pnlViewport.Height = pnlCapturedVideos.Top - pnlViewport.Top;
+                pnlViewport.Height = pnlDrawingToolsBar.Top - pnlViewport.Top;
             }
             else
             {
                 btnFoldCapturedVideosPanel.BackgroundImage = Properties.Capture.section_unfold;
                 pnlDrawingToolsBar.Top = pnlControls.Top - pnlDrawingToolsBar.Height;
-                pnlViewport.Height = pnlControls.Top - pnlViewport.Top;
             }
+            
+            pnlViewport.Height = pnlDrawingToolsBar.Top - pnlViewport.Top;
         }
         private void ReloadTooltipsCulture()
         {
