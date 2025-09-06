@@ -165,7 +165,17 @@ namespace Kinovea.ScreenManager
             mnuHide.Click += mnuHide_Click;
             mnuDelete.Click += mnuDelete_Click;
             
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, mnuLoadWatcher, new ToolStripSeparator(), mnuLocate, mnuRename, new ToolStripSeparator(), mnuHide, mnuDelete }); 
+            popMenu.Items.AddRange(new ToolStripItem[] 
+            { 
+                mnuLoadVideo, 
+                //mnuLoadWatcher, 
+                new ToolStripSeparator(), 
+                mnuLocate, 
+                mnuRename, 
+                new ToolStripSeparator(), 
+                mnuHide, 
+                mnuDelete 
+            }); 
             
             this.ContextMenuStrip = popMenu;
         }

@@ -2542,6 +2542,15 @@
   <ItemGroup>
     <None Include="Resources\contact2-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\id-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\id2-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\id3-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

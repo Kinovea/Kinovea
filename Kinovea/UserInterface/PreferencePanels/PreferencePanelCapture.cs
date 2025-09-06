@@ -627,7 +627,7 @@ namespace Kinovea.Root
 
             string text = selectedCaptureFolder.Path;
             var context = DynamicPathResolver.BuildDateContext();
-            string preview = DynamicPathResolver.Resolve(text, context);
+            string preview = DynamicPathResolver.Resolve(text, context, true);
             tbCaptureFolderPath.ReadOnly = true;
             tbCaptureFolderPath.BackColor = Color.LightYellow;
             tbCaptureFolderPath.Text = preview;
@@ -764,7 +764,7 @@ namespace Kinovea.Root
 
             string text = tbDefaultFileName.Text;
             var context = DynamicPathResolver.BuildDateContext(true);
-            string preview = DynamicPathResolver.Resolve(text, context);
+            string preview = DynamicPathResolver.Resolve(text, context, true);
             tbDefaultFileName.ReadOnly = true;
             tbDefaultFileName.BackColor = Color.LightYellow;
             tbDefaultFileName.Text = preview;

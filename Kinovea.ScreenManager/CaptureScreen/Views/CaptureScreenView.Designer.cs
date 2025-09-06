@@ -361,7 +361,7 @@ namespace Kinovea.ScreenManager
       this.btnContextToggle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnContextToggle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnContextToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnContextToggle.Image = global::Kinovea.ScreenManager.Properties.Capture.contact2_16;
+      this.btnContextToggle.Image = global::Kinovea.ScreenManager.Properties.Capture.id3_16;
       this.btnContextToggle.Location = new System.Drawing.Point(820, 2);
       this.btnContextToggle.Margin = new System.Windows.Forms.Padding(2, 2, 0, 0);
       this.btnContextToggle.MinimumSize = new System.Drawing.Size(16, 16);
@@ -393,7 +393,7 @@ namespace Kinovea.ScreenManager
       this.btnContextInfo.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnContextInfo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnContextInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnContextInfo.Image = global::Kinovea.ScreenManager.Properties.Capture.contact2_16;
+      this.btnContextInfo.Image = global::Kinovea.ScreenManager.Properties.Capture.id3_16;
       this.btnContextInfo.Location = new System.Drawing.Point(7, 4);
       this.btnContextInfo.Margin = new System.Windows.Forms.Padding(2, 2, 0, 0);
       this.btnContextInfo.MinimumSize = new System.Drawing.Size(16, 16);

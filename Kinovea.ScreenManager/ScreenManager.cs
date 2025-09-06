@@ -707,7 +707,7 @@ namespace Kinovea.ScreenManager
             // ----         = 5
             // Preferences  = 6
 
-            mnuVariables.Image = Properties.Capture.contact2_16;
+            mnuVariables.Image = Properties.Capture.id3_16;
             mnuVariables.MergeIndex = 4;
             mnuVariables.MergeAction = MergeAction.Insert;
             mnuImportVariables.Image = Properties.Resources.folder;

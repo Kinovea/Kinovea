@@ -109,6 +109,13 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseTriggerPreferencesUpdated(null, true);
         }
 
+        public static void SaveContextEnabled(bool enabled)
+        {
+            PreferencesManager.BeforeRead();
+            PreferencesManager.CapturePreferences.ContextEnabled = enabled;
+            NotificationCenter.RaiseTriggerPreferencesUpdated(null, true);
+        }
+
         /// <summary>
         /// Force context from the outside.
         /// This is used after a change in preferences in another window.

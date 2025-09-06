@@ -157,7 +157,13 @@ namespace Kinovea.FileBrowser
             mnuDeleteShortcut.Click += new EventHandler(mnuDeleteShortcut_Click);
             mnuDeleteShortcut.Visible = false;
             
-            popMenuFolders.Items.AddRange(new ToolStripItem[] { mnuAddToShortcuts, mnuOpenAsReplayWatcher, mnuLocateFolder, mnuDeleteShortcut });
+            popMenuFolders.Items.AddRange(new ToolStripItem[] 
+            { 
+                mnuAddToShortcuts, 
+                //mnuOpenAsReplayWatcher, 
+                mnuLocateFolder, 
+                mnuDeleteShortcut 
+            });
             
             // The context menus will be configured on a per event basis.
             etShortcuts.ContextMenuStrip = popMenuFolders;
@@ -202,8 +208,6 @@ namespace Kinovea.FileBrowser
                 mnuSortBy,
                 new ToolStripSeparator(),
                 mnuLaunch,
-                mnuLaunchWatcher,
-                new ToolStripSeparator(),
                 mnuLocate,
                 new ToolStripSeparator(), 
                 mnuDelete

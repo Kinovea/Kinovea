@@ -495,7 +495,8 @@ namespace Kinovea.ScreenManager
             // Start watching a capture folder or the parent folder of the current video,
             // or a known capture folder.
             // This is coming from the infobar icon.
-            // We do NOT switch to the latest video immediately.
+            // We do NOT switch to the latest video immediately,
+            // but stop playing to indicate that we're ready for the video to arrive.
 
             // FIXME: deduplicate this with Player_OpenReplayWatcherAsked.
             // That other one should only be for opening with the folder picker.
@@ -533,6 +534,7 @@ namespace Kinovea.ScreenManager
             }
 
             view.ScreenDescriptor = sdp;
+            view.StopPlaying();
             StartReplayWatcher(currentFile);
         }
         

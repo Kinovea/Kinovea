@@ -94,9 +94,9 @@ namespace Kinovea.ScreenManager
             pnlContext.Height = pnlTitle.Bottom - pnlContext.Top;
             pnlContext.Padding = new Padding(2, 2, 2, 2);
 
+            contextEnabled = PreferencesManager.CapturePreferences.ContextEnabled;
             UpdateContextBar();
             
-
             lblCameraTitle.Text = "";
             this.presenter = presenter;
             ToggleCapturedVideosPanel();
@@ -407,9 +407,13 @@ namespace Kinovea.ScreenManager
         private void btnContextToggle_Click(object sender, EventArgs e)
         {
             contextEnabled = !contextEnabled;
-            // TODO: Save to preferences.
-            // Signal globally to this window for menus and other screens.
-            // Signal to other instances.
+            
+            changingContext = true;
+            VariablesRepository.SaveContextEnabled(contextEnabled);
+            changingContext = false;
+
+            // Update the UI. We do need to go through the whole UpdateContextBar, 
+            // because if we started disabled we haven't build the combos yet.
             UpdateContextBar();
         }
         private void BtnCapturedVideosFold_Click(object sender, EventArgs e)

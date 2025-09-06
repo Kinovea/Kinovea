@@ -162,12 +162,12 @@ namespace Kinovea.ScreenManager
         /// - post-recording command line.
         /// - default KVA (loading and saving).
         /// </summary>
-        public static string Resolve(string text, Dictionary<string, string> builtinVariables)
+        public static string Resolve(string text, Dictionary<string, string> builtinVariables, bool forInsertDialog = false)
         {
             string result = text;
 
             // Replace custom variables first, this way they can override the built-in variables.
-            result = ReplaceCustomVariables(result);
+            result = ReplaceCustomVariables(result, forInsertDialog);
 
             if (builtinVariables == null || builtinVariables.Count == 0)
                 return result;
@@ -186,8 +186,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Replace the custom variables in the passed string using the active context.
         /// </summary>
-        private static string ReplaceCustomVariables(string text)
+        private static string ReplaceCustomVariables(string text, bool forInsertDialog)
         {
+            if (!forInsertDialog && !PreferencesManager.CapturePreferences.ContextEnabled)
+                return text;
+
             // Note that we don't check if two tables have the same variable name.
             // The first one loaded will take precedence.
             foreach (var pair in VariablesRepository.VariableTables)
