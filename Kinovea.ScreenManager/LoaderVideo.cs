@@ -98,19 +98,10 @@ namespace Kinovea.ScreenManager
 
                 if (playerScreen.FrameServer.Loaded)
                 {
-                    NotificationCenter.RaiseFileOpened(null, path);
-
-                    if (screenDescription != null && screenDescription.IsReplayWatcher)
-                    {
-                        // At this point we have lost the actual file that was loaded. The path here still contaiins the special '*' to indicate the watched folder.
-                        // The actual file is the latest file in the folder this was computed right before loading.
-                        string actualPath = VideoTypeManager.GetMostRecentSupportedVideo(path);
-                        PreferencesManager.FileExplorerPreferences.AddRecentFile(actualPath);
-                    }
-                    else
-                    {
-                        PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
-                    }
+                    //string videoPath = playerScreen.FrameServer.Metadata.VideoPath;
+                    string videoPath = playerScreen.FrameServer.VideoReader.FilePath;
+                    NotificationCenter.RaiseFileOpened(null, videoPath);
+                    PreferencesManager.FileExplorerPreferences.AddRecentFile(videoPath);
                 }
 
                 manager.OrganizeScreens();

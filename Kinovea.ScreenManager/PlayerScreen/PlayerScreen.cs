@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler OpenVideoAsked;
-        public event EventHandler OpenReplayWatcherAsked;
+        public event EventHandler<EventArgs<CaptureFolder>> OpenReplayWatcherAsked;
         public event EventHandler Loaded;
         public event EventHandler SpeedChanged;
         public event EventHandler HighSpeedFactorChanged;
@@ -473,27 +473,37 @@ namespace Kinovea.ScreenManager
             StopReplayWatcher();
         }
 
-        private void View_StartWatcherAsked(object sender, EventArgs e)
+        private void View_StartWatcherAsked(object sender, EventArgs<CaptureFolder> e)
         {
-            // Start watching the parent directory of the current file.
+            // Start watching a capture folder or the parent folder of the current video.
             // This is normally coming from the infobar icon.
-            // We do not want to switch to the latest video immediately.
+            // We do NOT switch to the latest video immediately.
 
             if (!frameServer.Loaded)
-                return;
-            
-            string currentFile = frameServer.VideoReader.FilePath;
-            if (string.IsNullOrEmpty(currentFile))
                 return;
 
             // Prepare the screen descriptor. All replay watchers must have a valid screen descriptor.
             ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
-            sdp.FullPath = Path.Combine(Path.GetDirectoryName(currentFile), "*");
             sdp.IsReplayWatcher = true;
             sdp.Autoplay = true;
-            //sdp.Stretch = view.IsStretched;
             sdp.Stretch = false;
             sdp.SpeedPercentage = view.SpeedPercentage;
+            string currentFile = null;
+
+            if (e.Value == null)
+            {
+                // Start watching the parent folder of the current file.
+                currentFile = frameServer.VideoReader.FilePath;
+                if (string.IsNullOrEmpty(currentFile))
+                    return;
+
+                sdp.FullPath = Path.Combine(Path.GetDirectoryName(currentFile), "*");
+            }
+            else
+            {
+                // Start watching a capture folder.
+                sdp.FullPath = e.Value.Id.ToString();
+            }
 
             StartReplayWatcher(sdp, currentFile);
         }
@@ -935,6 +945,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Start a replay watcher on the path specified in the screen descriptor.
+        /// path is the target video file path to load, it may be null.
+        /// </summary>
         public void StartReplayWatcher(ScreenDescriptionPlayback sdp, string path)
         {
             replayWatcher.Start(sdp, path);

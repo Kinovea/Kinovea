@@ -817,7 +817,7 @@ namespace Kinovea.Root
         private void PrepareCaptureFoldersList()
         {
             var colName = new OLVColumn();
-            colName.AspectName = "ShortName";
+            colName.AspectName = "FriendlyName";
             colName.Groupable = false;
             colName.Sortable = false;
             colName.IsEditable = false;
@@ -825,13 +825,6 @@ namespace Kinovea.Root
             colName.FillsFreeSpace = true;
             colName.FreeSpaceProportion = 2;
             colName.TextAlign = HorizontalAlignment.Left;
-            colName.AspectGetter = delegate (object rowObject)
-            {
-                if (string.IsNullOrEmpty(((CaptureFolder)rowObject).ShortName))
-                    return ((CaptureFolder)rowObject).Path;
-
-                return ((CaptureFolder)rowObject).ShortName;
-            };
 
             olvCaptureFolders.AllColumns.AddRange(new OLVColumn[] {
                 colName,

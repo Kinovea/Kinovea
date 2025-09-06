@@ -207,7 +207,7 @@ namespace Kinovea.ScreenManager
         private void HideCapturedFileView(CapturedFile capturedFile)
         {
             bool alignedToFirst = first == capturedFileViews.Count - 1;
-            
+
             this.Controls.Remove(capturedFileViews[capturedFile.Time]);
             capturedFileViews.Remove(capturedFile.Time);
             

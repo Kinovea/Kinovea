@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
             ReloadTooltipsCulture();
 
             // Reload the capture folder selector.
-            CaptureFolder memoCf = this.CaptureFolder;
+            CaptureFolder memoCaptureFolder = this.CaptureFolder;
 
             // The selected capture folder may be null if it's the first time loading.
             // In this case we'll set it to the first value but we'll get the true value
@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
             foreach (var cf in ccff)
             {
                 cbCaptureFolder.Items.Add(cf);
-                if (memoCf != null && cf.Id == memoCf.Id)
+                if (memoCaptureFolder != null && cf.Id == memoCaptureFolder.Id)
                     cbCaptureFolder.SelectedItem = cf;
             }
 

@@ -95,30 +95,13 @@ namespace Kinovea.Services
                     }
                     else if(File.Exists(arguments[0]))
                     {
-                        // Special case for dragging a file on top of the program icon or starting with a workspace.
-                        if (Path.GetExtension(arguments[0]).ToLower() == ".xml")
-                        {
-                            Workspace workspace = new Workspace();
-                            bool loaded = workspace.Load(arguments[0]);
-                            if (loaded)
-                            {
-                                foreach (IScreenDescriptor screen in workspace.Screens)
-                                    LaunchSettingsManager.AddScreenDescription(screen);
-                            }
-                            else
-                            {
-                                log.ErrorFormat("Workspace from command line argument not loaded.");
-                            }
-                        }
-                        else
-                        {
-                            // Assume video and try to load it in a single screen.
-                            ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
-                            sdp.FullPath = arguments[0];
-                            sdp.Autoplay = true;
-                            sdp.Stretch = true;
-                            LaunchSettingsManager.AddScreenDescription(sdp);
-                        }
+                        // Special case for dragging a file on top of the program icon.
+                        // Assume video and try to load it in a single screen.
+                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+                        sdp.FullPath = arguments[0];
+                        sdp.Autoplay = true;
+                        sdp.Stretch = true;
+                        LaunchSettingsManager.AddScreenDescription(sdp);
                     }
                     else
                     {

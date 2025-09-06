@@ -9,13 +9,14 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     public partial class InfobarPlayer : UserControl
     {
         public event EventHandler StopWatcherAsked;
-        public event EventHandler StartWatcherAsked;
+        public event EventHandler<EventArgs<CaptureFolder>> StartWatcherAsked;
 
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuStopWatcher = new ToolStripMenuItem();
@@ -87,6 +88,23 @@ namespace Kinovea.ScreenManager
                     popMenu.Items.Add(mnuStartWatcher);
                 }
             }
+
+            // Add menus for the capture folders.
+            List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
+            if (ccff.Count == 0)
+                return;
+
+            popMenu.Items.Add(new ToolStripSeparator());
+            
+            foreach (var cf in ccff)
+            {
+                CaptureFolder captureFolder = cf;
+                ToolStripMenuItem mnuCaptureFolder = new ToolStripMenuItem();
+                mnuCaptureFolder.Text = string.Format(ScreenManagerLang.Infobar_Player_StartWatcher, captureFolder.FriendlyName); 
+                mnuCaptureFolder.Image = Properties.Resources.camera_video;
+                mnuCaptureFolder.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(captureFolder));
+                popMenu.Items.Add(mnuCaptureFolder);
+            }
         }
 
         private void BuildContextMenus()
@@ -95,7 +113,7 @@ namespace Kinovea.ScreenManager
             mnuStopWatcher.Click += (s, e) => StopWatcherAsked?.Invoke(s, e);
 
             mnuStartWatcher.Image = Properties.Resources.replaywatcher;
-            mnuStartWatcher.Click += (s, e) => StartWatcherAsked?.Invoke(s, e);
+            mnuStartWatcher.Click += (s, e) => StartWatcherAsked?.Invoke(s, new EventArgs<CaptureFolder>(null));
         }
 
         private void fileinfo_MouseDown(object sender, MouseEventArgs e)

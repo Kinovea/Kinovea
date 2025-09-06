@@ -35,18 +35,6 @@ namespace Kinovea.Services
             get { return "General"; }
         }
 
-        #region Instance prefs
-        /// <summary>
-        /// Arrangement of screens in the instance.
-        /// </summary>
-        public Workspace Workspace
-        {
-            get { BeforeRead(); return workspace; }
-            set { workspace = value; Save(); }
-        }
-        #endregion
-
-
         public bool EnableDebugLog
         {
             get { BeforeRead(); return enableDebugLog; }
@@ -77,11 +65,6 @@ namespace Kinovea.Services
         private bool enableDebugLog = false;
         private int preferencePage;
         private string pointerKey = "::default";
-
-        // The following should be moved to the instance specific prefs.
-        #region Workspace
-        private Workspace workspace = new Workspace();
-        #endregion
         #endregion
 
 
@@ -128,13 +111,6 @@ namespace Kinovea.Services
             writer.WriteElementString("EnableDebugLog", XmlHelper.WriteBoolean(enableDebugLog));
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
             writer.WriteElementString("Pointer", pointerKey);
-            
-            if (workspace != null && workspace.Screens != null && workspace.Screens.Count > 0)
-            {
-                writer.WriteStartElement("Workspace");
-                workspace.WriteXML(writer);
-                writer.WriteEndElement();
-            }
         }
 
         public void ReadXML(XmlReader reader)
@@ -156,9 +132,6 @@ namespace Kinovea.Services
                         break;
                     case "Pointer":
                         pointerKey = reader.ReadElementContentAsString();
-                        break;
-                    case "Workspace":
-                        workspace.ReadXML(reader);
                         break;
                     default:
                         reader.ReadOuterXml();

@@ -114,9 +114,25 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                if (FilesystemHelper.IsReplayWatcher(filePath))
+                CaptureFolder cf = FilesystemHelper.GetCaptureFolder(filePath);
+                if (cf != null)
                 {
-                    // This happens when we first load a file watcher into this screen.
+                    // When we first load a replay watcher on a capture folder into this screen.
+                    
+                    // TODO: Build context and resolve the target folder variables.
+                    //Filenamer.ResolveCaptureFolder(cf.Path, profileManager, context);
+                    string folderPath = cf.Path;
+                    folderPath = Path.Combine(folderPath, "*");
+                    filePath = VideoTypeManager.GetMostRecentSupportedVideo(folderPath);
+                    if (string.IsNullOrEmpty(filePath))
+                    {
+                        // If the directory doesn't have any supported files yet it's not an error, we just load an empty player and get ready.
+                        return OpenVideoResult.EmptyWatcher;
+                    }
+                }
+                else if (FilesystemHelper.IsReplayWatcher(filePath))
+                {
+                    // When we first load a replay watcher on a file system folder into this screen.
                     // Subsequent calls by the watcher will use the actual file name.
                     // For this initial step, run the most recent file of the directory, if any.
                     filePath = VideoTypeManager.GetMostRecentSupportedVideo(filePath);
@@ -126,7 +142,8 @@ namespace Kinovea.ScreenManager
                         return OpenVideoResult.EmptyWatcher;
                     }
                 }
-
+                
+                // Get the video reader module for the target file.
                 videoReader = VideoTypeManager.GetVideoReader(Path.GetExtension(filePath));
             }
 

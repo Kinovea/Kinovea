@@ -17,7 +17,16 @@ namespace Kinovea.Services
         public Guid Id { get; set; }
 
         /// <summary>
+        /// Name to be displayed in menus.
+        /// </summary>
+        public string FriendlyName 
+        {
+            get { return string.IsNullOrEmpty(ShortName) ? Path : ShortName; } 
+        }
+
+        /// <summary>
         /// A short custom name to identify the folder in menus.
+        /// This may be null or empty.
         /// </summary>
         public string ShortName { get; set; }
         

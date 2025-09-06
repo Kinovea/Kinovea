@@ -15,26 +15,37 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ReplayWatcher : IDisposable
     {
+        #region Properties
         public bool IsEnabled { get; private set; } = false;
 
+        /// <summary>
+        /// The real path being watched on the file system.
+        /// </summary>
         public string WatchedFolder 
         { 
-            get { return watcher != null ? watcher.Path : null; } 
+            get { return watcher?.Path; } 
         }
 
+        /// <summary>
+        /// The "virtual" path being watched as it appeared in the screen descriptor.
+        /// This may be a path with a wild card or a GUID of a capture folder.
+        /// </summary>
         public string FullPath
         {
-            get { return watcher != null ? Path.Combine(watcher.Path, filter) : null; }
+            get { return watcher == null ? null : screenDescriptor.FullPath; }
         }
+        #endregion
 
+        #region Members
         private PlayerScreen player;
-        private ScreenDescriptionPlayback screenDescription;
+        private ScreenDescriptionPlayback screenDescriptor;
         private string currentFile;
         private string filter;
         private FileSystemWatcher watcher;
         private Control dummy = new Control();
         private int overwriteEventCount;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
 
         #region Construction/Destruction
         public ReplayWatcher(PlayerScreen player)
@@ -75,18 +86,32 @@ namespace Kinovea.ScreenManager
             // the screen descriptor should never be null.
             if (sdp == null)
             {
-                log.ErrorFormat("Replay watcher started without screen description.");
+                log.ErrorFormat("Replay watcher started without a screen descriptor.");
                 Stop();
                 return;
             }
 
-            this.screenDescription = sdp;
+            this.screenDescriptor = sdp;
             this.currentFile = currentFile;
-            this.filter = Path.GetFileName(sdp.FullPath);
-            string targetDir = Path.GetDirectoryName(sdp.FullPath);
+            this.filter = "";
+            string targetDir = "";
+
+            CaptureFolder cf = FilesystemHelper.GetCaptureFolder(sdp.FullPath);
+            if (cf != null)
+            {
+                // TODO: resolve variables.
+                this.filter = "*";
+                targetDir = cf.Path;
+            }
+            else
+            {
+                this.filter = Path.GetFileName(sdp.FullPath);
+                targetDir = Path.GetDirectoryName(sdp.FullPath);
+            }
 
             if (watcher != null)
             {
+                // Bail out if the watcher is already running on the right directory.
                 if (watcher.Path == targetDir)
                     return;
 
@@ -182,7 +207,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Replay watcher is about to load a video: {0}.", Path.GetFileName(path));
 
             // Update the descriptor with the speed from the UI.
-            screenDescription.SpeedPercentage = player.view.SpeedPercentage;
+            screenDescriptor.SpeedPercentage = player.view.SpeedPercentage;
 
             if (player.IsWaitingForIdle)
             {
@@ -192,7 +217,7 @@ namespace Kinovea.ScreenManager
 
             // Load the video in the player.
             // We send the actual file name in path, at this point the player doesn't need to know this is coming from a watched directory.
-            LoaderVideo.LoadVideo(player, path, screenDescription);
+            LoaderVideo.LoadVideo(player, path, screenDescriptor);
             
             if (player.FrameServer.Loaded)
             {

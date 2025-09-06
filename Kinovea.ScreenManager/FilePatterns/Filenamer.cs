@@ -14,6 +14,13 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        /// Gets the full path to a capture folder.
+        /// </summary>
+        public static string ResolveCaptureFolder(string folder, ProfileManager profileManager, Dictionary<string, string> context)
+        {
+            return ReplacePatterns(folder, profileManager, context);
+        }
 
         /// <summary>
         /// Gets the full path to save recorded images or videos.

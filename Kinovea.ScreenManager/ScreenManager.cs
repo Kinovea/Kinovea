@@ -912,12 +912,20 @@ namespace Kinovea.ScreenManager
             int index = sender == screenList[0] ? 0 : 1;
             VideoTypeManager.LoadVideo(filename, index);
         }
-        private void Player_OpenReplayWatcherAsked(object sender, EventArgs e)
+        private void Player_OpenReplayWatcherAsked(object sender, EventArgs<CaptureFolder> e)
         {
-            string path = FilePicker.OpenReplayWatcher();
-            if (string.IsNullOrEmpty(path))
-                return;
-
+            string path = "";
+            if (e.Value == null)
+            {
+                path = FilePicker.OpenReplayWatcher();
+                if (string.IsNullOrEmpty(path))
+                    return;
+            }
+            else
+            {
+                path = e.Value.Id.ToString();
+            }
+                
             int index = sender == screenList[0] ? 0 : 1;
 
             ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();

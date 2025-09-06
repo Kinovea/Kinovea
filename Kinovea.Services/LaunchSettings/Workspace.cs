@@ -6,9 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Kinovea.Services
+namespace Kinovea.Services.Obsolete
 {
-
     public class Workspace
     {
         public List<IScreenDescriptor> Screens { get; private set; } = new List<IScreenDescriptor>();

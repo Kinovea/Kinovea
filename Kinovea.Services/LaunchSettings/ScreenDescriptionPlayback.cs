@@ -62,7 +62,10 @@ namespace Kinovea.Services
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Full path to the video file to load.
+        /// Path to the video file to load.
+        /// - For a single video this is the full path to the file.
+        /// - For a raw replay watcher this is the folder to monitor with a wildcard "*" as file name.
+        /// - For a replay watcher on a capture folder it is the GUID.
         /// </summary>
         public string FullPath { get; set; }
 
@@ -110,16 +113,16 @@ namespace Kinovea.Services
 
         public IScreenDescriptor Clone()
         {
-            ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
-            sdp.Id = this.Id;
-            sdp.FullPath = this.FullPath;
-            sdp.Autoplay = this.Autoplay;
-            sdp.SpeedPercentage = this.SpeedPercentage;
-            sdp.Stretch = this.Stretch;
-            sdp.IsReplayWatcher = this.IsReplayWatcher;
-            sdp.RecoveryLastSave = this.RecoveryLastSave;
-            sdp.IsDualReplay = this.IsDualReplay;
-            return sdp;
+            ScreenDescriptionPlayback clone = new ScreenDescriptionPlayback();
+            clone.Id = this.Id;
+            clone.FullPath = this.FullPath;
+            clone.Autoplay = this.Autoplay;
+            clone.SpeedPercentage = this.SpeedPercentage;
+            clone.Stretch = this.Stretch;
+            clone.IsReplayWatcher = this.IsReplayWatcher;
+            clone.RecoveryLastSave = this.RecoveryLastSave;
+            clone.IsDualReplay = this.IsDualReplay;
+            return clone;
         }
 
         public void ReadXml(XmlReader reader)

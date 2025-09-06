@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
 
         #region Events
         public event EventHandler OpenVideoAsked;
-        public event EventHandler OpenReplayWatcherAsked;
+        public event EventHandler<EventArgs<CaptureFolder>> OpenReplayWatcherAsked;
         public event EventHandler LoadAnnotationsAsked;
         public event EventHandler SaveAnnotationsAsked;
         public event EventHandler SaveAnnotationsAsAsked;
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler ReloadDefaultPlayerAnnotationsAsked;
         public event EventHandler CloseAsked;
         public event EventHandler StopWatcherAsked;
-        public event EventHandler StartWatcherAsked;
+        public event EventHandler<EventArgs<CaptureFolder>> StartWatcherAsked;
         public event EventHandler SetAsActiveScreen;
         public event EventHandler SpeedChanged;
         public event EventHandler TimeOriginChanged;
@@ -378,6 +378,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenReplayWatcherFolder = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLoadAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotations = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSaveAnnotationsAs = new ToolStripMenuItem();
@@ -1271,6 +1272,7 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.Image = Properties.Drawings.paste;
             mnuOpenVideo.Image = Properties.Resources.folder;
             mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher;
+            mnuOpenReplayWatcherFolder.Image = Properties.Resources.folder;
             mnuLoadAnnotations.Image = Properties.Resources.notes2_16;
             mnuSaveAnnotations.Image = Properties.Resources.save_16;
             mnuSaveAnnotationsAs.Image = Properties.Resources.save_as_16;
@@ -1290,7 +1292,7 @@ namespace Kinovea.ScreenManager
             mnuPastePic.Click += mnuPastePic_Click;
             mnuPasteDrawing.Click += mnuPasteDrawing_Click;
             mnuOpenVideo.Click += (s, e) => OpenVideoAsked?.Invoke(this, EventArgs.Empty);
-            mnuOpenReplayWatcher.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, EventArgs.Empty);
+            mnuOpenReplayWatcherFolder.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, new EventArgs<CaptureFolder>(null));
             mnuLoadAnnotations.Click += (s, e) => LoadAnnotationsAsked?.Invoke(this, EventArgs.Empty);
             mnuSaveAnnotations.Click += mnuSaveAnnotations_Click;
             mnuSaveAnnotationsAs.Click += mnuSaveAnnotationsAs_Click;
@@ -2984,6 +2986,7 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
+            mnuOpenReplayWatcherFolder.Text = "Open folder";
             mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
@@ -3114,7 +3117,14 @@ namespace Kinovea.ScreenManager
             RaiseSetAsActiveScreenEvent();
 
             if (!m_FrameServer.Loaded)
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    PrepareEmptyScreenContextMenu(popMenu);
+                    panelCenter.ContextMenuStrip = popMenu;
+                }
                 return;
+            }
 
             selectionTimer.Stop();
             m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
@@ -3477,6 +3487,40 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+        private void PrepareEmptyScreenContextMenu(ContextMenuStrip popMenu)
+        {
+            BuildReplayWatcherMenus();
+
+            // Menu when no video is loaded
+            popMenu.Items.Clear();
+            popMenu.Items.AddRange(new ToolStripItem[]
+            {
+                mnuOpenVideo,
+                mnuOpenReplayWatcher,
+                new ToolStripSeparator(),
+                mnuCloseScreen
+            });
+
+        }
+
+        private void BuildReplayWatcherMenus()
+        {
+            mnuOpenReplayWatcher.DropDown.Items.Clear();
+            mnuOpenReplayWatcher.DropDown.Items.Add(mnuOpenReplayWatcherFolder);
+            mnuOpenReplayWatcher.DropDown.Items.Add(new ToolStripSeparator());
+
+            // Menus for the capture folders.
+            foreach (var cf in PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders)
+            {
+                CaptureFolder captureFolder = cf;
+                ToolStripMenuItem mnuCaptureFolder = new ToolStripMenuItem();
+                mnuCaptureFolder.Image = Properties.Resources.camera_video;
+                mnuCaptureFolder.Text = captureFolder.FriendlyName;
+                mnuCaptureFolder.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, new EventArgs<CaptureFolder>(captureFolder));
+                mnuOpenReplayWatcher.DropDown.Items.Add(mnuCaptureFolder);
+            }
+        }
+
         private void PrepareBackgroundContextMenu(ContextMenuStrip popMenu)
         {
             // Inject the target file name to avoid surprises.
@@ -3493,6 +3537,8 @@ namespace Kinovea.ScreenManager
 
             bool hasDefaultPlayerKVA = !string.IsNullOrEmpty(PreferencesManager.PlayerPreferences.PlaybackKVA);
             mnuReloadDefaultPlayerAnnotations.Enabled = hasDefaultPlayerKVA;
+            
+            BuildReplayWatcherMenus();
 
             popMenu.Items.Clear();
             popMenu.Items.AddRange(new ToolStripItem[]
@@ -4235,12 +4281,18 @@ namespace Kinovea.ScreenManager
         }
         private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e.Button != MouseButtons.Right)
+            {
+                RaiseSetAsActiveScreenEvent();
+                return;
+            }
+
+            SurfaceScreen_MouseDown(sender, e);
+            
+            // The following only make sense if the mouse is somewhere above the image.
             mnuDirectTrack.Enabled = false;
-            mnuBackground.Enabled = false;
             mnuPasteDrawing.Enabled = false;
             mnuPastePic.Enabled = false;
-            panelCenter.ContextMenuStrip = popMenu;
-            RaiseSetAsActiveScreenEvent();
         }
         #endregion
 

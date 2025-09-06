@@ -176,6 +176,9 @@ namespace Kinovea.Video
             if (directory == null)
                 return null;
 
+            if (!directory.Exists)
+                return null;
+
             FileInfo latest = directory.GetFiles(Path.GetFileName(path))
                 .Where(f => VideoTypeManager.IsSupported(f.Extension))
                 .OrderByDescending(f => f.LastWriteTime)

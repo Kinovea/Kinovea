@@ -361,6 +361,12 @@ namespace Kinovea.Services
             return patternFilename + extension;
         }
 
+        public static CaptureFolder GetCaptureFolder(string path)
+        {
+            var ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
+            return ccff.FirstOrDefault(cf => cf.Id.ToString() == path);
+        }
+
         /// <summary>
         /// Return true if this path is a special path used to detect replay watcher mode.
         /// </summary>
