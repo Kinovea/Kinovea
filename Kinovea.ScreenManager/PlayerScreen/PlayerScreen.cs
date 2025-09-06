@@ -92,9 +92,7 @@ namespace Kinovea.ScreenManager
         {
             get	
             {
-                return string.IsNullOrEmpty(FileName) ? 
-                    FileName :
-                    ScreenManagerLang.statusEmptyScreen;
+                return string.IsNullOrEmpty(FileName) ? ScreenManagerLang.statusEmptyScreen : FileName;
             }
         }
         public override bool CapabilityDrawings

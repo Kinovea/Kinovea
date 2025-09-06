@@ -947,6 +947,7 @@ namespace Kinovea.ScreenManager
             ResetSync();
             dualPlayer.CommitLaunchSettings();
             OrganizeMenus();
+            UpdateStatusBar();
             return;
         }
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
