@@ -51,14 +51,18 @@ Changelog:
     Added - Capture: capture trigger via UDP.
     Improved - General: core preferences are now shared and synchronized between windows.
     Improved - General: window name can be set directly from the user interface.
-    Improved - General: window startup options: continue where you left off or start on a specific set of screens.
+    Improved - General: window startup options: file browser, continue where you left off or start on a specific set of screens.
     Improved - General: ability to quickly restart closed windows.
     Improved - General: ability to start, stop and delete older windows.
     Improved - General: changed variables syntax to %variable%.
+    Improved - General: improved performance of application startup and detecting cameras.
     Improved - File browser: improved performances of thumbnails view.
     Improved - File browser: improved thumbnails layout.
     Improved - Player: replay windows automatically wake up and bring themselves to front.
     Improved - Player: improved mechanics of switching between single-video player and replay watcher.
+    Improved - Player: menus to open replay folder observers on configured capture folders.
+    Improved - Player: replay folders support target folders with variables.
+    Improved - Player: when picking a folder to observe it is automatically added as a capture folder.
     Improved - Player: continue playback after a jump if we were playing.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
     Improved - Annotations: default KVA paths can use custom variables.
@@ -82,6 +86,7 @@ Changelog:
     Improved - Capture: improved stability of camera discovery.
     Improved - Capture: capture folders and post-recording command can use custom variables.
     Improved - Capture: toolbox to insert variables and common characters in folder paths.
+    Improved - Capture: Option to disable the auto-numbering of file names when not using dynamic file names.
     Improved - Capture: button to switch between live view and delayed view.
     Improved - Capture: max duration of recording is now directly accessible on the user interface.
     Improved - Capture: combined image and video capture folder selector.
