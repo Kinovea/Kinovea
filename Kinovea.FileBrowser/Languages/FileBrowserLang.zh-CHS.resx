@@ -114,7 +114,7 @@
     <value>忘记自定义设置</value>
   </data>
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>以重放文件夹监视器打开</value>
+    <value>重播文件夹查看器</value>
   </data>
   <data name="mnuSortBy_Size" xml:space="preserve">
     <value>大小</value>
