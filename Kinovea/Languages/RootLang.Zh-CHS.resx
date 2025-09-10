@@ -514,4 +514,10 @@
   <data name="mnuBigArrow" xml:space="preserve">
     <value>Big 箭</value>
   </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>大手指标</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>翻译Kinovea…</value>
+  </data>
 </root>
