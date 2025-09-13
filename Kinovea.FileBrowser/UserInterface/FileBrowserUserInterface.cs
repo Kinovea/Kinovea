@@ -787,6 +787,7 @@ namespace Kinovea.FileBrowser
                 
                 expanding = true;
                 etExplorer.ExpandANode(currentShortcutItem);
+                etExplorer.tv1.SelectedNode?.EnsureVisible();
                 expanding = false;
 
                 currentExptreeItem = etExplorer.SelectedItem;

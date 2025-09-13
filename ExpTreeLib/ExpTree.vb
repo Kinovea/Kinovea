@@ -367,6 +367,11 @@ Public Class ExpTree
                 If CShItem.IsAncestorOf(testNode.Tag, newItem, False) Then
                     baseNode = testNode
                     RefreshNode(baseNode)   'ensure up-to-date
+
+                    ' Kinovea: raise an event to allow filtering.
+                    Dim args As New TreeViewEventArgs(baseNode, TreeViewAction.Expand)
+                    RaiseEvent TreeViewBeforeExpand(Me, args)
+
                     baseNode.Expand()
                     lim -= 1
                     GoTo NEXLEV
@@ -583,11 +588,13 @@ XIT:    tv1.EndUpdate()
             RefreshNode(node)
         End If
 
-        ' Kinovea: raise an event to allow filtering.
-        RaiseEvent TreeViewBeforeExpand(Me, e)
-
         'Always expand and scroll
         If Not m_bManualCollapse And Not tv1.SelectedNode.IsExpanded Then
+
+            ' Kinovea: raise an event to allow filtering.
+            Dim args As New TreeViewEventArgs(tv1.SelectedNode, TreeViewAction.Expand)
+            RaiseEvent TreeViewBeforeExpand(Me, args)
+
             tv1.SelectedNode.Expand()
         End If
         tv1.SelectedNode.EnsureVisible()
@@ -679,6 +686,11 @@ NXTOLD:             Next
             If Not Root Is Nothing Then
                 Root.Expand()
                 If Not IsNothing(tv1.SelectedNode) Then
+
+                    ' Kinovea: raise an event to allow filtering.
+                    Dim args As New TreeViewEventArgs(tv1.SelectedNode, TreeViewAction.Expand)
+                    RaiseEvent TreeViewBeforeExpand(Me, args)
+
                     tv1.SelectedNode.Expand()
                 Else
                     tv1.SelectedNode = Me.Root
