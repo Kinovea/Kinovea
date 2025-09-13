@@ -58,13 +58,17 @@ Changelog:
     Improved - General: changed variables syntax to %variable%.
     Improved - General: improved performance of application startup and detecting cameras.
     Improved - File browser: improved performances of thumbnails view.
+    Improved - File browser: show the second thumbnail by default instead of the first when available.
     Improved - File browser: improved thumbnails layout.
+    Improved - File browser: status bar now shows the folder being browsed.
     Improved - Player: replay windows automatically wake up and bring themselves to front.
     Improved - Player: improved mechanics of switching between single-video player and replay watcher.
     Improved - Player: menus to open replay folder observers on configured capture folders.
     Improved - Player: replay folders support target folders with variables.
     Improved - Player: when picking a folder for replay observer, it is automatically added as a capture folder.
     Improved - Player: continue playback after a jump if we were playing.
+    Improved - Player: show the full path to the video in the tooltip of the infobar.
+    Improved - Player: remember the state of the key image panel at the bottom between sessions.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
     Improved - Annotations: default KVA paths can use custom variables.
     Improved - Annotations: changing the style of a drawing now automatically changes the style preset for the tool.
@@ -100,6 +104,7 @@ Changelog:
     Improved - Capture: added option to exclude drawings and calibration from the exported kva.
     Improved - Capture: added option to set the default trigger arming state.
     Improved - Capture: added `kva` built-in variable to post-recording command and homogenized naming between paths and file names.
+    Improved - Capture: remember the state of the captured files panel between sessions.
     Fixed - General: in preferences, capture folders selectors were not working.
     Fixed - General: using the portable version from within a synchronized OneDrive directory could cause a crash.
     Fixed - General: saving a workspace with high speed camera configuration wasn't working properly.
