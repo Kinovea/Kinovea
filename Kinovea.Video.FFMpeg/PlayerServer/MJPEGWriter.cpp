@@ -858,9 +858,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
     return written;
 }
 
-///<summary>
-/// VideoFileWriter::EncodeAndWriteVideoFrameJPEG
-///</summary>
+
 bool MJPEGWriter::EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length)
 {
     // As the buffer is already a JPEG sample, we bypass the encoding step entirely.

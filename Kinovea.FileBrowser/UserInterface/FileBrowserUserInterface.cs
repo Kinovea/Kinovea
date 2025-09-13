@@ -220,6 +220,7 @@ namespace Kinovea.FileBrowser
         {
             // This is raised after the node children have been added but before it is visually expanded.
             // Use this to filter out unwanted folders.
+            // Zip files have already been purged (Done inside ExpTree).
             var item = e.Node.Tag as CShItem;
             if (item == null)
                 return;

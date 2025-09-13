@@ -55,12 +55,13 @@ Changelog:
     Improved - General: per-window startup options: "file browser", "continue where you left off" or "open specific content".
     Improved - General: ability to quickly restart closed windows.
     Improved - General: ability to start, stop and delete older windows.
-    Improved - General: changed variables syntax to %variable%.
     Improved - General: improved performance of application startup and detecting cameras.
     Improved - File browser: improved performances of thumbnails view.
     Improved - File browser: show the second thumbnail by default instead of the first when available.
     Improved - File browser: improved thumbnails layout.
     Improved - File browser: status bar now shows the folder being browsed.
+    Improved - File browser: irrelevant or confusing entries are now filtered out from the folder tree view.
+    Improved - File browser: improved folder tree view presentation.
     Improved - Player: replay windows automatically wake up and bring themselves to front.
     Improved - Player: improved mechanics of switching between single-video player and replay watcher.
     Improved - Player: menus to open replay folder observers on configured capture folders.
@@ -92,6 +93,7 @@ Changelog:
     Improved - Capture: Context toolbar with drop downs of custom variables, to select the context of the recording.
     Improved - Capture: capture folders and post-recording command can use custom variables.
     Improved - Capture: toolbox to insert variables and common characters in folder paths, with just-in-time examples.
+    Improved - Capture: changed syntax of variables from "%keyword" to "%keyword%" when used in paths or commands.
     Improved - Capture: option to disable the auto-numbering of file names when not using dynamic file names.
     Improved - Capture: post-recording command now starts in a background thread.
     Improved - Capture: post-recording command supports multiple calls to external programs per command.
@@ -145,7 +147,6 @@ Changelog:
     Improved - Measurement: Support flipping axes and changing reference corner.
     Improved - Measurement: Show average pixel size in world units on calibration dialog.
     Improved - Measurement: Support resetting the alignment of the coordinate system to the grid.
-    Improved - Measurement: In the plane/grid tool, support setting the number of rows and columns separately.
     Improved - Kinogram: Support moving tiles in time.
     Improved - Kinogram: Support changing label color and font size.
     Improved - Data export: Export comments in JSON export.
