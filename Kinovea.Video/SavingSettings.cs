@@ -101,10 +101,6 @@ namespace Kinovea.Video
         // Helpers
         //-------------------------------
 
-
-        //public double InputIntervalMilliseconds = 0.4;
-
-
         /// <summary>
         /// A delegate taking a video frame and an output bitmap and painting the 
         /// video frame + the drawings at that particular time, to the output bitmap.

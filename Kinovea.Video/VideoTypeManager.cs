@@ -33,10 +33,6 @@ namespace Kinovea.Video
     /// </summary>
     public static class VideoTypeManager
     {
-        #region Events
-        public static event EventHandler<VideoLoadAskedEventArgs> VideoLoadAsked;
-        #endregion
-        
         #region Members
         // Maps extensions to video readers types.
         private static Dictionary<string, Type> m_VideoReaders = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
@@ -158,12 +154,6 @@ namespace Kinovea.Video
         public static bool IsSupported(string extension)
         {
             return m_VideoReaders.ContainsKey(extension);
-        }
-        
-        public static void LoadVideo(string path, int target)
-        {
-            if(VideoLoadAsked != null)
-                VideoLoadAsked(null, new VideoLoadAskedEventArgs(path, target));
         }
 
         /// <summary>

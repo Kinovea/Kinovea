@@ -55,6 +55,7 @@ namespace Kinovea.Video
         /// This is the unscaled image size, the images might be decoded at a smaller size still.
         /// </summary>
         public Size ReferenceSize;
+
         public double PixelAspectRatio;
         public Fraction SampleAspectRatio;
         public bool IsCodecMpeg2;

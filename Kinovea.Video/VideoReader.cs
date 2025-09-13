@@ -56,36 +56,57 @@ namespace Kinovea.Video
         public abstract VideoSection WorkingZone { get;}
         public abstract VideoDecodingMode DecodingMode { get; }
         
-        public virtual IWorkingZoneFramesContainer WorkingZoneFrames {
+        public virtual IWorkingZoneFramesContainer WorkingZoneFrames 
+        {
             get { return null;}
         }
-        public virtual VideoSection PreBufferingSegment {
+
+        /// <summary>
+        /// Returns the start and end of the decoding buffer when in pre-buffering mode.
+        /// </summary>
+        public virtual VideoSection PreBufferingSegment 
+        {
             get { return VideoSection.MakeEmpty(); }
         }
-        // If the reader is subject to decoding drops (prebuffering), this property should be filled accordingly.
-        public virtual int Drops {
-            get {return 0; }
+
+        /// <summary>
+        /// Counter of dropped frames for asynchronous readers that did not have the requested frame ready.
+        /// </summary>
+        public virtual int Drops 
+        {
+            get { return 0; }
         }
+
+        /// <summary>
+        /// Gets or sets the image-level options (aspect, rotation, demosaicing, deinterlace).
+        /// </summary>
         public VideoOptions Options { get; set; }
         
-        public string FilePath {
+        /// <summary>
+        /// Full path to the video file.
+        /// </summary>
+        public string FilePath 
+        {
             get { return Info.FilePath; }
         }
-        public bool IsSingleFrame { 
+
+        /// <summary>
+        /// Whether the video contains only one frame.
+        /// </summary>
+        public bool IsSingleFrame 
+        { 
             get { return Info.DurationTimeStamps == 1;}
         }
-        public long EstimatedFrames {
-            get {
-                long duration = WorkingZone.End - WorkingZone.Start;
-                return (duration / Info.AverageTimeStampsPerFrame) + 1;
-            }
-        }
-        
-        public virtual bool CanDrawUnscaled {
+
+        /// <summary>
+        /// Whether the video frame in `Current` is at the requested decoding size or not.
+        /// </summary>
+        public virtual bool CanDrawUnscaled 
+        {
             get { return false;}
         }
-        
-        // Shorcuts for capabilities.
+
+        # region Shorcuts for capabilities.
         public bool CanDecodeOnDemand {
             get { return (Flags & VideoCapabilities.CanDecodeOnDemand) != 0; }
         }
@@ -123,49 +144,119 @@ namespace Kinovea.Video
         {
             get { return (Flags & VideoCapabilities.CanStabilize) != 0; }
         }
+        #endregion
         
+        #endregion
+        
+        #region Open/Close
+        public abstract OpenVideoResult Open(string filePath);
+        
+        public abstract void Close();
+
+        /// <summary>
+        /// Open the video file as fast as possible to extract basic information and thumbnails.
+        /// </summary>
+        public abstract VideoSummary ExtractSummary(string filePath, int thumbsToLoad, Size maxImageSize);
+
+        /// <summary>
+        /// Called after load and before the first decode request.
+        /// </summary>
+        public abstract void PostLoad();
+
         #endregion
 
-        #region Members
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        #endregion
-        
-        #region Methods
-        public abstract OpenVideoResult Open(string filePath);
-        public abstract void Close();
-        public abstract VideoSummary ExtractSummary(string filePath, int thumbsToLoad, Size maxImageSize);
-        
+        #region Low level frame requests
         /// <summary>
-        /// Set the "Current" property to hold the next video frame.
-        /// <para>For async readers, if the frame is not available right now, call it a drop.</para>
-        /// <para>(Decoding should happen in a separate thread).</para>
-        /// <para>decodeIfNecessary will be true for some scenarios like saving, next button, etc.</para>
-        /// <para>In these cases return only after the frame has been pushed to .Current.</para>
+        /// Must set `Current` to the next video frame.
+        /// For async readers, if the frame is not available right now, call it a drop.
+        /// Decoding of that next frame should have happened in the decoding thread already.
+        /// If `decodeIfNecessary` is true then force sync and only return after the frame has 
+        /// been placed into `Current`. This is for scenarios like saving, next button, etc.
         /// </summary>
         /// <returns>false if the end of file has been reached</returns>
         public abstract bool MoveNext(int _skip, bool _decodeIfNecessary);
         
         /// <summary>
-        /// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
+        /// Must set `Current` to the asked frame, by timestamp.
         /// </summary>
         /// <returns>false if the end of file has been reached</returns>
         public abstract bool MoveTo(long from, long target);
+        #endregion
         
-        public abstract void BeforeFrameEnumeration();
-        public abstract void AfterFrameEnumeration();
-        
+        #region Decoding mode, play loop and frame enumeration
+
+        public virtual bool CanSwitchDecodingMode(VideoDecodingMode mode)
+        {
+            switch (mode)
+            {
+                case VideoDecodingMode.NotInitialized:
+                    return true;
+                case VideoDecodingMode.OnDemand:
+                    return CanDecodeOnDemand;
+                case VideoDecodingMode.PreBuffering:
+                    return CanPreBuffer;
+                case VideoDecodingMode.Caching:
+                    return CanCache;
+                default:
+                    return false;
+            }
+        }
+
+        public virtual void BeforePlayloop()
+        {
+            // Called right before starting the play loop.
+            // Might be used to ensure the prebuffering thread is started.
+            // Does nothing by default. Override to implement.
+        }
+
+        public virtual void ResetDrops()
+        {
+            // Called when the decoding drop counter should be reset (for example after forced slow down.)
+            // (a reader specific action because not all reader are subject to dropping).
+            // Does nothing by default. Override to implement.
+        }
+
+        public virtual bool HasMoreFrames()
+        {
+            return Current != null && Current.Timestamp < WorkingZone.End;
+        }
+
         /// <summary>
-        /// Called after load and before the first decode request.
-        /// </summary>
-        public abstract void PostLoad();
-        
-        /// <summary>
-        /// Updates the internal working zone. Import whole zone to cache if possible.
+        /// Updates the internal working zone. 
+        /// Imports whole zone to cache if possible.
         /// </summary>
         /// <param name="_workerFn">A function that will start a background thread for the actual import</param>
         public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
-        
-        #region Move playhead
+
+        public abstract void BeforeFrameEnumeration();
+
+        public abstract void AfterFrameEnumeration();
+
+        /// <summary>
+        /// Provide a lazy enumerator on each frame of the Working Zone.
+        /// </summary>
+        public IEnumerable<VideoFrame> EnumerateFrames(long interval)
+        {
+            if (DecodingMode == VideoDecodingMode.PreBuffering)
+                throw new ThreadStateException("Frame enumerator called while prebuffering");
+
+            bool hasMore = MoveFirst();
+            yield return Current;
+
+            while (hasMore)
+            {
+                if (interval == 0)
+                    hasMore = MoveNext(0, true);
+                else
+                    hasMore = MoveTo(Current.Timestamp, Current.Timestamp + interval);
+
+                yield return Current;
+            }
+        }
+
+        #endregion
+
+        #region Move playhead shortcuts
         public bool MovePrev()
         {
             return MoveTo(Current.Timestamp, Current.Timestamp - Info.AverageTimeStampsPerFrame);
@@ -195,34 +286,7 @@ namespace Kinovea.Video
         }
         #endregion
         
-        public virtual bool CanSwitchDecodingMode(VideoDecodingMode _mode)
-        {
-            switch(_mode)
-            {
-                case VideoDecodingMode.NotInitialized:
-                    return true;
-                case VideoDecodingMode.OnDemand:
-                    return CanDecodeOnDemand;
-                case VideoDecodingMode.PreBuffering:
-                    return CanPreBuffer;
-                case VideoDecodingMode.Caching:
-                    return CanCache;
-                default:
-                    return false;
-            }
-        }
-        public virtual bool HasMoreFrames()
-        {
-            return Current != null && Current.Timestamp < WorkingZone.End;
-        }
-        
-        public virtual void BeforePlayloop()
-        {
-            // Called right before starting the play loop.
-            // Might be used to ensure the prebuffering thread is started.
-            // Does nothing by default. Override to implement.
-        }
-        
+        #region Image adjustments (aspect, rotation, demosaicing, deinterlace, stabilization)
         /// <summary>
         /// Force a specific aspect ratio.
         /// </summary>
@@ -232,6 +296,7 @@ namespace Kinovea.Video
             // Does nothing by default. Override to implement.
             return false;
         }
+
         /// <summary>
         /// Force a specific image rotation.
         /// </summary>
@@ -241,6 +306,7 @@ namespace Kinovea.Video
             // Does nothing by default. Override to implement.
             return false;
         }
+
         /// <summary>
         /// Force a specific demosaicing pattern.
         /// </summary>
@@ -250,6 +316,7 @@ namespace Kinovea.Video
             // Does nothing by default. Override to implement.
             return false;
         }
+
         /// <summary>
         /// Set deinterlace on or off.
         /// </summary>
@@ -269,7 +336,9 @@ namespace Kinovea.Video
             // Does nothing by default. Override to implement.
             return false;
         }
+        #endregion
 
+        #region Decoding size
         /// <summary>
         /// Ask the reader to provide its images at a specific size.
         /// Not necessarily honored by the reader.
@@ -280,44 +349,12 @@ namespace Kinovea.Video
             // Does nothing by default. Override to implement.
             return false;
         }
+
         /// <summary>
         /// Ask the reader to reset the decoding size to the "aspect ratio" size.
         /// </summary>
         public virtual void DisableCustomDecodingSize()
         {
-            // Does nothing by default. Override to implement.
-        }
-        
-        /// <summary>
-        /// Provide a lazy enumerator on each frame of the Working Zone.
-        /// </summary>
-        public IEnumerable<VideoFrame> EnumerateFrames(long interval)
-        {
-            if(DecodingMode == VideoDecodingMode.PreBuffering)
-                throw new ThreadStateException("Frame enumerator called while prebuffering");
-            
-            bool hasMore = MoveFirst();
-            yield return Current;
-            
-            while(hasMore)
-            {
-                if(interval == 0)
-                    hasMore = MoveNext(0, true);
-                else
-                    hasMore = MoveTo(Current.Timestamp, Current.Timestamp + interval);
-                
-                yield return Current;
-            }
-        }
-        
-        public virtual string ReadMetadata()
-        {
-            return "";
-        }
-        public virtual void ResetDrops()
-        {
-            // Called when the decoding drop counter should be reset (for example after forced slow down.)
-            // (a reader specific action because not all reader are subject to dropping).
             // Does nothing by default. Override to implement.
         }
         #endregion

@@ -43,17 +43,6 @@ namespace Kinovea.Video
         CanChangeDemosaicing    = 2048,
         CanStabilize            = 4096,
     }
-    
-    /// <summary>
-    /// The current decoding mode the video reader is in.
-    /// </summary>
-    public enum VideoDecodingMode
-    {
-        NotInitialized, // The video is just opening or has closed and the reader is not fully initialized.
-        OnDemand,       // each frame is decoded on the fly when the player needs it.
-        PreBuffering,   // frames are decoded in a separate thread and pushed to a small buffer.
-        Caching         // All the frames of the working zone have been loaded to a large buffer.
-    }
 
     public enum OpenVideoResult
     {

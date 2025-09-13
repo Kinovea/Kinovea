@@ -71,7 +71,8 @@ namespace Kinovea.Video.Synthetic
                 {
                     g.FillRectangle(backBrush, g.ClipBounds);
 
-                SolidBrush foreBrush = new SolidBrush(video.BackgroundColor.Invert());
+                    Color inverted = Color.FromArgb(video.BackgroundColor.A, 255 - video.BackgroundColor.R, 255 - video.BackgroundColor.G, 255 - video.BackgroundColor.B);
+                    SolidBrush foreBrush = new SolidBrush(inverted);
                 
                     if (video.FrameNumber)
                     {
@@ -125,7 +126,6 @@ namespace Kinovea.Video.Synthetic
             throw new NotImplementedException();
         }
         #endregion
-
     }
 }
 

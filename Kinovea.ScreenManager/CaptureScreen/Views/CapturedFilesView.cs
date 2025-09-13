@@ -180,7 +180,7 @@ namespace Kinovea.ScreenManager
             if(view == null || view.CapturedFile == null || string.IsNullOrEmpty(view.CapturedFile.Filepath))
                 return;
             
-            VideoTypeManager.LoadVideo(view.CapturedFile.Filepath, -1);
+            NotificationCenter.RaiseLoadVideoAsked(view.CapturedFile.Filepath, -1);
         }
         private void View_LaunchWatcherAsked(object sender, EventArgs e)
         {
@@ -190,7 +190,7 @@ namespace Kinovea.ScreenManager
 
             // Replace the filename with a wildcard to turn into a replay watcher over that folder.
             string path = Path.Combine(Path.GetDirectoryName(view.CapturedFile.Filepath), "*");
-            VideoTypeManager.LoadVideo(path, -1);
+            NotificationCenter.RaiseLoadVideoAsked(path, -1);
         }
 
 

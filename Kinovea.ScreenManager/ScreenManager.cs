@@ -200,8 +200,6 @@ namespace Kinovea.ScreenManager
             view.AutoLaunchAsked += View_AutoLaunchAsked;
             AddCommonControlsEventHandlers();
 
-            CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
-            VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             dualPlayer.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.SideBySide);
             dualPlayer.ExportVideoAsked += (s, e) => ExportVideo(VideoExportFormat.SideBySide);
 
@@ -216,6 +214,8 @@ namespace Kinovea.ScreenManager
 
             InitializeVideoFilters();
 
+            CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
+            NotificationCenter.LoadVideoAsked += NotificationCenter_LoadVideoAsked;
             NotificationCenter.StopPlaybackAsked += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
             NotificationCenter.ReceivedExternalCommand += NotificationCenter_ReceivedExternalCommand;
@@ -904,7 +904,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             int index = sender == screenList[0] ? 0 : 1;
-            VideoTypeManager.LoadVideo(filename, index);
+            NotificationCenter.RaiseLoadVideoAsked(filename, index);
         }
         private void Player_OpenReplayWatcherAsked(object sender, EventArgs<CaptureFolder> e)
         {
@@ -3138,7 +3138,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Services
-        private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
+        private void NotificationCenter_LoadVideoAsked(object sender, VideoLoadAskedEventArgs e)
         {
             DoLoadVideoInScreen(e.Path, e.Target);
         }

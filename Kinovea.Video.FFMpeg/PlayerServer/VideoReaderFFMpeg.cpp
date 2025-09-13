@@ -91,7 +91,6 @@ void VideoReaderFFMpeg::DataInit()
     m_bIsLoaded = false;
     m_iVideoStream = -1;
     m_iAudioStream = -1;
-    m_iMetadataStream = -1;
     m_VideoInfo = VideoInfo::Empty;
     m_WorkingZone = VideoSection::MakeEmpty();
     m_TimestampInfo = TimestampInfo::Empty;
@@ -189,6 +188,7 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
         else
         {
             // Stop thread, decode frame, move to it, restart thread.
+            log->DebugFormat("MoveNext, stopping pre-buffering.");
             StopPreBuffering();
             ReadResult res = ReadFrame(-1, _skip + 1, false);
             if (res == ReadResult::Success)
@@ -227,6 +227,7 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
         else
         {
             // Stop thread, decode frame, move to it, restart thread.
+            log->DebugFormat("MoveTo, stopping pre-buffering.");
             StopPreBuffering();
 
             // Adding the target frame will either keep the prebuffer frames contiguous or not.
@@ -242,13 +243,18 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
             }
 
             // This is done on the UI thread but the decoding thread has just been put to sleep.
+            m_Stopwatch->Restart();
             ReadResult res = ReadFrame(target, 1, false);
-
+            if (m_Verbose)
+                log->DebugFormat("MoveTo. Read frame in {0} ms.", m_Stopwatch->ElapsedMilliseconds);
+            
             if (res == ReadResult::Success)
             {
                 // The actual timestamp we land on might not be the one requested, due to pixel to timestamp interpolation.
                 int64_t actualTarget = m_TimestampInfo.CurrentTimestamp;
                 moved = m_PreBuffer->MoveTo(actualTarget);
+                if (m_Verbose)
+                    log->DebugFormat("MoveTo. Moved to {0}.", actualTarget);
             }
 
             StartPreBuffering();
@@ -256,32 +262,6 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
     }
 
     return moved && HasMoreFrames();
-}
-String^ VideoReaderFFMpeg::ReadMetadata()
-{
-    if (m_iMetadataStream < 0)
-        return "";
-
-    String^ metadata = "";
-    bool done = false;
-    do
-    {
-        AVPacket InputPacket;
-        if ((av_read_frame(m_pFormatCtx, &InputPacket)) < 0)
-            break;
-
-        if (InputPacket.stream_index != m_iMetadataStream)
-            continue;
-
-        metadata = gcnew String((char*)InputPacket.data);
-        done = true;
-    } while (!done);
-
-    // Back to start.
-    long targetTimestamp = m_timestampOffset;
-    avformat_seek_file(m_pFormatCtx, m_iVideoStream, targetTimestamp, targetTimestamp, targetTimestamp, AVSEEK_FLAG_BACKWARD);
-
-    return metadata;
 }
 
 bool VideoReaderFFMpeg::ChangeAspectRatio(ImageAspectRatio _ratio)
@@ -392,6 +372,7 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
 
     long currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
 
+    log->DebugFormat("ChangeDecodingSize, stopping pre-buffering.");
     StopPreBuffering();
     m_PreBuffer->Clear();
     m_DecodingSize = targetSize;
@@ -418,6 +399,7 @@ void VideoReaderFFMpeg::DisableCustomDecodingSize()
 
     long currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
 
+    log->DebugFormat("DisableCustomDecodingSize, stopping pre-buffering.");
     StopPreBuffering();
     m_PreBuffer->Clear();
     ResetDecodingSize();
@@ -461,6 +443,7 @@ void VideoReaderFFMpeg::SwitchDecodingMode(VideoDecodingMode _mode)
 
     if (m_DecodingMode == VideoDecodingMode::PreBuffering)
     {
+        log->DebugFormat("SwitchDecodingMode, stopping pre-buffering.");
         StopPreBuffering();
         ResetDecodingSize();
     }
@@ -856,27 +839,6 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
             result = OpenVideoResult::StreamInfoNotFound;
             log->Error("The streams Infos were not Found.");
             break;
-        }
-
-        // Check for muxed KVA.
-        m_iMetadataStream = GetStreamIndex(pFormatCtx, AVMEDIA_TYPE_SUBTITLE);
-        if (m_iMetadataStream >= 0)
-        {
-            AVDictionaryEntry* pMetadataTag = av_dict_get(pFormatCtx->streams[m_iMetadataStream]->metadata, "language", nullptr, 0);
-
-            if (pFormatCtx->streams[m_iMetadataStream]->codec->codec_id == CODEC_ID_TEXT &&
-                pMetadataTag != nullptr &&
-                strcmp((char*)pMetadataTag->value, "XML") == 0)
-            {
-                m_VideoInfo.HasKva = true;
-            }
-            else
-            {
-                if (m_Verbose)
-                    log->Debug("Subtitle stream found, but not analysis meta data: ignored.");
-
-                m_iMetadataStream = -1;
-            }
         }
 
         // Video stream.

@@ -44,6 +44,7 @@ namespace Kinovea.Video.SVG
             get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone | 
                 VideoCapabilities.CanChangeDecodingSize | VideoCapabilities.CanScaleIndefinitely; }
         }
+
         public override bool CanDrawUnscaled
         {
             get { return true; }

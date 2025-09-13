@@ -111,6 +111,15 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// Event raised by the navigation pane or capture screen to load a video.
+        /// </summary>
+        public static EventHandler<VideoLoadAskedEventArgs> LoadVideoAsked;
+        public static void RaiseLoadVideoAsked(string path, int target)
+        {
+            LoadVideoAsked?.Invoke(null, new VideoLoadAskedEventArgs(path, target));
+        }
+
+        /// <summary>
         /// A video file was just opened in a player.
         /// </summary>
         public static EventHandler<EventArgs<string>> FileOpened;

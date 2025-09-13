@@ -25,8 +25,9 @@ using Kinovea.Services;
 namespace Kinovea.Video
 {
     /// <summary>
-    /// VideoReaderGenerator helper objects.
-    /// Must be able to generate a frame for any arbitrary timestamp asked.
+    /// VideoReaderGenerator interface.
+    /// For readers that are able to generate a frame at any requested timestamp 
+    /// because the files don't have a duration (Bitmaps, SVG, synthetic).
     /// The frame generator owns the memory of the generated images.
     /// </summary>
     public interface IFrameGenerator

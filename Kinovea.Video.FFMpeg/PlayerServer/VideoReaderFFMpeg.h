@@ -149,14 +149,17 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual bool MoveTo(int64_t from, int64_t target) override;
         virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
         virtual void PostLoad() override;
-        virtual String^ ReadMetadata() override;
+
+        // Image adjustments
         virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
         virtual bool ChangeImageRotation(ImageRotation rotation) override;
         virtual bool ChangeDemosaicing(Demosaicing demosaicing) override;
         virtual bool ChangeDeinterlace(bool _deint) override;
-        virtual bool ChangeDecodingSize(Size _size) override;
         virtual bool SetStabilizationData(List<TimedPoint^>^ points) override;
+        
+        virtual bool ChangeDecodingSize(Size _size) override;
         virtual void DisableCustomDecodingSize() override;
+
         virtual void BeforePlayloop() override;
         virtual void BeforeFrameEnumeration() override;
         virtual void AfterFrameEnumeration() override;
@@ -181,7 +184,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoInfo m_VideoInfo;
         long m_timestampOffset = 0;
         VideoSection m_WorkingZone;
-        Object^ m_Locker;
         ThreadCanceler^ m_PreBufferingThreadCanceler;
         VideoSection m_SectionToPrepend;
         VideoSection m_SectionToAppend;
@@ -196,11 +198,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         PreBuffer^ m_PreBuffer;
         Cache^ m_Cache;
         
-        
         // FFMpeg specifics
         int m_iVideoStream;
         int m_iAudioStream;
-        int m_iMetadataStream;
         AVFormatContext* m_pFormatCtx;
         AVCodecContext* m_pCodecCtx;
         TimestampInfo m_TimestampInfo;
@@ -208,9 +208,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         static const int DecodingQuality = SWS_FAST_BILINEAR;
 
         // Others
+        Object^ m_Locker;
         bool m_WasPrebuffering;
         LoopWatcher^ m_LoopWatcher;
         Thread^ m_PreBufferingThread;
+        Stopwatch^ m_Stopwatch = gcnew Stopwatch();
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
     // Private methods

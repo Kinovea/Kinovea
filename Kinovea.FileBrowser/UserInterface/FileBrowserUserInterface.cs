@@ -1075,7 +1075,7 @@ namespace Kinovea.FileBrowser
             if(path == null)
                 return;
                 
-            VideoTypeManager.LoadVideo(path, -1);
+            NotificationCenter.RaiseLoadVideoAsked(path, -1);
         }
         #endregion
         
@@ -1097,7 +1097,7 @@ namespace Kinovea.FileBrowser
                 return;
 
             string path = Path.Combine(item.Path, "*");
-            VideoTypeManager.LoadVideo(path, -1);
+            NotificationCenter.RaiseLoadVideoAsked(path, -1);
         }
         private void mnuLocateFolder_Click(object sender, EventArgs e)
         {
@@ -1277,7 +1277,7 @@ namespace Kinovea.FileBrowser
         {
             string path = GetSelectedVideoPath(lv);
             if (path != null)
-                VideoTypeManager.LoadVideo(path, -1);
+                NotificationCenter.RaiseLoadVideoAsked(path, -1);
         }
 
         private void LaunchWatcherSelectedVideo(ListView lv)
@@ -1286,7 +1286,7 @@ namespace Kinovea.FileBrowser
             if (path != null)
             {
                 path = Path.Combine(Path.GetDirectoryName(path), "*");
-                VideoTypeManager.LoadVideo(path, -1);
+                NotificationCenter.RaiseLoadVideoAsked(path, -1);
             }
         }
 

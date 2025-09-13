@@ -213,6 +213,7 @@
     <Compile Include="Bitmap\TJPEG\TJPF.cs" />
     <Compile Include="Bitmap\TJPEG\TJSAMP.cs" />
     <Compile Include="Bitmap\TJPEG\TJXOP.cs" />
+    <Compile Include="Events\VideoLoadAskedEventArgs.cs" />
     <Compile Include="Filesystem\AlphanumComparator.cs" />
     <Compile Include="Filesystem\FileComparator.cs" />
     <Compile Include="Filesystem\FilePicker.cs" />

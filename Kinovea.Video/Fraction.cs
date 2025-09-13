@@ -27,7 +27,8 @@ namespace Kinovea.Video
         public readonly long Numerator;
         public readonly long Denominator;
         
-        public bool IsEmpty {
+        public bool IsEmpty 
+        {
             get { return Numerator == 0 || Denominator == 0; }
         }
         

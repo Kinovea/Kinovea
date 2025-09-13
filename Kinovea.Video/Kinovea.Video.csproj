@@ -176,8 +176,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Events\VideoLoadAskedEventArgs.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="FrameContainers\Cache.cs" />
     <Compile Include="FrameContainers\IVideoFramesContainer.cs" />
     <Compile Include="FrameContainers\IWorkingZoneContainer.cs" />
@@ -185,6 +183,7 @@
     <Compile Include="FrameContainers\PreBuffer.cs" />
     <Compile Include="CapabilityNotSupportedException.cs" />
     <Compile Include="IFrameGenerator.cs" />
+    <Compile Include="VideoDecodingMode.cs" />
     <Compile Include="VideoReaderAlwaysCaching.cs" />
     <Compile Include="VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />
