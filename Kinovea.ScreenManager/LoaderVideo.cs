@@ -127,8 +127,10 @@ namespace Kinovea.ScreenManager
                 player.view.ResetToEmptyState();
             }
 
-            // The view maintains its own transient screen descriptor.
-            player.view.ScreenDescriptor = (ScreenDescriptorPlayback)screenDescriptor.Clone();
+            // The view we are loading into may already have a screen descriptor that we should honor.
+            // This has been handled in ScreenManager.DoLoadVideoInScreen().
+            // The passed screen descriptor is already merged with the existing state.
+            player.view.ScreenDescriptor = screenDescriptor;
             player.Id = screenDescriptor.Id;
             
             if (string.IsNullOrEmpty(path))

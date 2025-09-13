@@ -91,14 +91,28 @@ namespace Kinovea.Services
         public bool IsReplayWatcher { get; set; }
 
         /// <summary>
+        /// Vertical splitter inside the player screen between the viewport and the side panel.
+        /// </summary>
+        public float SidePanelSplitterRatio { get; set; }
+        
+        /// <summary>
+        /// Whether the side panel is visible.
+        /// </summary>
+        public bool SidePanelVisible { get; set; }
+
+        /// <summary>
+        /// Set to true when the user manually collapsed the keyframe panel under the viewport.
+        /// The panel normally pops up when adding a keyframe. 
+        /// </summary>
+        public bool KeyframePanelForceCollapsed { get; set; }
+
+        public DateTime RecoveryLastSave { get; set; }
+        
+        /// <summary>
         /// This screen is part of a dual replay workspace.
         /// This flag is not saved to the screen descriptor XML.
         /// </summary>
         public bool IsDualReplay { get; set; }
-
-        
-        public DateTime RecoveryLastSave { get; set; }
-        
         public ScreenDescriptorPlayback()
         {
             Id = Guid.NewGuid();
@@ -109,6 +123,9 @@ namespace Kinovea.Services
             IsReplayWatcher = false;
             RecoveryLastSave = DateTime.MinValue;
             IsDualReplay = false;
+            SidePanelSplitterRatio = 0.8f;
+            SidePanelVisible = false;
+            KeyframePanelForceCollapsed = false;
         }
 
         public IScreenDescriptor Clone()
@@ -122,6 +139,9 @@ namespace Kinovea.Services
             clone.IsReplayWatcher = this.IsReplayWatcher;
             clone.RecoveryLastSave = this.RecoveryLastSave;
             clone.IsDualReplay = this.IsDualReplay;
+            clone.SidePanelSplitterRatio = this.SidePanelSplitterRatio;
+            clone.SidePanelVisible = this.SidePanelVisible;
+            clone.KeyframePanelForceCollapsed = this.KeyframePanelForceCollapsed;
             return clone;
         }
 
@@ -151,6 +171,15 @@ namespace Kinovea.Services
                     case "IsReplayWatcher":
                         IsReplayWatcher = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
+                    case "SidePanelSplitterRatio":
+                        SidePanelSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        break;
+                    case "SidePanelVisible":
+                        SidePanelVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "KeyframePanelForceCollapsed":
+                        KeyframePanelForceCollapsed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -167,6 +196,9 @@ namespace Kinovea.Services
             w.WriteElementString("SpeedPercentage", XmlHelper.WriteFloat((float)SpeedPercentage));
             w.WriteElementString("Stretch", XmlHelper.WriteBoolean(Stretch));
             w.WriteElementString("IsReplayWatcher", XmlHelper.WriteBoolean(IsReplayWatcher));
+            w.WriteElementString("SidePanelSplitterRatio", XmlHelper.WriteFloat(SidePanelSplitterRatio));
+            w.WriteElementString("SidePanelVisible", XmlHelper.WriteBoolean(SidePanelVisible));
+            w.WriteElementString("KeyframePanelForceCollapsed", XmlHelper.WriteBoolean(KeyframePanelForceCollapsed));
         }
     }
 }

@@ -477,12 +477,10 @@ namespace Kinovea.ScreenManager
 
             // Stop watching the folder but stay on the same file.
             // Switch the screen descriptor from a replay watcher to the current file.
-            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+            ScreenDescriptorPlayback sdp = (ScreenDescriptorPlayback)GetScreenDescriptor();
             sdp.IsReplayWatcher = false;
             sdp.FullPath = frameServer.VideoReader.FilePath;
             sdp.Autoplay = false;
-            sdp.Stretch = false;
-            sdp.SpeedPercentage = view.SpeedPercentage;
             string currentFile = frameServer.VideoReader.FilePath;
 
             view.ScreenDescriptor = sdp;
@@ -504,11 +502,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Prepare the screen descriptor. All replay watchers must have a valid screen descriptor.
-            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+            ScreenDescriptorPlayback sdp = (ScreenDescriptorPlayback)GetScreenDescriptor();
             sdp.IsReplayWatcher = true;
             sdp.Autoplay = true;
-            sdp.Stretch = false;
-            sdp.SpeedPercentage = view.SpeedPercentage;
             string currentFile = null;
 
             if (e.Value == null)
@@ -758,7 +754,7 @@ namespace Kinovea.ScreenManager
                 return new ScreenDescriptorPlayback();
 
             // Just-in-time update the screen descriptor with latest state and return it.
-            // FIXME: why is the view screen descriptor not up to date at this point ?
+            // UI elements don't necessarily update the screen descriptor as soon as something changes.
             var sd = view.ScreenDescriptor;
             sd.Stretch = view.ImageFill;
             sd.SpeedPercentage = view.SpeedPercentage;
@@ -767,14 +763,7 @@ namespace Kinovea.ScreenManager
                sd.FullPath = frameServer.VideoReader.FilePath;
             }
 
-            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
-            sdp.FullPath = sd.FullPath;
-            sdp.Autoplay = sd.Autoplay;
-            sdp.SpeedPercentage = sd.SpeedPercentage;
-            sdp.Stretch = sd.Stretch;
-            sdp.IsReplayWatcher = sd.IsReplayWatcher;
-            //sdp.RecoveryLastSave = sdp.RecoveryLastSave;
-            return sdp;
+            return sd.Clone(); 
         }
 
 

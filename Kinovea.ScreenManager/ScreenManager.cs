@@ -912,7 +912,19 @@ namespace Kinovea.ScreenManager
             // This ends up in FrameServerPlayer.Load(path) which can handle
             // capture folder id or normal paths.
 
-            ScreenDescriptorPlayback sdp = new ScreenDescriptorPlayback();
+            int index = sender == screenList[0] ? 0 : 1;
+            
+            // Start from the current screen descriptor if any. To get UI state.
+            ScreenDescriptorPlayback sdp;
+            if (sender is PlayerScreen ps)
+            {
+                sdp = (ScreenDescriptorPlayback)ps.GetScreenDescriptor();
+            }
+            else
+            {
+                sdp = new ScreenDescriptorPlayback();
+            }
+
             string path = "";
             if (e.Value == null)
             {
@@ -962,8 +974,6 @@ namespace Kinovea.ScreenManager
                 path = sdp.FullPath;
             }
                 
-            int index = sender == screenList[0] ? 0 : 1;
-
             sdp.IsReplayWatcher = true;
             sdp.Autoplay = true;
             sdp.Stretch = true;

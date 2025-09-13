@@ -170,6 +170,11 @@ namespace Kinovea.ScreenManager
             {
                 screenDescriptor = value; 
                 infobar.ScreenDescriptor = value;
+
+                m_bKeyframePanelCollapsedManual = screenDescriptor.KeyframePanelForceCollapsed;
+                splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * screenDescriptor.SidePanelSplitterRatio);
+                isSidePanelVisible = screenDescriptor.SidePanelVisible;
+                splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
             }
         }
 
@@ -534,10 +539,11 @@ namespace Kinovea.ScreenManager
             EnableDisableExportButtons(true);
             buttonPlay.Image = Resources.flatplay;
             sldrSpeed.Enabled = false;
+
             screenDescriptor = null;
             infobar.ScreenDescriptor = null;
+            
             infobar.Visible = false;
-
             if (ResetAsked != null)
                 ResetAsked(this, EventArgs.Empty);
         }
@@ -1090,9 +1096,14 @@ namespace Kinovea.ScreenManager
         private void InitializePropertiesPanel()
         {
             // Restore splitter distance and hook preferences save.
-            splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * WindowManager.ActiveWindow.SidePanelSplitterRatio);
-            splitViewport_Properties.SplitterMoved += (s, e) => {
-                WindowManager.ActiveWindow.SidePanelSplitterRatio = (float)e.SplitX / splitViewport_Properties.Width;
+            if (screenDescriptor != null)
+                splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * screenDescriptor.SidePanelSplitterRatio);
+            else
+                splitViewport_Properties.SplitterDistance = (int)(splitViewport_Properties.Width * 0.8f);
+
+            splitViewport_Properties.SplitterMoved += (s, e) =>
+            {
+                screenDescriptor.SidePanelSplitterRatio = (float)e.SplitX / splitViewport_Properties.Width;
             };
 
             // Create and add all the side panels.
@@ -1118,7 +1129,8 @@ namespace Kinovea.ScreenManager
             sidePanelTracking.Dock = DockStyle.Fill;
             sidePanelTracking.DrawingModified += DrawingControl_DrawingUpdated;
 
-            isSidePanelVisible = WindowManager.ActiveWindow.SidePanelVisible;
+            
+            isSidePanelVisible = screenDescriptor == null ? false : screenDescriptor.SidePanelVisible;
             splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
         }
 
@@ -4567,7 +4579,7 @@ namespace Kinovea.ScreenManager
             OrganizeKeyframes();
             UpdateFramesMarkers();
 
-            if (m_FrameServer.Metadata.Count == 1)
+            if (m_FrameServer.Metadata.Count == 1 && !m_bKeyframePanelCollapsedManual)
                 CollapseKeyframePanel(false);
 
             if (!m_bIsCurrentlyPlaying)
@@ -4917,11 +4929,13 @@ namespace Kinovea.ScreenManager
         private void btnDockBottom_Click(object sender, EventArgs e)
         {
             m_bKeyframePanelCollapsedManual = !m_bKeyframePanelCollapsed;
+            screenDescriptor.KeyframePanelForceCollapsed = m_bKeyframePanelCollapsedManual;
             CollapseKeyframePanel(!m_bKeyframePanelCollapsed);
         }
         private void splitKeyframes_Panel2_DoubleClick(object sender, EventArgs e)
         {
             m_bKeyframePanelCollapsedManual = !m_bKeyframePanelCollapsed;
+            screenDescriptor.KeyframePanelForceCollapsed = m_bKeyframePanelCollapsedManual;
             CollapseKeyframePanel(!m_bKeyframePanelCollapsed);
         }
         private void CollapseKeyframePanel(bool collapse)
@@ -4951,7 +4965,7 @@ namespace Kinovea.ScreenManager
             // (especially problematic when using the Pencil).
 
             // this is only done for the very first keyframe.
-            if (m_FrameServer.Metadata.Count < 1)
+            if (m_FrameServer.Metadata.Count < 1 && !m_bKeyframePanelCollapsedManual)
             {
                 CollapseKeyframePanel(false);
             }
@@ -5032,7 +5046,7 @@ namespace Kinovea.ScreenManager
 
             isSidePanelVisible = !isSidePanelVisible;
             splitViewport_Properties.Panel2Collapsed = !isSidePanelVisible;
-            WindowManager.ActiveWindow.SidePanelVisible = isSidePanelVisible;
+            screenDescriptor.SidePanelVisible = isSidePanelVisible;
         }
         /// <summary>
         /// Force show the side panel at the drawing properties tab.
