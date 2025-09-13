@@ -156,6 +156,9 @@
     <Compile Include="ExpTree.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="NativeTreeView.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ShellDll.vb">
       <SubType>Code</SubType>
     </Compile>

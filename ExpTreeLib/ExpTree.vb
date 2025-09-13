@@ -94,9 +94,9 @@ Public Class ExpTree
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    Public WithEvents tv1 As System.Windows.Forms.TreeView
+    Public WithEvents tv1 As NativeTreeView
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.tv1 = New System.Windows.Forms.TreeView()
+        Me.tv1 = New NativeTreeView()
         Me.SuspendLayout()
         '
         'tv1
