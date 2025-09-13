@@ -588,13 +588,13 @@ XIT:    tv1.EndUpdate()
             RefreshNode(node)
         End If
 
+        ' Kinovea: raise an event to allow filtering.
+        ' (Even if the node is already expanded).
+        Dim args As New TreeViewEventArgs(tv1.SelectedNode, TreeViewAction.Expand)
+        RaiseEvent TreeViewBeforeExpand(Me, args)
+
         'Always expand and scroll
         If Not m_bManualCollapse And Not tv1.SelectedNode.IsExpanded Then
-
-            ' Kinovea: raise an event to allow filtering.
-            Dim args As New TreeViewEventArgs(tv1.SelectedNode, TreeViewAction.Expand)
-            RaiseEvent TreeViewBeforeExpand(Me, args)
-
             tv1.SelectedNode.Expand()
         End If
         tv1.SelectedNode.EnsureVisible()

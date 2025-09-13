@@ -209,8 +209,11 @@ namespace Kinovea.FileBrowser
                 computerNode.Expand();
             }
 
-            // Drives have already been renamed from "System (C:)" to "C: (System)",
+            // Note: the drives have already been renamed from "System (C:)" to "C: (System)",
             // to align all the drive letters nicely. Done inside ExpTree.
+            
+            // Reselect the desktop node
+            tv.SelectedNode = rootNode;
         }
 
         private void etExplorer_TreeViewBeforeExpand(object sender, TreeViewEventArgs e)
