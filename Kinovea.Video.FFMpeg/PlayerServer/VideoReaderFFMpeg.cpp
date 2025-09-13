@@ -112,6 +112,10 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ _filePath, int _thumbs, 
     m_Verbose = false;
     VideoSummary^ summary = gcnew VideoSummary(_filePath);
 
+    // Allocate 100 ms to this. Always get one image but after if we run out of time we stop.
+    int64_t timeout = 100;
+    m_Stopwatch->Restart();
+
     OpenVideoResult loaded = Load(_filePath, true);
     if (loaded != OpenVideoResult::Success)
         return summary;
@@ -123,21 +127,27 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ _filePath, int _thumbs, 
     summary->ImageSize = m_VideoInfo.ReferenceSize;
     summary->Framerate = m_VideoInfo.FramesPerSeconds;
 
-
+    //log->DebugFormat("ExtractSummary {0}. After load: {1} ms.", _filePath, m_Stopwatch->ElapsedMilliseconds);
+    
     // Read some frames (directly decode at small size).
     float stretch = (float)m_VideoInfo.OriginalSize.Width / _maxSize.Width;
     m_DecodingSize = Size(_maxSize.Width, (int)(m_VideoInfo.OriginalSize.Height / stretch));
 
     int64_t step = (int64_t)Math::Ceiling(m_VideoInfo.DurationTimeStamps / (double)_thumbs);
     int64_t previousFrameTimestamp = -1;
+    
 
+    int index = 0;
     for (int64_t ts = 0; ts < m_VideoInfo.DurationTimeStamps; ts += step)
     {
+        index++;
         ReadResult read = ReadResult::FrameNotRead;
         if (ts == 0)
             read = ReadFrame(-1, 1, true);
         else
             read = ReadFrame(ts, 1, true);
+
+        //log->DebugFormat("After ReadFrame [{0}]: {1} ms.", index, m_Stopwatch->ElapsedMilliseconds);
 
         if (read == ReadResult::Success &&
             m_FramesContainer->CurrentFrame != nullptr &&
@@ -149,6 +159,13 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ _filePath, int _thumbs, 
         }
         else
         {
+            break;
+        }
+
+        if (m_Stopwatch->ElapsedMilliseconds > timeout)
+        {
+            log->WarnFormat("Thumbnail out of budget after {0} frames in {1} ms. {2}.", 
+                index, m_Stopwatch->ElapsedMilliseconds, Path::GetFileName(_filePath));
             break;
         }
     }

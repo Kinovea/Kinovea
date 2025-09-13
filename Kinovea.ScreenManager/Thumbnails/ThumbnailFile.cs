@@ -80,22 +80,18 @@ namespace Kinovea.ScreenManager
         #region Members
         private string path;
         private bool loaded;
-        private int paddingHorizontal = 6;
-        private int paddingVertical = 21;
-        private int minWidthForDetails = 150;
-
         private bool selected = false;
         private bool isError;
         private List<Bitmap> bitmaps;
         private Bitmap currentThumbnail;
+        private int currentThumbnailIndex;
+        private int defaultThumbnailIndex = 0;
         private FileDetails details = new FileDetails();
         private bool isImage;
-        private int currentThumbnailIndex;
         private bool hoverInProgress;
-        private Bitmap bmpKvaAnalysis = Resources.bullet_white;
         private DateTime lastWriteUTC = DateTime.MinValue;
-        private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
         private Dictionary<FileProperty, bool> visibilityOptions = new Dictionary<FileProperty, bool>();
+        private bool editModeInProgress;
 
         #region Context menu
         private ContextMenuStrip  popMenu = new ContextMenuStrip();
@@ -105,8 +101,12 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuOpenInExplorer = new ToolStripMenuItem();
         #endregion
         
-        private bool editModeInProgress;
-        
+        private int paddingHorizontal = 6;
+        private int paddingVertical = 21;
+        private int minWidthForDetails = 150;
+        private Bitmap bmpKvaAnalysis = Resources.bullet_white;
+        private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
+
         private static readonly int timerInterval = 700;
         private static readonly Pen penSelected = new Pen(Color.DodgerBlue, 2);
         private static readonly Pen penUnselected = new Pen(Color.Silver, 2);
@@ -141,7 +141,7 @@ namespace Kinovea.ScreenManager
         {
             tmrThumbs.Interval = timerInterval;
             tmrThumbs.Tick += tmrThumbs_Tick;
-            currentThumbnailIndex = 0;
+            currentThumbnailIndex = defaultThumbnailIndex;
         }
         private void SetupTextbox()
         {
@@ -276,7 +276,10 @@ namespace Kinovea.ScreenManager
                 bitmaps = summary.Thumbs;
                 if (bitmaps != null && bitmaps.Count > 0)
                 {
-                    currentThumbnailIndex = 0;
+                    // Show the second thumbnail if it exists, as it's usually a better 
+                    // representation of the video content than the first.
+                    defaultThumbnailIndex = (bitmaps.Count > 1) ? 1 : 0;
+                    currentThumbnailIndex = defaultThumbnailIndex;
                     currentThumbnail = bitmaps[currentThumbnailIndex];
                 }
 
@@ -632,11 +635,8 @@ namespace Kinovea.ScreenManager
             // This event occur when the user has been staying for a while on the same thumbnail. Loop between all stored images.
             if(isError || bitmaps == null || bitmaps.Count < 2)
                 return;
-            
-            currentThumbnailIndex++;
-            if(currentThumbnailIndex >= bitmaps.Count)
-                currentThumbnailIndex = 0;
-            
+
+            currentThumbnailIndex = (currentThumbnailIndex + 1) % bitmaps.Count;
             currentThumbnail = bitmaps[currentThumbnailIndex];
             picBox.Invalidate();
         }
@@ -649,7 +649,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Instantly change image
-            currentThumbnailIndex = 1;
+            currentThumbnailIndex = (currentThumbnailIndex + 1) % bitmaps.Count;
             currentThumbnail = bitmaps[currentThumbnailIndex];
             picBox.Invalidate();
 
@@ -667,7 +667,7 @@ namespace Kinovea.ScreenManager
             tmrThumbs.Stop();
             if(bitmaps.Count > 0)
             {
-                currentThumbnailIndex = 0;
+                currentThumbnailIndex = defaultThumbnailIndex;
                 currentThumbnail = bitmaps[currentThumbnailIndex];
                 picBox.Invalidate();	
             }
@@ -833,11 +833,15 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void Reset()
         {
+            // The control may be reused for another file later so clear everything back to default.
             path = string.Empty;
             lastWriteUTC = DateTime.MinValue;
             isImage = false;
             loaded = false;
+            currentThumbnailIndex = 0;
+            defaultThumbnailIndex = 0;
+            selected = false;
+            isError = false;
         }
-
     }
 }
