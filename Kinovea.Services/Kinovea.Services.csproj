@@ -320,7 +320,7 @@
     <Compile Include="Language\LanguageManager.cs" />
     <Compile Include="UndoRedo\IUndoableCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Types\ActiveFileBrowserTab.cs" />
+    <Compile Include="Types\BrowserContentType.cs" />
     <Compile Include="Types\ExplorerThumbSize.cs" />
     <Compile Include="Types\KinoveaImageFormat.cs" />
     <Compile Include="Types\KinoveaVideoFormat.cs" />

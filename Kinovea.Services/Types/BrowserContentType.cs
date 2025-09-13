@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2013.
+Copyright © Joan Charmant 2012.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -20,12 +20,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Services
 {
-    public enum ThumbnailViewerType
+    /// <summary>
+    /// The type of items being browsed in the navigation pane or the thumbnails viewer.
+    /// </summary>
+    public enum BrowserContentType
     {
-        Files,
-        Shortcuts,
-        Cameras
+    	Files,
+    	Shortcuts,
+    	Cameras
     }
 }

@@ -58,7 +58,7 @@ namespace Kinovea.FileBrowser
         private bool programmaticTabChange;
         private bool externalSelection;
         private string lastOpenedDirectory;
-        private ActiveFileBrowserTab activeTab;
+        private BrowserContentType activeTab;
         private FileSystemWatcher fileWatcher = new FileSystemWatcher();
 
         #region Menu
@@ -248,8 +248,8 @@ namespace Kinovea.FileBrowser
             {
                 // Visible and on camera tab, ask for one step of discovery to fill the list view.
                 // TODO: make asynchronous in a background thread.
-                var tab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
-                if (tab == ActiveFileBrowserTab.Cameras)
+                var tab = (BrowserContentType)tabControl.SelectedIndex;
+                if (tab == BrowserContentType.Cameras)
                 {
                     CameraTypeManager.DiscoveryStep();
                 }
@@ -263,7 +263,7 @@ namespace Kinovea.FileBrowser
         #endregion
 
         #region Public interface
-        private void NotificationCenter_ExplorerTabChangeAsked(object sender, EventArgs<ActiveFileBrowserTab> e)
+        private void NotificationCenter_ExplorerTabChangeAsked(object sender, EventArgs<BrowserContentType> e)
         {
             if (sender == this)
                 return;
@@ -280,7 +280,7 @@ namespace Kinovea.FileBrowser
             if (sender == this)
                 return;
 
-            if (activeTab == ActiveFileBrowserTab.Cameras)
+            if (activeTab == BrowserContentType.Cameras)
                 return;
 
             // Find the file and select it here.
@@ -305,11 +305,11 @@ namespace Kinovea.FileBrowser
         {
             switch (activeTab)
             {
-                case ActiveFileBrowserTab.Shortcuts:
+                case BrowserContentType.Shortcuts:
                     return lvShortcuts;
-                case ActiveFileBrowserTab.Cameras:
+                case BrowserContentType.Cameras:
                     return lvCaptured;
-                case ActiveFileBrowserTab.Explorer:
+                case BrowserContentType.Files:
                 default:
                     return lvExplorer;
             }
@@ -363,7 +363,7 @@ namespace Kinovea.FileBrowser
             lastOpenedDirectory = pathFolder;
 
             // If the shortcuts list is already on the right folder don't do anything.
-            if (activeTab == ActiveFileBrowserTab.Shortcuts && currentShortcutItem != null && currentShortcutItem.Path == pathFolder)
+            if (activeTab == BrowserContentType.Shortcuts && currentShortcutItem != null && currentShortcutItem.Path == pathFolder)
                 return;
 
             if (pathFolder.StartsWith("."))
@@ -420,7 +420,7 @@ namespace Kinovea.FileBrowser
                 return;
             
             // Figure out which tab we are on to update the right listview.
-            if(activeTab == ActiveFileBrowserTab.Explorer)
+            if(activeTab == BrowserContentType.Files)
             {
                 if(currentExptreeItem != null)
                     UpdateFileList(currentExptreeItem, lvExplorer, refreshThumbnails, false);
@@ -428,7 +428,7 @@ namespace Kinovea.FileBrowser
                 // TODO: synchronize shortcuts tab.
 
             }
-            else if(activeTab == ActiveFileBrowserTab.Shortcuts)
+            else if(activeTab == BrowserContentType.Shortcuts)
             {
                 if (currentShortcutItem != null)
                 {
@@ -444,7 +444,7 @@ namespace Kinovea.FileBrowser
                     UpdateFileList(currentExptreeItem, lvExplorer, true, false);
                 }
             }
-            else if(activeTab == ActiveFileBrowserTab.Cameras)
+            else if(activeTab == BrowserContentType.Cameras)
             {
                 UpdateFileList(PreferencesManager.FileExplorerPreferences.RecentCapturedFiles, lvCaptured, false, false);
             }
@@ -846,7 +846,7 @@ namespace Kinovea.FileBrowser
         private void TabControlSelected_IndexChanged(object sender, EventArgs e)
         {
             // Active tab changed.
-            activeTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
+            activeTab = (BrowserContentType)tabControl.SelectedIndex;
             WindowManager.ActiveWindow.ActiveTab = activeTab;
             WindowManager.SaveActiveWindow();
 
@@ -856,7 +856,7 @@ namespace Kinovea.FileBrowser
             }
             else if (this.Visible)
             {
-                if (activeTab == ActiveFileBrowserTab.Cameras)
+                if (activeTab == BrowserContentType.Cameras)
                 {
                     CameraTypeManager.DiscoveryStep();
                 }
@@ -1066,7 +1066,7 @@ namespace Kinovea.FileBrowser
         #region Menu Event Handlers
         private void mnuAddToShortcuts_Click(object sender, EventArgs e)
         {
-            CShItem itemToAdd = activeTab == ActiveFileBrowserTab.Explorer ? currentExptreeItem : currentShortcutItem; 
+            CShItem itemToAdd = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem; 
             if(itemToAdd == null || itemToAdd.Path.StartsWith("::"))
                 return;
             
@@ -1076,7 +1076,7 @@ namespace Kinovea.FileBrowser
         }
         private void mnuOpenAsReplayWatcher_Click(object sender, EventArgs e)
         {
-            CShItem item = activeTab == ActiveFileBrowserTab.Explorer ? currentExptreeItem : currentShortcutItem;
+            CShItem item = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem;
             if (item == null || item.Path.StartsWith("::"))
                 return;
 
@@ -1085,7 +1085,7 @@ namespace Kinovea.FileBrowser
         }
         private void mnuLocateFolder_Click(object sender, EventArgs e)
         {
-            CShItem item = activeTab == ActiveFileBrowserTab.Explorer ? currentExptreeItem : currentShortcutItem;
+            CShItem item = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem;
             if (item == null || string.IsNullOrEmpty(item.Path) || item.Path.StartsWith("::"))
                 return;
 
@@ -1239,11 +1239,11 @@ namespace Kinovea.FileBrowser
         {
             switch (activeTab)
             {
-                case ActiveFileBrowserTab.Shortcuts:
+                case BrowserContentType.Shortcuts:
                     return lvShortcuts;
-                case ActiveFileBrowserTab.Cameras:
+                case BrowserContentType.Cameras:
                     return lvCaptured;
-                case ActiveFileBrowserTab.Explorer:
+                case BrowserContentType.Files:
                 default:
                     return lvExplorer;
             }
@@ -1312,7 +1312,7 @@ namespace Kinovea.FileBrowser
             FilesystemHelper.DeleteFile(path);
             if (!File.Exists(path))
             {
-                if (activeTab == ActiveFileBrowserTab.Cameras)
+                if (activeTab == BrowserContentType.Cameras)
                     PreferencesManager.FileExplorerPreferences.ConsolidateRecentCapturedFiles();
 
                 DoRefreshFileList(true);
@@ -1321,11 +1321,11 @@ namespace Kinovea.FileBrowser
 
         private void CommandLocate()
         {
-            if (activeTab == ActiveFileBrowserTab.Explorer)
+            if (activeTab == BrowserContentType.Files)
                 LocateSelectedVideo(lvExplorer);
-            else if (activeTab == ActiveFileBrowserTab.Shortcuts)
+            else if (activeTab == BrowserContentType.Shortcuts)
                 LocateSelectedVideo(lvShortcuts);
-            else if (activeTab == ActiveFileBrowserTab.Cameras)
+            else if (activeTab == BrowserContentType.Cameras)
                 LocateSelectedVideo(lvCaptured);
         }
 

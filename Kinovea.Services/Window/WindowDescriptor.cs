@@ -136,7 +136,7 @@ namespace Kinovea.Services
         /// <summary>
         /// Active tab in the file explorer panel.
         /// </summary>
-        public ActiveFileBrowserTab ActiveTab
+        public BrowserContentType ActiveTab
         {
             get { return activeTab; }
             set { activeTab = value; }
@@ -173,7 +173,7 @@ namespace Kinovea.Services
         private Rectangle windowRectangle;
         private float explorerFilesSplitterRatio = 0.25f;
         private float shortcutsFilesSplitterRatio = 0.25f;
-        private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
+        private BrowserContentType activeTab = BrowserContentType.Files;
 
         // Backup screen state.
         private ScreenDescriptorCapture screenDescriptorCaptureBackup;
@@ -293,7 +293,7 @@ namespace Kinovea.Services
                             explorerFilesSplitterRatio = 0.25f;
                         break;
                     case "ActiveTab":
-                        activeTab = XmlHelper.ParseEnum<ActiveFileBrowserTab>(reader.ReadElementContentAsString(), ActiveFileBrowserTab.Explorer);
+                        activeTab = XmlHelper.ParseEnum<BrowserContentType>(reader.ReadElementContentAsString(), BrowserContentType.Files);
                         break;
                     case "ScreenDescriptorCaptureBackup":
                         screenDescriptorCaptureBackup = new ScreenDescriptorCapture();

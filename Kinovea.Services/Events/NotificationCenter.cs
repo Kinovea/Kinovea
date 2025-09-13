@@ -70,10 +70,10 @@ namespace Kinovea.Services
         /// Event raised when either the navigation pane or the file browser change the content type.
         /// `sender` is used to check re-entry.
         /// </summary>
-        public static EventHandler<EventArgs<ActiveFileBrowserTab>> BrowserContentTypeChanged;
-        public static void RaiseBrowserContentTypeChanged(object sender, ActiveFileBrowserTab tab)
+        public static EventHandler<EventArgs<BrowserContentType>> BrowserContentTypeChanged;
+        public static void RaiseBrowserContentTypeChanged(object sender, BrowserContentType tab)
         {
-            BrowserContentTypeChanged?.Invoke(sender, new EventArgs<ActiveFileBrowserTab>(tab));
+            BrowserContentTypeChanged?.Invoke(sender, new EventArgs<BrowserContentType>(tab));
         }
 
         /// <summary>

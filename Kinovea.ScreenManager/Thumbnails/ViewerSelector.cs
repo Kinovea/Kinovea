@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,9 +43,9 @@ namespace Kinovea.ScreenManager
 
         public ViewerSelector()
         {
-            ViewerSelectorOption optionFiles = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_video, "File system", ThumbnailViewerType.Files);
-            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(ScreenManager.Properties.Resources.star, "Shortcuts", ThumbnailViewerType.Shortcuts);
-            ViewerSelectorOption optionCameras = new ViewerSelectorOption(ScreenManager.Properties.Resources.webcam2b_16, "Cameras", ThumbnailViewerType.Cameras);
+            ViewerSelectorOption optionFiles = new ViewerSelectorOption(Properties.Resources.explorer_video, "File system", BrowserContentType.Files);
+            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(Properties.Resources.star, "Shortcuts", BrowserContentType.Shortcuts);
+            ViewerSelectorOption optionCameras = new ViewerSelectorOption(Properties.Resources.webcam2b_16, "Cameras", BrowserContentType.Cameras);
 
             List<ViewerSelectorOption> options = new List<ViewerSelectorOption>();
             options.Add(optionFiles);

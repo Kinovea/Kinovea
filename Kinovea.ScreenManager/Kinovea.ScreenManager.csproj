@@ -979,7 +979,6 @@
       <DependentUpon>ViewerSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="Thumbnails\SelectorOption.cs" />
-    <Compile Include="Thumbnails\ThumbnailViewerType.cs" />
     <Compile Include="Thumbnails\ThumbnailViewerCameras.cs">
       <SubType>UserControl</SubType>
     </Compile>
