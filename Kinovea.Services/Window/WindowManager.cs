@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -39,8 +40,10 @@ namespace Kinovea.Services
         private static XmlWriterSettings xmlWriterSettings;
         private static XmlReaderSettings xmlReaderSettings;
         private static List<WindowDescriptor> windowDescriptors = new List<WindowDescriptor>();
+        private static List<WorkspaceDescriptor> workspaceDescriptors = new List<WorkspaceDescriptor>();
         private static WindowDescriptor lastClosedWindow = null;
         private static DateTime bestSaveTime = DateTime.MinValue;
+        private static bool partOfWorkspace = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -76,16 +79,33 @@ namespace Kinovea.Services
 
             if (!string.IsNullOrEmpty(requestedName))
             {
-                // Requesting a specific named window.
+                // Requesting a specific named window or workspace.
                 bool found = false;
-                foreach (var descriptor in windowDescriptors)
+
+                // Look in workspaces first.
+                foreach (var descriptor in workspaceDescriptors)
                 {
                     if (descriptor.Name == requestedName)
                     {
-                        log.InfoFormat("Loading window by name: \"{0}\"", requestedName);
-                        LoadSpecificWindow(descriptor);
+                        log.InfoFormat("Loading workspace by name: \"{0}\"", requestedName);
+                        LoadSpecificWorkspace(descriptor);
                         found = true;
                         break;
+                    }
+                }
+
+                if (!found)
+                {
+                    // Look in windows.
+                    foreach (var descriptor in windowDescriptors)
+                    {
+                        if (descriptor.Name == requestedName)
+                        {
+                            log.InfoFormat("Loading window by name: \"{0}\"", requestedName);
+                            LoadSpecificWindow(descriptor);
+                            found = true;
+                            break;
+                        }
                     }
                 }
 
@@ -93,28 +113,30 @@ namespace Kinovea.Services
                 {
                     // Named but not found.
                     // This is a user error. Maybe they are starting in a new application directory
-                    // and forgot to bring over the application folder.
+                    // and forgot to bring over the app data folder.
                     // In any case we should not create a new instance and force the name, it wouldn't 
                     // match the saved window they are trying to load.
                     // Do not load the last closed window either, the user would still think they are loading
                     // a specific window and could start updating things.
                     // Let's create a new window with no name and report the error.
-                    log.ErrorFormat("Named window \"{0}\" not found. Creating a new window.", requestedName);
+                    log.ErrorFormat("Named window or workspace \"{0}\" not found. Creating a new window.", requestedName);
                     LoadNewWindow();
                 }
             }
             else if (requestedId != Guid.Empty)
             {
-                // Requesting a specific window by id.
+                // Requesting a specific window or workspace by id.
                 // This typically only happens via the "Reopen window" menu when clicking 
-                // on an anonymous window.
+                // on an anonymous window or via a workspace shortcut.
                 bool found = false;
-                foreach (var descriptor in windowDescriptors)
+
+                // Look in workspaces first.
+                foreach (var descriptor in workspaceDescriptors)
                 {
                     if (descriptor.Id == requestedId)
                     {
-                        log.InfoFormat("Loading window by id: \"{0}\"", requestedId);
-                        LoadSpecificWindow(descriptor);
+                        log.InfoFormat("Loading workspace by id: \"{0}\"", requestedId);
+                        LoadSpecificWorkspace(descriptor);
                         found = true;
                         break;
                     }
@@ -122,14 +144,29 @@ namespace Kinovea.Services
 
                 if (!found)
                 {
-                    log.ErrorFormat("Window with Id \"{0}\" not found. Creating a new window.", requestedId);
+                    // Look in windows.
+                    foreach (var descriptor in windowDescriptors)
+                    {
+                        if (descriptor.Id == requestedId)
+                        {
+                            log.InfoFormat("Loading window by id: \"{0}\"", requestedId);
+                            LoadSpecificWindow(descriptor);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!found)
+                {
+                    log.ErrorFormat("Window or workspace with Id \"{0}\" not found. Creating a new window.", requestedId);
                     LoadNewWindow();
                 }
             }
             else
             {
                 // Starting without a name or id.
-                // This happens when clicking the executable or from the menu Open new window.
+                // This happens when clicking the executable or from the menu Window > Open new window.
                 if (isFirstInstance)
                 {
                     // No name and first instance -> load the last closed window.
@@ -152,7 +189,9 @@ namespace Kinovea.Services
                 }
             }
 
-            if (ActiveWindow == null)
+            //---------------------------------------
+
+             if (ActiveWindow == null)
             {
                 // This is when we have found that the user just wanted to re-open an already opened window.
                 // In that case we have brought it to front and we can just close.
@@ -169,7 +208,7 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Reload all descriptors.
+        /// Reload all descriptors for windows and workspaces.
         /// This is done on application startup and after the list may have changed 
         /// (add/delete from a window management dialog in any instance).
         /// Used to find which window to launch on startup and update the list of saved windows.
@@ -181,7 +220,13 @@ namespace Kinovea.Services
             windowDescriptors.Clear();
             foreach (var file in Directory.GetFiles(Software.WindowsDirectory, "*.xml"))
             {
-                ReadDescriptor(file);
+                ReadWindowDescriptor(file);
+            }
+
+            workspaceDescriptors.Clear();
+            foreach (var file in Directory.GetFiles(Software.WorkspacesDirectory, "*.xml"))
+            {
+                ReadWorkspaceDescriptor(file);
             }
         }
 
@@ -337,7 +382,8 @@ namespace Kinovea.Services
         {
             // Heuristic:
             // - if the window has a name, use it.
-            // - if the window has no name but is the only instance in town, keep it empty.
+            // - if the window has no name but is the only instance in town, keep it empty…
+            //      - except if it was launched as part of a workspace.
             // - otherwise use the fake name based on the id.
             if (!string.IsNullOrEmpty(ActiveWindow.Name))
             {
@@ -350,7 +396,7 @@ namespace Kinovea.Services
 
                 // Production:
                 Process[] instances = Process.GetProcessesByName("Kinovea");
-                TitleName = instances.Length == 1 ? "" : GetIdName(ActiveWindow);
+                TitleName = (instances.Length == 1 && !partOfWorkspace) ? "" : GetIdName(ActiveWindow);
             }
         }
 
@@ -404,6 +450,44 @@ namespace Kinovea.Services
             {
                 ActiveWindow = d;
             }
+        }
+
+        /// <summary>
+        /// Load the first window of the workspace in the current instance and start the other instances.
+        /// </summary>
+        private static void LoadSpecificWorkspace(WorkspaceDescriptor d)
+        {
+            // Check that the workspace has at least one window.
+            if (d.WindowList.Count == 0)
+                return;
+            
+            // Set the active instance to the first window and start the other ones.
+            int index = 0;
+            foreach (Guid id in d.WindowList)
+            {
+                var windowDescriptor = windowDescriptors.FirstOrDefault(w => w.Id == id);
+                if (windowDescriptor == null)
+                {
+                    log.DebugFormat("Could not find window {0}, referenced in workspace {1}.", d.WindowList[0], d.Id);
+                    return;
+                }
+
+                if (index == 0)
+                {
+                    // Make sure we do not erase the name from the title bar even if we are first,
+                    // since we know we are part of a group.
+                    partOfWorkspace = true;
+                    LoadSpecificWindow(windowDescriptor);
+                }
+                else
+                {
+                    ReopenWindow(windowDescriptor);
+                }
+
+                index++;
+            }
+
+            log.DebugFormat("Reopened {0} windows as part of workspace {1}", index, d.Id);
         }
 
 
@@ -492,9 +576,9 @@ namespace Kinovea.Services
 
 
         /// <summary>
-        /// Read one descriptor, add it to the list and possibly update last closed window.
+        /// Read one window descriptor, add it to the list and possibly update last closed window.
         /// </summary>
-        private static void ReadDescriptor(string file)
+        private static void ReadWindowDescriptor(string file)
         {
             try
             {
@@ -560,6 +644,35 @@ namespace Kinovea.Services
             }
 
             ActiveWindow.ScreenList.Add(LaunchSettingsManager.CommandLineScreenDescriptor.Clone());
+        }
+
+        /// <summary>
+        /// Read one workspace descriptor, add it to the list.
+        /// </summary>
+        private static void ReadWorkspaceDescriptor(string file)
+        {
+            try
+            {
+                using (XmlReader r = XmlReader.Create(file, xmlReaderSettings))
+                {
+                    r.MoveToContent();
+                    if (r.Name == "KinoveaWorkspace")
+                    {
+                        WorkspaceDescriptor descriptor = new WorkspaceDescriptor();
+                        descriptor.ReadXML(r);
+                        workspaceDescriptors.Add(descriptor);
+                    }
+                    else
+                    {
+                        log.ErrorFormat("The file {0} is not a valid Kinovea workspace file.", file);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("An error happened during the reading of the workspace file {0}.", file);
+                log.Error(e);
+            }
         }
     }
 }

@@ -31,13 +31,13 @@ namespace Kinovea.Services
     public static class LaunchSettingsManager
     {
         /// <summary>
-        /// The window name to load when this instance of Kinovea starts.
+        /// The window or workspace name to load when this instance of Kinovea starts.
         /// Always passed from the command line. Should not be updated afterwards.
         /// </summary>
         public static string RequestedWindowName { get; set; }
 
         /// <summary>
-        /// The window id to load when this instance of Kinovea starts.
+        /// The window or workspace id to load when this instance of Kinovea starts.
         /// Always passed from the command line. Should not be updated afterwards.
         /// </summary>
         public static string RequestedWindowId { get; set; }
@@ -51,7 +51,7 @@ namespace Kinovea.Services
         public static ScreenDescriptorPlayback CommandLineScreenDescriptor { get; set; }
 
         /// <summary>
-        /// When starting on a single video with -video option, this describes the state of the explorer.
+        /// When starting on a single video with -video option, this describes the state of the navigation pane.
         /// This is equivalent to .ExplorerVisible in the window descriptor.
         /// Loading a single video is basically recreating a simplified window descriptor here, but 
         /// we don't care about the other window-specific properties like splitter distances.

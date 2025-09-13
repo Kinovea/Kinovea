@@ -297,6 +297,7 @@
     <Compile Include="Window\WindowDescriptor.cs" />
     <Compile Include="Window\WindowManager.cs" />
     <Compile Include="Window\WindowStartupMode.cs" />
+    <Compile Include="Window\WorkspaceDescriptor.cs" />
     <Compile Include="WinForms\FormsHelper.cs" />
     <Compile Include="Commands\HotkeyCommand.cs" />
     <Compile Include="Commands\HotkeySettings.cs" />

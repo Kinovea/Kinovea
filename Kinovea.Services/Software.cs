@@ -82,6 +82,13 @@ namespace Kinovea.Services
         public static string WindowsDirectory { get; private set; }
 
         /// <summary>
+        /// Workspace descriptors.
+        /// References to windows.
+        /// </summary>
+        public static string WorkspacesDirectory { get; private set; }
+
+
+        /// <summary>
         /// The core preferences file.
         /// </summary>
         public static string PreferencesFile { get; private set; }
@@ -128,14 +135,15 @@ namespace Kinovea.Services
             PreferencesFile             = Path.Combine(SettingsDirectory, "Preferences.xml");
 
             CameraCalibrationDirectory  = Path.Combine(SettingsDirectory, "CameraCalibration");
-            CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             CameraProfilesDirectory     = Path.Combine(SettingsDirectory, "CameraProfiles");
             ColorProfileDirectory       = Path.Combine(SettingsDirectory, "ColorProfiles");
             LogsDirectory               = Path.Combine(SettingsDirectory, "Logs");
+            CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             PointersDirectory           = Path.Combine(SettingsDirectory, "Pointers");
+            TempDirectory               = Path.Combine(SettingsDirectory, "Temp");
             VariablesDirectory          = Path.Combine(SettingsDirectory, "Variables");
             WindowsDirectory            = Path.Combine(SettingsDirectory, "Windows");
-            TempDirectory               = Path.Combine(SettingsDirectory, "Temp");
+            WorkspacesDirectory         = Path.Combine(SettingsDirectory, "Workspaces");
 
             XSLTDirectory           = Path.Combine(applicationDirectory, "xslt");
             ToolbarsDirectory       = Path.Combine(applicationDirectory, "DrawingTools", "Toolbars");
@@ -162,6 +170,7 @@ namespace Kinovea.Services
             CreateDirectory(TempDirectory);
             CreateDirectory(VariablesDirectory);
             CreateDirectory(WindowsDirectory);
+            CreateDirectory(WorkspacesDirectory);
         }
 
         private static void CreateDirectory(string dir)
