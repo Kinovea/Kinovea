@@ -91,6 +91,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuOpenNewWindow = new ToolStripMenuItem();
         private ToolStripMenuItem mnuReopenWindow = new ToolStripMenuItem();
         private ToolStripMenuItem mnuManageWindows = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuManageWorkspaces = new ToolStripMenuItem();
 
         // Options
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
@@ -424,18 +425,21 @@ namespace Kinovea.Root
             mnuOpenNewWindow.Image = Properties.Resources.application_add;
             mnuReopenWindow.Image = Properties.Resources.application_cascade;
             mnuManageWindows.Image = Properties.Resources.application_edit;
-            BuildReopenWindowsMenus();
-
+            mnuManageWorkspaces.Image = Properties.Resources.workspace;
+            
             mnuWindowProperties.Click += mnuWindowProperties_Click;
             mnuOpenNewWindow.Click += mnuOpenNewWindow_Click;
             mnuManageWindows.Click += mnuManageWindows_Click;
+            mnuManageWorkspaces.Click += mnuManageWorkspaces_Click;
 
             mnuWindow.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuWindowProperties,
                 new ToolStripSeparator(),
                 mnuOpenNewWindow,
                 mnuReopenWindow,
-                mnuManageWindows});
+                mnuManageWindows,
+                new ToolStripSeparator(),
+                mnuManageWorkspaces});
 
             #endregion
 
@@ -603,6 +607,8 @@ namespace Kinovea.Root
             mnuOpenNewWindow.Text = "Open new window";
             mnuReopenWindow.Text = "Reopen window";
             mnuManageWindows.Text = "Manage windows…";
+            mnuManageWorkspaces.Text = "Manage workspaces…";
+
             // Rebuild the reopen window menu to get the correct list.
             BuildReopenWindowsMenus();
 
@@ -779,6 +785,15 @@ namespace Kinovea.Root
         private void mnuManageWindows_Click(object sender, EventArgs e)
         {
             FormWindowManager fwm = new FormWindowManager(this);
+            fwm.StartPosition = FormStartPosition.CenterScreen;
+            fwm.ShowDialog();
+            fwm.Dispose();
+
+            RefreshCultureMenu();
+        }
+        private void mnuManageWorkspaces_Click(object sender, EventArgs e)
+        {
+            FormWorkspaceManager fwm = new FormWorkspaceManager();
             fwm.StartPosition = FormStartPosition.CenterScreen;
             fwm.ShowDialog();
             fwm.Dispose();

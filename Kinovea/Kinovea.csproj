@@ -186,6 +186,18 @@
       <DependentUpon>RootLang.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="UserInterface\FormWorkspaceName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FormWorkspaceName.Designer.cs">
+      <DependentUpon>FormWorkspaceName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\FormWorkspaceManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FormWorkspaceManager.Designer.cs">
+      <DependentUpon>FormWorkspaceManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\FormWindowManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -307,6 +319,12 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormWorkspaceName.resx">
+      <DependentUpon>FormWorkspaceName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormWorkspaceManager.resx">
+      <DependentUpon>FormWorkspaceManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormWindowManager.resx">
       <DependentUpon>FormWindowManager.cs</DependentUpon>
@@ -525,6 +543,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <None Include="Resources\rename-16.png" />
+    <None Include="Resources\symlink-file-16.png" />
+    <None Include="Resources\workspace.png" />
     <None Include="Resources\expand_16.png" />
     <None Include="Resources\collapse-16.png" />
     <None Include="Resources\redo-16.png" />

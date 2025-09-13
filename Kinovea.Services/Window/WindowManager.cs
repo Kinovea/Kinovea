@@ -34,6 +34,11 @@ namespace Kinovea.Services
         {
             get { return windowDescriptors; }
         }
+
+        public static List<WorkspaceDescriptor> WorkspaceDescriptors
+        {
+            get { return workspaceDescriptors; }
+        }
         #endregion
 
         #region Members
@@ -208,51 +213,35 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Reload all descriptors for windows and workspaces.
-        /// This is done on application startup and after the list may have changed 
-        /// (add/delete from a window management dialog in any instance).
-        /// Used to find which window to launch on startup and update the list of saved windows.
+        /// Get a list of active windows.
         /// </summary>
-        public static void ReadAllDescriptors()
+        public static List<WindowDescriptor> GetActiveWindows()
         {
-            lastClosedWindow = null;
-            bestSaveTime = DateTime.MinValue;
-            windowDescriptors.Clear();
-            foreach (var file in Directory.GetFiles(Software.WindowsDirectory, "*.xml"))
+            List<WindowDescriptor> activeWindows = new List<WindowDescriptor>();
+            foreach (var d in windowDescriptors)
             {
-                ReadWindowDescriptor(file);
-            }
-
-            workspaceDescriptors.Clear();
-            foreach (var file in Directory.GetFiles(Software.WorkspacesDirectory, "*.xml"))
-            {
-                ReadWorkspaceDescriptor(file);
-            }
-        }
-
-        public static void SaveActiveWindow()
-        {
-            // Save the state and prefs of this instance.
-            WindowDescriptor descriptor = ActiveWindow;
-
-            string filename = descriptor.Id.ToString() + ".xml";
-            string path = Path.Combine(Software.WindowsDirectory, filename);
-
-            try
-            {
-                using (XmlWriter w = XmlWriter.Create(path, xmlWriterSettings))
+                // Myself
+                if (d.Id == ActiveWindow.Id)
                 {
-                    w.WriteStartElement("KinoveaWindow");
-                    descriptor.WriteXML(w);
+                    activeWindows.Add(d);
+                    continue;
                 }
+
+                string titleName = GetFriendlyName(d);
+                string title = string.Format("Kinovea [{0}]", titleName);
+                IntPtr handle = NativeMethods.FindWindow(null, title);
+
+                // Ignore dormant.
+                if (handle == IntPtr.Zero)
+                    continue;
+
+                activeWindows.Add(d);
             }
-            catch (Exception e)
-            {
-                log.Error("An error happened while writing of the window file.");
-                log.Error(e);
-            }
+
+            return activeWindows;
         }
 
+        #region Opening new or old windows
         /// <summary>
         /// Start a new unnamed window.
         /// </summary>
@@ -325,18 +314,75 @@ namespace Kinovea.Services
             p.Start();
         }
 
-        public static void StopInstance(WindowDescriptor d)
+        /// <summary>
+        /// Try to find an active window matching the name or id.
+        /// If found bring it to front and returns true.
+        /// Otherwise returns false.
+        /// </summary>
+        private static bool BringToFront(WindowDescriptor d)
         {
-            // Find the process.
-            string titleName = string.IsNullOrEmpty(d.Name) ? GetIdName(d) : d.Name;
+            string titleName = GetFriendlyName(d);
             string title = string.Format("Kinovea [{0}]", titleName);
             IntPtr handle = NativeMethods.FindWindow(null, title);
             if (handle != IntPtr.Zero)
             {
-                // Instead of process.Kill(), gently ask the window to close itself.
-                // This way it can handle any unsaved data and properly save its 
-                // own state in the window descriptor, including last use date.
-                SendMessage("Kinovea:Window.Close", handle);
+                log.DebugFormat("Requested window is already active. Bringing to front.");
+
+                // Restore if minimized.
+                if (NativeMethods.IsIconic(handle))
+                    NativeMethods.ShowWindow(handle, NativeMethods.SW_RESTORE);
+
+                // Bring to front.
+                NativeMethods.SetForegroundWindow(handle);
+
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region Save and delete
+        public static void SaveActiveWindow()
+        {
+            // Save the state and prefs of this instance.
+            WindowDescriptor descriptor = ActiveWindow;
+
+            string filename = descriptor.Id.ToString() + ".xml";
+            string path = Path.Combine(Software.WindowsDirectory, filename);
+
+            try
+            {
+                using (XmlWriter w = XmlWriter.Create(path, xmlWriterSettings))
+                {
+                    w.WriteStartElement("KinoveaWindow");
+                    descriptor.WriteXML(w);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("An error happened while writing of the window file.");
+                log.Error(e);
+            }
+        }
+
+        public static void SaveWorkspace(WorkspaceDescriptor descriptor)
+        {
+            string filename = descriptor.Id.ToString() + ".xml";
+            string path = Path.Combine(Software.WorkspacesDirectory, filename);
+
+            try
+            {
+                using (XmlWriter w = XmlWriter.Create(path, xmlWriterSettings))
+                {
+                    w.WriteStartElement("KinoveaWorkspace");
+                    descriptor.WriteXML(w);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("An error happened while writing of the workspace file.");
+                log.Error(e);
             }
         }
 
@@ -374,6 +420,41 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// Delete a workspace.
+        /// </summary>
+        public static void DeleteWorkspace(WorkspaceDescriptor d)
+        {
+            if (d == null)
+                return;
+
+            try
+            {
+                string filename = d.Id.ToString() + ".xml";
+                string path = Path.Combine(Software.WorkspacesDirectory, filename);
+
+                // Instead of downright deleting the file we just move it to a trash folder.
+                // In case of misclick the user may restore it manually.
+                string trashDir = Path.Combine(Software.WorkspacesDirectory, "trash");
+                if (!Directory.Exists(trashDir))
+                    Directory.CreateDirectory(trashDir);
+
+                string trashPath = Path.Combine(trashDir, filename);
+                File.Copy(path, trashPath, true);
+                File.Delete(path);
+            }
+            catch (Exception e)
+            {
+                log.Error("An error happened while deleting the workspace file.");
+                log.Error(e);
+            }
+
+            // Remove the entry from our list without reloading everything.
+            workspaceDescriptors.Remove(d);
+        }
+        #endregion
+
+        #region Name and content
+        /// <summary>
         /// Set the name to use in the title bar.
         /// This should be called every time we change the active window name.
         /// And then the main window title bar should be updated.
@@ -401,13 +482,93 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Returns a name derived from the id.
+        /// Get the name of the window for the titlebar or display in UI elements.
+        /// </summary>
+        public static string GetFriendlyName(WindowDescriptor d)
+        {
+            if (d == null)
+                return string.Empty;
+
+            return string.IsNullOrEmpty(d.Name) ? GetIdName(d.Id) : d.Name;
+        }
+
+        /// <summary>
+        /// Get the name of the workspace for display in UI elements.
+        /// </summary>
+        public static string GetFriendlyName(WorkspaceDescriptor d)
+        {
+            if (d == null)
+                return string.Empty;
+
+            return string.IsNullOrEmpty(d.Name) ? GetIdName(d.Id) : d.Name;
+        }
+
+
+        /// <summary>
+        /// Return a name derived from the id.
         /// </summary>
         public static string GetIdName(WindowDescriptor d)
         {
-            return d.Id.ToString().Substring(0, 8);
+            return GetIdName(d.Id);
         }
 
+        /// <summary>
+        /// Return a name derived from the id.
+        /// </summary>
+        public static string GetIdName(WorkspaceDescriptor d)
+        {
+            return GetIdName(d.Id);
+        }
+
+        /// <summary>
+        /// Create a fake name from the first digits of the id.
+        /// </summary>
+        private static string GetIdName(Guid id)
+        {
+            return id.ToString().Substring(0, 8);
+        }
+
+        /// <summary>
+        /// Return a WindowContent based on the screen list.
+        /// </summary>
+        public static WindowContent GetWindowContent(WindowDescriptor d)
+        {
+            if (d.ScreenList.Count == 0)
+            {
+                return WindowContent.Browser;
+            }
+            else if (d.ScreenList.Count == 1)
+            {
+                if (d.ScreenList[0].ScreenType == ScreenType.Playback)
+                {
+                    return WindowContent.Playback;
+                }
+                else
+                {
+                    return WindowContent.Capture;
+                }
+            }
+            else if (d.ScreenList.Count == 2)
+            {
+                if (d.ScreenList[0].ScreenType == ScreenType.Playback && d.ScreenList[1].ScreenType == ScreenType.Playback)
+                {
+                    return WindowContent.DualPlayback;
+                }
+                else if (d.ScreenList[0].ScreenType == ScreenType.Capture && d.ScreenList[1].ScreenType == ScreenType.Capture)
+                {
+                    return WindowContent.DualCapture;
+                }
+                else
+                {
+                    return WindowContent.DualMixed;
+                }
+            }
+
+            return WindowContent.Browser;
+        }
+        #endregion
+
+        #region Loading
         /// <summary>
         /// Create a new unnamed window descriptor, set it as the active window
         /// and save it to the Windows directory.
@@ -490,46 +651,9 @@ namespace Kinovea.Services
             log.DebugFormat("Reopened {0} windows as part of workspace {1}", index, d.Id);
         }
 
+        #endregion
 
-        /// <summary>
-        /// Try to find an active window matching the name or id.
-        /// If found bring it to front and returns true.
-        /// Otherwise returns false.
-        /// </summary>
-        private static bool BringToFront(WindowDescriptor d)
-        {
-            string titleName = string.IsNullOrEmpty(d.Name) ? GetIdName(d) : d.Name;
-            string title = string.Format("Kinovea [{0}]", titleName);
-            IntPtr handle = NativeMethods.FindWindow(null, title);
-            if (handle != IntPtr.Zero)
-            {
-                log.DebugFormat("Requested window is already active. Bringing to front.");
-
-                // Restore if minimized.
-                if (NativeMethods.IsIconic(handle))
-                    NativeMethods.ShowWindow(handle, NativeMethods.SW_RESTORE);
-
-                // Bring to front.
-                NativeMethods.SetForegroundWindow(handle);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public static void WakeUp(IntPtr handle)
-        {
-            if (handle == IntPtr.Zero)
-                return;
-            
-            // Restore if minimized.
-            if (NativeMethods.IsIconic(handle))
-                NativeMethods.ShowWindow(handle, NativeMethods.SW_RESTORE);
-
-            // Bring to front.
-            NativeMethods.SetForegroundWindow(handle);
-        }
+        #region Sending messages and waking up
 
         /// <summary>
         /// Send a message to all live instances.
@@ -554,7 +678,7 @@ namespace Kinovea.Services
                 if (d.Id == ActiveWindow.Id || d.Name == ActiveWindow.Name)
                     continue;
 
-                string titleName = string.IsNullOrEmpty(d.Name) ? GetIdName(d) : d.Name;
+                string titleName = GetFriendlyName(d);
                 string title = string.Format("Kinovea [{0}]", titleName);
                 IntPtr handle = NativeMethods.FindWindow(null, title);
                 
@@ -574,6 +698,62 @@ namespace Kinovea.Services
             cds.Dispose();
         }
 
+        public static void StopInstance(WindowDescriptor d)
+        {
+            // Find the process.
+            string titleName = GetFriendlyName(d);
+            string title = string.Format("Kinovea [{0}]", titleName);
+            IntPtr handle = NativeMethods.FindWindow(null, title);
+            if (handle != IntPtr.Zero)
+            {
+                // Instead of process.Kill(), gently ask the window to close itself.
+                // This way it can handle any unsaved data and properly save its 
+                // own state in the window descriptor, including last use date.
+                SendMessage("Kinovea:Window.Close", handle);
+            }
+        }
+
+        /// <summary>
+        /// Wake up our own window using the handle of the main form.
+        /// </summary>
+        public static void WakeUp(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero)
+                return;
+
+            // Restore if minimized.
+            if (NativeMethods.IsIconic(handle))
+                NativeMethods.ShowWindow(handle, NativeMethods.SW_RESTORE);
+
+            // Bring to front.
+            NativeMethods.SetForegroundWindow(handle);
+        }
+
+        #endregion
+
+        #region Reading descriptors
+        /// <summary>
+        /// Reload all descriptors for windows and workspaces.
+        /// This is done on application startup and after the list may have changed 
+        /// (add/delete from a window management dialog in any instance).
+        /// Used to find which window to launch on startup and update the list of saved windows.
+        /// </summary>
+        public static void ReadAllDescriptors()
+        {
+            lastClosedWindow = null;
+            bestSaveTime = DateTime.MinValue;
+            windowDescriptors.Clear();
+            foreach (var file in Directory.GetFiles(Software.WindowsDirectory, "*.xml"))
+            {
+                ReadWindowDescriptor(file);
+            }
+
+            workspaceDescriptors.Clear();
+            foreach (var file in Directory.GetFiles(Software.WorkspacesDirectory, "*.xml"))
+            {
+                ReadWorkspaceDescriptor(file);
+            }
+        }
 
         /// <summary>
         /// Read one window descriptor, add it to the list and possibly update last closed window.
@@ -613,7 +793,7 @@ namespace Kinovea.Services
         /// <summary>
         /// Import any screen descriptor coming from the command line into the active window.
         /// </summary>
-        public static void ImportLaunchSettings()
+        private static void ImportLaunchSettings()
         {
             // Check if the launch settings has a command line screen descriptor.
             // This is setup when using the -video command line argument or 
@@ -674,5 +854,6 @@ namespace Kinovea.Services
                 log.Error(e);
             }
         }
+        #endregion
     }
 }

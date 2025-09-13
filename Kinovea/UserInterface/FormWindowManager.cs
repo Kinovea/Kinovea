@@ -26,20 +26,10 @@ namespace Kinovea.Root
             Sleeping,
         }
 
-        private enum ScreenLayout
-        {
-            Explorer,
-            Playback,
-            Capture,
-            DualPlayback,
-            DualCapture,
-            DualMixed
-        }
-
         private class ListViewWindowDescriptor
         {
             public InstanceStatus InstanceStatus { get; set; }
-            public ScreenLayout ScreenLayout { get; set; }
+            public WindowContent WindowContent { get; set; }
             public string Name { get; set; }
 
             public DateTime LastSave { get; set; }
@@ -116,7 +106,7 @@ namespace Kinovea.Root
             };
 
             var colLayout = new OLVColumn();
-            colLayout.AspectName = "ScreenLayout";
+            colLayout.AspectName = "WindowContent";
             colLayout.Groupable = false;
             colLayout.Sortable = false;
             colLayout.IsEditable = false;
@@ -125,7 +115,7 @@ namespace Kinovea.Root
             colLayout.TextAlign = HorizontalAlignment.Center;
             colLayout.AspectGetter = delegate (object rowObject)
             {
-                return ((ListViewWindowDescriptor)rowObject).ScreenLayout;
+                return ((ListViewWindowDescriptor)rowObject).WindowContent;
             };
 
             colLayout.AspectToStringConverter = delegate (object rowObject)
@@ -136,19 +126,19 @@ namespace Kinovea.Root
             colLayout.ImageGetter = delegate (object rowObject)
             {
                 ListViewWindowDescriptor lvwd = (ListViewWindowDescriptor)rowObject;
-                switch (lvwd.ScreenLayout)
+                switch (lvwd.WindowContent)
                 {
-                    case ScreenLayout.Playback:
+                    case WindowContent.Playback:
                         return "playback";
-                    case ScreenLayout.Capture:
+                    case WindowContent.Capture:
                         return "capture";
-                    case ScreenLayout.DualPlayback:
+                    case WindowContent.DualPlayback:
                         return "dualplayback";
-                    case ScreenLayout.DualCapture:
+                    case WindowContent.DualCapture:
                         return "dualcapture";
-                    case ScreenLayout.DualMixed:
+                    case WindowContent.DualMixed:
                         return "dualmixed";
-                    case ScreenLayout.Explorer:
+                    case WindowContent.Browser:
                     default:
                         return "explorer";
                 }
@@ -202,9 +192,9 @@ namespace Kinovea.Root
             foreach (var descriptor in descriptors)
             {
                 ListViewWindowDescriptor lvwd = new ListViewWindowDescriptor();
-                lvwd.Name = GetName(descriptor);
+                lvwd.Name = WindowManager.GetFriendlyName(descriptor);
                 lvwd.InstanceStatus = GetInstanceStatus(descriptor);
-                lvwd.ScreenLayout = GetScreenLayout(descriptor);
+                lvwd.WindowContent = WindowManager.GetWindowContent(descriptor);
                 lvwd.LastSave = descriptor.LastSave;
                 lvwd.Tag = descriptor;
                 rows.Add(lvwd);
@@ -243,7 +233,7 @@ namespace Kinovea.Root
         private void PopulateScreenList(WindowDescriptor d)
         {
             bool hasData = d != null;
-            grpScreenList.Text = hasData ? string.Format("[{0}]", GetName(d)) : "";
+            grpScreenList.Text = hasData ? string.Format("[{0}]", WindowManager.GetFriendlyName(d)) : "";
             btnScreen1.Visible = hasData;
             lblScreen1.Visible = hasData;
             btnScreen2.Visible = hasData;
@@ -339,14 +329,6 @@ namespace Kinovea.Root
             }
         }
 
-        private string GetName(WindowDescriptor d)
-        {
-            string name = d.Name;
-            if (string.IsNullOrEmpty(name))
-                name = WindowManager.GetIdName(d);
-            return name;
-        }
-
         private InstanceStatus GetInstanceStatus(WindowDescriptor d)
         {
             InstanceStatus status = InstanceStatus.Sleeping;
@@ -363,48 +345,12 @@ namespace Kinovea.Root
             return status;
         }
 
-        private ScreenLayout GetScreenLayout(WindowDescriptor d)
-        {
-            if (d.ScreenList.Count == 0)
-            {
-                return ScreenLayout.Explorer;
-            }
-            else if (d.ScreenList.Count == 1)
-            {
-                if (d.ScreenList[0].ScreenType == ScreenType.Playback)
-                {
-                    return ScreenLayout.Playback;
-                }
-                else
-                {
-                    return ScreenLayout.Capture;
-                }
-            }
-            else if (d.ScreenList.Count == 2)
-            {
-                if (d.ScreenList[0].ScreenType == ScreenType.Playback && d.ScreenList[1].ScreenType == ScreenType.Playback)
-                {
-                    return ScreenLayout.DualPlayback;
-                }
-                else if (d.ScreenList[0].ScreenType == ScreenType.Capture && d.ScreenList[1].ScreenType == ScreenType.Capture)
-                {
-                    return ScreenLayout.DualCapture;
-                }
-                else
-                {
-                    return ScreenLayout.DualMixed;
-                }
-            }
-
-            return ScreenLayout.Explorer;
-        }
-
         /// <summary>
         /// Returns true if the instance is currently running.
         /// </summary>
         private bool IsRunning(WindowDescriptor d)
         {
-            string titleName = string.IsNullOrEmpty(d.Name) ? WindowManager.GetIdName(d) : d.Name;
+            string titleName = WindowManager.GetFriendlyName(d);
             string title = string.Format("Kinovea [{0}]", titleName);
             IntPtr handle = NativeMethods.FindWindow(null, title);
             return handle != IntPtr.Zero;

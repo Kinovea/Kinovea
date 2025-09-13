@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             Initialize();
             tbAlias.SelectAll();
-            tbAlias.Focus();
+            tbAlias.Select();
         }
         
         private void Initialize()

@@ -220,6 +220,7 @@
     <Compile Include="Filesystem\FolderNavigationType.cs" />
     <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Bitmap\BitmapHelper.cs" />
+    <Compile Include="Types\WindowContent.cs" />
     <Compile Include="Types\UserCommand.cs" />
     <Compile Include="Preferences\PreferencesHelper.cs" />
     <Compile Include="Types\CalibrationValidationMode.cs" />
