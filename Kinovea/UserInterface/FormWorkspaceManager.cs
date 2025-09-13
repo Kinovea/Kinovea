@@ -10,6 +10,9 @@ using Kinovea.ScreenManager;
 using Kinovea.Root.Languages;
 using Kinovea.Services;
 using BrightIdeasSoftware;
+using System.Runtime.InteropServices;
+using System.IO;
+using IWshRuntimeLibrary;
 
 namespace Kinovea.Root
 {
@@ -26,6 +29,8 @@ namespace Kinovea.Root
         }
         #endregion
 
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public FormWorkspaceManager()
         {
             InitializeComponent();
@@ -40,10 +45,13 @@ namespace Kinovea.Root
         {
             this.Text = "Manage workspaces";
             btnClose.Text = "Close";
+            grpWorkspaces.Text = "Workspace";
             grpWindowList.Text = "Windows";
+            btnCreateShortcut.Text = "      " + "Create a desktop shortcut";
 
             toolTip1.SetToolTip(btnAdd, "Create a workspace from the active windows");
             toolTip1.SetToolTip(btnRename, "Rename the selected workspace");
+            toolTip1.SetToolTip(btnCreateShortcut2, "Create a desktop shortcut");
             toolTip1.SetToolTip(btnDelete, "Delete the selected workspace");
         }
 
@@ -167,10 +175,11 @@ namespace Kinovea.Root
 
             // Start with nothing selected.
             olvWindows.Items.Clear();
+            AfterSelection();
         }
 
         /// <summary>
-        /// Populate the screen list area for the selected instance.
+        /// Populate the window list for the selected workspace.
         /// </summary>
         private void PopulateWindowList(WorkspaceDescriptor d)
         {
@@ -238,31 +247,96 @@ namespace Kinovea.Root
 
             fwn.Dispose();
             PopulateWorkspaceList();
+            SelectDescriptor(selectedWorkspace);
         }
 
-        #region Event handlers
-        private void olvWorkspaces_SelectedIndexChanged(object sender, EventArgs e)
+        private void CreateShortcut()
         {
             WorkspaceDescriptor selectedWorkspace = olvWorkspaces.SelectedObject as WorkspaceDescriptor;
             if (selectedWorkspace == null)
                 return;
 
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            //Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+
+            string shortcutFileName = string.Format("Kinovea - {0}.lnk", WindowManager.GetFriendlyName(selectedWorkspace));
+            string link = Path.Combine(desktopPath, shortcutFileName);
+
+            string targetPath = string.Format("{0}", Application.ExecutablePath);
+            string arguments = string.Format("-id {0}", selectedWorkspace.Id.ToString());
+            string workingDirectory = Application.StartupPath;
+            string iconLocation = string.Format("{0}", Application.ExecutablePath);
+
+            try
+            {
+                var shell = new WshShell();
+                var shortcut = shell.CreateShortcut(link) as IWshShortcut;
+                shortcut.TargetPath = targetPath;
+                shortcut.Arguments = arguments;
+                shortcut.WorkingDirectory = workingDirectory;
+                shortcut.IconLocation = iconLocation;
+                shortcut.Save();
+
+                // Show altert box to confirm.
+                MessageBox.Show(
+                    this, 
+                    string.Format("Shortcut created at:\n{0}", link), 
+                    "Shortcut created",
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("Error while saving shortcut to workspace. {0}.", ex.Message);
+            }
+        }
+
+        private void AfterSelection()
+        {
+            WorkspaceDescriptor selectedWorkspace = olvWorkspaces.SelectedObject as WorkspaceDescriptor;
+            bool hasSelection = selectedWorkspace != null;
+
+            btnRename.Enabled = hasSelection;
+            btnCreateShortcut.Enabled = hasSelection;
+            btnCreateShortcut2.Enabled = hasSelection;
+            btnDelete.Enabled = hasSelection;
+
+            if (!hasSelection)
+                return;
+
             PopulateWindowList(selectedWorkspace);
+        }
+
+        #region Event handlers
+        private void olvWorkspaces_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AfterSelection();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             // Immediately create and save a workspace with the active windows,
             // then select it and launch the Name dialog.
-            WorkspaceDescriptor descriptor = new WorkspaceDescriptor();
+            WorkspaceDescriptor workspaceDescriptor = new WorkspaceDescriptor();
             List<WindowDescriptor> activeWindows = WindowManager.GetActiveWindows();
-            var ids = activeWindows.Select(a => a.Id);
-            descriptor.ReplaceWindows(ids.ToList());
-            WindowManager.SaveWorkspace(descriptor);
-            
+            var ids = activeWindows.Select(a => a.Id).ToList();
+            workspaceDescriptor.ReplaceWindows(ids);
+
+            // If we are making a single-window workspace give it the window name.
+            bool singleWindow = ids.Count == 1;
+            if (singleWindow)
+            {
+                workspaceDescriptor.Name = WindowManager.GetFriendlyName(WindowManager.ActiveWindow);
+            }
+
+            WindowManager.SaveWorkspace(workspaceDescriptor);
             PopulateWorkspaceList();
-            SelectDescriptor(descriptor);
-            LaunchNameDialog();
+            SelectDescriptor(workspaceDescriptor);
+            
+            if (!singleWindow)
+            {
+                LaunchNameDialog();
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -291,6 +365,13 @@ namespace Kinovea.Root
         {
             LaunchNameDialog();
         }
+
+        private void btnShortcut_Click(object sender, EventArgs e)
+        {
+            CreateShortcut();
+        }
         #endregion
+
+     
     }
 }
