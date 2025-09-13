@@ -148,7 +148,9 @@ namespace Kinovea.ScreenManager
                 Color commandColor = Color.MistyRose;
                 rows.Add(MakeRow("Path to video file", path, "filepath", commandColor));
                 rows.Add(MakeRow("Path to capture folder", Path.GetDirectoryName(path), "folderpath", commandColor));
-                rows.Add(MakeRow("File name", Path.GetFileName(path), "filename", commandColor));
+                rows.Add(MakeRow("File name with extension", Path.GetFileName(path), "filename.ext", commandColor));
+                rows.Add(MakeRow("File name without extension", Path.GetFileNameWithoutExtension(path), "filename", commandColor));
+                rows.Add(MakeRow("File extension", Path.GetExtension(path).Substring(1), "ext", commandColor));
                 rows.Add(MakeRow("Annotation file name", Path.GetFileNameWithoutExtension(path) + ".kva", "kva", commandColor));
             }
 

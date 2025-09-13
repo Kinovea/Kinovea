@@ -2267,10 +2267,15 @@ namespace Kinovea.ScreenManager
         {
             // We don't automatically insert quotes in case the user wants to build a path
             // from smaller parts, they need to handle the enclosing quotes themselves.
+            // In .NET the "extension" contains the leading dot, but this feels awkward when 
+            // rebuilding file names from parts and it doesn't match the other variables.
+            // filename.ext, filename, ext. So we remove the leading dot from ext.
             Dictionary<string, string> context = DynamicPathResolver.BuildDateContext(true);
             context["filepath"]     = path;
             context["folderpath"]   = Path.GetDirectoryName(path);
-            context["filename"]     = Path.GetFileName(path);
+            context["filename.ext"] = Path.GetFileName(path);
+            context["filename"]     = Path.GetFileNameWithoutExtension(path);
+            context["ext"]          = Path.GetExtension(path).Substring(1);
             context["kva"]          = Path.GetFileNameWithoutExtension(path) + ".kva";
             return context;
         }

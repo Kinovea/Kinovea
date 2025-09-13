@@ -1545,6 +1545,9 @@ namespace Kinovea.ScreenManager
         }
         public void UpdateTrackPoint(Bitmap bitmap)
         {
+            if (bitmap == null)
+                return;
+
             // Happens when mouse up and editing a track.
             using (var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(bitmap))
             {

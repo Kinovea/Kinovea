@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
             // Variables.
             // Any word enclosed in %%.
             // That will include windows built-in variables like %appdata%.
-            e.ChangedRange.SetStyle(variableStyle, @"%\w+%");
+            e.ChangedRange.SetStyle(variableStyle, @"%[\w\.]+%");
         }
 
         private void btnInsertVariable_Click(object sender, EventArgs e)
