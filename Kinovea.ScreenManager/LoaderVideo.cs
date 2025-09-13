@@ -118,6 +118,7 @@ namespace Kinovea.ScreenManager
             if (screenDescriptor == null)
                 return;
 
+            NotificationCenter.RaiseBeforeLoadVideo();
             NotificationCenter.RaiseStopPlayback(null);
 
             if (player.FrameServer.Loaded)

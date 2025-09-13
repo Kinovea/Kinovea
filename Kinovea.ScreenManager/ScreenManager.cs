@@ -222,7 +222,7 @@ namespace Kinovea.ScreenManager
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
-            NotificationCenter.ExternalCommand += NotificationCenter_ExternalCommand;
+            NotificationCenter.ReceivedExternalCommand += NotificationCenter_ExternalCommand;
 
             playerScreens = screenList.Where(s => s is PlayerScreen).Select(s => s as PlayerScreen);
             captureScreens = screenList.Where(s => s is CaptureScreen).Select(s => s as CaptureScreen);

@@ -36,10 +36,11 @@ namespace Kinovea.ScreenManager
     public partial class ThumbnailViewerContainer : KinoveaControl
     {
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
-        
+
         #region Members
         private string path;
         private List<string> files = new List<string>();
+        private bool showingScreen = false;
         private ThumbnailViewerType currentViewerType = ThumbnailViewerType.Files;
         private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles("[files]");
         private ThumbnailViewerFiles viewerShortcuts = new ThumbnailViewerFiles("[shortcuts]");
@@ -52,8 +53,9 @@ namespace Kinovea.ScreenManager
         public ThumbnailViewerContainer()
         {
             InitializeComponent();
-            InitializeControlBar();
+            Populate();
             
+            NotificationCenter.BeforeLoadVideo += NotificationCenter_BeforeLoadVideo;
             NotificationCenter.CurrentDirectoryChanged += NotificationCenter_CurrentDirectoryChanged;
             NotificationCenter.ExplorerTabChanged += NotificationCenter_ExplorerTabChanged;
             
@@ -61,8 +63,41 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten; 
             CameraTypeManager.CameraThumbnailProduced += CameraTypeManager_CameraThumbnailProduced;
-        
+
+            viewerFiles.FileLoadAsked += Viewer_FileLoadAsked;
+            viewerFiles.BeforeLoad += Viewer_BeforeLoad;
+            viewerFiles.ProgressChanged += Viewer_ProgressChanged;
+            viewerFiles.AfterLoad += Viewer_AfterLoad;
+
+            viewerShortcuts.FileLoadAsked += Viewer_FileLoadAsked;
+            viewerShortcuts.BeforeLoad += Viewer_BeforeLoad;
+            viewerShortcuts.ProgressChanged += Viewer_ProgressChanged;
+            viewerShortcuts.AfterLoad += Viewer_AfterLoad;
+
+            viewerCameras.BeforeLoad += Viewer_BeforeLoad;
+            viewerCameras.ProgressChanged += Viewer_ProgressChanged;
+            viewerCameras.AfterLoad += Viewer_AfterLoad;
+
+            ShowHideAddressBar(false);
+            UpdateThumbnailsSize();
+
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
+        }
+
+        private void Populate()
+        {
+            // Right aligned controls
+            // right to left: explorer tab selector, size selector, progress bar.
+            ExplorerThumbSize size = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
+            sizeSelector.ForceSelect(size);
+
+            sizeSelector.Top = 10;
+            sizeSelector.Left = viewerSelector.Left - sizeSelector.Width - 30;
+            sizeSelector.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            sizeSelector.SelectionChanged += SizeSelector_SelectionChanged;
+            splitMain.Panel1.Controls.Add(sizeSelector);
+
+            sizeSelector.Visible = true;
         }
 
         #region Public methods
@@ -72,17 +107,31 @@ namespace Kinovea.ScreenManager
             viewerShortcuts.RefreshUICulture();
             viewerCameras.RefreshUICulture();
         }
-        
+
+        /// <summary>
+        /// Hide the panel and cancel any ongoing loading operation.
+        /// </summary>
         public void HideContent()
         {
-            this.Visible = false;
+            if (this.showingScreen)
+                return;
+
+            log.DebugFormat("Hiding thumbnails panel.");
             viewerFiles.CancelLoading();
             viewerShortcuts.CancelLoading();
             viewerCameras.SetHidden();
+            this.Visible = false;
+            this.showingScreen = true;
         }
-        public void Unhide()
+
+        /// <summary>
+        /// Unhide the panel and refresh the content if needed.
+        /// </summary>
+        public void UnhideContent()
         {
+            log.DebugFormat("Unhiding thumbnails panel to {0}", currentViewerType.ToString());
             this.Visible = true;
+            this.showingScreen = false;
 
             this.Cursor = Cursors.WaitCursor;
             
@@ -95,20 +144,27 @@ namespace Kinovea.ScreenManager
                 
             this.Cursor = Cursors.Default;
         }
+        
         public void SetFullScreen(bool fullScreen)
         {
             btnCloseFullscreen.Image = fullScreen ? Properties.Resources.collapse_16 : Properties.Resources.expand_16;
         }
         #endregion
-        
-        #region Private methods
+
+        #region Event handlers
+
+        private void NotificationCenter_BeforeLoadVideo(object sender, EventArgs e)
+        {
+            HideContent();
+        }
+
         private void NotificationCenter_ExplorerTabChanged(object sender, ExplorerTabEventArgs e)
         {
             SwitchContent(Convert(e.Tab));
         }
-
         private void NotificationCenter_CurrentDirectoryChanged(object sender, CurrentDirectoryChangedEventArgs e)
         {
+            // Remember where we are even if we are not visible, to restore the view when we become visible again.
             this.path = e.Path;
             this.files = e.Files;
             
@@ -117,7 +173,7 @@ namespace Kinovea.ScreenManager
 
             lblAddress.Text = path;
 
-            if (currentViewerType != ThumbnailViewerType.Files && currentViewerType != ThumbnailViewerType.Shortcuts)
+            if (currentViewerType == ThumbnailViewerType.Cameras)
                 return;
 
             if (e.IsShortcuts)
@@ -141,59 +197,24 @@ namespace Kinovea.ScreenManager
             viewerCameras.CameraForgotten(e.Value);
         }
 
+        private void CameraTypeManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
+        {
+            if (!e.HadError && !e.Cancelled)
+                viewerCameras.CameraImageReceived(e.Summary, e.Thumbnail);
+        }
+
         private void SizeSelector_SelectionChanged(object sender, EventArgs e)
         {
-            if (currentViewerType == ThumbnailViewerType.Files)
-                viewerFiles.UpdateThumbnailsSize(sizeSelector.SelectedSize);
-            else if (currentViewerType == ThumbnailViewerType.Shortcuts)
-                viewerShortcuts.UpdateThumbnailsSize(sizeSelector.SelectedSize);
-            else
-                viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
-                
+            UpdateThumbnailsSize();
             PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = sizeSelector.SelectedSize;
         }
-        
-        private void Selector_SelectionChanged(object sender, EventArgs e)
+
+        private void ViewerSelector_SelectionChanged(object sender, EventArgs e)
         {
             ViewerSelectorOption option = viewerSelector.Selected;
             ThumbnailViewerType selectedContent = (ThumbnailViewerType)option.Data;
             SwitchContent(selectedContent);
             NotificationCenter.RaiseExplorerTabChanged(this, Convert(selectedContent));
-        }
-        
-        private void InitializeControlBar()
-        {
-            // Right aligned controls
-            // right to left: explorer tab selector, size selector, progress bar.
-            ExplorerThumbSize size = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
-            sizeSelector.ForceSelect(size);
-
-            viewerFiles.UpdateThumbnailsSize(size);
-            viewerFiles.FileLoadAsked += Viewer_FileLoadAsked;
-            viewerFiles.BeforeLoad += Viewer_BeforeLoad;
-            viewerFiles.ProgressChanged += Viewer_ProgressChanged;
-            viewerFiles.AfterLoad += Viewer_AfterLoad;
-            
-            viewerShortcuts.UpdateThumbnailsSize(size);
-            viewerShortcuts.FileLoadAsked += Viewer_FileLoadAsked;
-            viewerShortcuts.BeforeLoad += Viewer_BeforeLoad;
-            viewerShortcuts.ProgressChanged += Viewer_ProgressChanged;
-            viewerShortcuts.AfterLoad += Viewer_AfterLoad;
-            
-            viewerCameras.UpdateThumbnailsSize(size);
-            viewerCameras.BeforeLoad += Viewer_BeforeLoad;
-            viewerCameras.ProgressChanged += Viewer_ProgressChanged;
-            viewerCameras.AfterLoad += Viewer_AfterLoad;
-
-            sizeSelector.Top = 10;
-            sizeSelector.Left = viewerSelector.Left - sizeSelector.Width - 30;
-            sizeSelector.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            sizeSelector.SelectionChanged += SizeSelector_SelectionChanged;
-            splitMain.Panel1.Controls.Add(sizeSelector);
-
-            sizeSelector.Visible = true;
-            ShowHideAddressBar(false);
-            SizeSelector_SelectionChanged(this, EventArgs.Empty);
         }
         
         private void Viewer_FileLoadAsked(object sender, FileLoadAskedEventArgs e)
@@ -216,6 +237,28 @@ namespace Kinovea.ScreenManager
             //progressBar.Value = 100;
             //progressBar.Visible = false;
         }
+        private void btnCloseFullscreen_Click(object sender, EventArgs e)
+        {
+            NotificationCenter.RaiseFullScreenToggle(this);
+        }
+        #endregion
+
+        #region Private methods
+        private void UpdateThumbnailsSize()
+        {
+            if (currentViewerType == ThumbnailViewerType.Files)
+                viewerFiles.UpdateThumbnailsSize(sizeSelector.SelectedSize);
+            else if (currentViewerType == ThumbnailViewerType.Shortcuts)
+                viewerShortcuts.UpdateThumbnailsSize(sizeSelector.SelectedSize);
+            else
+                viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
+        }
+
+        /// <summary>
+        /// Switch to the correct type of viewer.
+        /// For files and shortcuts this does not trigger any loading operation.
+        /// For cameras it starts the discovery process (only if we are visible).
+        /// </summary>
         private void SwitchContent(ThumbnailViewerType viewerType)
         {
             if(viewer != null && currentViewerType == viewerType)
@@ -322,15 +365,6 @@ namespace Kinovea.ScreenManager
             
             return content;
         }
-        private void CameraTypeManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
-        {
-            if(!e.HadError && !e.Cancelled)
-                viewerCameras.CameraImageReceived(e.Summary, e.Thumbnail);
-        }
-        private void ThumbnailViewerContainer_Load(object sender, EventArgs e)
-        {
-            // Do not start discovering cameras on every load, wait until we actually switch to the camera tab.
-        }
         #endregion
 
         #region Commands
@@ -363,11 +397,6 @@ namespace Kinovea.ScreenManager
             sizeSelector.Decrease();
         }
         #endregion
-
-        private void btnCloseFullscreen_Click(object sender, EventArgs e)
-        {
-            NotificationCenter.RaiseFullScreenToggle(this);
-        }
 
         #region Folder navigation
         private void btnUp_Click(object sender, EventArgs e)

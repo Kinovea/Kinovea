@@ -173,7 +173,7 @@ namespace Kinovea.Root
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
             NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
             NotificationCenter.WakeUpAsked += NotificationCenter_WakeUpAsked;
-            NotificationCenter.ExternalCommand += NotificationCenter_ExternalCommand;
+            NotificationCenter.ReceivedExternalCommand += NotificationCenter_ExternalCommand;
             NotificationCenter.TriggerPreferencesUpdated += (s, e) => PreferencesUpdated(e.Value);
 
             log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");

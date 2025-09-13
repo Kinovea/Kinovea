@@ -23,6 +23,9 @@ using System.Collections.Generic;
 
 namespace Kinovea.Services
 {
+    /// <summary>
+    /// A static class used as a central event hub to decouple modules.
+    /// </summary>
     public static class NotificationCenter
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -34,11 +37,14 @@ namespace Kinovea.Services
                 RecentFilesChanged(sender, EventArgs.Empty);
         }
         
+        /// <summary>
+        /// Event raised whenever a module makes a change to the file system.
+        /// For example when creating a new recording or deleting a file from the thumbnails viewer.
+        /// </summary>
         public static EventHandler<RefreshFileExplorerEventArgs> RefreshFileExplorer;
         public static void RaiseRefreshFileExplorer(object sender, bool refreshThumbnails)
         {
-            if(RefreshFileExplorer != null)
-                RefreshFileExplorer(sender, new RefreshFileExplorerEventArgs(refreshThumbnails));
+            RefreshFileExplorer?.Invoke(sender, new RefreshFileExplorerEventArgs(refreshThumbnails));
         }
 
         public static EventHandler ToggleNavigationPanel;
@@ -61,12 +67,22 @@ namespace Kinovea.Services
                 FileSelected(sender, new FileActionEventArgs(file));
         }
 
+
+        public static EventHandler BeforeLoadVideo;
+        public static void RaiseBeforeLoadVideo(object sender = null)
+        {
+            BeforeLoadVideo?.Invoke(sender, EventArgs.Empty);
+        }
+
         public static EventHandler<FileActionEventArgs> FileOpened;
         public static void RaiseFileOpened(object sender, string file)
         {
             if (FileOpened != null)
                 FileOpened(sender, new FileActionEventArgs(file));
         }
+
+
+
 
         public static EventHandler<FileActionEventArgs> FolderChangeAsked;
         /// <summary>
@@ -93,10 +109,9 @@ namespace Kinovea.Services
         }
 
         public static EventHandler StopPlayback;
-        public static void RaiseStopPlayback(object sender)
+        public static void RaiseStopPlayback(object sender = null)
         {
-            if (StopPlayback != null)
-                StopPlayback(sender, EventArgs.Empty);
+            StopPlayback?.Invoke(sender, EventArgs.Empty);
         }
 
         public static EventHandler<CurrentDirectoryChangedEventArgs> CurrentDirectoryChanged;
@@ -153,13 +168,13 @@ namespace Kinovea.Services
             TriggerPreferencesUpdated?.Invoke(sender, new EventArgs<bool>(sendMessage));
         }
 
-
-
-        public static EventHandler<ExternalCommandEventArgs> ExternalCommand;
-        public static void RaiseExternalCommand(object sender, string name)
+        /// <summary>
+        /// This event is raised when the application window received an external command.
+        /// </summary>
+        public static EventHandler<ExternalCommandEventArgs> ReceivedExternalCommand;
+        public static void RaiseReceivedExternalCommand(object sender, string name)
         {
-            if (ExternalCommand != null)
-                ExternalCommand(sender, new ExternalCommandEventArgs(name));
+            ReceivedExternalCommand?.Invoke(sender, new ExternalCommandEventArgs(name));
         }
     }
 }

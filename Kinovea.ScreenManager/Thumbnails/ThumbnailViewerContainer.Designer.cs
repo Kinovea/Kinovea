@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
       this.viewerSelector.Name = "viewerSelector";
       this.viewerSelector.Size = new System.Drawing.Size(84, 18);
       this.viewerSelector.TabIndex = 26;
-      this.viewerSelector.SelectionChanged += new System.EventHandler(this.Selector_SelectionChanged);
+      this.viewerSelector.SelectionChanged += new System.EventHandler(this.ViewerSelector_SelectionChanged);
       // 
       // btnCloseFullscreen
       // 
@@ -175,7 +175,6 @@ namespace Kinovea.ScreenManager
       this.Controls.Add(this.splitMain);
       this.Name = "ThumbnailViewerContainer";
       this.Size = new System.Drawing.Size(553, 387);
-      this.Load += new System.EventHandler(this.ThumbnailViewerContainer_Load);
       this.splitMain.Panel1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
       this.splitMain.ResumeLayout(false);

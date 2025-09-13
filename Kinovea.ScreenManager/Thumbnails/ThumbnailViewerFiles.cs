@@ -111,8 +111,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void CurrentDirectoryChanged(string path, List<string> files)
         {
-            log.DebugFormat("Thumbnail viewer directory change:{0}. Size:{1}.", 
-                path, this.Size);
+            log.DebugFormat("Thumbnail viewer directory change: {0} -> {1}. {2} files.", 
+                this.path == null ? "null" : this.path,
+                path, 
+                (files == null) ? "0" : files.Count.ToString());
 
             if (this.Width < 200 || this.Height < 200)
             {
@@ -379,7 +381,10 @@ namespace Kinovea.ScreenManager
                 filesToLoad.Count, files.Count, loaders.Count);
 
             if (filesToLoad.Count == 0)
+            {
+                log.DebugFormat("All thumbnails already loaded.");
                 return;
+            }
 
             Size maxSize = new Size(432, 360);
             SummaryLoader sl = new SummaryLoader(filesToLoad, maxSize);

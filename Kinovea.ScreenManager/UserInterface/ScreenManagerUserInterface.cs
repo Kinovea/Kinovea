@@ -111,7 +111,7 @@ namespace Kinovea.ScreenManager
                 ClearRightScreen();
 
                 if (!Closing)
-                    thumbnailViewerContainer.Unhide();
+                    thumbnailViewerContainer.UnhideContent();
             }
             else
             {
