@@ -175,9 +175,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExpTreeLib, Version=2.11.7225.42618, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="ExpTreeLib, Version=2.11.9383.33758, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\ExpTreeLib\Net48\ExpTreeLib.dll</HintPath>
+      <HintPath>..\Refs\ExpTreeLib\ExpTreeLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>

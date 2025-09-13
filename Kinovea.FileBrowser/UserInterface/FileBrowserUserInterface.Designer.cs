@@ -54,6 +54,7 @@ namespace Kinovea.FileBrowser
       this.lvCameras = new System.Windows.Forms.ListView();
       this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
       this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
+      this.imageList1 = new System.Windows.Forms.ImageList(this.components);
       this.tabControl.SuspendLayout();
       this.tabPageClassic.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitExplorerFiles)).BeginInit();
@@ -121,11 +122,11 @@ namespace Kinovea.FileBrowser
             | System.Windows.Forms.AnchorStyles.Right)));
       this.etExplorer.BackColor = System.Drawing.Color.White;
       this.etExplorer.Cursor = System.Windows.Forms.Cursors.Default;
-      this.etExplorer.Location = new System.Drawing.Point(0, 31);
+      this.etExplorer.Location = new System.Drawing.Point(3, 31);
       this.etExplorer.Name = "etExplorer";
       this.etExplorer.RootDisplayName = "Bureau";
       this.etExplorer.ShowRootLines = false;
-      this.etExplorer.Size = new System.Drawing.Size(305, 270);
+      this.etExplorer.Size = new System.Drawing.Size(299, 267);
       this.etExplorer.TabIndex = 0;
       this.etExplorer.ExpTreeNodeSelected += new ExpTreeLib.ExpTree.ExpTreeNodeSelectedEventHandler(this.etExplorer_ExpTreeNodeSelected);
       this.etExplorer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.etExplorer_MouseDown);
@@ -442,6 +443,13 @@ namespace Kinovea.FileBrowser
       this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
       this.imgListTabs.Images.SetKeyName(3, "camera");
       // 
+      // imageList1
+      // 
+      this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+      this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+      this.imageList1.Images.SetKeyName(0, "0-percent-16.png");
+      this.imageList1.Images.SetKeyName(1, "area-chart-16.png");
+      // 
       // FileBrowserUserInterface
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -493,5 +501,6 @@ namespace Kinovea.FileBrowser
         public System.Windows.Forms.Label lblCaptureHistory;
         public System.Windows.Forms.Label lblFolders;
         private System.Windows.Forms.ListView lvCaptured;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

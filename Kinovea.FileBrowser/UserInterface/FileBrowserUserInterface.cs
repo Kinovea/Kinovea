@@ -111,9 +111,9 @@ namespace Kinovea.FileBrowser
             lvShortcuts.ItemDrag += listView_ItemDrag;
             lvCaptured.ItemDrag += listView_ItemDrag;
 
-            etExplorer.AllowDrop = false;
-            etShortcuts.AllowDrop = false;
-            
+            InitializeTreeView(etExplorer);
+            InitializeTreeView(etShortcuts);
+
             lvCameras.ItemDrag += lvCameras_ItemDrag;
             
             BuildContextMenu();
@@ -136,6 +136,18 @@ namespace Kinovea.FileBrowser
             
             Application.Idle += new EventHandler(this.IdleDetector);
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("FileExplorer");
+        }
+
+        private void InitializeTreeView(ExpTree tv)
+        {
+            tv.AllowDrop = false;
+            tv.tv1.BorderStyle = BorderStyle.None;
+            tv.tv1.ItemHeight = 20;
+            tv.tv1.ShowLines = false;
+            tv.tv1.ShowPlusMinus = true; // Can't get the chevron.
+            tv.tv1.FullRowSelect = true;
+            tv.tv1.HotTracking = false; // underline on hover.
+            tv.tv1.Indent = 20;
         }
 
         private void BuildContextMenu()
