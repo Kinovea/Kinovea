@@ -60,8 +60,9 @@ namespace Kinovea.ScreenManager
       this.pnlThumbs.BackColor = System.Drawing.Color.White;
       this.pnlThumbs.ForeColor = System.Drawing.Color.Black;
       this.pnlThumbs.Location = new System.Drawing.Point(10, 10);
+      this.pnlThumbs.Margin = new System.Windows.Forms.Padding(0);
       this.pnlThumbs.Name = "pnlThumbs";
-      this.pnlThumbs.Padding = new System.Windows.Forms.Padding(15, 0, 30, 0);
+      this.pnlThumbs.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
       this.pnlThumbs.Size = new System.Drawing.Size(580, 432);
       this.pnlThumbs.TabIndex = 0;
       this.pnlThumbs.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlThumbnails_MouseDown);

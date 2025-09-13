@@ -47,6 +47,10 @@ namespace Kinovea.Root
             manualUpdate = true;
 
             tbName.Text = name;
+            rbOpenExplorer.Text = "Open the file browser";
+            rbContinue.Text = "Continue where you left off";
+            rbScreenList.Text = "Open specific content";
+
             rbOpenExplorer.Checked = (startupMode == WindowStartupMode.Explorer);
             rbContinue.Checked = (startupMode == WindowStartupMode.Continue);
             rbScreenList.Checked = (startupMode == WindowStartupMode.ScreenList);

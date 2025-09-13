@@ -156,10 +156,10 @@ namespace Kinovea.ScreenManager
         }
         private void BuildContextMenus()
         {
-            mnuLaunch.Image = Properties.Resources.film_go;
-            mnuOpenInExplorer.Image = Properties.Resources.folder_new;
-            mnuRename.Image = Properties.Resources.rename;
-            mnuDelete.Image = Properties.Resources.delete;
+            mnuLaunch.Image         = Resources.television;
+            mnuOpenInExplorer.Image = Resources.folder_new;
+            mnuRename.Image         = Resources.rename;
+            mnuDelete.Image         = Resources.delete;
             
             mnuLaunch.Click += mnuLaunch_Click;
             mnuOpenInExplorer.Click += mnuOpenInExplorer_Click;

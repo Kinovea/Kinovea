@@ -34,7 +34,6 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler LaunchAsked;
-        public event EventHandler LaunchWatcherAsked;
         public event EventHandler LocateAsked;
         public event EventHandler SelectAsked;
         public event EventHandler HideAsked;
@@ -64,7 +63,6 @@ namespace Kinovea.ScreenManager
         
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuLoadVideo = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuLoadWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRename = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
@@ -105,14 +103,12 @@ namespace Kinovea.ScreenManager
                 btnClose.Click -= btnClose_Click;
 
                 mnuLoadVideo.Click -= mnuLoadVideo_Click;
-                mnuLoadWatcher.Click += mnuLoadWatcher_Click;
                 mnuLocate.Click -= mnuLocate_Click;
                 mnuRename.Click -= mnuRename_Click;
                 mnuHide.Click -= mnuHide_Click;
                 mnuDelete.Click -= mnuDelete_Click;
             
                 mnuLoadVideo.Dispose();
-                mnuLoadWatcher.Dispose();
                 mnuLocate.Dispose();
                 mnuRename.Dispose();
                 mnuHide.Dispose();
@@ -151,15 +147,13 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BuildContextMenus()
         {
-            mnuLoadVideo.Image = Properties.Resources.film_go;
-            mnuLoadWatcher.Image = Properties.Resources.replaywatcher;
+            mnuLoadVideo.Image = Properties.Resources.television;
             mnuLocate.Image = Properties.Resources.folder_new;
             mnuRename.Image = Properties.Capture.rename;
             mnuHide.Image = Properties.Resources.hide;
             mnuDelete.Image = Properties.Resources.delete;
             
             mnuLoadVideo.Click += mnuLoadVideo_Click;
-            mnuLoadWatcher.Click += mnuLoadWatcher_Click;
             mnuLocate.Click += mnuLocate_Click;
             mnuRename.Click += mnuRename_Click;
             mnuHide.Click += mnuHide_Click;
@@ -168,8 +162,6 @@ namespace Kinovea.ScreenManager
             popMenu.Items.AddRange(new ToolStripItem[] 
             { 
                 mnuLoadVideo, 
-                //mnuLoadWatcher, 
-                new ToolStripSeparator(), 
                 mnuLocate, 
                 mnuRename, 
                 new ToolStripSeparator(), 
@@ -184,7 +176,6 @@ namespace Kinovea.ScreenManager
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
             mnuLoadVideo.Text = ScreenManagerLang.Generic_Open;
-            mnuLoadWatcher.Text = ScreenManagerLang.mnuOpenAsReplayWatcher;
             mnuLocate.Text = ScreenManagerLang.mnuThumbnailLocate;
             mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
             mnuHide.Text = ScreenManagerLang.mnuGridsHide;
@@ -354,11 +345,6 @@ namespace Kinovea.ScreenManager
                 LaunchAsked(this, EventArgs.Empty);
         }
 
-        private void mnuLoadWatcher_Click(object sender, EventArgs e)
-        {
-            if (LaunchWatcherAsked != null)
-                LaunchWatcherAsked(this, EventArgs.Empty);
-        }
         private void mnuLocate_Click(object sender, EventArgs e)
         {
             if (LocateAsked != null)

@@ -6,14 +6,13 @@
   <entry name="Pencil" />
   <entry name="HumanModel">
     <subentry name="HumanModel2" />
-    <subentry name="Bikefit" />
-    <subentry name="Archery" />
-    <subentry name="Profile" />
-    <subentry name="Genu" />
-    <subentry name="Posture" />
-    <subentry name="CSVL" />
     <subentry name="Canis" />
     <subentry name="Equus" />
+    <subentry name="Profile" />
+    <subentry name="Genu" />
+    <subentry name="CSVL" />
+    <subentry name="Bikefit" />
+    <subentry name="Archery" />
   </entry>
   <entry name="Line">
     <subentry name="Curve" />

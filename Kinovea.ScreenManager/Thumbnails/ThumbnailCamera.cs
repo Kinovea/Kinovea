@@ -179,7 +179,7 @@ namespace Kinovea.ScreenManager
         
         private void BuildContextMenus()
         {
-            mnuLaunch.Image = Properties.Resources.film_go;
+            mnuLaunch.Image = Properties.Resources.camera_video;
             mnuRename.Image = Properties.Resources.rename;
             mnuForget.Image = Properties.Resources.delete;
             mnuDelete.Image = Properties.Resources.delete;

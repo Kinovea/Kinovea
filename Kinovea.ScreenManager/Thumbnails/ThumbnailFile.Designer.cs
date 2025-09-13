@@ -79,7 +79,7 @@
       this.Controls.Add(this.tbFileName);
       this.Controls.Add(this.lblFileName);
       this.Controls.Add(this.picBox);
-      this.Margin = new System.Windows.Forms.Padding(15, 15, 3, 3);
+      this.Margin = new System.Windows.Forms.Padding(0, 0, 15, 15);
       this.Name = "ThumbnailFile";
       this.Size = new System.Drawing.Size(240, 200);
       this.Click += new System.EventHandler(this.AllControls_Click);

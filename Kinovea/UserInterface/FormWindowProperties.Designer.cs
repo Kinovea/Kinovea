@@ -208,7 +208,7 @@
       this.rbOpenExplorer.Name = "rbOpenExplorer";
       this.rbOpenExplorer.Size = new System.Drawing.Size(109, 17);
       this.rbOpenExplorer.TabIndex = 41;
-      this.rbOpenExplorer.Text = "Open the explorer";
+      this.rbOpenExplorer.Text = "Open the file browser";
       this.rbOpenExplorer.UseVisualStyleBackColor = true;
       this.rbOpenExplorer.CheckedChanged += new System.EventHandler(this.rbStartupMode_CheckedChanged);
       // 
