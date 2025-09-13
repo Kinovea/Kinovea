@@ -256,6 +256,7 @@ namespace Kinovea.FileBrowser
 
                 // Show the right browser panel.
                 NotificationCenter.RaiseBrowserContentTypeChanged(this, tab);
+                NotificationCenter.RaiseUpdateStatus();
             }
                 
             DoRefreshFileList(true);
@@ -863,6 +864,7 @@ namespace Kinovea.FileBrowser
                 
                 // Show the right browser panel.
                 NotificationCenter.RaiseBrowserContentTypeChanged(this, activeTab);
+                NotificationCenter.RaiseUpdateStatus();
             }
             
             DoRefreshFileList(true);
@@ -953,6 +955,7 @@ namespace Kinovea.FileBrowser
 
 
             NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, filenames, isShortcuts, doRefresh);
+            NotificationCenter.RaiseUpdateStatus();
             this.Cursor = Cursors.Default;
         }
 

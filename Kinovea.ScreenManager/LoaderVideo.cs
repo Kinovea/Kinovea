@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
                 manager.OrganizeScreens();
                 manager.OrganizeCommonControls();
                 manager.OrganizeMenus();
-                manager.UpdateStatusBar();
+                NotificationCenter.RaiseUpdateStatus();
             }
         }
    

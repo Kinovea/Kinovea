@@ -216,10 +216,6 @@ namespace Kinovea.ScreenManager
 
             InitializeVideoFilters();
 
-            // The variable tables should be loaded before the screens are initialized as part of the workspace, 
-            // since they may contain variables used in the default kva paths to load with the screens.
-            VariablesRepository.Initialize();
-
             NotificationCenter.StopPlaybackAsked += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
             NotificationCenter.ReceivedExternalCommand += NotificationCenter_ReceivedExternalCommand;
@@ -828,7 +824,8 @@ namespace Kinovea.ScreenManager
             RefreshCultureMenu();
             OrganizeMenus();
             RefreshCultureToolbar();
-            UpdateStatusBar();
+            NotificationCenter.RaiseUpdateStatus();
+
             dualPlayer.RefreshUICulture();
             dualCapture.RefreshUICulture();
             view.RefreshUICulture();
@@ -984,7 +981,7 @@ namespace Kinovea.ScreenManager
             ResetSync();
             dualPlayer.CommitLaunchSettings();
             OrganizeMenus();
-            UpdateStatusBar();
+            NotificationCenter.RaiseUpdateStatus();
             return;
         }
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
@@ -1118,7 +1115,7 @@ namespace Kinovea.ScreenManager
         public void OrganizeScreens()
         {
             view.OrganizeScreens(screenList);
-            UpdateStatusBar();
+            NotificationCenter.RaiseUpdateStatus();
 
             for (int i = 0; i < screenList.Count; i++)
                 screenList[i].Identify(i);
@@ -1166,28 +1163,28 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void UpdateStatusBar()
+        /// <summary>
+        /// Get the current status string for the status bar.
+        /// </summary>
+        public string GetStatus()
         {
-            //------------------------------------------------------------------
-            // Function called on RefreshUiCulture, CommandShowScreen...
-            // and calling upper module (supervisor).
-            //------------------------------------------------------------------
-
-            String StatusString = "";
-
+            String statusString = "";
             switch(screenList.Count)
             {
+                case 0:
+                    statusString = view.GetBrowserStatusString();
+                    break;
                 case 1:
-                    StatusString = screenList[0].Status;
+                    statusString = screenList[0].Status;
                     break;
                 case 2:
-                    StatusString = screenList[0].Status + " | " + screenList[1].Status;
+                    statusString = screenList[0].Status + " | " + screenList[1].Status;
                     break;
                 default:
                     break;
             }
 
-            NotificationCenter.RaiseStatusUpdated(this, StatusString);
+            return statusString;
         }
         public void OrganizeCommonControls()
         {
@@ -2776,7 +2773,7 @@ namespace Kinovea.ScreenManager
             SwapScreens();
             OrganizeScreens();
             OrganizeMenus();
-            UpdateStatusBar();
+            NotificationCenter.RaiseUpdateStatus();
 
             dualPlayer.SwapSync();
         }
@@ -3334,7 +3331,7 @@ namespace Kinovea.ScreenManager
                 screen.AudioDeviceLost();
         }
 
-        private void NotificationCenter_PreferencesOpened(object source, EventArgs e)
+        private void NotificationCenter_PreferencesOpened(object sender, EventArgs e)
         {
             audioInputLevelMonitor.Enabled = false;
             udpMonitor.Enabled = false;

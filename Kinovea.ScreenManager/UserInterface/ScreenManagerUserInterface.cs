@@ -136,6 +136,10 @@ namespace Kinovea.ScreenManager
         {
             thumbnailViewerContainer.SetFullScreen(isFullScreen);
         }
+        public string GetBrowserStatusString()
+        {
+            return thumbnailViewerContainer.GetStatusString();
+        }
         #endregion
 
         private void InitializeThumbnailsContainer()

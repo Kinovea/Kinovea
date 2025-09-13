@@ -130,47 +130,71 @@ namespace Kinovea.Root
             bool enableCameraManagers = true;
             bool enableTools = true;
             bool enableCursors = true;
+            bool enableVariables = true;
 
             if (enableVideoReaders)
             {
                 List<Type> videoReaders = new List<Type>();
                 log.Debug("Loading video readers.");
+                stopwatch.Restart();
                 videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
                 videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
                 videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
                 videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
                 videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
                 VideoTypeManager.LoadVideoReaders(videoReaders);
+                log.DebugFormat("Loaded video readers:{0} ms.", stopwatch.ElapsedMilliseconds);
             }
 
             if (enableCameraManagers)
             {
                 log.Debug("Loading built-in camera managers.");
+                stopwatch.Restart();
                 CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
                 CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
                 CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
+                log.DebugFormat("Loaded built-in camera managers:{0} ms.", stopwatch.ElapsedMilliseconds);
 
-                log.Debug("Loading camera managers plugins.");
-                //CameraTypeManager.LoadCameraManagersPlugins();
+                log.Debug("Loading external camera managers.");
+                stopwatch.Restart();
+                CameraTypeManager.LoadCameraManagersPlugins();
+                log.DebugFormat("Loaded external camera managers:{0} ms.", stopwatch.ElapsedMilliseconds);
             }
 
             if (enableTools)
             {
                 log.Debug("Loading tools.");
+                stopwatch.Restart();
                 ToolManager.LoadTools();
+                log.DebugFormat("Loaded tools:{0} ms.", stopwatch.ElapsedMilliseconds);
             }
             
             if (enableCursors)
             {
                 log.Debug("Loading cursors.");
+                stopwatch.Restart();
                 PointerManager.LoadPointers();
+                log.DebugFormat("Loaded cursors:{0} ms.", stopwatch.ElapsedMilliseconds);
             }
 
+            if (enableVariables)
+            {
+                log.Debug("Loading variables.");
+                stopwatch.Restart();
+                VariablesRepository.Initialize();
+                log.DebugFormat("Loaded variables:{0} ms.", stopwatch.ElapsedMilliseconds);
+            }
+
+            // Build all other modules and their UI.
             BuildSubTree();
+
+            // Build the host UI.
             mainWindow = new KinoveaMainWindow(this);
+
+            // Hook to global events.
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
-            NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Value;
+            NotificationCenter.UpdateStatus += NotificationCenter_UpdateStatus;
             NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
             NotificationCenter.WakeUpAsked += NotificationCenter_WakeUpAsked;
             NotificationCenter.ReceivedExternalCommand += NotificationCenter_ReceivedExternalCommand;
@@ -182,8 +206,6 @@ namespace Kinovea.Root
             ExtendStatusBar(mainWindow.statusStrip);
             ExtendUI();
 
-            log.Debug("Register global services offered at Root level.");
-            
             FormsHelper.SetMainForm(mainWindow);
         }
         #endregion
@@ -204,7 +226,7 @@ namespace Kinovea.Root
             // get picked up later by auto-launch in screen manager view OnLoad().
             screenManager.RecoverCrash();
             
-            log.Debug("Calling Application.Run() to boot up the UI.");
+            log.Debug("Calling Application.Run().");
             Application.Run(mainWindow);
         }
         #endregion
@@ -982,6 +1004,11 @@ namespace Kinovea.Root
         private void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
         {
             ToggleFullScreen();
+        }
+
+        private void NotificationCenter_UpdateStatus(object sender, EventArgs e)
+        {
+            statusLabel.Text = screenManager.GetStatus();
         }
 
         private void NotificationCenter_PreferenceTabAsked(object sender, EventArgs<PreferenceTab> e)

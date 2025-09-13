@@ -98,7 +98,7 @@ namespace Kinovea.FileBrowser
             if (!Debugger.IsAttached)
                 return;
             
-            log.DebugFormat("Session history:");
+            log.DebugFormat("Session history (debugger attached):");
             for (int i = 0; i < history.Count; i++)
             {
                 log.DebugFormat("{0}{1}", i == index ? ">>> " : "", history[i].Path);

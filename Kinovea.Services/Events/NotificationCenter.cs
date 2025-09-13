@@ -160,13 +160,12 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Event raised by the screen manager when the status bar should be updated,
-        /// after a change in screen content.
+        /// Event raised when the status bar should be updated.
         /// </summary>
-        public static EventHandler<EventArgs<string>> StatusUpdated;
-        public static void RaiseStatusUpdated(object sender, string status)
+        public static EventHandler UpdateStatus;
+        public static void RaiseUpdateStatus()
         {
-            StatusUpdated?.Invoke(sender, new EventArgs<string>(status));
+            UpdateStatus?.Invoke(null, EventArgs.Empty);
         }
 
         /// <summary>

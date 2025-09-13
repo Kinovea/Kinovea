@@ -149,6 +149,17 @@ namespace Kinovea.ScreenManager
         {
             btnCloseFullscreen.Image = fullScreen ? Properties.Resources.collapse_16 : Properties.Resources.expand_16;
         }
+
+        public string GetStatusString()
+        {
+            if (viewer == null)
+                return "";
+
+            if (currentViewerType == BrowserContentType.Files || currentViewerType == BrowserContentType.Shortcuts)
+                return path;
+            else
+                return "Camera list";
+        }
         #endregion
 
         #region Event handlers
@@ -215,6 +226,7 @@ namespace Kinovea.ScreenManager
             BrowserContentType selectedContent = (BrowserContentType)option.Data;
             SwitchContent(selectedContent);
             NotificationCenter.RaiseBrowserContentTypeChanged(this, selectedContent);
+            NotificationCenter.RaiseUpdateStatus();
         }
         
         private void Viewer_FileLoadAsked(object sender, FileLoadAskedEventArgs e)
@@ -264,7 +276,7 @@ namespace Kinovea.ScreenManager
             if(viewer != null && currentViewerType == viewerType)
                 return;
 
-            log.DebugFormat("Switching from {0} to {1}.", currentViewerType, viewerType);
+            log.DebugFormat("Switching from {0} to {1}.", viewer == null ? "null" : currentViewerType.ToString(), viewerType);
             
             ClearContent();
             this.splitMain.Panel2.Controls.Clear();
