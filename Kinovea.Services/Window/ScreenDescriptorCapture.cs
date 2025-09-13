@@ -97,6 +97,8 @@ namespace Kinovea.Services
         /// </summary>
         public UserCommand UserCommand { get; set; }
 
+        public bool CapturedFilesPanelForceCollapsed { get; set; }
+
         public ScreenDescriptorCapture()
         {
             Id = Guid.NewGuid();
@@ -109,6 +111,7 @@ namespace Kinovea.Services
             FileName = "";
             EnableCommand = false;
             UserCommand = new UserCommand();
+            CapturedFilesPanelForceCollapsed = false;
         }
 
         public IScreenDescriptor Clone()
@@ -124,6 +127,7 @@ namespace Kinovea.Services
             clone.FileName = this.FileName;
             clone.EnableCommand = this.EnableCommand;
             clone.UserCommand = this.UserCommand.Clone();
+            clone.CapturedFilesPanelForceCollapsed = this.CapturedFilesPanelForceCollapsed;
             return clone;
         }
 
@@ -171,6 +175,9 @@ namespace Kinovea.Services
                     case "UserCommand":
                         UserCommand = new UserCommand(reader);
                         break;
+                    case "CapturedFilesPanelForceCollapsed":
+                        CapturedFilesPanelForceCollapsed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -198,6 +205,9 @@ namespace Kinovea.Services
                 UserCommand.WriteXML(w);
                 w.WriteEndElement();
             }
+
+            w.WriteElementString("CapturedFilesPanelForceCollapsed", XmlHelper.WriteBoolean(CapturedFilesPanelForceCollapsed));
+
         }
     }
 }

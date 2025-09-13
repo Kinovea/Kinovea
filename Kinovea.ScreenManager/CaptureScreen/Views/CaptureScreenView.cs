@@ -51,10 +51,12 @@ namespace Kinovea.ScreenManager
         
         public string CurrentFilename
         {
-            get 
-            { 
-                return tbFilename.Text;
-            }
+            get { return tbFilename.Text; }
+        }
+
+        public bool CapturedFilesPanelForceCollapsed
+        {
+            get { return capturedFilesPanelForceCollapsed; }
         }
 
         /// <summary>
@@ -74,6 +76,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private CaptureScreen presenter;
         private CapturedFilesView capturedFilesView;
+        private bool capturedFilesPanelForceCollapsed = false;
         private bool recording;
         private bool grabbing;
         private bool armed = true;
@@ -375,6 +378,8 @@ namespace Kinovea.ScreenManager
             SelectCaptureFolder(sdc.CaptureFolder);
 
             tbFilename.Text = sdc.FileName; 
+
+            capturedFilesPanelForceCollapsed = sdc.CapturedFilesPanelForceCollapsed;
         }
 
         public void UpdateNextVideoFilename(string filename)
@@ -385,7 +390,7 @@ namespace Kinovea.ScreenManager
         
         public void ShowThumbnails()
         {
-            if(!pnlCapturedVideos.Visible)
+            if(!pnlCapturedVideos.Visible && !capturedFilesPanelForceCollapsed)
                 ToggleCapturedVideosPanel();
         }
         
@@ -424,6 +429,10 @@ namespace Kinovea.ScreenManager
         }
         private void BtnCapturedVideosFold_Click(object sender, EventArgs e)
         {
+            // If we are currently visible, we are going to force collapse it.
+            // If we are not visible we are going to force expand it.
+            capturedFilesPanelForceCollapsed = pnlCapturedVideos.Visible;
+            
             ToggleCapturedVideosPanel();
         }
         private void BtnClose_Click(object sender, EventArgs e)

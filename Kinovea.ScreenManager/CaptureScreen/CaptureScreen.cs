@@ -490,6 +490,7 @@ namespace Kinovea.ScreenManager
             sd.DelayedDisplay = delayedDisplay;
             sd.CaptureFolder = view.CaptureFolder.Id;
             sd.FileName = view.CurrentFilename;
+            sd.CapturedFilesPanelForceCollapsed = view.CapturedFilesPanelForceCollapsed;
 
             // Some info is already up to date.
             sd.Id = screenDescriptor.Id;
