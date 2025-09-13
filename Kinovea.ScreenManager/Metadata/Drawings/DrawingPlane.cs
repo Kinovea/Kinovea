@@ -159,8 +159,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
         #endregion
 
-        private static readonly int minimumSubdivisions = 1;
-        private static readonly int maximumSubdivisions = 50;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 

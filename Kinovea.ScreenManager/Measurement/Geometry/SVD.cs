@@ -12,7 +12,7 @@ namespace Kinovea.ScreenManager
     // Just a copy-paste of SVD algorithm from Numerical Recipes but updated for C#
     // (as authors state, the code is aimed to be machine readable, so blame them
     // for all those c/f/g/h/s variable)
-    internal class svd
+    internal static class svd
     {
         public static void svdcmp(double[,] a, out double[] w, out double[,] v)
         {

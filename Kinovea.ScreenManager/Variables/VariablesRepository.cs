@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// List of variable tables indexed by the csv file name.
         /// </summary>
-        public static Dictionary<string, VariableTable> VariableTables { get; private set; } = new Dictionary<string, VariableTable>();
+        public static Dictionary<string, VariableTable> VariableTables { get; } = new Dictionary<string, VariableTable>();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

@@ -99,16 +99,6 @@ namespace Kinovea.ScreenManager
 
             return canDrawArrow;
         }
-        
-        private static void DrawTriangle(Graphics canvas, Color color, PointF a, PointF b, PointF c)
-        {
-            using (Pen pen = new Pen(color))
-            {
-                canvas.DrawLine(pen, a, b);
-                canvas.DrawLine(pen, b, c);
-                canvas.DrawLine(pen, c, a);
-            }
-        }
 
         private static void FillTriangle(Graphics canvas, Color color, PointF a, PointF b, PointF c)
         {

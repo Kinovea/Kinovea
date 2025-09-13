@@ -1661,7 +1661,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Interpolate the filename variables with the current context.
-            string filenameWithoutExtension = view.CurrentFilename;
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string path = BuildRecordingPath(true);
             if (string.IsNullOrEmpty(path))

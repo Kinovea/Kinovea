@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
         /// Values of the first column. 
         /// This is used to identify and select the context on this table.
         /// </summary>
-        public List<string> Keys { get; private set; } = new List<string>();
+        public List<string> Keys { get; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the key of the currently selected context on this table.

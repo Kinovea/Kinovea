@@ -200,12 +200,6 @@ namespace Kinovea.ScreenManager
             };
         }
 
-        private void lvSymbols_DoubleClick(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
         private void olvVariables_DoubleClick(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;

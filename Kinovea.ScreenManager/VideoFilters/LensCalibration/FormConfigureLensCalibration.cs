@@ -111,9 +111,6 @@ namespace Kinovea.ScreenManager
             maxIterations_ValueChanged(sender, EventArgs.Empty);
         }
 
-        private void btnApply_Click(object sender, EventArgs e)
-        {
-        }
         #endregion
 
         #region OK/Cancel/Close

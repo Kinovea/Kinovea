@@ -41,15 +41,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private string currentStickerRef;
         private string pickedStickerRef;
-        private List<string> recentStickerRefs;
         private int buttonSize = 48;
         private int margin = 4;
         #endregion
 
         #region Construction and Initialization
-        public FormStickerPicker(string currentStickerRef)
+        public FormStickerPicker()
         {
             this.SuspendLayout();
             InitializeComponent();

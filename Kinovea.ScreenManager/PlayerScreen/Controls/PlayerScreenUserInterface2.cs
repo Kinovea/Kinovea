@@ -86,9 +86,9 @@ namespace Kinovea.ScreenManager
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
         public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
+        
         public event EventHandler ExportImageAsked;
         public event EventHandler ExportImageSequenceAsked;
-        public event EventHandler ExportKeyImagesAsked;
         public event EventHandler ExportVideoAsked;
         public event EventHandler ExportVideoWithPausesAsked;
         public event EventHandler ExportVideoSlideshowAsked;
@@ -5879,5 +5879,6 @@ namespace Kinovea.ScreenManager
 
 
         #endregion
+
     }
 }

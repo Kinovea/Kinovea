@@ -454,7 +454,6 @@ namespace Kinovea.ScreenManager
             // Export requests coming from the view.
             view.ExportImageAsked += (s, e) => ExportImages(ImageExportFormat.Image);
             view.ExportImageSequenceAsked += (s, e) => ExportImages(ImageExportFormat.ImageSequence);
-            view.ExportKeyImagesAsked += (s, e) => ExportImages(ImageExportFormat.KeyImages);
             view.ExportVideoAsked += (s, e) => ExportVideo(VideoExportFormat.Video);
             view.ExportVideoSlideshowAsked+= (s, e) => ExportVideo(VideoExportFormat.VideoSlideShow);
             view.ExportVideoWithPausesAsked += (s, e) => ExportVideo(VideoExportFormat.VideoWithPauses);

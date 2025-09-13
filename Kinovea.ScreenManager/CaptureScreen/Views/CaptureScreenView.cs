@@ -474,14 +474,6 @@ namespace Kinovea.ScreenManager
         {
             presenter.View_Configure();
         }
-        private void FNBImage_ImageClick(object sender, EventArgs e)
-        {
-            
-        }
-        private void FNBVideo_ImageClick(object sender, EventArgs e)
-        {
-            
-        }
 
         private void BtnSnapshot_Click(object sender, EventArgs e)
         {

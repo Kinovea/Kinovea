@@ -296,7 +296,7 @@ namespace Kinovea.ScreenManager
 
             bool changedSticker = false;
             
-            FormStickerPicker fsp = new FormStickerPicker(stickerRef);
+            FormStickerPicker fsp = new FormStickerPicker();
             FormsHelper.Locate(fsp);
             if (fsp.ShowDialog() == DialogResult.OK)
             {

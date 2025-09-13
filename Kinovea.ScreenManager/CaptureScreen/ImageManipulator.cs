@@ -94,7 +94,6 @@ namespace Kinovea.ScreenManager
             Point mouse = e.Location;
 
             Point deltaStart = mouse.Subtract(mouseStart);
-            Point delta = mouse.Subtract(mousePrevious);
             mousePrevious = mouse;
             
             if(manipulationType == ManipulationType.Move)
@@ -285,14 +284,6 @@ namespace Kinovea.ScreenManager
             displayRectangle = new Rectangle(left, top, width, height);
             
             //log.DebugFormat("Delta:{0}, Rectangle ref:{1}, New:{2}", delta, refDisplayRectangle, displayRectangle);
-        }
-        
-        private int Extremum(int a, int b)
-        {
-            if(Math.Abs(a) > Math.Abs(b))
-                return a;
-            else
-                return b;
         }
         
         private float Extremum(float a, float b)

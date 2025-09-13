@@ -24,7 +24,6 @@ namespace Kinovea.ScreenManager
         bool active;
         private CommonControlsCapture view = new CommonControlsCapture();
         private List<CaptureScreen> screens = new List<CaptureScreen>();
-        private HotkeyCommand[] hotkeys;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         #endregion

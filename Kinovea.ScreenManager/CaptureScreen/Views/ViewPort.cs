@@ -48,7 +48,6 @@ namespace Kinovea.ScreenManager
         private static int resizerOffset = resizerBitmap.Width / 2;
         private int resizerIndex = -1;
 
-        private bool enableDoubleClickZoom = true;
         private RecordingStatus recordingStatus;
         private float recordingStatusProgress = 1.0f;
         private MessageToaster toaster;
