@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Kinovea.ScreenManager.Languages;
 using System.Globalization;
 using System.IO;
+using System.Diagnostics;
 
 namespace Kinovea.Root
 {
@@ -186,10 +187,12 @@ namespace Kinovea.Root
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
             cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.xx[x] + " + RootLang.TimeCodeFormat_Frames);
-#if DEBUG
-            cmbTimeCodeFormat.Items.Add("Normalized");
-            cmbTimeCodeFormat.Items.Add("Timestamps");
-#endif
+            
+            if (Debugger.IsAttached)
+            {
+                cmbTimeCodeFormat.Items.Add("Normalized");
+                cmbTimeCodeFormat.Items.Add("Timestamps");
+            }
 
             // enum Kinovea.Services.SpeedUnit.
             lblSpeedUnit.Text = RootLang.dlgPreferences_Player_UnitsSpeed;

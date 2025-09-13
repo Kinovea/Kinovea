@@ -73,7 +73,7 @@ namespace Kinovea.Video
         private int m_CurrentIndex = -1;
         private VideoFrame m_Current;
         private readonly object m_Locker = new object();
-        
+
         private int m_DefaultTotalCapacity = 25;
         private int m_TotalCapacity = 25;
         private int m_DefaultOldFramesCapacity = 8;
@@ -138,14 +138,15 @@ namespace Kinovea.Video
             //m_TimeWatcher.DumpTimes();
             return read;
         }
+        
         public bool MoveTo(long _timestamp)
         {
             m_Drops = 0;
-                
-            if(!Contains(_timestamp))
+
+            if (!Contains(_timestamp))
                 return false;
             
-            if( m_Current != null && _timestamp == m_Current.Timestamp)
+            if( m_Current != null && m_Current.Timestamp == _timestamp)
                 return true;
 
             lock(m_Locker)
@@ -167,20 +168,27 @@ namespace Kinovea.Video
             
             return true;
         }
+        
         public void ResetDrops()
         {
             m_Drops = 0;
         }
+        
         public bool HasNext(int _skip)
         {
             lock(m_Locker)
                 return m_CurrentIndex + m_Drops + _skip + 1 < m_Frames.Count;
         }
+        
         public void Add(VideoFrame _frame)
         {
+            // Currently the first frame added is from the UI thread and all the other ones 
+            // are from the prebuffering thread.
             lock(m_Locker)
             {
-                //log.DebugFormat("Add - Pushing frame [{0}] to prebuffer. ({1}/{2}).", _frame.Timestamp, m_Frames.Count+1, m_TotalCapacity);
+                //log.DebugFormat("Pushing frame [{0}] to prebuffer. ({1}/{2}).", 
+                //    _frame.Timestamp, m_Frames.Count+1, m_TotalCapacity);
+                
                 m_Frames.Add(_frame);
                 UpdateSegment();
                 while (m_Frames.Count >= m_TotalCapacity)
@@ -194,7 +202,7 @@ namespace Kinovea.Video
         }
         public bool Contains(long _timestamp)
         {
-            lock(m_Locker)
+            lock (m_Locker)
             {
                 if(m_Segment.Wrapped)
                 {
@@ -210,7 +218,7 @@ namespace Kinovea.Video
         }
         public void Clear()
         {
-            lock(m_Locker)
+            lock (m_Locker)
             {
                 m_Current = null;
                 
@@ -229,7 +237,7 @@ namespace Kinovea.Video
         }
         public void UnblockAndMakeRoom()
         {
-            lock(m_Locker)
+            lock (m_Locker)
             {
                 // This is used to temporarily deactivate the prebuffering thread without 
                 // completely clearing it. The decoding thread is potentially waiting on a full buffer,
@@ -237,10 +245,12 @@ namespace Kinovea.Video
                 // However, the next Add is assumed to run on the UI thread, so it must not block.
                 // So we actually need to have two empty slots: one to push the read,
                 // and one to make that push non-blocking.
-                log.Debug("Unblocking prebuffering thread and making room for a non blocking addition.");
+                log.DebugFormat("Unblocking prebuffering thread and making room for a non blocking addition. {0} ({1} frames).",
+                    m_Segment, m_Frames.Count);
                 
                 while(m_Frames.Count > m_TotalCapacity - 2)
                 {
+                    //log.DebugFormat("Removing frame with ts: {0}.", m_Frames[0].Timestamp);
                     DisposeFrame(m_Frames[0]);
                     m_Frames.RemoveAt(0);
                     m_CurrentIndex--;
@@ -251,6 +261,10 @@ namespace Kinovea.Video
             }
         }
         
+        /// <summary>
+        /// The working zone was updated from the outside.
+        /// Update our internal state accordingly for the wrap-around detection.
+        /// </summary>
         public void UpdateWorkingZone(VideoSection _newZone)
         {
             if(m_Frames.Count > 0)
@@ -258,6 +272,7 @@ namespace Kinovea.Video
             
             m_WorkingZone = _newZone;
         }
+
         /// <summary>
         /// Remove all items that are outside the working zone.
         /// </summary>
@@ -294,6 +309,7 @@ namespace Kinovea.Video
                 Monitor.Pulse(m_Locker);
             }
         }
+        
         public bool IsRolloverJump(long _timestamp)
         {
             // A rollover (back to begining after end of working zone),
@@ -349,7 +365,8 @@ namespace Kinovea.Video
             else
                 m_Segment = new VideoSection(m_Frames[0].Timestamp, m_Frames[m_Frames.Count - 1].Timestamp);
 
-            //log.DebugFormat("Updated segment: {0}", m_Segment);
+            //if (Thread.CurrentThread.Name != "PreBuffering")
+            //    log.DebugFormat("Updated segment: {0}", m_Segment);
         }
         private int GetWrapIndex()
         {

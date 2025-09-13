@@ -145,9 +145,14 @@ namespace Kinovea.Video
             get { return (Flags & VideoCapabilities.CanStabilize) != 0; }
         }
         #endregion
-        
+
         #endregion
-        
+
+        // Map of requested timestamps vs actual timestamps.
+        // The request are based on average time stamp but the files often
+        // have non regular timestamps intervals.
+        private Dictionary<long, long> tsMap = new Dictionary<long, long>();
+
         #region Open/Close
         public abstract OpenVideoResult Open(string filePath);
         
@@ -166,8 +171,27 @@ namespace Kinovea.Video
         #endregion
 
         #region Low level frame requests
+
+        /// <summary>
+        /// Map requested timestamp to actual timestamp, if we have seen it before.
+        /// </summary>
+        public long MapTimestamp(long requested)
+        {
+            if (tsMap.ContainsKey(requested))
+                return tsMap[requested];
+            
+            return requested;
+        }
+
+        public void AddTimestampMapping(long requested, long actual)
+        {
+            if (!tsMap.ContainsKey(requested))
+                tsMap.Add(requested, actual);
+        }
+
         /// <summary>
         /// Must set `Current` to the next video frame.
+        /// This is called in the context of the playback loop.
         /// For async readers, if the frame is not available right now, call it a drop.
         /// Decoding of that next frame should have happened in the decoding thread already.
         /// If `decodeIfNecessary` is true then force sync and only return after the frame has 
@@ -178,6 +202,7 @@ namespace Kinovea.Video
         
         /// <summary>
         /// Must set `Current` to the asked frame, by timestamp.
+        /// This is called in the context of frame by frame navigation.
         /// </summary>
         /// <returns>false if the end of file has been reached</returns>
         public abstract bool MoveTo(long from, long target);
@@ -185,7 +210,36 @@ namespace Kinovea.Video
         
         #region Decoding mode, play loop and frame enumeration
 
-        public virtual bool CanSwitchDecodingMode(VideoDecodingMode mode)
+        /// <summary>
+        /// Called right before starting the play loop.
+        /// Might be used to ensure the prebuffering thread is started.
+        /// Does nothing by default. Override to implement.
+        /// </summary>
+        public virtual void BeforePlayloop()
+        {
+        }
+
+        /// <summary>
+        /// Called when the decoding drop counter should be reset, e.g: after forced slow down.
+        /// This is a reader specific action because not all reader are subject to dropping.
+        /// Does nothing by default. Override to implement.
+        /// </summary>
+        public virtual void ResetDrops()
+        {
+        }
+
+        /// <summary>
+        /// Updates the internal working zone. 
+        /// Imports whole zone to cache if possible.
+        /// </summary>
+        /// <param name="_workerFn">A function that will start a background thread for the actual import</param>
+        public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
+
+        public abstract void BeforeFrameEnumeration();
+
+        public abstract void AfterFrameEnumeration();
+
+        public bool CanSwitchDecodingMode(VideoDecodingMode mode)
         {
             switch (mode)
             {
@@ -202,35 +256,10 @@ namespace Kinovea.Video
             }
         }
 
-        public virtual void BeforePlayloop()
-        {
-            // Called right before starting the play loop.
-            // Might be used to ensure the prebuffering thread is started.
-            // Does nothing by default. Override to implement.
-        }
-
-        public virtual void ResetDrops()
-        {
-            // Called when the decoding drop counter should be reset (for example after forced slow down.)
-            // (a reader specific action because not all reader are subject to dropping).
-            // Does nothing by default. Override to implement.
-        }
-
-        public virtual bool HasMoreFrames()
+        public bool HasMoreFrames()
         {
             return Current != null && Current.Timestamp < WorkingZone.End;
         }
-
-        /// <summary>
-        /// Updates the internal working zone. 
-        /// Imports whole zone to cache if possible.
-        /// </summary>
-        /// <param name="_workerFn">A function that will start a background thread for the actual import</param>
-        public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
-
-        public abstract void BeforeFrameEnumeration();
-
-        public abstract void AfterFrameEnumeration();
 
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
@@ -352,6 +381,9 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Ask the reader to reset the decoding size to the "aspect ratio" size.
+        /// This is used when the player is doing operations that are not compatible with 
+        /// decoding at smaller size and rendering unscaled. Object tracking for example 
+        /// needs to get patches of the image at the original resolution for better precision.
         /// </summary>
         public virtual void DisableCustomDecodingSize()
         {

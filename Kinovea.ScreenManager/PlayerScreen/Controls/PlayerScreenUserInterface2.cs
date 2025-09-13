@@ -2350,7 +2350,7 @@ namespace Kinovea.ScreenManager
                 UpdateCurrentPositionLabel();
                 lblTimeTip.Visible = false;
                 ActivateKeyframe(m_iCurrentPosition);
-
+                
                 // Update WorkingZone hairline.
                 trkSelection.SelPos = m_iCurrentPosition;
                 trkSelection.Invalidate();
@@ -2366,11 +2366,14 @@ namespace Kinovea.ScreenManager
         private void UpdateFrameCurrentPosition(bool _bUpdateNavCursor)
         {
             // Displays the image corresponding to the current position within working zone.
-            // Trigerred by user (or first load). i.e: cursor moved, show frame.
+            // Triggered by user (or first load). i.e: the cursor moved -> show the frame.
             if (m_FrameServer.VideoReader.DecodingMode != VideoDecodingMode.Caching)
                 this.Cursor = Cursors.WaitCursor;
 
-            m_iCurrentPosition = trkFrame.Position;
+            //log.DebugFormat("Update frame current position: {0}.", trkFrame.Position);
+            // The timestamps provided by the tracker control may not align with actual timestamps,
+            // as they don't follow the strict average timestamp per frame.
+            m_iCurrentPosition = m_FrameServer.VideoReader.MapTimestamp(trkFrame.Position);
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iCurrentPosition, true);
 
@@ -2879,6 +2882,9 @@ namespace Kinovea.ScreenManager
         {
             if (!m_FrameServer.VideoReader.Loaded)
                 return false;
+
+            //if (_iSeekTarget >= 0)
+            //    log.DebugFormat("ShowNextFrame: {0}", _iSeekTarget);
 
             // TODO: More refactoring needed.
             // Eradicate the scheme where we use the _iSeekTarget parameter to mean two things.

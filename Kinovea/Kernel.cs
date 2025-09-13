@@ -105,7 +105,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeMilliseconds = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeMicroseconds = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeTimestamps = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPointer = new ToolStripMenuItem();
 
         // Help
@@ -458,18 +458,23 @@ namespace Kinovea.Root
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
             
             mnuTimecode.Image = Properties.Resources.time_edit;
-            mnuTimecodeClassic.Click += new EventHandler(mnuTimecodeClassic_OnClick);
-            mnuTimecodeFrames.Click += new EventHandler(mnuTimecodeFrames_OnClick);
-            mnuTimecodeMilliseconds.Click += new EventHandler(mnuTimecodeMilliseconds_OnClick);
-            mnuTimecodeMicroseconds.Click += new EventHandler(mnuTimecodeMicroseconds_OnClick);
-            mnuTimecodeTimeAndFrames.Click += new EventHandler(mnuTimecodeTimeAndFrames_OnClick);
-            mnuTimecodeNormalized.Click += new EventHandler(mnuTimecodeNormalized_OnClick);
+            mnuTimecodeClassic.Click +=         (s, e) => SwitchTimecode(TimecodeFormat.ClassicTime);
+            mnuTimecodeFrames.Click +=          (s, e) => SwitchTimecode(TimecodeFormat.Frames);
+            mnuTimecodeMilliseconds.Click +=    (s, e) => SwitchTimecode(TimecodeFormat.Milliseconds);
+            mnuTimecodeMicroseconds.Click +=    (s, e) => SwitchTimecode(TimecodeFormat.Microseconds);
+            mnuTimecodeTimeAndFrames.Click +=   (s, e) => SwitchTimecode(TimecodeFormat.TimeAndFrames);
+            mnuTimecodeTimestamps.Click +=      (s, e) => SwitchTimecode(TimecodeFormat.Timestamps);
             mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuTimecodeClassic, 
                 mnuTimecodeFrames, 
                 mnuTimecodeMilliseconds, 
                 mnuTimecodeMicroseconds, 
                 mnuTimecodeTimeAndFrames});
+
+            if (Debugger.IsAttached)
+            {
+                mnuTimecode.DropDownItems.Add(mnuTimecodeTimestamps);
+            }
 
             mnuPointer.Image = Properties.Resources.handopen24c;
             BuildPointerMenus();
@@ -586,6 +591,8 @@ namespace Kinovea.Root
             mnuTimecodeMicroseconds.Text = RootLang.TimeCodeFormat_Microseconds;
             mnuTimecodeMicroseconds.Image = Properties.Resources.microseconds;
             mnuTimecodeTimeAndFrames.Text = mnuTimecodeClassic.Text + " + " + RootLang.TimeCodeFormat_Frames;
+            mnuTimecodeTimestamps.Text = "Timestamps (debug)";
+
 
             mnuPointer.Text = RootLang.mnuPointer;
             // Rebuild the whole pointer menu to get the correct text.
@@ -851,7 +858,7 @@ namespace Kinovea.Root
             mnuTimecodeMilliseconds.Checked = false;
             mnuTimecodeMicroseconds.Checked = false;
             mnuTimecodeTimeAndFrames.Checked = false;
-            mnuTimecodeNormalized.Checked = false;
+            mnuTimecodeTimestamps.Checked = false;
             
             TimecodeFormat tf = PreferencesManager.PlayerPreferences.TimecodeFormat;
             
@@ -872,36 +879,12 @@ namespace Kinovea.Root
                 case TimecodeFormat.TimeAndFrames:
                     mnuTimecodeTimeAndFrames.Checked = true;
                     break;
-                case TimecodeFormat.Normalized:
-                    mnuTimecodeNormalized.Checked = true;
+                case TimecodeFormat.Timestamps:
+                    mnuTimecodeTimestamps.Checked = true;
                     break; 
                 default:
                     break;
             }
-        }
-        private void mnuTimecodeClassic_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimecodeFormat.ClassicTime);
-        }
-        private void mnuTimecodeFrames_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimecodeFormat.Frames);
-        }
-        private void mnuTimecodeMilliseconds_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimecodeFormat.Milliseconds);
-        }
-        private void mnuTimecodeMicroseconds_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimecodeFormat.Microseconds);
-        }
-        private void mnuTimecodeTimeAndFrames_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimecodeFormat.TimeAndFrames);
-        }
-        private void mnuTimecodeNormalized_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimecodeFormat.Normalized);
         }
         private void SwitchTimecode(TimecodeFormat _timecode)
         {
