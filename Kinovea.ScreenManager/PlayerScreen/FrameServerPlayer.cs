@@ -85,9 +85,6 @@ namespace Kinovea.ScreenManager
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
-        private FormProgressBar formProgressBar;
-        private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-        private SaveResult saveResult;
         private bool savingMetada;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -96,9 +93,6 @@ namespace Kinovea.ScreenManager
         public FrameServerPlayer(HistoryStack historyStack)
         {
             this.historyStack = historyStack;
-            bgWorkerSave.ProgressChanged += bgWorkerSave_ProgressChanged;
-            bgWorkerSave.RunWorkerCompleted += bgWorkerSave_RunWorkerCompleted;
-            bgWorkerSave.DoWork += bgWorkerSave_DoWork;
         }
         #endregion
 
@@ -447,100 +441,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Saving processing
-        private void DoSave(string filePath, double frameInterval, bool flushDrawings, bool keyframesOnly, bool pausedVideo, ImageRetriever imageRetriever)
-        {
-            SavingSettings s = new SavingSettings();
-            s.Section = videoReader.WorkingZone;
-            s.File = filePath;
-            //s.InputIntervalMilliseconds = frameInterval;
-            s.FlushDrawings = flushDrawings;
-            s.KeyframesOnly = keyframesOnly;
-            s.HasDuplicatedKeyframes = pausedVideo;
-            s.ImageRetriever = imageRetriever;
-            
-            formProgressBar = new FormProgressBar(true);
-            formProgressBar.CancelAsked += FormProgressBark_CancelAsked;
-            formProgressBar.ShowDialog();
-            
-            bgWorkerSave.RunWorkerAsync(s);
-        }
-        
-        #region Background worker event handlers
-        private void bgWorkerSave_DoWork(object sender, DoWorkEventArgs e)
-        {
-            Thread.CurrentThread.Name = "Saving";
-            BackgroundWorker bgWorker = sender as BackgroundWorker;
-
-            if(!(e.Argument is SavingSettings))
-            {
-                saveResult = SaveResult.UnknownError;
-                e.Result = 0;
-                return;
-            }
-            
-            SavingSettings settings = (SavingSettings)e.Argument;
-            
-            //if(settings.ImageRetriever == null || settings.InputIntervalMilliseconds < 0 || bgWorker == null)
-            //{
-            //    saveResult = SaveResult.UnknownError;
-            //    e.Result = 0;
-            //    return;
-            //}
-            
-            try
-            {
-                log.DebugFormat("Saving selection [{0}]->[{1}] to: {2}", settings.Section.Start, settings.Section.End, Path.GetFileName(settings.File));
-
-                // TODO it may actually make more sense to split the saving methods for regular
-                // save, paused video and diaporama. It will cause inevitable code duplication but better encapsulation and simpler algo.
-                // When each save method has its own class and UI panel, it will be a better design.
-
-                //if(!settings.PausedVideo)
-                //{
-                //    // Take special care for slowmotion, the frame interval can not go down indefinitely.
-                //    // Use frame duplication when under 8fps.
-                //    settings.Duplication = (int)Math.Ceiling(settings.InputIntervalMilliseconds / 125.0);
-                //    settings.DuplicationKeyframes = settings.Duplication;
-                //    settings.OutputIntervalMilliseconds = settings.InputIntervalMilliseconds / settings.Duplication;
-                //    if(settings.KeyframesOnly)
-                //        settings.EstimatedTotal = metadata.Count * settings.Duplication;
-                //    else
-                //        settings.EstimatedTotal = (int)(videoReader.EstimatedFrames * settings.Duplication);
-                //}
-                //else
-                //{
-                //    // For paused video, slow motion is not supported.
-                //    // InputFrameInterval will have been set to a multiple of the original frame interval.
-                //    settings.Duplication = 1;
-                //    settings.DuplicationKeyframes = (int)(settings.InputIntervalMilliseconds / metadata.UserInterval);
-                //    settings.OutputIntervalMilliseconds = metadata.UserInterval;
-                    
-                //    long regularFramesTotal = videoReader.EstimatedFrames - metadata.Count;
-                //    long keyframesTotal = metadata.Count * settings.DuplicationKeyframes;
-                //    settings.EstimatedTotal = (int)(regularFramesTotal + keyframesTotal);
-                //}
-                
-                //log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputIntervalMilliseconds, settings.Duplication, settings.DuplicationKeyframes);
-
-                videoReader.BeforeFrameEnumeration();
-                IEnumerable<Bitmap> images = EnumerateImages(settings);
-
-                VideoFileWriter w = new VideoFileWriter();
-                string formatString = FilesystemHelper.GetFormatStringPlayback(settings.File);
-                saveResult = w.Save(settings, videoReader.Info, formatString, images, bgWorker);
-                videoReader.AfterFrameEnumeration();
-            }
-            catch (Exception exp)
-            {
-                saveResult = SaveResult.UnknownError;
-                log.Error("Unknown error while saving video.");
-                log.Error(exp.StackTrace);
-            }
-            
-            e.Result = 0;
-        }
-        
         /// <summary>
         /// Lazily enumerates the images from the video, for export purposes.
         /// This includes skipping and duplicating frames as needed.
@@ -603,28 +503,6 @@ namespace Kinovea.ScreenManager
             if (output != null)
                 output.Dispose();
         }
-
-        private void bgWorkerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // This method should be called back from the writer when a frame has been processed.
-            // call snippet : bgWorker.ReportProgress(iCurrentValue, iMaximum);
-            // Fix the int/long madness.
-            int iMaximum = (int)(long)e.UserState;
-            int iValue = (int)Math.Min((long)e.ProgressPercentage, iMaximum);
-            formProgressBar.Update(iValue, iMaximum, true);
-        }
-
-        private void bgWorkerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            formProgressBar.Close();
-            formProgressBar.Dispose();
-            
-            if(saveResult != SaveResult.Success)
-                ReportError(saveResult);
-            else
-                AfterSave();
-        }
-        #endregion
         
         public void ReportError(SaveResult saveResult)
         {
@@ -655,6 +533,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
+        
         private void DisplayErrorMessage(string error)
         {
             MessageBox.Show(
@@ -663,12 +542,5 @@ namespace Kinovea.ScreenManager
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
-        private void FormProgressBark_CancelAsked(object sender, EventArgs e)
-        {
-            // User cancelled from progress form.
-            bgWorkerSave.CancelAsync();
-            formProgressBar.Dispose();
-        }
-        #endregion
     }
 }

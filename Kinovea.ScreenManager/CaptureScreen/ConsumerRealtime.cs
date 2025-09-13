@@ -28,7 +28,6 @@ namespace Kinovea.ScreenManager
         private ImageDescriptor imageDescriptor;
         private MJPEGWriter writer;
         private bool recording;
-        private string filename;
         private string shortId;
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -52,8 +51,6 @@ namespace Kinovea.ScreenManager
 
             if (imageDescriptor == null)
                 throw new NotSupportedException("ImageDescriptor must be set before prepare.");
-
-            this.filename = filename;
 
             if (writer != null)
                 writer.Dispose();

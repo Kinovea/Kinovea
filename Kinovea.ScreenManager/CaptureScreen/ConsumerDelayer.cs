@@ -31,7 +31,6 @@ namespace Kinovea.ScreenManager
         private Frame delayedFrame;
         private MJPEGWriter writer;
         private bool recording;
-        private string filename;
         private bool stopRecordAsked;
         private string shortId;
         private Stopwatch stopwatch = new Stopwatch();
@@ -89,7 +88,6 @@ namespace Kinovea.ScreenManager
                 throw new NotSupportedException("ImageDescriptor must be set before prepare.");
 
             this.age = age;
-            this.filename = filename;
 
             if (writer != null)
                 writer.Dispose();

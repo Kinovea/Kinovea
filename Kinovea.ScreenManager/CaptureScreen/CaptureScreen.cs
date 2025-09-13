@@ -177,7 +177,6 @@ namespace Kinovea.ScreenManager
         private Bitmap recordingThumbnail;
         private DateTime recordingStart;
         private CaptureRecordingMode recordingMode;
-        private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
         private bool triggerArmed = false;  // This indicates whether we are currently armed or not and is used to discard capture trigger commands.
         private bool manualArmed = false;   // This indicates whether the user manually armed/disarmed the audio/software trigger.

@@ -60,6 +60,7 @@ namespace Kinovea.FileBrowser
         private string lastOpenedDirectory;
         private BrowserContentType activeTab;
         private FileSystemWatcher fileWatcher = new FileSystemWatcher();
+        private Stopwatch stopwatch = new Stopwatch();
 
         #region Menu
         private ContextMenuStrip popMenuFolders = new ContextMenuStrip();
@@ -879,6 +880,9 @@ namespace Kinovea.FileBrowser
             if (folder == null)
                 return;
 
+            log.Debug("Updating the file list.");
+            stopwatch.Restart();
+
             this.Cursor = Cursors.WaitCursor;
             
             // Configure the list view.
@@ -889,7 +893,8 @@ namespace Kinovea.FileBrowser
             listView.Columns.Add("", listView.Width);
             listView.GridLines = true;
             listView.HeaderStyle = ColumnHeaderStyle.None;
-            
+
+
             // Collect the list of supported file.
             ArrayList fileList = folder.GetFiles();
             List<string> filenames = new List<string>();
@@ -915,6 +920,8 @@ namespace Kinovea.FileBrowser
                 }
             }
 
+            log.DebugFormat("Collected list of supported files: {0} ms.", stopwatch.ElapsedMilliseconds);
+
             // Sort the files.
             try
             {
@@ -928,6 +935,8 @@ namespace Kinovea.FileBrowser
                 log.ErrorFormat("An error happened while trying to sort files : {0}", e.Message);
             }
 
+            log.DebugFormat("Sorted files: {0} ms.", stopwatch.ElapsedMilliseconds);
+
             // Push them to the list view.
             foreach (string filename in filenames)
             {
@@ -939,6 +948,8 @@ namespace Kinovea.FileBrowser
             
             listView.EndUpdate();
 
+            log.DebugFormat("Updated list view: {0} ms.", stopwatch.ElapsedMilliseconds);
+
             UpdateFileWatcher(folder);
 
             if (doRefresh)
@@ -947,16 +958,18 @@ namespace Kinovea.FileBrowser
             // Even if we don't want to reload the thumbnails, we must ensure that 
             // the screen manager backup list is in sync with the actual file list.
             // desync can happen in case of renaming and deleting files.
-            // the screenmanager backup list is used at BringBackThumbnail,
-            // (i.e. when we close a screen)
+            // the screenmanager backup list is used at Unhide(), when we close a screen.
             string folderPath = folder.Path;
             if (!folder.IsFileSystem)
                 folderPath = folder.DisplayName;
 
+            log.DebugFormat("Before sending event to thumbnail viewer: {0} ms.", stopwatch.ElapsedMilliseconds);
 
             NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, filenames, isShortcuts, doRefresh);
             NotificationCenter.RaiseUpdateStatus();
             this.Cursor = Cursors.Default;
+
+            log.DebugFormat("Updated file list: {0} ms.", stopwatch.ElapsedMilliseconds);
         }
 
         /// <summary>

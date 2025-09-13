@@ -212,7 +212,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-
         #region Context menus
 
         /// <summary>
@@ -335,6 +334,8 @@ namespace Kinovea.ScreenManager
             if (files == null)
                 return;
 
+            log.DebugFormat("Populating the thumbnail viewer. Currently: {0} controls.", thumbnails.Count);
+
             stopwatch.Restart();
             CleanupLoaders();
             log.DebugFormat("After loaders cleaned up: {0} ms.", stopwatch.ElapsedMilliseconds);
@@ -342,8 +343,7 @@ namespace Kinovea.ScreenManager
             pnlThumbs.SuspendLayout();
             selectedThumbnail = null;
             UpdateThumbnailList(files);
-            log.DebugFormat("After thumbnail list updated: {0} in {1} ms.", files.Count, stopwatch.ElapsedMilliseconds);
-            log.DebugFormat("Thumbnail controls: {0}", thumbnails.Count);
+            log.DebugFormat("After thumbnail list updated: {0} files in {1} ms.", files.Count, stopwatch.ElapsedMilliseconds);
 
             if (files.Count == 0)
             {
@@ -352,7 +352,7 @@ namespace Kinovea.ScreenManager
             }
 
             DoLayout();
-            log.DebugFormat("After thumbnail layout: {0} in {1} ms.", 
+            log.DebugFormat("After thumbnail layout: {0} files in {1} ms.", 
                 files.Count, stopwatch.ElapsedMilliseconds);
 
             pnlThumbs.ResumeLayout();
@@ -377,8 +377,8 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            log.DebugFormat("Summaries to load: {0}/{1}. Active loaders:{2}.", 
-                filesToLoad.Count, files.Count, loaders.Count);
+            log.DebugFormat("Summaries to load: {0}/{1} files. Active loaders:{2}. {3} ms.", 
+                filesToLoad.Count, files.Count, loaders.Count, stopwatch.ElapsedMilliseconds);
 
             if (filesToLoad.Count == 0)
             {
