@@ -411,7 +411,7 @@ namespace Kinovea.ScreenManager
                 savingMetada = false;
             }
 
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+            NotificationCenter.RaiseRefreshFileList(false);
         }
 
         /// <summary>

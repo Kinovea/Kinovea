@@ -238,7 +238,7 @@ namespace Kinovea.ScreenManager
             
             if (player.FrameServer.Loaded)
             {
-                NotificationCenter.RaiseFileOpened(null, path);
+                NotificationCenter.RaiseFileOpened(path);
                 PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
             }
         }

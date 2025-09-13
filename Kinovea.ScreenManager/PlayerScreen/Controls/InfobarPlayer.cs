@@ -173,7 +173,7 @@ namespace Kinovea.ScreenManager
             mnuConfigureCaptureFolders.Text = "Configure capture folders";
 
             mnuConfigureCaptureFolders.Click += (s, e) => {
-                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_Paths);
+                NotificationCenter.RaisePreferenceTabAsked(PreferenceTab.Capture_Paths);
             };
 
             popMenu.Items.Add(new ToolStripSeparator());

@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
             
             HideCapturedFileView(view.CapturedFile);
             PreferencesManager.FileExplorerPreferences.ConsolidateRecentCapturedFiles();
-            NotificationCenter.RaiseRefreshFileExplorer(this, true);
+            NotificationCenter.RaiseRefreshFileList(true);
         }
         private void View_LaunchAsked(object sender, EventArgs e)
         {

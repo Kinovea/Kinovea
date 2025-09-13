@@ -170,10 +170,10 @@ namespace Kinovea.Root
             mainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
-            NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+            NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Value;
             NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
             NotificationCenter.WakeUpAsked += NotificationCenter_WakeUpAsked;
-            NotificationCenter.ReceivedExternalCommand += NotificationCenter_ExternalCommand;
+            NotificationCenter.ReceivedExternalCommand += NotificationCenter_ReceivedExternalCommand;
             NotificationCenter.TriggerPreferencesUpdated += (s, e) => PreferencesUpdated(e.Value);
 
             log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
@@ -334,7 +334,7 @@ namespace Kinovea.Root
 
             mnuHistory.Image = Properties.Resources.time;
             
-            NotificationCenter.RaiseRecentFilesChanged(this);
+            NotificationCenter.RaiseRecentFilesChanged();
             mnuHistoryReset.Image = Properties.Resources.bin_empty;
             mnuHistoryReset.Click += mnuHistoryResetOnClick;
             
@@ -984,9 +984,9 @@ namespace Kinovea.Root
             ToggleFullScreen();
         }
 
-        private void NotificationCenter_PreferenceTabAsked(object sender, PreferenceTabEventArgs e)
+        private void NotificationCenter_PreferenceTabAsked(object sender, EventArgs<PreferenceTab> e)
         {
-            FormPreferences2 fp = new FormPreferences2(e.Tab);
+            FormPreferences2 fp = new FormPreferences2(e.Value);
             fp.ShowDialog();
             fp.Dispose();
             
@@ -1002,12 +1002,12 @@ namespace Kinovea.Root
             WindowManager.WakeUp(mainWindow.Handle);
         }
 
-        private void NotificationCenter_ExternalCommand(object sender, ExternalCommandEventArgs e)
+        private void NotificationCenter_ReceivedExternalCommand(object sender, EventArgs<string> e)
         {
-            string[] tokens = e.Name.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] tokens = e.Value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (tokens.Length != 2)
             {
-                log.ErrorFormat("Malformed external command. \"{0\"}", e.Name);
+                log.ErrorFormat("Malformed external command. \"{0\"}", e.Value);
                 return;
             }
 
@@ -1027,6 +1027,7 @@ namespace Kinovea.Root
                         break;
                     }
                 default:
+                    // Handled in ScreenManager.cs.
                     break;
             }
         }
@@ -1223,7 +1224,7 @@ namespace Kinovea.Root
             mnuConfigureCaptureFolders.Text = "Configure capture folders";
 
             mnuConfigureCaptureFolders.Click += (s, e) => {
-                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_Paths);
+                NotificationCenter.RaisePreferenceTabAsked(PreferenceTab.Capture_Paths);
             };
 
             mnu.DropDown.Items.Add(new ToolStripSeparator());

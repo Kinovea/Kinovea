@@ -250,15 +250,11 @@
     <Compile Include="Diagnostics\IBenchmarkCounter.cs" />
     <Compile Include="Diagnostics\WMI\PhysicalDisk.cs" />
     <Compile Include="Diagnostics\WMI\WMI.cs" />
-    <Compile Include="Events\ExternalCommandEventArgs.cs" />
-    <Compile Include="Events\PreferenceTabEventArgs.cs" />
-    <Compile Include="Infrastructure\EventArgs`1.cs" />
+    <Compile Include="Events\EventArgs`1.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentException.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentManager.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="Events\CurrentDirectoryChangedEventArgs.cs" />
-    <Compile Include="Events\ExplorerTabEventArgs.cs" />
-    <Compile Include="Events\StatusUpdatedEventArgs.cs" />
     <Compile Include="Window\IScreenDescriptor.cs" />
     <Compile Include="LaunchSettings\LaunchSettingsManager.cs" />
     <Compile Include="Window\ScreenDescriptorCapture.cs" />
@@ -292,9 +288,7 @@
     <Compile Include="Types\Units\LengthUnit.cs" />
     <Compile Include="Types\VideoSection.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
-    <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
-    <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
     <Compile Include="Filesystem\FilesystemHelper.cs" />
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />

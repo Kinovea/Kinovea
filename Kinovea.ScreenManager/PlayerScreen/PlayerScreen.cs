@@ -462,7 +462,7 @@ namespace Kinovea.ScreenManager
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
             
-            // Commands
+            // Delegates implemented here but used by the view.
             view.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
             view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
 
@@ -960,7 +960,7 @@ namespace Kinovea.ScreenManager
             if (view.ScreenDescriptor != null && view.ScreenDescriptor.IsReplayWatcher)
             {
                 // Bring the whole window back if it was minimized or behind other windows.
-                NotificationCenter.RaiseWakeUpAsked(this);
+                NotificationCenter.RaiseWakeUpAsked();
             }
 
             // Make sure the watcher is watching the right folder.

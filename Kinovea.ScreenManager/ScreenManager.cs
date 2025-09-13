@@ -220,9 +220,9 @@ namespace Kinovea.ScreenManager
             // since they may contain variables used in the default kva paths to load with the screens.
             VariablesRepository.Initialize();
 
-            NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
+            NotificationCenter.StopPlaybackAsked += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
-            NotificationCenter.ReceivedExternalCommand += NotificationCenter_ExternalCommand;
+            NotificationCenter.ReceivedExternalCommand += NotificationCenter_ReceivedExternalCommand;
 
             playerScreens = screenList.Where(s => s is PlayerScreen).Select(s => s as PlayerScreen);
             captureScreens = screenList.Where(s => s is CaptureScreen).Select(s => s as CaptureScreen);
@@ -2343,7 +2343,7 @@ namespace Kinovea.ScreenManager
         #region View
         private void toolToggleNavigationPanel_Click(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseToggleNavigationPanel(this);
+            NotificationCenter.RaiseToggleNavigationPane();
         }
 
         private void mnuExplorer_OnClick(object sender, EventArgs e)
@@ -3340,15 +3340,15 @@ namespace Kinovea.ScreenManager
             udpMonitor.Enabled = false;
         }
 
-        private void NotificationCenter_ExternalCommand(object source, ExternalCommandEventArgs e)
+        private void NotificationCenter_ReceivedExternalCommand(object source, EventArgs<string> e)
         {
             // Parses the payload of the external command string and send it to the correct handler.
             // The payload is in the form "<Handler>.<Command>", for example "CaptureScreen.ToggleRecording".
 
-            string[] tokens = e.Name.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] tokens = e.Value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (tokens.Length != 2)
             {
-                log.ErrorFormat("Malformed external command. \"{0\"}", e.Name);
+                log.ErrorFormat("Malformed external command. \"{0\"}", e.Value);
                 return;
             }
 

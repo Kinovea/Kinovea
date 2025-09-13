@@ -54,7 +54,7 @@ namespace Kinovea.Root
             // Always make sure we have the latest core preferences before showing this dialog.
             PreferencesManager.BeforeRead();
 
-            NotificationCenter.RaisePreferencesOpened(this);
+            NotificationCenter.RaisePreferencesOpened();
             Init();
             DisplayPage(PreferencesManager.GeneralPreferences.PreferencePage);
         }
@@ -67,7 +67,7 @@ namespace Kinovea.Root
             // Always make sure we have the latest core preferences before showing this dialog.
             PreferencesManager.BeforeRead();
 
-            NotificationCenter.RaisePreferencesOpened(this);
+            NotificationCenter.RaisePreferencesOpened();
             Init();
             DisplayTab(tab);
         }

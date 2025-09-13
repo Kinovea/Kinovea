@@ -235,7 +235,7 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("Error while completing dual save. {0}", exception);
             }
 
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+            NotificationCenter.RaiseRefreshFileList(false);
         }
 
         private void FormProgressBar_CancelAsked(object sender, EventArgs e)

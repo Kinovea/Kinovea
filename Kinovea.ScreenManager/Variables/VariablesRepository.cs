@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
             PreferencesManager.BeforeRead();
             PreferencesManager.CapturePreferences.ContextString = contextString;
             action?.Invoke();
-            NotificationCenter.RaiseTriggerPreferencesUpdated(null, true);
+            NotificationCenter.RaiseTriggerPreferencesUpdated(true);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace Kinovea.ScreenManager
             PreferencesManager.BeforeRead();
             PreferencesManager.CapturePreferences.ContextEnabled = enabled;
             action?.Invoke();
-            NotificationCenter.RaiseTriggerPreferencesUpdated(null, true);
+            NotificationCenter.RaiseTriggerPreferencesUpdated(true);
         }
 
         /// <summary>

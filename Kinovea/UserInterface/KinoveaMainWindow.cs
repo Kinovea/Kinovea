@@ -217,7 +217,7 @@ namespace Kinovea.Root
             string command = message.Substring(commandIndex + 1, message.Length - (commandIndex + 1));
             log.DebugFormat("Received external command:\"{0}\"", command);
 
-            NotificationCenter.RaiseReceivedExternalCommand(this, command);
+            NotificationCenter.RaiseReceivedExternalCommand(command);
         }
         #endregion
     }

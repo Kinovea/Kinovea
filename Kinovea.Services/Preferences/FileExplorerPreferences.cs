@@ -43,7 +43,7 @@ namespace Kinovea.Services
                 if(recentFiles.Count > value)
                 {
                     recentFiles.RemoveRange(value, recentFiles.Count - value);
-                    NotificationCenter.RaiseRecentFilesChanged(this);
+                    NotificationCenter.RaiseRecentFilesChanged();
                 }
                 
                 maxRecentFiles = value;
@@ -155,14 +155,14 @@ namespace Kinovea.Services
         public void AddRecentFile(string file)
         {
             PreferencesHelper.UpdateRecents(file, recentFiles, maxRecentFiles);
-            NotificationCenter.RaiseRecentFilesChanged(this);
+            NotificationCenter.RaiseRecentFilesChanged();
             Save();
         }
 
         public void AddRecentWatcher(string file)
         {
             PreferencesHelper.UpdateRecents(file, recentWatchers, maxRecentFiles);
-            NotificationCenter.RaiseRecentFilesChanged(this);
+            NotificationCenter.RaiseRecentFilesChanged();
             Save();
         }
 
@@ -170,7 +170,7 @@ namespace Kinovea.Services
         {
             recentFiles.Clear();
             recentWatchers.Clear();
-            NotificationCenter.RaiseRecentFilesChanged(this);
+            NotificationCenter.RaiseRecentFilesChanged();
             Save();
         }
 

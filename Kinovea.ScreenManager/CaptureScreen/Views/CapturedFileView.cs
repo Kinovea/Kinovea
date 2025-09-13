@@ -342,7 +342,7 @@ namespace Kinovea.ScreenManager
             if(!File.Exists(capturedFile.Filepath) && File.Exists(newFilePath))
             {
                 capturedFile.FileRenamed(newFilePath);
-                NotificationCenter.RaiseRefreshFileExplorer(this, false);
+                NotificationCenter.RaiseRefreshFileList(false);
             }
             
             StopEditing();

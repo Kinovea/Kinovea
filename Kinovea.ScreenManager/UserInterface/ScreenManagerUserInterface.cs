@@ -160,11 +160,7 @@ namespace Kinovea.ScreenManager
             // Reposition Common Controls panel so it doesn't take more space than necessary.
             splitScreensPanel.SplitterDistance = pnlScreens.Height - 50;
         }
-        private void ScreenManagerUserInterface_DoubleClick(object sender, EventArgs e)
-        {
-            NotificationCenter.RaiseLaunchOpenDialog(this);
-        }
-
+        
         #region Screen management
         private void PrepareLeftScreen(UserControl screenUI)
         {

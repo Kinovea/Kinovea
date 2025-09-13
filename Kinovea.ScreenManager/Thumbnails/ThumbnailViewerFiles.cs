@@ -283,7 +283,7 @@ namespace Kinovea.ScreenManager
             PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;
             sortAxis = axis;
             sortOperationInProgress = true;
-            NotificationCenter.RaiseRefreshFileExplorer(this, true);
+            NotificationCenter.RaiseRefreshFileList(true);
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace Kinovea.ScreenManager
             PreferencesManager.FileExplorerPreferences.FileSortAscending = ascending;
             sortAscending = ascending;
             sortOperationInProgress = true;
-            NotificationCenter.RaiseRefreshFileExplorer(this, true);
+            NotificationCenter.RaiseRefreshFileList(true);
         }
 
         /// <summary>
@@ -609,12 +609,12 @@ namespace Kinovea.ScreenManager
         /// A file was selected from the navigation pane. 
         /// Forward to the corresponding thumbnail.
         /// </summary>
-        private void NotificationCenter_FileSelected(object sender, FileActionEventArgs e)
+        private void NotificationCenter_FileSelected(object sender, EventArgs<string> e)
         {
             if (sender == this)
                 return;
 
-            if(string.IsNullOrEmpty(e.File))
+            if(string.IsNullOrEmpty(e.Value))
             {
                 Deselect(false);
                 return;
@@ -622,7 +622,7 @@ namespace Kinovea.ScreenManager
 
             foreach (ThumbnailFile tlvi in thumbnails)
             {
-                if (tlvi.FilePath == e.File)
+                if (tlvi.FilePath == e.Value)
                 {
                     externalSelection = true;
                     tlvi.SetSelected();
@@ -828,7 +828,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case ThumbnailViewerFilesCommands.Refresh:
                     forcedRefreshInProgress = true;
-                    NotificationCenter.RaiseRefreshFileExplorer(this, true);
+                    NotificationCenter.RaiseRefreshFileList(true);
                     break;
                 default:
                     return base.ExecuteCommand(cmd);

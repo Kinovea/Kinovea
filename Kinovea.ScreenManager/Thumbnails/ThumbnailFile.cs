@@ -700,7 +700,7 @@ namespace Kinovea.ScreenManager
                         TruncateFilename();
                     }
 
-                    NotificationCenter.RaiseRefreshFileExplorer(this, false);
+                    NotificationCenter.RaiseRefreshFileList(false);
                 }
                 catch(ArgumentException)
                 {
@@ -825,7 +825,7 @@ namespace Kinovea.ScreenManager
         {
             FilesystemHelper.DeleteFile(path);
             if (!File.Exists(path))
-                NotificationCenter.RaiseRefreshFileExplorer(this, true);
+                NotificationCenter.RaiseRefreshFileList(true);
         }
 
         /// <summary>

@@ -114,7 +114,7 @@ namespace Kinovea.ScreenManager
                 IPEndPoint source = new IPEndPoint(0, 0);
                 byte[] message = udpServer.EndReceive(result, ref source);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }

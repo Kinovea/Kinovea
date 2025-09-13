@@ -585,7 +585,7 @@ namespace Kinovea.ScreenManager
 
         public void View_OpenPreferences(PreferenceTab tab)
         {
-            NotificationCenter.RaisePreferenceTabAsked(this, tab);
+            NotificationCenter.RaisePreferenceTabAsked(tab);
         }
         public void View_DeselectTool()
         {
@@ -1548,7 +1548,7 @@ namespace Kinovea.ScreenManager
 
             // After save routines.
             AddCapturedFile(path, bitmap, false);
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+            NotificationCenter.RaiseRefreshFileList(false);
 
             // Compute and update the next name in case it contains an auto counter.
             // This may return the same name.
@@ -1832,7 +1832,7 @@ namespace Kinovea.ScreenManager
             }
 
             PreferencesManager.FileExplorerPreferences.AddRecentCapturedFile(finalFilename);
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+            NotificationCenter.RaiseRefreshFileList(false);
 
             // Execute post-recording command.
             RunPostRecordingCommand(finalFilename);

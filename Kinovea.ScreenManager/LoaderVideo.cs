@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager
                 {
                     //string videoPath = playerScreen.FrameServer.Metadata.VideoPath;
                     string videoPath = playerScreen.FrameServer.VideoReader.FilePath;
-                    NotificationCenter.RaiseFileOpened(null, videoPath);
+                    NotificationCenter.RaiseFileOpened(videoPath);
                     PreferencesManager.FileExplorerPreferences.AddRecentFile(videoPath);
                 }
 

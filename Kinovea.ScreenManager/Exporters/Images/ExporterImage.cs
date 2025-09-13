@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
 
             player.view.AfterExportVideo();
 
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+            NotificationCenter.RaiseRefreshFileList(false);
         }
     }
 }

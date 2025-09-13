@@ -45,8 +45,7 @@ namespace Kinovea.Root
             splitWorkSpace.SplitterDistance = (int)(splitWorkSpace.Width * WindowManager.ActiveWindow.ExplorerSplitterRatio);
             splitWorkSpace.SplitterMoved += SplitWorkSpace_SplitterMoved;
 
-            NotificationCenter.LaunchOpenDialog += NotificationCenter_LaunchOpenDialog;
-            NotificationCenter.ToggleNavigationPanel += NotificationCenter_ToggleNavigationPanel;
+            NotificationCenter.ToggleNavigationPane += NotificationCenter_ToggleNavigationPane;
         }
         #endregion
 
@@ -91,23 +90,7 @@ namespace Kinovea.Root
             ToggleNavigationPanel(show, false);
         }
 
-        private void NotificationCenter_LaunchOpenDialog(object sender, EventArgs e)
-        {
-            if(isOpening || rootKernel.ScreenManager.ScreenCount != 0)
-                return;
-            
-            isOpening = true;
-
-            string title = ScreenManager.Languages.ScreenManagerLang.mnuOpenVideo;
-            string filter = ScreenManager.Languages.ScreenManagerLang.FileFilter_All + "|*.*";
-            string filename = FilePicker.OpenVideo(title, filter);
-            if (!string.IsNullOrEmpty(filename))
-                VideoTypeManager.LoadVideo(filename, -1);
-                
-            isOpening = false;
-        }
-
-        private void NotificationCenter_ToggleNavigationPanel(object sender, EventArgs e)
+        private void NotificationCenter_ToggleNavigationPane(object sender, EventArgs e)
         {
             bool show = splitWorkSpace.Panel1Collapsed;
             ToggleNavigationPanel(show, true);

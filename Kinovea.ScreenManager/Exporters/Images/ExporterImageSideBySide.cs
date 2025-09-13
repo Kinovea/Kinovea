@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
             leftPlayer.view.AfterExportVideo();
             rightPlayer.view.AfterExportVideo();
 
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+            NotificationCenter.RaiseRefreshFileList(false);
         }
 
         public static string SuggestFilename(PlayerScreen player1, PlayerScreen player2)

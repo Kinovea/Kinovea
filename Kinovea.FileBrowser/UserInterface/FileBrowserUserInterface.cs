@@ -117,8 +117,8 @@ namespace Kinovea.FileBrowser
             
             BuildContextMenu();
             
-            NotificationCenter.ExplorerTabChanged += NotificationCenter_ExplorerTabChangeAsked;
-            NotificationCenter.RefreshFileExplorer += NotificationCenter_RefreshFileExplorer;
+            NotificationCenter.BrowserContentTypeChanged += NotificationCenter_ExplorerTabChangeAsked;
+            NotificationCenter.RefreshFileList += NotificationCenter_RefreshNavigationPane;
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
             NotificationCenter.FileOpened += NotificationCenter_FileOpened;
             NotificationCenter.FolderChangeAsked += NotificationCenter_FolderChangeAsked;
@@ -255,7 +255,7 @@ namespace Kinovea.FileBrowser
                 }
 
                 // Show the right browser panel.
-                NotificationCenter.RaiseExplorerTabChanged(this, tab);
+                NotificationCenter.RaiseBrowserContentTypeChanged(this, tab);
             }
                 
             DoRefreshFileList(true);
@@ -263,19 +263,19 @@ namespace Kinovea.FileBrowser
         #endregion
 
         #region Public interface
-        private void NotificationCenter_ExplorerTabChangeAsked(object sender, ExplorerTabEventArgs e)
+        private void NotificationCenter_ExplorerTabChangeAsked(object sender, EventArgs<ActiveFileBrowserTab> e)
         {
             if (sender == this)
                 return;
 
             programmaticTabChange = true;
-            tabControl.SelectedIndex = (int)e.Tab;
+            tabControl.SelectedIndex = (int)e.Value;
         }
-        private void NotificationCenter_RefreshFileExplorer(object sender, RefreshFileExplorerEventArgs e)
+        private void NotificationCenter_RefreshNavigationPane(object sender, EventArgs<bool> e)
         {
-            DoRefreshFileList(e.RefreshThumbnails);
+            DoRefreshFileList(e.Value);
         }
-        private void NotificationCenter_FileSelected(object sender, FileActionEventArgs e)
+        private void NotificationCenter_FileSelected(object sender, EventArgs<string> e)
         {
             if (sender == this)
                 return;
@@ -287,12 +287,12 @@ namespace Kinovea.FileBrowser
             ListView lv = GetFileListview();
             lv.SelectedItems.Clear();
 
-            if (string.IsNullOrEmpty(e.File))
+            if (string.IsNullOrEmpty(e.Value))
                 return;
 
             foreach (ListViewItem item in lv.Items)
             {
-                if ((string)item.Tag != e.File)
+                if ((string)item.Tag != e.Value)
                     continue;
                 
                 externalSelection = true;
@@ -315,24 +315,27 @@ namespace Kinovea.FileBrowser
             }
         }
 
-        private void NotificationCenter_FileOpened(object sender, FileActionEventArgs e)
+        private void NotificationCenter_FileOpened(object sender, EventArgs<string> e)
         {
             // Create a virtual shortcut for the folder of the opened video and select it.
-            string pathFolder = Path.GetDirectoryName(e.File);
+            string pathFolder = Path.GetDirectoryName(e.Value);
             AddVirtualShortcut(pathFolder);
             UpdateSessionHistory(pathFolder);
             SelectVirtualShortcut();
         }
-        private void NotificationCenter_FolderChangeAsked(object sender, FileActionEventArgs e)
+        private void NotificationCenter_FolderChangeAsked(object sender, EventArgs<string> e)
         {
             // The thumbnail viewer is asking for a different folder to be shown.
             // Note: the path to the new folder is stored in the File property of the event arg.
-            string pathFolder = e.File;
+            string pathFolder = e.Value;
             AddVirtualShortcut(pathFolder);
             UpdateSessionHistory(pathFolder);
             SelectVirtualShortcut();
         }
 
+        /// <summary>
+        /// Back/Forward navigation in the session history requested by the file browser.
+        /// </summary>
         private void NotificationCenter_FolderNavigationAsked(object sender, EventArgs<FolderNavigationType> e)
         {
             // Move in the session history.
@@ -859,7 +862,7 @@ namespace Kinovea.FileBrowser
                 }
                 
                 // Show the right browser panel.
-                NotificationCenter.RaiseExplorerTabChanged(this, activeTab);
+                NotificationCenter.RaiseBrowserContentTypeChanged(this, activeTab);
             }
             
             DoRefreshFileList(true);
@@ -949,7 +952,7 @@ namespace Kinovea.FileBrowser
                 folderPath = folder.DisplayName;
 
 
-            NotificationCenter.RaiseCurrentDirectoryChanged(this, folderPath, filenames, isShortcuts, doRefresh);
+            NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, filenames, isShortcuts, doRefresh);
             this.Cursor = Cursors.Default;
         }
 

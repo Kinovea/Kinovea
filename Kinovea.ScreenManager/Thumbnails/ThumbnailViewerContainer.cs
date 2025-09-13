@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
             
             NotificationCenter.BeforeLoadVideo += NotificationCenter_BeforeLoadVideo;
             NotificationCenter.CurrentDirectoryChanged += NotificationCenter_CurrentDirectoryChanged;
-            NotificationCenter.ExplorerTabChanged += NotificationCenter_ExplorerTabChanged;
+            NotificationCenter.BrowserContentTypeChanged += NotificationCenter_ExplorerTabChanged;
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
@@ -158,9 +158,10 @@ namespace Kinovea.ScreenManager
             HideContent();
         }
 
-        private void NotificationCenter_ExplorerTabChanged(object sender, ExplorerTabEventArgs e)
+        private void NotificationCenter_ExplorerTabChanged(object sender, EventArgs<ActiveFileBrowserTab> e)
         {
-            SwitchContent(Convert(e.Tab));
+            var browserContentType = Convert(e.Value);
+            SwitchContent(browserContentType);
         }
         private void NotificationCenter_CurrentDirectoryChanged(object sender, CurrentDirectoryChangedEventArgs e)
         {
@@ -214,7 +215,8 @@ namespace Kinovea.ScreenManager
             ViewerSelectorOption option = viewerSelector.Selected;
             ThumbnailViewerType selectedContent = (ThumbnailViewerType)option.Data;
             SwitchContent(selectedContent);
-            NotificationCenter.RaiseExplorerTabChanged(this, Convert(selectedContent));
+            var browserContentType = Convert(selectedContent);
+            NotificationCenter.RaiseBrowserContentTypeChanged(this, browserContentType);
         }
         
         private void Viewer_FileLoadAsked(object sender, FileLoadAskedEventArgs e)
@@ -239,7 +241,7 @@ namespace Kinovea.ScreenManager
         }
         private void btnCloseFullscreen_Click(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseFullScreenToggle(this);
+            NotificationCenter.RaiseFullScreenToggle();
         }
         #endregion
 
@@ -411,17 +413,17 @@ namespace Kinovea.ScreenManager
             if (info == null)
                 return;
 
-            NotificationCenter.RaiseFolderChangeAsked(this, info.FullName);
+            NotificationCenter.RaiseFolderChangeAsked(info.FullName);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseFolderNavigationAsked(this, FolderNavigationType.Backward);
+            NotificationCenter.RaiseFolderNavigationAsked(FolderNavigationType.Backward);
         }
 
         private void btnForward_Click(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseFolderNavigationAsked(this, FolderNavigationType.Forward);
+            NotificationCenter.RaiseFolderNavigationAsked(FolderNavigationType.Forward);
         }
         #endregion
 
