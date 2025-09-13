@@ -19,21 +19,26 @@ Public Class ExpTree
 
     Public Event StartUpDirectoryChanged(ByVal newVal As StartDir)
 
+    ''' <summary>
+    ''' Kinovea: Event raised before a node is visually expanded but after it has been filled in.
+    ''' </summary>
+    Public Event TreeViewBeforeExpand(ByVal sender As Object, ByVal e As TreeViewEventArgs)
+
     Public Event ExpTreeNodeSelected(ByVal SelPath As String, ByVal Item As CShItem)
 
     Private EnableEventPost As Boolean = True 'flag to supress ExpTreeNodeSelected raising during refresh and 
 
     Private WithEvents DragDropHandler As TVDragWrapper
 
-    Private m_showHiddenFolders As Boolean = True
+    Private m_showHiddenFolders As Boolean = False
 
-	Private m_bShortcutsMode As Boolean = False
-	
-	Private m_shortcuts As New ArrayList()
-	
-	Private m_RootDisplayName As String
-	
-	Private m_bManualCollapse As Boolean = False
+    Private m_bShortcutsMode As Boolean = False
+
+    Private m_shortcuts As New ArrayList()
+
+    Private m_RootDisplayName As String
+
+    Private m_bManualCollapse As Boolean = False
 
 #Region " Windows Form Designer generated code "
 
@@ -91,7 +96,7 @@ Public Class ExpTree
     'Do not modify it using the code editor.
     Public WithEvents tv1 As System.Windows.Forms.TreeView
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.tv1 = New System.Windows.Forms.TreeView
+        Me.tv1 = New System.Windows.Forms.TreeView()
         Me.SuspendLayout()
         '
         'tv1
@@ -127,7 +132,7 @@ Public Class ExpTree
     '  of Folder (File Folder or System Folder)
     ' Attempts to set it using a non-Folder CShItem are ignored
     '</Summary>
-    <Browsable(False)> _
+    <Browsable(False)>
     Public Property RootItem() As CShItem
         Get
             Return Root.Tag
@@ -151,7 +156,7 @@ Public Class ExpTree
 #End Region
 
 #Region "       SelectedItem"
-    <Browsable(False)> _
+    <Browsable(False)>
     Public ReadOnly Property SelectedItem() As CShItem
         Get
             If Not IsNothing(tv1.SelectedNode) Then
@@ -164,10 +169,10 @@ Public Class ExpTree
 #End Region
 
 #Region "       ShowHidden"
-    <Category("Options"), _
-    Description("Show Hidden Directories."), _
-    DefaultValue(True), Browsable(True)> _
-   Public Property ShowHiddenFolders() As Boolean
+    <Category("Options"),
+    Description("Show Hidden Directories."),
+    DefaultValue(True), Browsable(True)>
+    Public Property ShowHiddenFolders() As Boolean
         Get
             Return m_showHiddenFolders
         End Get
@@ -178,10 +183,10 @@ Public Class ExpTree
 #End Region
 
 #Region "       ShowRootLines"
-    <Category("Options"), _
-  Description("Allow Collapse of Root Item."), _
-  DefaultValue(True), Browsable(True)> _
-Public Property ShowRootLines() As Boolean
+    <Category("Options"),
+  Description("Allow Collapse of Root Item."),
+  DefaultValue(True), Browsable(True)>
+    Public Property ShowRootLines() As Boolean
         Get
             Return tv1.ShowRootLines
         End Get
@@ -232,9 +237,9 @@ Public Property ShowRootLines() As Boolean
 
     Private m_StartUpDirectory As StartDir = StartDir.Desktop
 
-    <Category("Options"), _
-     Description("Sets the Initial Directory of the Tree"), _
-     DefaultValue(StartDir.Desktop), Browsable(True)> _
+    <Category("Options"),
+     Description("Sets the Initial Directory of the Tree"),
+     DefaultValue(StartDir.Desktop), Browsable(True)>
     Public Property StartUpDirectory() As StartDir
         Get
             Return m_StartUpDirectory
@@ -251,10 +256,10 @@ Public Property ShowRootLines() As Boolean
 #End Region
 
 #Region "       ShortcutMode"
-	<Category("Options"), _
-  	Description("The firt level of nodes is set up manually."), _
-  	DefaultValue(False), Browsable(True)> _
-Public Property ShortcutsMode() As Boolean
+    <Category("Options"),
+      Description("The firt level of nodes is set up manually."),
+      DefaultValue(False), Browsable(True)>
+    Public Property ShortcutsMode() As Boolean
         Get
             Return m_bShortcutsMode
         End Get
@@ -268,8 +273,8 @@ Public Property ShortcutsMode() As Boolean
 #End Region
 
 #Region "       RootDisplayName"
-	<Browsable(False)> _
-Public Property RootDisplayName() As String
+    <Browsable(False)>
+    Public Property RootDisplayName() As String
         Get
             Return Root.Text
         End Get
@@ -286,7 +291,7 @@ Public Property RootDisplayName() As String
 
 #Region "       RefreshTree"
     '''<Summary>RefreshTree Method thanks to Calum McLellan</Summary>
-    <Description("Refresh the Tree and all nodes through the currently selected item")> _
+    <Description("Refresh the Tree and all nodes through the currently selected item")>
     Public Sub RefreshTree(Optional ByVal rootCSI As CShItem = Nothing)
         'Modified to use ExpandANode(CShItem) rather than ExpandANode(path)
         'Set refresh variable for BeforeExpand method
@@ -308,7 +313,7 @@ Public Property RootDisplayName() As String
             Else
                 Me.RootItem = rootCSI
             End If
-            
+
             'Try to expand the node
             If Not Me.ExpandANode(SelCSI) Then
                 Dim nodeList As New ArrayList()
@@ -322,10 +327,10 @@ Public Property RootDisplayName() As String
                 Next
             End If
             'Reset refresh variable for BeforeExpand method
-		Finally
-	    	If m_bShortcutsMode Then
-	       		Root.Text = m_RootDisplayName
-	       	End If        
+        Finally
+            If m_bShortcutsMode Then
+                Root.Text = m_RootDisplayName
+            End If
             Me.tv1.EndUpdate()
         End Try
         EnableEventPost = True
@@ -385,12 +390,12 @@ XIT:    tv1.EndUpdate()
 #End Region
 
 #Region "       SetShortcuts"
-    Public Sub SetShortcuts(ByVal shortcuts As ArrayList)        
+    Public Sub SetShortcuts(ByVal shortcuts As ArrayList)
         m_shortcuts.Clear()
         Dim shortcut As String
         For Each shortcut In shortcuts
             m_shortcuts.Add(GetCShItem(shortcut))
-        Next        
+        Next
     End Sub
 #End Region
 
@@ -452,8 +457,10 @@ XIT:    tv1.EndUpdate()
             Root.SelectedImageIndex = Root.ImageIndex
             Root.Tag = special
             BuildTree(special.GetDirectories())
+
             tv1.Nodes.Add(Root)
             Root.Expand()
+
         End If
     End Sub
 
@@ -468,7 +475,27 @@ XIT:    tv1.EndUpdate()
     End Sub
 
     Private Function MakeNode(ByVal item As CShItem) As TreeNode
-        Dim newNode As New TreeNode(item.DisplayName)
+
+        ' Kinovea: special treatment to rename drives.
+        ' From "System (C:)" to "C: (System)".
+        ' This way all drive letters are nicely aligned.
+
+        Dim friendlyName As String = item.DisplayName
+        If item.IsDisk Then
+
+            Dim name As String = item.DisplayName
+            Dim pos1 As Integer = name.IndexOf("("c)
+            Dim pos2 As Integer = name.IndexOf(")"c)
+            If pos1 > 0 AndAlso pos2 > pos1 Then
+                Dim label As String = name.Substring(0, pos1).Trim()
+                Dim drive As String = name.Substring(pos1 + 1, pos2 - pos1 - 1).Trim()
+                friendlyName = drive & " (" & label & ")"
+            End If
+
+        End If
+
+        Dim newNode As New TreeNode(friendlyName)
+
         newNode.Tag = item
         newNode.ImageIndex = SystemImageListManager.GetIconIndex(item, False)
         newNode.SelectedImageIndex = SystemImageListManager.GetIconIndex(item, True)
@@ -512,7 +539,10 @@ XIT:    tv1.EndUpdate()
                 D.Sort()    'uses the class comparer
                 Dim item As CShItem
                 For Each item In D
-                    If Not (item.IsHidden And Not m_showHiddenFolders) Then
+                    ' Kinovea: remove anything that isn't a folder.
+                    ' This avoids showing zip files.
+                    'If Not (item.IsHidden And Not m_showHiddenFolders) Then
+                    If item.IsFolder And Not (item.IsHidden And Not m_showHiddenFolders) Then
                         e.Node.Nodes.Add(MakeNode(item))
                     End If
                 Next
@@ -525,6 +555,12 @@ XIT:    tv1.EndUpdate()
             RefreshNode(e.Node)
         End If
         Cursor = oldCursor
+
+        ' Kinovea: raise an event to allow filtering.
+        ' Convert the TreeViewCancelEventArgs to TreeViewEventArgs
+        Dim args As New TreeViewEventArgs(e.Node, TreeViewAction.Expand)
+        RaiseEvent TreeViewBeforeExpand(sender, args)
+
     End Sub
 #End Region
 
@@ -547,12 +583,16 @@ XIT:    tv1.EndUpdate()
             RefreshNode(node)
         End If
 
+        ' Kinovea: raise an event to allow filtering.
+        RaiseEvent TreeViewBeforeExpand(Me, e)
+
         'Always expand and scroll
         If Not m_bManualCollapse And Not tv1.SelectedNode.IsExpanded Then
             tv1.SelectedNode.Expand()
         End If
         tv1.SelectedNode.EnsureVisible()
         m_bManualCollapse = False
+
 
         If EnableEventPost Then 'turned off during RefreshTree
             If CSI.Path.StartsWith(":") Then
@@ -780,9 +820,9 @@ NEXTLEV: Loop
 #End Region
 
     '''<Summary>ShDragEnter does nothing. It is here for debug tracking</Summary>
-    Private Sub DragWrapper_ShDragEnter(ByVal Draglist As ArrayList, _
-                                        ByVal pDataObj As IntPtr, _
-                                        ByVal grfKeyState As Integer, _
+    Private Sub DragWrapper_ShDragEnter(ByVal Draglist As ArrayList,
+                                        ByVal pDataObj As IntPtr,
+                                        ByVal grfKeyState As Integer,
                                         ByVal pdwEffect As Integer) _
                                 Handles DragDropHandler.ShDragEnter
         'Debug.WriteLine("Enter ExpTree ShDragEnter. PdwEffect = " & pdwEffect)
@@ -804,9 +844,9 @@ NEXTLEV: Loop
     ''' at http://addressof.com/blog/archive/2004/10/01/955.aspx
     ''' Node expansion based on expandNodeTimer added by me.
     '''</Summary>
-    Private Sub DragWrapper_ShDragOver(ByVal Node As Object, _
-                                ByVal pt As System.Drawing.Point, _
-                                ByVal grfKeyState As Integer, _
+    Private Sub DragWrapper_ShDragOver(ByVal Node As Object,
+                                ByVal pt As System.Drawing.Point,
+                                ByVal grfKeyState As Integer,
                                 ByVal pdwEffect As Integer) _
                                 Handles DragDropHandler.ShDragOver
         'Debug.WriteLine("Enter ExpTree ShDragOver. PdwEffect = " & pdwEffect)
@@ -855,9 +895,9 @@ NEXTLEV: Loop
         End If
     End Sub
 
-    Private Sub DragWrapper_ShDragDrop(ByVal DragList As ArrayList, _
-                                ByVal Node As Object, _
-                                ByVal grfKeyState As Integer, _
+    Private Sub DragWrapper_ShDragDrop(ByVal DragList As ArrayList,
+                                ByVal Node As Object,
+                                ByVal grfKeyState As Integer,
                                 ByVal pdwEffect As Integer) Handles DragDropHandler.ShDragDrop
         expandNodeTimer.Stop()
         'Debug.WriteLine("Enter ExpTree ShDragDrop. PdwEffect = " & pdwEffect)

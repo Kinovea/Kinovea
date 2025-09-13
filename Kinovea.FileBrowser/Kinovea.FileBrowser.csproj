@@ -175,7 +175,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExpTreeLib, Version=2.11.9383.33758, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ExpTreeLib, Version=2.11.9383.42775, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\ExpTreeLib\ExpTreeLib.dll</HintPath>
     </Reference>

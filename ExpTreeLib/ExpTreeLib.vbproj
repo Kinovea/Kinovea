@@ -71,7 +71,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\Refs\</OutputPath>
+    <OutputPath>..\Refs\ExpTreeLib\</OutputPath>
     <DocumentationFile>ExpTreeLib.xml</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>

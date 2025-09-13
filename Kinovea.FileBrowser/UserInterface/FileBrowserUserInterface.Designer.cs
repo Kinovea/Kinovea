@@ -125,6 +125,7 @@ namespace Kinovea.FileBrowser
       this.etExplorer.Location = new System.Drawing.Point(3, 31);
       this.etExplorer.Name = "etExplorer";
       this.etExplorer.RootDisplayName = "Bureau";
+      this.etExplorer.ShowHiddenFolders = false;
       this.etExplorer.ShowRootLines = false;
       this.etExplorer.Size = new System.Drawing.Size(299, 267);
       this.etExplorer.TabIndex = 0;
@@ -237,6 +238,7 @@ namespace Kinovea.FileBrowser
       this.etShortcuts.Name = "etShortcuts";
       this.etShortcuts.RootDisplayName = "Root";
       this.etShortcuts.ShortcutsMode = true;
+      this.etShortcuts.ShowHiddenFolders = false;
       this.etShortcuts.ShowRootLines = false;
       this.etShortcuts.Size = new System.Drawing.Size(305, 272);
       this.etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Favorites;

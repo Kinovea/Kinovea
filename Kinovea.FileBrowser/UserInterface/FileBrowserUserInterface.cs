@@ -86,6 +86,8 @@ namespace Kinovea.FileBrowser
         private ToolStripMenuItem mnuCameraForget = new ToolStripMenuItem();
         #endregion
 
+        private static string pathDesktop = "::{00021400-0000-0000-c000-000000000046}";
+        private static string pathComputer = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -113,6 +115,9 @@ namespace Kinovea.FileBrowser
 
             InitializeTreeView(etExplorer);
             InitializeTreeView(etShortcuts);
+            etExplorer.TreeViewBeforeExpand += etExplorer_TreeViewBeforeExpand;
+
+            FilterOutDesktopChildren(etExplorer);
 
             lvCameras.ItemDrag += lvCameras_ItemDrag;
             
@@ -148,6 +153,100 @@ namespace Kinovea.FileBrowser
             tv.tv1.FullRowSelect = true;
             tv.tv1.HotTracking = false; // underline on hover.
             tv.tv1.Indent = 20;
+
+            tv.tv1.KeyDown += (s, e) =>
+            {
+                // Disable the * key to expand all nodes.
+                if (e.KeyCode == Keys.Multiply)
+                    e.Handled = true;
+            };
+        }
+
+        private void FilterOutDesktopChildren(ExpTree etv)
+        {
+            TreeView tv = etv.tv1;
+
+            // Filter list for children of Desktop.
+            List<string> toFilter = new List<string>
+            {
+                "::{21EC2020-3AEA-1069-A2DD-08002B30309D}", // Control panel
+                "::{26EE0668-A00A-44D7-9371-BEB064C98683}", // Control panel.
+                "::{2227A280-3AEA-1069-A2DE-08002B30309D}", // Printers
+                "::{645FF040-5081-101B-9F08-00AA002F954E}", // Recycle bin
+                "::{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", // Network places
+                "::{031E4825-7B94-4DC3-B131-E946B44C8DD5}", // Libraries
+            };
+
+            TreeNode computerNode = null;
+            TreeNode rootNode = tv.Nodes[0];
+            for (int i = rootNode.Nodes.Count - 1; i >= 0; i--)
+            {
+                CShItem item = (CShItem)rootNode.Nodes[i].Tag;
+                if (item.Path == pathComputer)
+                {
+                    computerNode = rootNode.Nodes[i];
+                    continue;
+                }
+
+                if (toFilter.Contains(item.Path))
+                {
+                    rootNode.Nodes.RemoveAt(i);
+                    continue;
+                }
+
+                // Filter out the drives as they show up under computer again.
+                // This list under Desktop doesn't have all of them anyway.
+                if (item.IsDisk)
+                {
+                    rootNode.Nodes.RemoveAt(i);
+                    continue;
+                }
+            }
+
+            // Expand Computer.
+            if (computerNode != null)
+            {
+                computerNode.Expand();
+            }
+
+            // Drives have already been renamed from "System (C:)" to "C: (System)",
+            // to align all the drive letters nicely. Done inside ExpTree.
+        }
+
+        private void etExplorer_TreeViewBeforeExpand(object sender, TreeViewEventArgs e)
+        {
+            // This is raised after the node children have been added but before it is visually expanded.
+            // Use this to filter out unwanted folders.
+            var item = e.Node.Tag as CShItem;
+            if (item == null)
+                return;
+
+            if (item.Parent == null || item.Parent.Path != pathDesktop)
+                return;
+
+            bool isComputer = item.Path == "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
+
+            // Immediate children of desktop.
+            // Remove any dot folder in children, especially for the Home folder.
+            // Remove any non-drive folder under Computer.
+            for (int i = e.Node.Nodes.Count - 1; i >= 0; i--)
+            {
+                var childItem = e.Node.Nodes[i].Tag as CShItem;
+                if (childItem == null)
+                    continue;
+                
+                if (childItem.DisplayName.StartsWith("."))
+                {
+                    e.Node.Nodes.RemoveAt(i);
+                    continue;
+                }
+
+                if (isComputer && !childItem.IsDisk)
+                {
+                    e.Node.Nodes.RemoveAt(i);
+                    continue;
+                }
+            }
         }
 
         private void BuildContextMenu()
@@ -1364,5 +1463,6 @@ namespace Kinovea.FileBrowser
                 FilesystemHelper.LocateFile(path);
         }
         #endregion
+
     }
 }
