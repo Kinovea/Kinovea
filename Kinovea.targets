@@ -27,6 +27,7 @@
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\postproc-53.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swresample-1.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swscale-3.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\ffmpeg.exe" DestinationFolder="$(TargetDir)"/>
         
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcm90.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcp90.dll" DestinationFolder="$(TargetDir)"/>

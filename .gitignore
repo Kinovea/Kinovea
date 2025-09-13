@@ -356,10 +356,7 @@ MigrationBackup/
 ##---------------------------------------------------------------------------------
 # Kinovea specifics
 ##---------------------------------------------------------------------------------
-
-Localization/WorkingDirectory/*.resx
-Localization/WorkingDirectory/content.xml
-Localization/WorkingDirectory/.~*
+*.bak
 
 Root/Languages/RootLang.resources
 FileBrowser/Languages/FileBrowserLang.resources
@@ -373,9 +370,6 @@ Installer/Kinovea.Portable*/*
 Installer/Kinovea-*
 Installer/build-*.txt
 
-*.bak
-
-/Localization/Contrib/*
 /Installer/OtherFiles/Changelog*
 /Installer/OtherFiles/HelpVideos/*.avi
 /Kinovea.Camera/Languages/CameraLang.resources
@@ -383,28 +377,6 @@ Installer/build-*.txt
 /Kinovea.ScreenManager/Languages/ScreenManagerLang.resources
 /Kinovea.Updater/Languages/UpdaterLang.resources
 /Kinovea/Languages/RootLang.resources
-/Localization/WorkingDirectory/Kinovea.Camera.Languages.CameraLang.sr-Cyrl-CS.resources
-/Localization/WorkingDirectory/Kinovea.Camera.Languages.CameraLang.sr-Latn-CS.resources
-/Localization/WorkingDirectory/Kinovea.FileBrowser.Languages.FileBrowserLang.sr-Cyrl-CS.resources
-/Localization/WorkingDirectory/Kinovea.FileBrowser.Languages.FileBrowserLang.sr-Latn-CS.resources
-/Localization/WorkingDirectory/Kinovea.Root.Languages.RootLang.sr-Cyrl-CS.resources
-/Localization/WorkingDirectory/Kinovea.Root.Languages.RootLang.sr-Latn-CS.resources
-/Localization/WorkingDirectory/Kinovea.ScreenManager.Languages.ScreenManagerLang.sr-Cyrl-CS.resources
-/Localization/WorkingDirectory/Kinovea.ScreenManager.Languages.ScreenManagerLang.sr-Latn-CS.resources
-/Localization/WorkingDirectory/Kinovea.Updater.Languages.UpdaterLang.sr-Cyrl-CS.resources
-/Localization/WorkingDirectory/Kinovea.Updater.Languages.UpdaterLang.sr-Latn-CS.resources
-/Localization/WorkingDirectory/sr-Cyrl-CS/Kinovea.Camera.resources.dll
-/Localization/WorkingDirectory/sr-Cyrl-CS/Kinovea.FileBrowser.resources.dll
-/Localization/WorkingDirectory/sr-Cyrl-CS/Kinovea.resources.dll
-/Localization/WorkingDirectory/sr-Cyrl-CS/Kinovea.ScreenManager.resources.dll
-/Localization/WorkingDirectory/sr-Cyrl-CS/Kinovea.Updater.resources.dll
-/Localization/WorkingDirectory/sr-Latn-CS/Kinovea.Camera.resources.dll
-/Localization/WorkingDirectory/sr-Latn-CS/Kinovea.FileBrowser.resources.dll
-/Localization/WorkingDirectory/sr-Latn-CS/Kinovea.resources.dll
-/Localization/WorkingDirectory/sr-Latn-CS/Kinovea.ScreenManager.resources.dll
-/Localization/WorkingDirectory/sr-Latn-CS/Kinovea.Updater.resources.dll
-/Localization/WorkingDirectory/.idea/*
-/Kinovea-*.zip
 /Tools/UnusedResources/UnusedResources/Results*
 /Installer/sign/*
 /Kinovea/sign.bat
