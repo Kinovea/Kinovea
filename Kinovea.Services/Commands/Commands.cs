@@ -173,6 +173,10 @@ namespace Kinovea.Services
         /// </summary>
         PreferencesUpdated,
 
+        /// <summary>
+        /// A variable table was imported in another window.
+        /// </summary>
+        VariableTableImported,
 
         /// <summary>
         /// A camera summary was manually updated in another window.

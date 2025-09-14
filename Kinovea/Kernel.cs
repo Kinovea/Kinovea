@@ -1084,6 +1084,15 @@ namespace Kinovea.Root
                     PreferencesUpdated(false);
                     break;
                 }
+
+                case WindowCommand.VariableTableImported:
+                {
+                    log.DebugFormat("Variable table imported in an other window.");
+                    VariablesRepository.Initialize();
+                    VariablesRepository.SetContextFromString(PreferencesManager.CapturePreferences.ContextString);
+                    PreferencesUpdated(false);
+                    break;
+                }   
                     
                 case WindowCommand.CameraUpdated:
                 {

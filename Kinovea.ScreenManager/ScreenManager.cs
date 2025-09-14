@@ -3142,7 +3142,9 @@ namespace Kinovea.ScreenManager
             VariablesRepository.LoadFile(target);
             OrganizeMenus();
 
-            // TODO: alert the other instances that they need to reload the variables from the file system.
+            // Alert the other instances that they need to reload the variables from the file system.
+            NotificationCenter.RaiseTriggerPreferencesUpdated(false);
+            WindowManager.SendMessage("Kinovea:Window.VariableTableImported");
         }
         #endregion
         #endregion
