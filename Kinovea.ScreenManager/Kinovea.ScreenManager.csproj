@@ -1029,12 +1029,6 @@
     </Compile>
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserInterface\FormIconPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\FormIconPicker.Designer.cs">
-      <DependentUpon>FormIconPicker.cs</DependentUpon>
-    </Compile>
     <Compile Include="UserInterface\ScreenManagerUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1255,9 +1249,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormCrashRecovery.resx">
       <DependentUpon>FormCrashRecovery.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\FormIconPicker.resx">
-      <DependentUpon>FormIconPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\SliderLogScale.resx">
       <DependentUpon>SliderLogScale.cs</DependentUpon>
