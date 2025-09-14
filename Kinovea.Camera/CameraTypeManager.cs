@@ -217,7 +217,9 @@ namespace Kinovea.Camera
         public static void UpdatedCameraSummary(CameraSummary summary)
         {
             summary.Manager.UpdatedCameraSummary(summary);
-            CameraSummaryUpdated?.Invoke(null, new EventArgs<CameraSummary>(summary));
+
+            // Trigger one discovery step so the navigation pane can consolidate its camera list.
+            DiscoveryStep();
 
             // Send a global event to other instances.
             WindowManager.SendMessage("Kinovea:Window.CameraUpdated");

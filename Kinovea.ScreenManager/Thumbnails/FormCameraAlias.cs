@@ -72,8 +72,8 @@ namespace Kinovea.ScreenManager
         private void BtnIconClick(object sender, EventArgs e)
         {
             FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5);
-            FormsHelper.Locate(fip);
-            if(fip.ShowDialog() == DialogResult.OK)
+            fip.StartPosition = FormStartPosition.CenterParent;
+            if (fip.ShowDialog() == DialogResult.OK)
                 btnIcon.BackgroundImage = fip.PickedIcon;
             
             fip.Dispose();

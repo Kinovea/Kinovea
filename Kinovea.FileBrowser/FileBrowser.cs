@@ -48,7 +48,6 @@ namespace Kinovea.FileBrowser
         {
             log.Debug("Module Construction: Navigation pane");
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
-            CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten;
         }
 
@@ -79,11 +78,6 @@ namespace Kinovea.FileBrowser
             view.CamerasDiscovered(e.Summaries);
         }
         
-        private void CameraTypeManager_CameraSummaryUpdated(object sender, EventArgs<CameraSummary> e)
-        {
-            view.CameraSummaryUpdated(e.Value);
-        }
-
         private void CameraTypeManager_CameraForgotten(object sender, EventArgs<CameraSummary> e)
         {
             view.CameraForgotten(e.Value);

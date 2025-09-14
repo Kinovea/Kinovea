@@ -1093,10 +1093,8 @@ namespace Kinovea.Root
                     log.DebugFormat("Camera metadata updated in an other window.");
                     PreferencesManager.BeforeRead();
 
-                        CameraTypeManager.DiscoveryStep();
-                    // TODO: update the thumbnail list in the file browser if it's open.
-                    // TODO: update the camera list in the navigation pane.
-
+                    // Trigger one discovery step to update the navigation pane camera list and browser.
+                    CameraTypeManager.DiscoveryStep();
                     break;
                 }
 

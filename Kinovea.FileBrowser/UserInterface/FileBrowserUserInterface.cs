@@ -37,6 +37,8 @@ using Kinovea.Camera;
 using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
+using BrightIdeasSoftware;
+using log4net.Layout;
 
 namespace Kinovea.FileBrowser
 {
@@ -53,8 +55,11 @@ namespace Kinovea.FileBrowser
         private SessionHistory sessionHistory = new SessionHistory();
         private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
-        private ImageList cameraIcons = new ImageList();
+        
         private List<CameraSummary> cameraSummaries = new List<CameraSummary>();
+        private Dictionary<string, int> cameraSummaryMap = new Dictionary<string, int>();
+        private ImageList imgListCameras = new ImageList();
+
         private bool programmaticTabChange;
         private bool externalSelection;
         private string lastOpenedDirectory;
@@ -94,33 +99,26 @@ namespace Kinovea.FileBrowser
         {
             InitializeComponent();
 
-            // Splitters
-            
+            // Restore UI state.
             splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * WindowManager.ActiveWindow.ExplorerFilesSplitterRatio);
             splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio);
+            
+            InitializeTreeView(etExplorer);
+            InitializeTreeView(etShortcuts);
+            etExplorer.TreeViewBeforeExpand += etExplorer_TreeViewBeforeExpand;
+            FilterOutDesktopChildren(etExplorer);
+
+            PrepareCameraListView();
+            BuildContextMenu();
+
+            // Hook events from UI
             splitExplorerFiles.SplitterMoved += Splitters_SplitterMoved;
             splitShortcutsFiles.SplitterMoved += Splitters_SplitterMoved;
-
-            lvCameras.SmallImageList = cameraIcons;
-            cameraIcons.Images.Add("historyEntryDay", Properties.Resources.calendar_view_day);
-            cameraIcons.Images.Add("historyEntryMonth", Properties.Resources.calendar_view_month);
-            cameraIcons.Images.Add("unknownCamera", Properties.Resources.film_small);
-
-            // Drag Drop handling.
             lvExplorer.ItemDrag += listView_ItemDrag;
             lvShortcuts.ItemDrag += listView_ItemDrag;
             lvCaptured.ItemDrag += listView_ItemDrag;
 
-            InitializeTreeView(etExplorer);
-            InitializeTreeView(etShortcuts);
-            etExplorer.TreeViewBeforeExpand += etExplorer_TreeViewBeforeExpand;
-
-            FilterOutDesktopChildren(etExplorer);
-
-            lvCameras.ItemDrag += lvCameras_ItemDrag;
-            
-            BuildContextMenu();
-            
+            // Hook events from other modules.
             NotificationCenter.BrowserContentTypeChanged += NotificationCenter_ExplorerTabChangeAsked;
             NotificationCenter.RefreshFileList += NotificationCenter_RefreshNavigationPane;
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
@@ -133,122 +131,11 @@ namespace Kinovea.FileBrowser
             InitializeFileWatcher();
             
             // Reload last tab from prefs.
-            // We don't reload the splitters here, because we are not at full size yet and they are anchored.
             tabControl.SelectedIndex = (int)WindowManager.ActiveWindow.ActiveTab;
             activeTab = WindowManager.ActiveWindow.ActiveTab;
             
             Application.Idle += new EventHandler(this.IdleDetector);
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("FileExplorer");
-        }
-
-        private void InitializeTreeView(ExpTree tv)
-        {
-            tv.AllowDrop = false;
-            tv.tv1.BorderStyle = BorderStyle.None;
-            tv.tv1.ItemHeight = 20;
-            tv.tv1.ShowLines = false;
-            tv.tv1.ShowPlusMinus = true; // Can't get the chevron.
-            tv.tv1.FullRowSelect = true;
-            tv.tv1.HotTracking = false; // underline on hover.
-            tv.tv1.Indent = 20;
-
-            tv.tv1.KeyDown += (s, e) =>
-            {
-                // Disable the * key to expand all nodes.
-                if (e.KeyCode == Keys.Multiply)
-                    e.Handled = true;
-            };
-        }
-
-        private void FilterOutDesktopChildren(ExpTree etv)
-        {
-            TreeView tv = etv.tv1;
-
-            // Filter list for children of Desktop.
-            List<string> toFilter = new List<string>
-            {
-                "::{21EC2020-3AEA-1069-A2DD-08002B30309D}", // Control panel
-                "::{26EE0668-A00A-44D7-9371-BEB064C98683}", // Control panel.
-                "::{2227A280-3AEA-1069-A2DE-08002B30309D}", // Printers
-                "::{645FF040-5081-101B-9F08-00AA002F954E}", // Recycle bin
-                "::{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", // Network places
-                "::{031E4825-7B94-4DC3-B131-E946B44C8DD5}", // Libraries
-            };
-
-            TreeNode computerNode = null;
-            TreeNode rootNode = tv.Nodes[0];
-            for (int i = rootNode.Nodes.Count - 1; i >= 0; i--)
-            {
-                CShItem item = (CShItem)rootNode.Nodes[i].Tag;
-                if (item.Path == pathComputer)
-                {
-                    computerNode = rootNode.Nodes[i];
-                    continue;
-                }
-
-                if (toFilter.Contains(item.Path))
-                {
-                    rootNode.Nodes.RemoveAt(i);
-                    continue;
-                }
-
-                // Filter out the drives as they show up under computer again.
-                // This list under Desktop doesn't have all of them anyway.
-                if (item.IsDisk)
-                {
-                    rootNode.Nodes.RemoveAt(i);
-                    continue;
-                }
-            }
-
-            // Expand Computer.
-            if (computerNode != null)
-            {
-                computerNode.Expand();
-            }
-
-            // Note: the drives have already been renamed from "System (C:)" to "C: (System)",
-            // to align all the drive letters nicely. Done inside ExpTree.
-            
-            // Reselect the desktop node
-            tv.SelectedNode = rootNode;
-        }
-
-        private void etExplorer_TreeViewBeforeExpand(object sender, TreeViewEventArgs e)
-        {
-            // This is raised after the node children have been added but before it is visually expanded.
-            // Use this to filter out unwanted folders.
-            // Zip files have already been purged (Done inside ExpTree).
-            var item = e.Node.Tag as CShItem;
-            if (item == null)
-                return;
-
-            if (item.Parent == null || item.Parent.Path != pathDesktop)
-                return;
-
-            bool isComputer = item.Path == "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
-
-            // Immediate children of desktop.
-            // Remove any dot folder in children, especially for the Home folder.
-            // Remove any non-drive folder under Computer.
-            for (int i = e.Node.Nodes.Count - 1; i >= 0; i--)
-            {
-                var childItem = e.Node.Nodes[i].Tag as CShItem;
-                if (childItem == null)
-                    continue;
-                
-                if (childItem.DisplayName.StartsWith("."))
-                {
-                    e.Node.Nodes.RemoveAt(i);
-                    continue;
-                }
-
-                if (isComputer && !childItem.IsDisk)
-                {
-                    e.Node.Nodes.RemoveAt(i);
-                    continue;
-                }
-            }
         }
 
         private void BuildContextMenu()
@@ -319,15 +206,19 @@ namespace Kinovea.FileBrowser
             });
 
             mnuCameraLaunch.Image = Properties.Resources.camera_video;
-            mnuCameraLaunch.Click += (s, e) => LaunchSelectedCamera(lvCameras);
             mnuCameraForget.Image = Properties.Resources.delete;
-            mnuCameraForget.Click += (s, e) => DeleteSelectedCamera(lvCameras);
-            popMenuCameras.Items.AddRange(new ToolStripItem[] { mnuCameraLaunch, new ToolStripSeparator(), mnuCameraForget });
+            mnuCameraLaunch.Click += (s, e) => LaunchSelectedCamera();
+            mnuCameraForget.Click += (s, e) => ForgetSelectedCamera();
+            popMenuCameras.Items.AddRange(new ToolStripItem[] 
+            { 
+                mnuCameraLaunch, 
+                mnuCameraForget 
+            });
 
             lvShortcuts.ContextMenuStrip = popMenuFiles;
             lvExplorer.ContextMenuStrip = popMenuFiles;
             lvCaptured.ContextMenuStrip = popMenuFiles;
-            lvCameras.ContextMenuStrip = popMenuCameras;
+            olvCameras.ContextMenuStrip = popMenuCameras;
         }
 
         private void mnuLocate_Click(object sender, EventArgs e)
@@ -653,10 +544,6 @@ namespace Kinovea.FileBrowser
             UpdateCameraList(summaries);
         }
         
-        public void CameraSummaryUpdated(CameraSummary summary)
-        {
-            UpdateCamera(summary);
-        }
         public void CameraForgotten(CameraSummary summary)
         {
             ForgetCamera(summary);
@@ -681,9 +568,116 @@ namespace Kinovea.FileBrowser
         }
         #endregion
 
-        #region Explorer tab
+        #region File system tab
 
         #region TreeView
+        private void InitializeTreeView(ExpTree tv)
+        {
+            tv.AllowDrop = false;
+            tv.tv1.BorderStyle = BorderStyle.None;
+            tv.tv1.ItemHeight = 20;
+            tv.tv1.ShowLines = false;
+            tv.tv1.ShowPlusMinus = true; // Can't get the chevron.
+            tv.tv1.FullRowSelect = true;
+            tv.tv1.HotTracking = false; // underline on hover.
+            tv.tv1.Indent = 20;
+
+            tv.tv1.KeyDown += (s, e) =>
+            {
+                // Disable the * key to expand all nodes.
+                if (e.KeyCode == Keys.Multiply)
+                    e.Handled = true;
+            };
+        }
+        private void FilterOutDesktopChildren(ExpTree etv)
+        {
+            TreeView tv = etv.tv1;
+
+            // Filter list for children of Desktop.
+            List<string> toFilter = new List<string>
+            {
+                "::{21EC2020-3AEA-1069-A2DD-08002B30309D}", // Control panel
+                "::{26EE0668-A00A-44D7-9371-BEB064C98683}", // Control panel.
+                "::{2227A280-3AEA-1069-A2DE-08002B30309D}", // Printers
+                "::{645FF040-5081-101B-9F08-00AA002F954E}", // Recycle bin
+                "::{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", // Network places
+                "::{031E4825-7B94-4DC3-B131-E946B44C8DD5}", // Libraries
+            };
+
+            TreeNode computerNode = null;
+            TreeNode rootNode = tv.Nodes[0];
+            for (int i = rootNode.Nodes.Count - 1; i >= 0; i--)
+            {
+                CShItem item = (CShItem)rootNode.Nodes[i].Tag;
+                if (item.Path == pathComputer)
+                {
+                    computerNode = rootNode.Nodes[i];
+                    continue;
+                }
+
+                if (toFilter.Contains(item.Path))
+                {
+                    rootNode.Nodes.RemoveAt(i);
+                    continue;
+                }
+
+                // Filter out the drives as they show up under computer again.
+                // This list under Desktop doesn't have all of them anyway.
+                if (item.IsDisk)
+                {
+                    rootNode.Nodes.RemoveAt(i);
+                    continue;
+                }
+            }
+
+            // Expand Computer.
+            if (computerNode != null)
+            {
+                computerNode.Expand();
+            }
+
+            // Note: the drives have already been renamed from "System (C:)" to "C: (System)",
+            // to align all the drive letters nicely. Done inside ExpTree.
+
+            // Reselect the desktop node
+            tv.SelectedNode = rootNode;
+        }
+        private void etExplorer_TreeViewBeforeExpand(object sender, TreeViewEventArgs e)
+        {
+            // This is raised after the node children have been added but before it is visually expanded.
+            // Use this to filter out unwanted folders.
+            // Zip files have already been purged (Done inside ExpTree).
+            var item = e.Node.Tag as CShItem;
+            if (item == null)
+                return;
+
+            if (item.Parent == null || item.Parent.Path != pathDesktop)
+                return;
+
+            bool isComputer = item.Path == "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
+
+            // Immediate children of desktop.
+            // Remove any dot folder in children, especially for the Home folder.
+            // Remove any non-drive folder under Computer.
+            for (int i = e.Node.Nodes.Count - 1; i >= 0; i--)
+            {
+                var childItem = e.Node.Nodes[i].Tag as CShItem;
+                if (childItem == null)
+                    continue;
+
+                if (childItem.DisplayName.StartsWith("."))
+                {
+                    e.Node.Nodes.RemoveAt(i);
+                    continue;
+                }
+
+                if (isComputer && !childItem.IsDisk)
+                {
+                    e.Node.Nodes.RemoveAt(i);
+                    continue;
+                }
+            }
+        }
         private void etExplorer_ExpTreeNodeSelected(string selectedPath, CShItem item)
         {
             currentExptreeItem = item;
@@ -831,116 +825,237 @@ namespace Kinovea.FileBrowser
         #region Camera tab
 
         #region Camera list
-        private void UpdateCameraList(List<CameraSummary> summaries)
+
+        private void PrepareCameraListView()
         {
-            cameraSummaries.Clear();
-            
-            // Remove lost cameras.
-            List<string> lost = new List<string>();
-            foreach (ListViewItem lvi in lvCameras.Items)
+            // Column level options
+            var colCameraIcon = new OLVColumn();
+            colCameraIcon.AspectName = "Icon";
+            colCameraIcon.Groupable = false;
+            colCameraIcon.Sortable = false;
+            colCameraIcon.IsEditable = false;
+            colCameraIcon.MinimumWidth = 25;
+            colCameraIcon.MaximumWidth = 25;
+            colCameraIcon.TextAlign = HorizontalAlignment.Center;
+            colCameraIcon.AspectGetter = delegate (object rowObject)
             {
-                CameraSummary found = summaries.FirstOrDefault(s => s.Identifier == lvi.Name);
-                if (found == null)
-                    lost.Add(lvi.Name);
+                return ((CameraSummary)rowObject).Identifier;
+            };
+
+            colCameraIcon.AspectToStringConverter = delegate (object rowObject)
+            {
+                return string.Empty;
+            };
+
+            colCameraIcon.ImageGetter = delegate (object rowObject)
+            {
+                // The image list for the icons is indexed by the identifier.
+                return ((CameraSummary)rowObject).Identifier;
+            };
+
+            var colName = new OLVColumn();
+            colName.AspectName = "Alias";
+            colName.Groupable = false;
+            colName.Sortable = false;
+            colName.IsEditable = false;
+            colName.MinimumWidth = 100;
+            colName.FillsFreeSpace = true;
+            colName.FreeSpaceProportion = 2;
+            colName.TextAlign = HorizontalAlignment.Left;
+
+            olvCameras.AllColumns.AddRange(new OLVColumn[] {
+                colCameraIcon,
+                colName,
+                });
+
+            olvCameras.Columns.AddRange(new ColumnHeader[] {
+                colCameraIcon,
+                colName,
+                });
+
+            // List view level options
+            olvCameras.HeaderStyle = ColumnHeaderStyle.None;
+            olvCameras.RowHeight = 22;
+            olvCameras.FullRowSelect = true;
+            olvCameras.SmallImageList = imgListCameras;
+        }
+
+        private void UpdateCameraList(List<CameraSummary> newSummaries)
+        {
+            // Consolidate the list of cameras.
+            // We maintain a local list in parallel to the list view, indexed by ids.
+            // 3 steps:
+            // 1. Remove lost cameras.
+            // 2. Update existing cameras.
+            // 3. Add new cameras.
+
+            bool needsRefresh = false;
+            List<string> lost = new List<string>();
+            foreach (var known in cameraSummaries)
+            {
+                var c = newSummaries.FirstOrDefault(s => s.Identifier == known.Identifier);
+                if (c == null)
+                {
+                    lost.Add(known.Identifier);
+                }
             }
+
+            needsRefresh = lost.Count > 0;
 
             foreach (string id in lost)
             {
-                cameraIcons.Images.RemoveByKey(lvCameras.Items[id].ImageKey);
-                lvCameras.Items.RemoveByKey(id);
+                RemoveCamera(id);
             }
 
-            // Consolidate list.
-            foreach (CameraSummary summary in summaries)
+            // Second pass, update existing and add new.
+            foreach (CameraSummary newSummary in newSummaries)
             {
-                cameraSummaries.Add(summary);
-
-                bool known = lvCameras.Items.ContainsKey(summary.Identifier);
-                if (known)
+                if (cameraSummaryMap.ContainsKey(newSummary.Identifier))
                 {
-                    lvCameras.Items[summary.Identifier].ImageKey = summary.Identifier;
-                    lvCameras.Items[summary.Identifier].Text = summary.Alias;
-                    continue;
-                }
+                    // Update existing only if needed.
+                    int index = cameraSummaryMap[newSummary.Identifier];
 
-                cameraIcons.Images.Add(summary.Identifier, summary.Icon);
-                lvCameras.Items.Add(summary.Identifier, summary.Alias, summary.Identifier);
+                    if (cameraSummaries[index].Alias == newSummary.Alias &&
+                        cameraSummaries[index].Icon.GetHashCode() == newSummary.Icon.GetHashCode())
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        needsRefresh = true;
+                        imgListCameras.Images.RemoveByKey(newSummary.Identifier);
+                        imgListCameras.Images.Add(newSummary.Identifier, newSummary.Icon);
+                        cameraSummaries[index] = newSummary;
+                    }
+                }
+                else
+                {
+                    // Add new.
+                    needsRefresh = true;
+                    imgListCameras.Images.Add(newSummary.Identifier, newSummary.Icon);
+                    cameraSummaries.Add(newSummary);
+                    cameraSummaryMap[newSummary.Identifier] = cameraSummaries.Count - 1;
+                }
+            }
+
+            if (needsRefresh)
+            {
+                olvCameras.SetObjects(cameraSummaries);
             }
         }
         
-        private void UpdateCamera(CameraSummary summary)
-        {
-            if(!lvCameras.Items.ContainsKey(summary.Identifier))
-                return;
-            
-            ListViewItem lvi = lvCameras.Items[summary.Identifier];
-            int index = FindSummaryIndex(cameraSummaries, summary.Identifier);
-            if (index < 0)
-                return;
-
-            cameraSummaries[index] = summary;
-
-            cameraIcons.Images.RemoveByKey(lvi.ImageKey);
-            cameraIcons.Images.Add(summary.Identifier, summary.Icon);
-            
-            lvi.Text = summary.Alias;
-            
-            // We specify the image by key, but the ListView actually uses the index to 
-            // refer to the image. So when we alter the image list, everything is scrambled.
-            // Assigning the key again seems to go through the piece of code that recomputes the index and fixes things.
-            foreach (ListViewItem item in lvCameras.Items)
-                item.ImageKey = item.ImageKey;
-
-            lvCameras.Invalidate();
-        }
-        
-        private int FindSummaryIndex(List<CameraSummary> summaries, string id)
-        {
-            return summaries.FindIndex(s => s.Identifier == id);
-        }
-
         private void ForgetCamera(CameraSummary summary)
         {
-            int index = FindSummaryIndex(cameraSummaries, summary.Identifier);
-            if (index >= 0)
-                cameraSummaries.RemoveAt(index);
+            // Remove a camera from the list.
+            // If it's a connected camera it will be added back at next discovery step.
+            if (!cameraSummaryMap.ContainsKey(summary.Identifier))
+                return;
+
+            RemoveCamera(summary.Identifier);
+            olvCameras.SetObjects(cameraSummaries);
         }
 
-        private void LvCameras_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void RemoveCamera(string id)
         {
-            ListViewItem lvi = lvCameras.GetItemAt(e.X, e.Y);
-            
-            if(lvi == null || lvCameras.SelectedItems == null || lvCameras.SelectedItems.Count != 1)
-                return;
-            
-            int index = FindSummaryIndex(cameraSummaries, lvi.Name);
-            
-            if(index >= 0)
-                CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
+            imgListCameras.Images.RemoveByKey(id);
+            cameraSummaries.RemoveAt(cameraSummaryMap[id]);
+            RebuildCameraSummaryMap();
         }
-        
-        private void lvCameras_ItemDrag(object sender, ItemDragEventArgs e)
+        private void RebuildCameraSummaryMap()
         {
-            ListViewItem lvi = e.Item as ListViewItem;
+            cameraSummaryMap.Clear();
+            for (int i = 0; i < cameraSummaries.Count; i++)
+            {
+                cameraSummaryMap[cameraSummaries[i].Identifier] = i;
+            }
+        }
 
-            if(lvi == null || lvCameras.SelectedItems == null || lvCameras.SelectedItems.Count != 1)
+        private void LaunchSelectedCamera()
+        {
+            var cameraSummary = olvCameras.SelectedObject as CameraSummary;
+            if (cameraSummary == null)
                 return;
-            
-            int index = FindSummaryIndex(cameraSummaries, lvi.Name);
-            if(index >= 0)
-                DoDragDrop(cameraSummaries[index], DragDropEffects.All);
+
+            CameraTypeManager.LoadCamera(cameraSummary, -1);
         }
+
+        private void ForgetSelectedCamera()
+        {
+            var cameraSummary = olvCameras.SelectedObject as CameraSummary;
+            if (cameraSummary == null)
+                return;
+
+            CameraTypeManager.ForgetCamera(cameraSummary);
+        }
+
+        private void olvCameras_DoubleClick(object sender, EventArgs e)
+        {
+            var cameraSummary = olvCameras.SelectedObject as CameraSummary;
+            if (cameraSummary == null)
+                return;
+
+            CameraTypeManager.LoadCamera(cameraSummary, -1);
+        }
+
+        private void olvCameras_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            var cameraSummary = olvCameras.SelectedObject as CameraSummary;
+            if (cameraSummary == null)
+                return;
+
+            DoDragDrop(cameraSummary, DragDropEffects.All);
+        }
+
+        private void BtnManualClick(object sender, EventArgs e)
+        {
+            FormCameraWizard wizard = new FormCameraWizard();
+            if (wizard.ShowDialog() == DialogResult.OK)
+            {
+                CameraSummary summary = wizard.Result;
+                if (summary != null)
+                    CameraTypeManager.UpdatedCameraSummary(summary);
+            }
+
+            wizard.Dispose();
+        }
+
         #endregion
-        
+
         #region File list
         private void LvCaptured_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             LaunchItemAt(lvCaptured, e);
         }
+
+        private void listView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListView lv = sender as ListView;
+            if (lv == null || lv.SelectedItems.Count != 1)
+                return;
+
+            string file = lv.SelectedItems[0].Tag as string;
+            if (string.IsNullOrEmpty(file))
+                return;
+
+            foreach (ListViewItem item in lv.Items)
+            {
+                item.BackColor = Color.White;
+                item.ForeColor = Color.Black;
+            }
+
+            lv.SelectedItems[0].BackColor = SystemColors.Highlight;
+            lv.SelectedItems[0].ForeColor = SystemColors.HighlightText;
+
+            if (!externalSelection)
+                NotificationCenter.RaiseFileSelected(this, file);
+
+            externalSelection = false;
+        }
+
         #endregion
 
         #endregion
-        
+
         #region Common
         private void TabControlSelected_IndexChanged(object sender, EventArgs e)
         {
@@ -1213,44 +1328,6 @@ namespace Kinovea.FileBrowser
         }
         #endregion
 
-        private void BtnManualClick(object sender, EventArgs e)
-        {
-            FormCameraWizard wizard = new FormCameraWizard();
-            if(wizard.ShowDialog() == DialogResult.OK)
-            {
-                CameraSummary summary = wizard.Result;
-                if(summary != null)
-                    CameraTypeManager.UpdatedCameraSummary(summary);
-            }
-            
-            wizard.Dispose();
-        }
-
-        private void listView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ListView lv = sender as ListView;
-            if (lv == null || lv.SelectedItems.Count != 1)
-                return;
-
-            string file = lv.SelectedItems[0].Tag as string;
-            if (string.IsNullOrEmpty(file))
-                return;
-
-            foreach (ListViewItem item in lv.Items)
-            {
-                item.BackColor = Color.White;
-                item.ForeColor = Color.Black;
-            }
-
-            lv.SelectedItems[0].BackColor = SystemColors.Highlight;
-            lv.SelectedItems[0].ForeColor = SystemColors.HighlightText;
-
-            if (!externalSelection)
-                NotificationCenter.RaiseFileSelected(this, file);
-
-            externalSelection = false;
-        }
-
         #region File watcher
         private void InitializeFileWatcher()
         {
@@ -1362,34 +1439,6 @@ namespace Kinovea.FileBrowser
                 NotificationCenter.RaiseLoadVideoAsked(path, -1);
         }
 
-        private void LaunchSelectedCamera(ListView lv)
-        {
-            if (lv == null || !lv.Focused)
-                return;
-
-            if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
-                return;
-
-            int index = FindSummaryIndex(cameraSummaries, lv.SelectedItems[0].Name);
-            if (index >= 0)
-                CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
-        }
-
-        private void DeleteSelectedCamera(ListView lv)
-        {
-            if (lv == null || !lv.Focused)
-                return;
-
-            if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
-                return;
-
-            int index = FindSummaryIndex(cameraSummaries, lv.SelectedItems[0].Name);
-            if (index >= 0)
-            {
-                CameraTypeManager.ForgetCamera(cameraSummaries[index]);
-            }
-        }
-
         private void CommandDelete()
         {
             ListView lv = GetFileListview();
@@ -1424,6 +1473,5 @@ namespace Kinovea.FileBrowser
                 FilesystemHelper.LocateFile(path);
         }
         #endregion
-
     }
 }

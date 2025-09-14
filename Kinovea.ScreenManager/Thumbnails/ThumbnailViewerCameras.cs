@@ -113,18 +113,6 @@ namespace Kinovea.ScreenManager
                 UpdateThumbnailImage(summary, image);
         }
 
-        /// <summary>
-        /// The summary got updated.
-        /// </summary>
-        public void CameraSummaryUpdated(CameraSummary summary)
-        {
-            int index = IndexOf(summary.Identifier);
-            if(index < 0)
-            return;
-                
-            thumbnails[index].UpdateSummary(summary);
-        }
-
         public void CameraForgotten(CameraSummary summary)
         {
             int index = IndexOf(summary.Identifier);

@@ -48,18 +48,33 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // FormIconPicker
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "FormIconPicker";
-            this.Text = "FormIconPicker";
-            this.ResumeLayout(false);
+      this.pnlIcons = new System.Windows.Forms.FlowLayoutPanel();
+      this.SuspendLayout();
+      // 
+      // pnlIcons
+      // 
+      this.pnlIcons.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.pnlIcons.Location = new System.Drawing.Point(12, 12);
+      this.pnlIcons.Name = "pnlIcons";
+      this.pnlIcons.Size = new System.Drawing.Size(210, 237);
+      this.pnlIcons.TabIndex = 0;
+      // 
+      // FormIconPicker
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(234, 261);
+      this.Controls.Add(this.pnlIcons);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+      this.Name = "FormIconPicker";
+      this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
+      this.Text = "FormIconPicker";
+      this.ResumeLayout(false);
 
         }
+
+        private System.Windows.Forms.FlowLayoutPanel pnlIcons;
     }
 }

@@ -60,7 +60,6 @@ namespace Kinovea.ScreenManager
             NotificationCenter.BrowserContentTypeChanged += NotificationCenter_ExplorerTabChanged;
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
-            CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten; 
             CameraTypeManager.CameraThumbnailProduced += CameraTypeManager_CameraThumbnailProduced;
 
@@ -198,11 +197,6 @@ namespace Kinovea.ScreenManager
             viewerCameras.CamerasDiscovered(e.Summaries);
         }
         
-        private void CameraTypeManager_CameraSummaryUpdated(object sender, EventArgs<CameraSummary> e)
-        {
-            viewerCameras.CameraSummaryUpdated(e.Value);
-        }
-
         private void CameraTypeManager_CameraForgotten(object sender, EventArgs<CameraSummary> e)
         {
             viewerCameras.CameraForgotten(e.Value);

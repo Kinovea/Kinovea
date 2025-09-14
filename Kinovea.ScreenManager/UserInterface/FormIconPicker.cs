@@ -50,47 +50,26 @@ namespace Kinovea.ScreenManager
         
         private void InitializeButtons()
         {
-            int buttonSize = 16;
-            int internalMargin = 5;
-            int externalMargin = 10;
-            int cols = columns;
-            
-            int index = 0;
-            foreach(Bitmap bitmap in icons)
+            int buttonSize = 20;
+            foreach (Bitmap bitmap in icons)
             {
                 Button button = new Button();
-                button.BackgroundImage = bitmap;
+                button.Image = bitmap;
+                button.ImageAlign = ContentAlignment.MiddleCenter;
                 button.FlatStyle = FlatStyle.Flat;
                 button.BackColor = Color.Transparent;
                 button.FlatAppearance.BorderSize = 0;
+                button.Cursor = Cursors.Hand;
                 
-                int row = index / cols;
-                int col = index - (row * cols);
-                int left = externalMargin + ((buttonSize + internalMargin) * col);
-                int top = externalMargin + ((buttonSize + internalMargin) * row);
-                
-                button.Top = top;
-                button.Left = left;
                 button.Width = buttonSize;
                 button.Height = buttonSize;
-                
+                button.Margin = new Padding(0, 0, 10, 10);
+
                 button.Tag = bitmap;
                 button.Click += Button_Click;
-                
-                this.Controls.Add(button);
-                
-                index++;
-            }
-            
-            Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
-            int titleBarHeight = screenRectangle.Top - this.Top;
 
-            int buttonTotalWidth = ((buttonSize + internalMargin) * cols) - internalMargin;
-            int totalRows = (icons.Count() / cols) + 1;
-            int buttonTotalHeight = ((buttonSize + internalMargin) * totalRows) - internalMargin;
-            
-            this.Width = externalMargin + buttonTotalWidth + externalMargin;
-            this.Height = titleBarHeight + externalMargin + buttonTotalHeight + externalMargin;
+                pnlIcons.Controls.Add(button);
+            }
         }
 
         private void Button_Click(object sender, EventArgs e)
@@ -100,6 +79,7 @@ namespace Kinovea.ScreenManager
             Button button = sender as Button;
             if(button == null)
                 return;
+
             Bitmap bitmap = button.Tag as Bitmap;
             if(bitmap != null)
                 pickedIcon = bitmap;

@@ -47,14 +47,13 @@ namespace Kinovea.FileBrowser
       this.lblFavFiles = new System.Windows.Forms.Label();
       this.lvShortcuts = new System.Windows.Forms.ListView();
       this.tabPageCameras = new System.Windows.Forms.TabPage();
+      this.olvCameras = new BrightIdeasSoftware.ObjectListView();
       this.lvCaptured = new System.Windows.Forms.ListView();
       this.lblCaptureHistory = new System.Windows.Forms.Label();
       this.btnManual = new System.Windows.Forms.Button();
       this.label1 = new System.Windows.Forms.Label();
-      this.lvCameras = new System.Windows.Forms.ListView();
       this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
       this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
-      this.imageList1 = new System.Windows.Forms.ImageList(this.components);
       this.tabControl.SuspendLayout();
       this.tabPageClassic.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitExplorerFiles)).BeginInit();
@@ -67,6 +66,7 @@ namespace Kinovea.FileBrowser
       this.splitShortcutsFiles.Panel2.SuspendLayout();
       this.splitShortcutsFiles.SuspendLayout();
       this.tabPageCameras.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.olvCameras)).BeginInit();
       this.SuspendLayout();
       // 
       // tabControl
@@ -336,11 +336,11 @@ namespace Kinovea.FileBrowser
       // 
       // tabPageCameras
       // 
+      this.tabPageCameras.Controls.Add(this.olvCameras);
       this.tabPageCameras.Controls.Add(this.lvCaptured);
       this.tabPageCameras.Controls.Add(this.lblCaptureHistory);
       this.tabPageCameras.Controls.Add(this.btnManual);
       this.tabPageCameras.Controls.Add(this.label1);
-      this.tabPageCameras.Controls.Add(this.lvCameras);
       this.tabPageCameras.ImageKey = "camera";
       this.tabPageCameras.Location = new System.Drawing.Point(4, 23);
       this.tabPageCameras.Name = "tabPageCameras";
@@ -348,6 +348,23 @@ namespace Kinovea.FileBrowser
       this.tabPageCameras.Size = new System.Drawing.Size(311, 533);
       this.tabPageCameras.TabIndex = 2;
       this.tabPageCameras.UseVisualStyleBackColor = true;
+      // 
+      // olvCameras
+      // 
+      this.olvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.olvCameras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.olvCameras.CellEditUseWholeCell = false;
+      this.olvCameras.Cursor = System.Windows.Forms.Cursors.Default;
+      this.olvCameras.HideSelection = false;
+      this.olvCameras.Location = new System.Drawing.Point(6, 31);
+      this.olvCameras.Name = "olvCameras";
+      this.olvCameras.Size = new System.Drawing.Size(299, 279);
+      this.olvCameras.TabIndex = 11;
+      this.olvCameras.UseCompatibleStateImageBehavior = false;
+      this.olvCameras.View = System.Windows.Forms.View.Details;
+      this.olvCameras.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.olvCameras_ItemDrag);
+      this.olvCameras.DoubleClick += new System.EventHandler(this.olvCameras_DoubleClick);
       // 
       // lvCaptured
       // 
@@ -362,11 +379,11 @@ namespace Kinovea.FileBrowser
       this.lvCaptured.GridLines = true;
       this.lvCaptured.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.lvCaptured.HideSelection = false;
-      this.lvCaptured.Location = new System.Drawing.Point(4, 311);
+      this.lvCaptured.Location = new System.Drawing.Point(4, 387);
       this.lvCaptured.MultiSelect = false;
       this.lvCaptured.Name = "lvCaptured";
       this.lvCaptured.ShowGroups = false;
-      this.lvCaptured.Size = new System.Drawing.Size(302, 217);
+      this.lvCaptured.Size = new System.Drawing.Size(302, 141);
       this.lvCaptured.SmallImageList = this.imgListFiles;
       this.lvCaptured.TabIndex = 10;
       this.lvCaptured.UseCompatibleStateImageBehavior = false;
@@ -383,7 +400,7 @@ namespace Kinovea.FileBrowser
       this.lblCaptureHistory.BackColor = System.Drawing.Color.White;
       this.lblCaptureHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblCaptureHistory.ForeColor = System.Drawing.Color.Gray;
-      this.lblCaptureHistory.Location = new System.Drawing.Point(3, 284);
+      this.lblCaptureHistory.Location = new System.Drawing.Point(3, 364);
       this.lblCaptureHistory.Name = "lblCaptureHistory";
       this.lblCaptureHistory.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
       this.lblCaptureHistory.Size = new System.Drawing.Size(305, 20);
@@ -393,7 +410,7 @@ namespace Kinovea.FileBrowser
       // 
       // btnManual
       // 
-      this.btnManual.Location = new System.Drawing.Point(1, 235);
+      this.btnManual.Location = new System.Drawing.Point(6, 316);
       this.btnManual.Name = "btnManual";
       this.btnManual.Size = new System.Drawing.Size(132, 23);
       this.btnManual.TabIndex = 4;
@@ -416,26 +433,6 @@ namespace Kinovea.FileBrowser
       this.label1.Text = "Cameras";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
-      // lvCameras
-      // 
-      this.lvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.lvCameras.BackColor = System.Drawing.Color.White;
-      this.lvCameras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.lvCameras.GridLines = true;
-      this.lvCameras.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-      this.lvCameras.HideSelection = false;
-      this.lvCameras.Location = new System.Drawing.Point(2, 31);
-      this.lvCameras.MultiSelect = false;
-      this.lvCameras.Name = "lvCameras";
-      this.lvCameras.ShowGroups = false;
-      this.lvCameras.Size = new System.Drawing.Size(305, 198);
-      this.lvCameras.SmallImageList = this.imgListFiles;
-      this.lvCameras.TabIndex = 1;
-      this.lvCameras.UseCompatibleStateImageBehavior = false;
-      this.lvCameras.View = System.Windows.Forms.View.List;
-      this.lvCameras.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LvCameras_MouseDoubleClick);
-      // 
       // imgListTabs
       // 
       this.imgListTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListTabs.ImageStream")));
@@ -444,13 +441,6 @@ namespace Kinovea.FileBrowser
       this.imgListTabs.Images.SetKeyName(1, "shortcuts");
       this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
       this.imgListTabs.Images.SetKeyName(3, "camera");
-      // 
-      // imageList1
-      // 
-      this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-      this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-      this.imageList1.Images.SetKeyName(0, "0-percent-16.png");
-      this.imageList1.Images.SetKeyName(1, "area-chart-16.png");
       // 
       // FileBrowserUserInterface
       // 
@@ -472,11 +462,10 @@ namespace Kinovea.FileBrowser
       ((System.ComponentModel.ISupportInitialize)(this.splitShortcutsFiles)).EndInit();
       this.splitShortcutsFiles.ResumeLayout(false);
       this.tabPageCameras.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.olvCameras)).EndInit();
       this.ResumeLayout(false);
 
         }
-
-        private System.Windows.Forms.ListView lvCameras;
         
         private System.Windows.Forms.Button btnManual;
         public System.Windows.Forms.Label label1;
@@ -503,6 +492,6 @@ namespace Kinovea.FileBrowser
         public System.Windows.Forms.Label lblCaptureHistory;
         public System.Windows.Forms.Label lblFolders;
         private System.Windows.Forms.ListView lvCaptured;
-        private System.Windows.Forms.ImageList imageList1;
+        private BrightIdeasSoftware.ObjectListView olvCameras;
     }
 }
