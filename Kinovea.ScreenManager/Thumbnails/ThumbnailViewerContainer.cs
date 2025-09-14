@@ -198,9 +198,9 @@ namespace Kinovea.ScreenManager
             viewerCameras.CamerasDiscovered(e.Summaries);
         }
         
-        private void CameraTypeManager_CameraSummaryUpdated(object sender, CameraSummaryUpdatedEventArgs e)
+        private void CameraTypeManager_CameraSummaryUpdated(object sender, EventArgs<CameraSummary> e)
         {
-            viewerCameras.CameraSummaryUpdated(e.Summary);
+            viewerCameras.CameraSummaryUpdated(e.Value);
         }
 
         private void CameraTypeManager_CameraForgotten(object sender, EventArgs<CameraSummary> e)

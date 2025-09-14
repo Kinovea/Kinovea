@@ -79,9 +79,9 @@ namespace Kinovea.FileBrowser
             view.CamerasDiscovered(e.Summaries);
         }
         
-        private void CameraTypeManager_CameraSummaryUpdated(object sender, CameraSummaryUpdatedEventArgs e)
+        private void CameraTypeManager_CameraSummaryUpdated(object sender, EventArgs<CameraSummary> e)
         {
-            view.CameraSummaryUpdated(e.Summary);
+            view.CameraSummaryUpdated(e.Value);
         }
 
         private void CameraTypeManager_CameraForgotten(object sender, EventArgs<CameraSummary> e)

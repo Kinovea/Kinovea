@@ -39,7 +39,7 @@ namespace Kinovea.Camera
         #region Events
         public static event EventHandler<CamerasDiscoveredEventArgs> CamerasDiscovered;
         public static event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
-        public static event EventHandler<CameraSummaryUpdatedEventArgs> CameraSummaryUpdated;
+        public static event EventHandler<EventArgs<CameraSummary>> CameraSummaryUpdated;
         public static event EventHandler<EventArgs<CameraSummary>> CameraForgotten;
         public static event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         #endregion
@@ -217,7 +217,10 @@ namespace Kinovea.Camera
         public static void UpdatedCameraSummary(CameraSummary summary)
         {
             summary.Manager.UpdatedCameraSummary(summary);
-            CameraSummaryUpdated?.Invoke(null, new CameraSummaryUpdatedEventArgs(summary));
+            CameraSummaryUpdated?.Invoke(null, new EventArgs<CameraSummary>(summary));
+
+            // Send a global event to other instances.
+            WindowManager.SendMessage("Kinovea:Window.CameraUpdated");
         }
 
         /// <summary>
@@ -277,7 +280,7 @@ namespace Kinovea.Camera
         /// <summary>
         /// Ask each camera manager plugin to discover its cameras.
         /// This can be dynamic or based on previously saved data.
-        /// Camera managers should also try to connect to the cameras and raise the CameraThumbnailProduced event.
+        /// Camera managers should NOT connect to the cameras and raise the CameraThumbnailProduced event during this.
         /// </summary>
         public static long DiscoveryStep()
         {

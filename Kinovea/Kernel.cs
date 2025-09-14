@@ -1063,7 +1063,7 @@ namespace Kinovea.Root
             switch (cmd)
             {
                 case WindowCommand.PreferencesUpdated:
-
+                {
                     // An external window has updated the shared core preferences.
                     // At this point we should already have detected the date change on the file.
                     // Make sure we reload the file and import the new preferences.
@@ -1083,9 +1083,30 @@ namespace Kinovea.Root
                     // Trigger a local update in this instance to make sure the UI is up to date.
                     PreferencesUpdated(false);
                     break;
+                }
+                    
+                case WindowCommand.CameraUpdated:
+                {
+                    // Another window has updated one of the camera metadata (name, icon).
+                    // This is stored in the shared preferences.
+                    // At this point we should already have detected the date change on the file.
+                    log.DebugFormat("Camera metadata updated in an other window.");
+                    PreferencesManager.BeforeRead();
+
+                        CameraTypeManager.DiscoveryStep();
+                    // TODO: update the thumbnail list in the file browser if it's open.
+                    // TODO: update the camera list in the navigation pane.
+
+                    break;
+                }
+
                 case WindowCommand.Close:
+                {
+                    log.DebugFormat("Close command received from an other window.");
                     Application.Exit();
                     break;
+                }
+                
                 default:
                     break;
             }

@@ -859,6 +859,7 @@ namespace Kinovea.FileBrowser
                 if (known)
                 {
                     lvCameras.Items[summary.Identifier].ImageKey = summary.Identifier;
+                    lvCameras.Items[summary.Identifier].Text = summary.Alias;
                     continue;
                 }
 
@@ -873,7 +874,9 @@ namespace Kinovea.FileBrowser
                 return;
             
             ListViewItem lvi = lvCameras.Items[summary.Identifier];
-            int index = IndexOfCamera(cameraSummaries, summary.Identifier);
+            int index = FindSummaryIndex(cameraSummaries, summary.Identifier);
+            if (index < 0)
+                return;
 
             cameraSummaries[index] = summary;
 
@@ -891,20 +894,14 @@ namespace Kinovea.FileBrowser
             lvCameras.Invalidate();
         }
         
-        private int IndexOfCamera(List<CameraSummary> summaries, string id)
+        private int FindSummaryIndex(List<CameraSummary> summaries, string id)
         {
-            for (int i = 0; i < summaries.Count; i++)
-            {
-                if (summaries[i].Identifier == id)
-                    return i;
-            }
-
-            return -1;
+            return summaries.FindIndex(s => s.Identifier == id);
         }
 
         private void ForgetCamera(CameraSummary summary)
         {
-            int index = IndexOfCamera(cameraSummaries, summary.Identifier);
+            int index = FindSummaryIndex(cameraSummaries, summary.Identifier);
             if (index >= 0)
                 cameraSummaries.RemoveAt(index);
         }
@@ -916,7 +913,7 @@ namespace Kinovea.FileBrowser
             if(lvi == null || lvCameras.SelectedItems == null || lvCameras.SelectedItems.Count != 1)
                 return;
             
-            int index = IndexOfCamera(cameraSummaries, lvi.Name);
+            int index = FindSummaryIndex(cameraSummaries, lvi.Name);
             
             if(index >= 0)
                 CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
@@ -929,7 +926,7 @@ namespace Kinovea.FileBrowser
             if(lvi == null || lvCameras.SelectedItems == null || lvCameras.SelectedItems.Count != 1)
                 return;
             
-            int index = IndexOfCamera(cameraSummaries, lvi.Name);
+            int index = FindSummaryIndex(cameraSummaries, lvi.Name);
             if(index >= 0)
                 DoDragDrop(cameraSummaries[index], DragDropEffects.All);
         }
@@ -1373,7 +1370,7 @@ namespace Kinovea.FileBrowser
             if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
                 return;
 
-            int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
+            int index = FindSummaryIndex(cameraSummaries, lv.SelectedItems[0].Name);
             if (index >= 0)
                 CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
         }
@@ -1386,7 +1383,7 @@ namespace Kinovea.FileBrowser
             if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
                 return;
 
-            int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
+            int index = FindSummaryIndex(cameraSummaries, lv.SelectedItems[0].Name);
             if (index >= 0)
             {
                 CameraTypeManager.ForgetCamera(cameraSummaries[index]);

@@ -173,6 +173,13 @@ namespace Kinovea.Services
         /// </summary>
         PreferencesUpdated,
 
+
+        /// <summary>
+        /// A camera summary was manually updated in another window.
+        /// i.e: Camera alias or icon was changed.
+        /// </summary>
+        CameraUpdated,
+
         /// <summary>
         /// Another instance is asking us to close.
         /// </summary>

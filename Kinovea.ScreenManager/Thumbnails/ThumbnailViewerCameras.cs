@@ -189,6 +189,8 @@ namespace Kinovea.ScreenManager
                 if(index >= 0)
                 {
                     // We already have a thumbnail control for this camera.
+                    thumbnails[index].UpdateSummary(summary);
+                    
                     if (!hidden && refreshThumbnailsOfKnownCameras)
                     {
                         summary.Manager.StartThumbnail(summary);
