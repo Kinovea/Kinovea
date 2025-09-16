@@ -716,7 +716,7 @@
     <value>Standardwerte wiederherstellen</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>Importieren</value>
+    <value>Importieren…</value>
   </data>
   <data name="Generic_File" xml:space="preserve">
     <value>Datei</value>
@@ -1119,5 +1119,47 @@
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Durschnittliche Pixelgröße: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Geben Sie die Länge jeder Seite ein.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Analyse</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Bildreihe</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Bildsequenz exportieren</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Nebeneinander exportieren</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Horizontal</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Vertikal</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Bilder: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Tabelle:</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Bildgröße:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Aktion</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Aktuellen Zeitabschnitt löschen</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>alle Zeiten löschen</value>
   </data>
 </root>
