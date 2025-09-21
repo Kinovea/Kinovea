@@ -463,7 +463,6 @@ namespace Kinovea.ScreenManager
             
             // Delegates implemented here but used by the view.
             view.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
-            //view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
 
             frameServer.Metadata.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.Value);
             frameServer.Metadata.CameraCalibrationAsked += (s, e) => ShowCameraCalibration();

@@ -365,7 +365,7 @@
     <Compile Include="Exporters\Images\ImageExportFormat.cs" />
     <Compile Include="Exporters\Video\VideoExporter.cs" />
     <Compile Include="Exporters\Video\VideoExportFormat.cs" />
-    <Compile Include="Tracking\Trackability\TrackablePoint2.cs" />
+    <Compile Include="Tracking\Trackability\TrackablePoint.cs" />
     <Compile Include="Variables\CsvTextFieldParser.cs" />
     <Compile Include="Variables\DynamicPathResolver.cs" />
     <Compile Include="Variables\ContextVariableCategory.cs" />

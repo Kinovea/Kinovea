@@ -97,7 +97,6 @@ namespace Kinovea.ScreenManager
 
         #region Commands encapsulating domain logic implemented in the presenter.
         public ToggleCommand ToggleTrackingCommand { get; set; }
-        public RelayCommand<VideoFrame> TrackDrawingsCommand { get; set; }
         #endregion
 
         #region Properties
@@ -2808,7 +2807,6 @@ namespace Kinovea.ScreenManager
                     DoInvalidate();
                     m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 
-                    //TrackDrawingsCommand.Execute(null);
                     ComputeOrStopTracking(skip == 0);
 
                     // This causes Invalidates and will postpone the idle event.
@@ -2963,8 +2961,6 @@ namespace Kinovea.ScreenManager
                     m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
 
                 m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
-
-                //TrackDrawingsCommand.Execute(null);
 
                 bool contiguous = _iSeekTarget < 0 && m_iFramesToDecode <= 1;
                 if (!refreshInPlace)
@@ -5944,8 +5940,7 @@ namespace Kinovea.ScreenManager
 
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(vf.Timestamp);
 
-            // Make sure the trackable drawings are on the right context.
-            //TrackDrawingsCommand.Execute(vf);
+            // Make sure the trackable drawings are on the right frame.
             m_FrameServer.Metadata.SyncTrackableDrawings(vf.Timestamp);
 
             using (Graphics canvas = Graphics.FromImage(output))

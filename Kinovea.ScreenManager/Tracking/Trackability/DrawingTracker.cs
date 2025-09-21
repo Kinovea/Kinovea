@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, DrawingTrack> mapPointToTrack = new Dictionary<string, DrawingTrack>();
         private Dictionary<Guid, string> mapTrackIdToPoint = new Dictionary<Guid, string>();
         // Mapping used for non-tracking or camera tracking.
-        private Dictionary<string, TrackablePoint2> trackablePoints2 = new Dictionary<string, TrackablePoint2>();
+        private Dictionary<string, TrackablePoint> trackablePoints2 = new Dictionary<string, TrackablePoint>();
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -109,7 +109,7 @@ namespace Kinovea.ScreenManager
             trackablePoints2.Clear();
             foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
             {
-                trackablePoints2.Add(pair.Key, new TrackablePoint2(timestamp, pair.Value));
+                trackablePoints2.Add(pair.Key, new TrackablePoint(timestamp, pair.Value));
             }
         }
 
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
             trackablePoints2.Clear();
             foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
             {
-                trackablePoints2.Add(pair.Key, new TrackablePoint2(drawing.ReferenceTimestamp, pair.Value));
+                trackablePoints2.Add(pair.Key, new TrackablePoint(drawing.ReferenceTimestamp, pair.Value));
             }
 
             if (mapTrackIdToPoint.Count > 0)
@@ -235,7 +235,7 @@ namespace Kinovea.ScreenManager
             trackablePoints2.Clear();
             foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
             {
-                trackablePoints2.Add(pair.Key, new TrackablePoint2(timestamp, pair.Value));
+                trackablePoints2.Add(pair.Key, new TrackablePoint(timestamp, pair.Value));
             }
 
             // We keep the association with the tracks if any.
@@ -248,7 +248,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void AddPoint(string key, long timestamp, PointF value)
         {
-            trackablePoints2.Add(key, new TrackablePoint2(timestamp, value));
+            trackablePoints2.Add(key, new TrackablePoint(timestamp, value));
         }
 
         /// <summary>
@@ -586,7 +586,7 @@ namespace Kinovea.ScreenManager
         #region Serialization
         public void WriteXml(XmlWriter w)
         {
-            foreach (KeyValuePair<string, TrackablePoint2> pair in trackablePoints2)
+            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints2)
             {
                 w.WriteStartElement("TrackablePoint");
                 w.WriteAttributeString("key", pair.Key);
@@ -670,7 +670,7 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
-            TrackablePoint2 point = new TrackablePoint2(referenceTimestamp, referenceValue);
+            TrackablePoint point = new TrackablePoint(referenceTimestamp, referenceValue);
             trackablePoints2.Add(key, point);
         }
 

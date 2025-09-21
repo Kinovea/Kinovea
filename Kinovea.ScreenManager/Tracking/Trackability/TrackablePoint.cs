@@ -22,7 +22,7 @@ namespace Kinovea.ScreenManager
     /// KVA serialization: because the drawings core coordinates are constantly modified 
     /// by the tracking system, the serialization must use the reference value stored here which is stable.
     /// </summary>
-    public class TrackablePoint2
+    public class TrackablePoint
     {
         #region Properties
         
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<long, PointF> cameraTrackCache = new Dictionary<long, PointF>();
         #endregion
 
-        public TrackablePoint2(long timestamp, PointF value)
+        public TrackablePoint(long timestamp, PointF value)
         {
             referenceTimestamp = timestamp;
             referenceValue = value;
