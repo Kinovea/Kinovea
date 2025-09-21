@@ -78,8 +78,10 @@ namespace Kinovea.ScreenManager
             this.keyframe = keyframe;
             
             InitializeComponent();
+            this.Cursor = Cursors.Hand;
+            this.Margin = new Padding(0, 0, 10, 0);
+
             lblName.Text = keyframe.Name;
-            
             BackColor = keyframe.Color;
             btnClose.Parent = pbThumbnail;
 
@@ -89,7 +91,21 @@ namespace Kinovea.ScreenManager
             BuildContextMenu();
             ReloadMenusCulture();
         }
-        
+
+
+        /// <summary>
+        /// Set this control to show a different keyframe.
+        /// </summary>
+        public void SetKeyframe(Keyframe kf)
+        {
+            this.keyframe = kf;
+            lblName.Text = keyframe.Name;
+            BackColor = keyframe.Color;
+            UpdateToolTip();
+            UpdateImage();
+        }
+
+
         public void DisplayAsSelected(bool selected)
         {
             isSelected = selected;

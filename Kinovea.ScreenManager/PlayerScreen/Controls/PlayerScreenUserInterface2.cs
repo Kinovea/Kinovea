@@ -39,6 +39,7 @@ using Kinovea.Video;
 using Kinovea.Services;
 using System.Xml;
 using System.Text;
+using System.Diagnostics;
 #endregion
 
 namespace Kinovea.ScreenManager
@@ -352,6 +353,8 @@ namespace Kinovea.ScreenManager
 
         // Keyframes, Drawings, etc.
         private List<KeyframeBox> keyframeBoxes = new List<KeyframeBox>();
+        Dictionary<Guid, int> mapKeyframeIdToIndex = new Dictionary<Guid, int>();
+        //Dictionary<Guid, KeyframeBox> mapKeyframeIdToKeyframeBox = new Dictionary<Guid, KeyframeBox>();
         private int m_iActiveKeyFrameIndex = -1;	// The index of the keyframe we are on, or -1 if not a KF.
         private AbstractDrawingTool m_ActiveTool;
         private DrawingToolPointer m_PointerTool;
@@ -487,7 +490,7 @@ namespace Kinovea.ScreenManager
             this.Dock = DockStyle.Fill;
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
-            pnlThumbnails.Controls.Clear();
+            pnlThumbnails2.Controls.Clear();
             keyframeBoxes.Clear();
             CollapseKeyframePanel(true);
 
@@ -559,9 +562,13 @@ namespace Kinovea.ScreenManager
                 box.DeleteAsked -= KeyframeControl_DeleteAsked;
 
                 keyframeBoxes.Remove(box);
-                pnlThumbnails.Controls.Remove(box);
+                pnlThumbnails2.Controls.Remove(box);
+
                 box.Dispose();
             }
+            
+            mapKeyframeIdToIndex.Clear();
+            //mapKeyframeIdToKeyframeBox.Clear();
         }
         public void EnableDisableActions(bool enable)
         {
@@ -4362,7 +4369,7 @@ namespace Kinovea.ScreenManager
         private void pnlThumbnails_MouseEnter(object sender, EventArgs e)
         {
             // Give focus to disable keyframe box editing.
-            pnlThumbnails.Focus();
+            pnlThumbnails2.Focus();
         }
         private void splitKeyframes_Resize(object sender, EventArgs e)
         {
@@ -4383,52 +4390,170 @@ namespace Kinovea.ScreenManager
         }
         public void OrganizeKeyframes()
         {
-            // Should only be called when adding/removing a Thumbnail
-            ClearKeyframeBoxes();
-            sidePanelKeyframes.Clear();
+            //-----------------------------------------------------------------    
+            // We come here after loading the initial batch of keyframes but more likely
+            // after an add, delete, or "manual sort" operation.
+            // In any case we need to handle multiple add/delete/move, 
+            // and add/delete in the middle of the list.
+            //
+            // Try to swap the existing controls around and recycle them as much as possible.
+            // Also we don't delete controls, it's costly to recreate, just hide them.
+            // For the controls on the panel, avoid Clear() + AddRange(), try to swap them
+            // in place as well.
+            //
+            // Note: Generally the same algorithm as in the thumbnails browser.
+            //-----------------------------------------------------------------
+            Stopwatch sw = Stopwatch.StartNew();
+            pnlThumbnails2.SuspendLayout();
+            log.DebugFormat("OrganizeKeyframes, after Clear(): {0} ms.", sw.ElapsedMilliseconds);
 
-            if (m_FrameServer.Metadata.Count > 0)
+            var keyframes = m_FrameServer.Metadata.Keyframes;
+
+            // Mark all controls as unused.
+            List<bool> inUse = new List<bool>();
+            foreach (KeyframeBox box in keyframeBoxes)
+                inUse.Add(false);
+
+            // Map new indices (keyframe) to old indices (controls).
+            Dictionary<int, int> mapNewToOldIndex = new Dictionary<int, int>();
+            for (int i = 0; i < keyframes.Count; i++)
             {
-                int pixelsOffset = 0;
-                int pixelsSpacing = 20;
-
-                foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
+                if (mapKeyframeIdToIndex.ContainsKey(keyframes[i].Id))
                 {
-                    KeyframeBox box = new KeyframeBox(kf);
-                    SetupDefaultThumbBox(box);
+                    // We already have this kf.
+                    int oldIndex = mapKeyframeIdToIndex[keyframes[i].Id];
+                    mapNewToOldIndex.Add(i, oldIndex);
+                    inUse[oldIndex] = true;
+                }
+                else
+                {
+                    mapNewToOldIndex.Add(i, -1);
+                }
+            }
 
-                    // Finish the setup
-                    box.Left = pixelsOffset + pixelsSpacing;
-                    box.Selected += KeyframeControl_Selected;
-                    box.ShowCommentsAsked += KeyframeControl_ShowCommentsAsked;
-                    box.MoveToCurrentTimeAsked += KeyframeControl_MoveToCurrentTimeAsked;
-                    box.DeleteAsked += KeyframeControl_DeleteAsked;
+            // Update the main dictionary mapping kf id to index.
+            // Recycle existing controls if possible, create new ones if needed.
+            mapKeyframeIdToIndex.Clear();
+            for (int i = 0; i < keyframes.Count; i++)
+            {
+                if (mapNewToOldIndex[i] != -1)
+                {
+                    // We already know this keyframe, point to it.
+                    mapKeyframeIdToIndex.Add(keyframes[i].Id, mapNewToOldIndex[i]);
+                }
+                else
+                {
+                    // We don't know this keyframe.
+                    // Find the first keyframe control that won't be used and recycle it.
+                    int foundUnused = -1;
+                    for (int j = 0; j < inUse.Count; j++)
+                    {
+                        if (!inUse[j])
+                        {
+                            foundUnused = j;
+                            break;
+                        }
+                    }
 
-                    pixelsOffset += (pixelsSpacing + box.Width);
+                    if (foundUnused != -1)
+                    {
+                        // We found a control we can recycle.
+                        keyframeBoxes[foundUnused].SetKeyframe(keyframes[i]);
+                        mapNewToOldIndex[i] = foundUnused;
+                        inUse[foundUnused] = true;
+                        mapKeyframeIdToIndex.Add(keyframes[i].Id, foundUnused);
+                    }
+                    else
+                    {
+                        // We couldn't find any keyframe control to recycle, create a new one.
+                        KeyframeBox box = new KeyframeBox(keyframes[i]);
 
-                    pnlThumbnails.Controls.Add(box);
-                    keyframeBoxes.Add(box);
+                        // Finish the setup
+                        box.Selected += KeyframeControl_Selected;
+                        box.ShowCommentsAsked += KeyframeControl_ShowCommentsAsked;
+                        box.MoveToCurrentTimeAsked += KeyframeControl_MoveToCurrentTimeAsked;
+                        box.DeleteAsked += KeyframeControl_DeleteAsked;
+                        
+                        keyframeBoxes.Add(box);
+                        box.Tag = keyframeBoxes.Count - 1;
+
+                        pnlThumbnails2.Controls.Add(box);
+                        
+                        mapNewToOldIndex[i] = keyframeBoxes.Count - 1;
+                        inUse.Add(true);
+
+                        mapKeyframeIdToIndex.Add(keyframes[i].Id, keyframeBoxes.Count - 1);
+                    }
+                }
+            }
+
+            log.DebugFormat("Built mapKeyframeIdToIndex: {0} ms.", sw.ElapsedMilliseconds);
+
+            // At this point:
+            // - we are sure to have enough controls for all the keyframes.
+            // - we have a mapping from the requested ordering to existing controls.
+            // - we may have some extra controls that we won't be using.
+            // Arrange the list so that it matches the requested ordering.
+            for (int i = 0; i < keyframes.Count; i++)
+            {
+                Guid id = keyframes[i].Id;
+                if (mapKeyframeIdToIndex[id] != i) 
+                {
+                    // Swap.
+                    var temp = keyframeBoxes[i];
+                    int oldIndex = mapKeyframeIdToIndex[id];
+                    keyframeBoxes[i] = keyframeBoxes[oldIndex];
+                    keyframeBoxes[oldIndex] = temp;
+
+                    mapKeyframeIdToIndex[id] = i;
+                    mapKeyframeIdToIndex[keyframeBoxes[oldIndex].Keyframe.Id] = oldIndex;
                 }
 
-                EnableDisableKeyframes();
-                pnlThumbnails.Refresh();
+                keyframeBoxes[i].Visible = true;
             }
-            else
+            
+            log.DebugFormat("Built visible keyframeBoxes: {0} ms.", sw.ElapsedMilliseconds);
+
+            // Hide the extra unused controls.
+            for (int i = keyframes.Count; i < keyframeBoxes.Count; i++)
+            {
+                if (keyframeBoxes[i].Visible)
+                {
+                    //keyframeBoxes[i].SetKeyframe(null);
+                    keyframeBoxes[i].Visible = false;
+                }
+            }
+
+            log.DebugFormat("Organized {0} keyframes: {1} ms.", keyframes.Count, sw.ElapsedMilliseconds);
+
+            //--------------------------------
+            // Now that we have matched our internal list of controls to the requested list,
+            // we must match the panel controls to our internal list.
+            // The lists should have the same length (we immediately add to the panel when creating).
+            // Difficulties: the controls can't be directly rerouted, and it doesn't have a "swap" function,
+            // the re-ordering has to go through `SetChildIndex` which does shifting.
+            // TODO: working insert list from swap list.
+            pnlThumbnails2.Controls.Clear();
+            pnlThumbnails2.Controls.AddRange(keyframeBoxes.ToArray());
+
+            pnlThumbnails2.ResumeLayout();
+
+            log.DebugFormat("Organized keyframes - panel layout done: {0} ms.", sw.ElapsedMilliseconds);
+
+            EnableDisableKeyframes();
+
+            if (keyframes.Count == 0)
             {
                 CollapseKeyframePanel(true);
                 m_iActiveKeyFrameIndex = -1;
             }
 
-            sidePanelKeyframes.Reset(m_FrameServer.Metadata);
-            
+            //sidePanelKeyframes.Reset(m_FrameServer.Metadata);
+
             UpdateFramesMarkers();
             DoInvalidate(); // Because of trajectories with keyframes labels.
         }
-        private void SetupDefaultThumbBox(UserControl _box)
-        {
-            _box.Top = 10;
-            _box.Cursor = Cursors.Hand;
-        }
+
         private void ActivateKeyframe(long timestamp)
         {
             ActivateKeyframe(timestamp, true);
@@ -4458,7 +4583,7 @@ namespace Kinovea.ScreenManager
                     if (_bAllowUIUpdate)
                     {
                         keyframeBoxes[i].DisplayAsSelected(true);
-                        pnlThumbnails.ScrollControlIntoView(keyframeBoxes[i]);
+                        pnlThumbnails2.ScrollControlIntoView(keyframeBoxes[i]);
 
                         if (!m_FrameServer.Metadata[i].HasThumbnails && m_FrameServer.CurrentImage != null)
                         {
