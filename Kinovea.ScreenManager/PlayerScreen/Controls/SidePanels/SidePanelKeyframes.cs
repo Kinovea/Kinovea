@@ -126,7 +126,7 @@ namespace Kinovea.ScreenManager
             Stopwatch sw = Stopwatch.StartNew();
 
             flowKeyframes.SuspendLayout();
-            NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, false, 0);
+            SuspendDraw();
 
             kfcbs.Clear();
             
@@ -138,8 +138,7 @@ namespace Kinovea.ScreenManager
                     flowKeyframes.Controls[i].Visible = false;
                 }
 
-                flowKeyframes.Visible = true;
-                NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, true, 0);
+                ResumeDraw();
                 flowKeyframes.ResumeLayout();
                 flowKeyframes.Refresh();
                 return;
@@ -214,9 +213,19 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Organized keyframes: {0}/{1}/{2} in {3} ms.", 
                 kfcbs.Count, keyframes.Count, flowKeyframes.Controls.Count, sw.ElapsedMilliseconds);
 
-            NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, true, 0);
+            ResumeDraw();
             flowKeyframes.ResumeLayout();
             flowKeyframes.Refresh();
+        }
+
+        private void SuspendDraw()
+        {
+            NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, false, 0);
+        }
+
+        private void ResumeDraw()
+        {
+            NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, true, 0);
         }
 
         private void flowKeyframes_Layout(object sender, LayoutEventArgs e)
