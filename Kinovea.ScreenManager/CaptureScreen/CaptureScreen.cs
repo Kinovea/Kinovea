@@ -158,6 +158,7 @@ namespace Kinovea.ScreenManager
         private bool cameraLoaded;
         private bool cameraConnected;
         private bool recording;
+        private bool toggleRecordingInProgress;
 
         private bool prepareFailed;
         private ImageDescriptor prepareFailedImageDescriptor;
@@ -488,7 +489,11 @@ namespace Kinovea.ScreenManager
             sd.Delay = (float)AgeToSeconds(delay);
             sd.MaxDuration = maxRecordingSeconds;
             sd.DelayedDisplay = delayedDisplay;
-            sd.CaptureFolder = view.CaptureFolder.Id;
+            if (view.CaptureFolder != null)
+                sd.CaptureFolder = view.CaptureFolder.Id;
+            else
+                sd.CaptureFolder = Guid.Empty;
+
             sd.FileName = view.CurrentFilename;
             sd.CapturedFilesPanelForceCollapsed = view.CapturedFilesPanelForceCollapsed;
 
@@ -1533,13 +1538,20 @@ namespace Kinovea.ScreenManager
             string filenameWithoutExtension = view.CurrentFilename;
             string path = BuildRecordingPath(false);
             if (string.IsNullOrEmpty(path))
+            {
+                bitmap.Dispose();
+                bitmap = null;
+
+                ScreenManagerKernel.AlertCaptureFolderNotDefined();
                 return;
+            }
 
             log.DebugFormat("Recording target image: {0}", path);
 
             if (!DirectoryExistsCheck(path) || !FilePathSanityCheck(path) || !OverwriteCheck(path))
             {
                 bitmap.Dispose();
+                bitmap = null;
                 return;
             }
 
@@ -1649,10 +1661,29 @@ namespace Kinovea.ScreenManager
         
         private void ToggleRecording()
         {
-            if (recording)
-                StopRecording(false);
-            else
-                StartRecording();
+            // This may be called from the trigger thread so prevent reentry.
+            // We don't expect two threads to call it at the same time,
+            // we just don't want multiple triggers before we actually start recording.
+            if (toggleRecordingInProgress)
+                return;
+
+            toggleRecordingInProgress = true;
+
+            try
+            {
+                if (recording)
+                {
+                    StopRecording(false);
+                }
+                else
+                {
+                    StartRecording();
+                }
+            }
+            finally
+            {
+                toggleRecordingInProgress = false;
+            }
         }
         
         private void StartRecording()
@@ -1664,7 +1695,10 @@ namespace Kinovea.ScreenManager
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             string path = BuildRecordingPath(true);
             if (string.IsNullOrEmpty(path))
+            {
+                ScreenManagerKernel.AlertCaptureFolderNotDefined();
                 return;
+            }
 
             log.DebugFormat("Recording target: \"{0}\"", path);
 

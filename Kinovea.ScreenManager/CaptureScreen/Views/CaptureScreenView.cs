@@ -44,8 +44,12 @@ namespace Kinovea.ScreenManager
             {
                 if (cbCaptureFolder.SelectedItem == null)
                     return null;
+
+                var cb = (CaptureFolder)cbCaptureFolder.SelectedItem;
+                if (cb.Id == Guid.Empty)
+                    return null;
                 
-                return (CaptureFolder)cbCaptureFolder.SelectedItem; 
+                return cb; 
             }
         }
         
@@ -572,6 +576,15 @@ namespace Kinovea.ScreenManager
 
             // Rebuild the drop down.
             cbCaptureFolder.Items.Clear();
+
+            // Add a fake entry for "default".
+            cbCaptureFolder.Items.Add(new CaptureFolder() 
+            { 
+                Id = Guid.Empty, 
+                ShortName = "Select a capture folder", 
+                Path = "" 
+            });
+
             List<CaptureFolder> ccff = PreferencesManager.CapturePreferences.CapturePathConfiguration.CaptureFolders;
             foreach (var cf in ccff)
             {
@@ -581,8 +594,8 @@ namespace Kinovea.ScreenManager
             }
 
             // The selected capture folder may be null if it's the first time loading.
-            // In this case we'll set it to the first value but we'll get the true value
-            // from the window descriptor later in ForcePopulate().
+            // In this case we set it to the first entry which is the dummy entry.
+            // We may get the true value from the window descriptor later in ForcePopulate().
             if (cbCaptureFolder.SelectedIndex < 0 && cbCaptureFolder.Items.Count > 0)
             {
                 cbCaptureFolder.SelectedIndex = 0;
@@ -624,7 +637,14 @@ namespace Kinovea.ScreenManager
             if (buildRecordingPath != null)
             {
                 string path = buildRecordingPath(true);
-                toolTips.SetToolTip(cbCaptureFolder, Path.GetDirectoryName(path));
+                if (string.IsNullOrEmpty(path))
+                {
+                    toolTips.SetToolTip(cbCaptureFolder, "Select a capture folder");
+                }
+                else
+                {
+                    toolTips.SetToolTip(cbCaptureFolder, Path.GetDirectoryName(path));
+                }
             }
         }
 

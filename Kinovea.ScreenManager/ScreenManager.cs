@@ -1246,6 +1246,13 @@ namespace Kinovea.ScreenManager
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
+        public static void AlertCaptureFolderNotDefined()
+        {
+            string msgTitle = "Capture folder not defined";
+            string msgText = "Select a capture folder from the drop down list in the lower left";
+            MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
         /// <summary>
         /// Ask all screens for an up to date screen descriptor.
         /// </summary>
