@@ -92,8 +92,12 @@ namespace Kinovea.ScreenManager
         private void ResetContent()
         {
             // Import the keyframe list from scratch.
-            kfcbs.Clear();
             flowKeyframes.Controls.Clear();
+            foreach (var kfcb in kfcbs)
+            {
+                kfcb.Value.Dispose();
+            }
+            kfcbs.Clear();
 
             if (parentMetadata == null || parentMetadata.Count == 0)
                 return;
@@ -106,7 +110,7 @@ namespace Kinovea.ScreenManager
                 kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                 kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
                 kfb.DeletionAsked += (s, e) => KeyframeDeletionAsked?.Invoke(s, e);
-                
+
                 kfcbs.Add(kf.Id, kfb);
                 flowKeyframes.Controls.Add(kfb);
             }

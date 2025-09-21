@@ -64,8 +64,8 @@ namespace Kinovea.ScreenManager
         private bool editingComment;
         private bool manualUpdate;
         private bool isSelected;
-        private Pen penBorder = Pens.Silver;
         private HistoryMementoModifyKeyframe memento;
+        private static Pen penBorder = Pens.Silver;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
