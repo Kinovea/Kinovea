@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -18,6 +19,9 @@ namespace Kinovea.ScreenManager
     public partial class SidePanelKeyframes : UserControl
     {
         #region Events
+        public event EventHandler KeyframeAddAsked;
+        public event EventHandler KeyframeNextAsked;
+        public event EventHandler KeyframePrevAsked;
         public event EventHandler<TimeEventArgs> KeyframeSelected;
         public event EventHandler<EventArgs<Guid>> KeyframeUpdated;
         public event EventHandler<EventArgs<Guid>> KeyframeDeletionAsked;
@@ -32,6 +36,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Metadata parentMetadata;
+        private bool filterOutZone = true;
         private Dictionary<Guid, ControlKeyframe> kfcbs = new Dictionary<Guid, ControlKeyframe>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -39,6 +44,9 @@ namespace Kinovea.ScreenManager
         public SidePanelKeyframes()
         {
             InitializeComponent();
+
+            toolTip1.SetToolTip(btnAddKeyframe, ScreenManagerLang.ToolTip_AddKeyframe);
+            toolTip1.SetToolTip(btnShowAll, "Show all key images");
         }
 
         #region Public methods
@@ -145,7 +153,6 @@ namespace Kinovea.ScreenManager
             }
 
             var keyframes = parentMetadata.Keyframes;
-            bool filterOutZone = true;
             int ctrlIndex = 0;
             for (int i = 0; i < keyframes.Count; i++)
             {
@@ -235,6 +242,29 @@ namespace Kinovea.ScreenManager
             {
                 flowKeyframes.Controls[0].Width = flowKeyframes.ClientSize.Width - 10;
             }
+        }
+
+        private void btnShowAll_Click(object sender, EventArgs e)
+        {
+            filterOutZone = !filterOutZone;
+            btnShowAll.BackColor = filterOutZone ? Color.Transparent : Color.LightSteelBlue;
+            btnShowAll.FlatAppearance.MouseOverBackColor = btnShowAll.BackColor;
+            OrganizeContent();
+        }
+
+        private void btnAddKeyframe_Click(object sender, EventArgs e)
+        {
+            KeyframeAddAsked?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            KeyframePrevAsked?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            KeyframeNextAsked?.Invoke(this, EventArgs.Empty);
         }
     }
 }

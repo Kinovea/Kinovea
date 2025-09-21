@@ -1117,6 +1117,9 @@ namespace Kinovea.ScreenManager
             tabContainer.TabPages[0].Controls.Add(sidePanelKeyframes);
             sidePanelKeyframes.OrganizeContent(m_FrameServer.Metadata);
             sidePanelKeyframes.Dock = DockStyle.Fill;
+            sidePanelKeyframes.KeyframeAddAsked += (s, e) => btnAddKeyframe_Click(null, EventArgs.Empty);
+            sidePanelKeyframes.KeyframePrevAsked += (s, e) => GotoPreviousKeyframe();
+            sidePanelKeyframes.KeyframeNextAsked += (s, e) => GotoNextKeyframe();
             sidePanelKeyframes.KeyframeSelected += KeyframeControl_Selected;
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
             sidePanelKeyframes.KeyframeDeletionAsked += KeyframeControl_KeyframeDeletionAsked;
@@ -1149,7 +1152,7 @@ namespace Kinovea.ScreenManager
 
             // Create key image.
             btnAddKeyFrame = CreateToolButton();
-            btnAddKeyFrame.Image = Resources.createkeyframe;
+            btnAddKeyFrame.Image = Resources.add_image_16;
             btnAddKeyFrame.Click += btnAddKeyframe_Click;
             btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
             drawingToolbarPresenter.AddSpecialButton(btnAddKeyFrame);

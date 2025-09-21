@@ -1889,4 +1889,19 @@
   <data name="webcam2b_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\webcam2b-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="add_image_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\add-image-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bursts_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bursts-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="merge_vertical_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\merge-vertical-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sort_left_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sort-left-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sort_right_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sort-right-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
