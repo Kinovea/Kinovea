@@ -105,21 +105,34 @@ namespace Kinovea.ScreenManager
             UpdateImage();
         }
 
-
-        public void DisplayAsSelected(bool selected)
+        /// <summary>
+        /// Called after the selection status *may* have changed.
+        /// </summary>
+        public void UpdateSelected(bool selected)
         {
             bool wasSelected = isSelected;
             isSelected = selected;
             if (isSelected == wasSelected)
                 return;
 
-            // Selected status change.
+            // Selected status has indeed changed.
             pbThumbnail.BackColor = selected ? keyframe.Color : Color.Black;
         }
-        public void UpdateEnableStatus()
+
+        /// <summary>
+        /// Called after an external change impacting visual representation.
+        /// Name, color or selection status. 
+        /// Relative time code is also possibly impacting the name, so 
+        /// changes in time origin, time format and working zone start.
+        /// The hosted keyframe object has been updated already.
+        /// </summary>
+        public void UpdateProperties()
         {
             this.Enabled = !keyframe.Disabled;
-            UpdateCore();
+            lblName.Text = keyframe.Name;
+            UpdateToolTip();
+            UpdateSelected(isSelected);
+            BackColor = Enabled ? keyframe.Color : Color.Black;
             UpdateImage();
         }
 
@@ -127,14 +140,6 @@ namespace Kinovea.ScreenManager
         {
             this.pbThumbnail.Image = keyframe.Disabled ? keyframe.DisabledThumbnail : keyframe.Thumbnail;
             this.Invalidate();
-        }
-
-        /// <summary>
-        /// Update the name or color after a core change from elsewhere.
-        /// </summary>
-        public void UpdateContent()
-        {
-            UpdateCore();
         }
 
         public void RefreshUICulture()
@@ -199,6 +204,8 @@ namespace Kinovea.ScreenManager
         }
         private void btnClose_Click(object sender, EventArgs e)
         {
+            HideButtons();
+            editing = false;
             DeleteAsked?.Invoke(this, e);
         }
         private void lblTimecode_Click(object sender, EventArgs e)
@@ -214,17 +221,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private helpers
-        
-        /// <summary>
-        /// Update the UI representation of the core data (name and color).
-        /// </summary>
-        private void UpdateCore()
-        {
-            lblName.Text = keyframe.Name;
-            BackColor = keyframe.Color;
-            DisplayAsSelected(isSelected);
-            UpdateToolTip();
-        }
         private void BuildContextMenu()
         {
             mnuMove.Image = Properties.Drawings.move_keyframe;

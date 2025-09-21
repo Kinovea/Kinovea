@@ -83,12 +83,20 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Update the control hosting this key frame to reflect changes that may have
+        /// happened elsewhere.
+        /// </summary>
         public void UpdateKeyframe(Guid id)
         {
             if (kfcbs.ContainsKey(id))
                 kfcbs[id].UpdateContent();
         }
 
+        /// <summary>
+        /// Update the control hosting this key frame after the thumbnail image
+        /// may have been updated or created.
+        /// </summary>
         public void UpdateImage(Guid id)
         {
             if (kfcbs.ContainsKey(id))
@@ -100,14 +108,26 @@ namespace Kinovea.ScreenManager
         private void OrganizeContent()
         {
             //-----------------------------------------------------------
-            // Recycle the existing controls as much as possible.
-            // Just change the keyframe they are pointing to.
-            // Also we don't delete controls, it's costly to recreate, just hide them.
+            // Recycle the existing controls as much as possible, just change the keyframe they are pointing to.
+            // Also we don't delete controls as they are costly to recreate, just hide them.
+            // Controls get disposed when we close the screen.
+            //
+            // Adding new controls is what takes the most time, it seems to go through a redraw/layout somehow.
+            // Doing it while the whole side panel is closed is much faster.
+            // Setting .Visible to false improves perfs a bit but it breaks the selection when deleting.
+            // Sending WM_SETREDRAW improves perfs as well and doesn't break selection.
+            // Stats on adding a new control with 125 controls already in place:
+            // - With SuspendLayout/ResumeLayout: 150 ms.
+            // - With WM_SETREDRAW, 65 ms.
+            // - With the panel closed, 4 ms.
+            // Calling SETREDRAW on this control or on the flowKeyframes doesn't make a difference.
             //-----------------------------------------------------------
 
             Stopwatch sw = Stopwatch.StartNew();
 
             flowKeyframes.SuspendLayout();
+            NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, false, 0);
+
             kfcbs.Clear();
             
             if (parentMetadata == null)
@@ -118,20 +138,39 @@ namespace Kinovea.ScreenManager
                     flowKeyframes.Controls[i].Visible = false;
                 }
 
+                flowKeyframes.Visible = true;
+                NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, true, 0);
                 flowKeyframes.ResumeLayout();
+                flowKeyframes.Refresh();
                 return;
             }
 
             var keyframes = parentMetadata.Keyframes;
+            bool filterOutZone = true;
+            int ctrlIndex = 0;
             for (int i = 0; i < keyframes.Count; i++)
             {
+                var kf = keyframes[i];
+
+                if (filterOutZone && kf.Timestamp < parentMetadata.SelectionStart)
+                {
+                    // Before zone.
+                    continue;
+                }
+
+                if (filterOutZone && kf.Timestamp > parentMetadata.SelectionEnd)
+                {
+                    // After zone.
+                    break;
+                }
+
                 ControlKeyframe kfb;
                 
                 // Add a control if needed.
-                if (flowKeyframes.Controls.Count < i + 1)
+                if (flowKeyframes.Controls.Count < ctrlIndex + 1)
                 {
                     kfb = new ControlKeyframe();
-                    kfb.SetKeyframe(parentMetadata, keyframes[i]);
+                    kfb.SetKeyframe(parentMetadata, kf);
                     kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                     kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
                     kfb.DeletionAsked += (s, e) => KeyframeDeletionAsked?.Invoke(s, e);
@@ -142,37 +181,42 @@ namespace Kinovea.ScreenManager
                     // of an implied column from the widest child control in the column.
                     // All other controls in this column with Anchor or Dock properties are aligned or stretched
                     // to fit this implied column.
-                    if (i == 0)
+                    if (ctrlIndex == 0)
                         kfb.Width = flowKeyframes.Width - 10;
                     else
                         kfb.Dock = DockStyle.Fill;
-                    
+
                     flowKeyframes.Controls.Add(kfb);
-                    kfcbs.Add(keyframes[i].Id, kfb);
+                    kfcbs.Add(kf.Id, kfb);
+                    ctrlIndex++;
                     continue;
                 }
 
                 // Replace the keyframe in that control if needed.
-                kfb = flowKeyframes.Controls[i] as ControlKeyframe;
-                if (kfb.Keyframe.Id != keyframes[i].Id)
+                kfb = flowKeyframes.Controls[ctrlIndex] as ControlKeyframe;
+                if (kfb.Keyframe.Id != kf.Id)
                 {
-                    kfb.SetKeyframe(parentMetadata, keyframes[i]);
-                    kfb.Visible = true;
+                    kfb.SetKeyframe(parentMetadata, kf);
                 }
 
-                kfcbs.Add(keyframes[i].Id, kfb);
+                kfb.Visible = true;
+                kfcbs.Add(kf.Id, kfb);
+                ctrlIndex++;
             }
-
+            
             // Hide leftover controls.
-            for (int i = keyframes.Count; i < flowKeyframes.Controls.Count; i++)
+            for (int i = kfcbs.Count; i < flowKeyframes.Controls.Count; i++)
             {
                 var oldBox = flowKeyframes.Controls[i] as ControlKeyframe;
                 oldBox.Visible = false;
             }
 
-            log.DebugFormat("Organized {0} keyframes in {1} ms.", keyframes.Count, sw.ElapsedMilliseconds);
+            log.DebugFormat("Organized keyframes: {0}/{1}/{2} in {3} ms.", 
+                kfcbs.Count, keyframes.Count, flowKeyframes.Controls.Count, sw.ElapsedMilliseconds);
 
+            NativeMethods.SendMessage(flowKeyframes.Handle, NativeMethods.WM_SETREDRAW, true, 0);
             flowKeyframes.ResumeLayout();
+            flowKeyframes.Refresh();
         }
 
         private void flowKeyframes_Layout(object sender, LayoutEventArgs e)

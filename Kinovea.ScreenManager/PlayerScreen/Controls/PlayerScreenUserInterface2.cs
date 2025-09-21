@@ -1001,10 +1001,11 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < keyframeBoxes.Count; i++)
                 keyframeBoxes[i].RefreshUICulture();
 
-            // Keyframes positions.
+            // We may have changed the time format, we need to make sure keyframes
+            // that don't have a custom name are showing the right timecode.
             if (m_FrameServer.Metadata.Count > 0)
             {
-                EnableDisableKeyframes();
+                UpdateKeyframeControls();
             }
 
             m_FrameServer.Metadata.CalibrationHelper.RefreshUnits();
@@ -2132,8 +2133,9 @@ namespace Kinovea.ScreenManager
             if (videoFilterIsActive)
                 m_FrameServer.Metadata.ActiveVideoFilter.UpdateTimeOrigin(m_FrameServer.Metadata.TimeOrigin);
 
-            // This will update the timecode on keyframe boxes if the user hasn't changed the kf name.
-            EnableDisableKeyframes();
+            // Keyframes that don't have a custom name use the relative time
+            // as their label in the UI so we must update them here.
+            UpdateKeyframeControls();
 
             // This will update the timecode on any clock object still using the overall time origin.
             DoInvalidate();
@@ -2323,9 +2325,9 @@ namespace Kinovea.ScreenManager
             OnPoke();
             OnSelectionChanged(true);
 
-            // Update current image and keyframe  status.
+            // Update current image and keyframe status (enabled and relative time code).
             UpdateFramePrimarySelection();
-            EnableDisableKeyframes();
+            UpdateKeyframeControls();
             ActivateKeyframe(m_iCurrentPosition);
         }
         #endregion
@@ -4397,28 +4399,43 @@ namespace Kinovea.ScreenManager
             //-----------------------------------------------------------------
             Stopwatch sw = Stopwatch.StartNew();
             pnlThumbnails2.SuspendLayout();
+            keyframeBoxes.Clear();
+            m_FrameServer.Metadata.EnableDisableKeyframes();
             var keyframes = m_FrameServer.Metadata.Keyframes;
+            int ctrlIndex = 0;
             for (int i = 0; i < keyframes.Count; i++)
             {
+                var kf = keyframes[i];
+                
+                KeyframeBox box;
+
                 // Add a control if needed.
-                if (pnlThumbnails2.Controls.Count < i + 1)
+                if (pnlThumbnails2.Controls.Count < ctrlIndex + 1)
                 {
-                    KeyframeBox box = new KeyframeBox(keyframes[i]);
+                    box = new KeyframeBox(kf);
                     box.Selected += KeyframeControl_Selected;
                     box.ShowCommentsAsked += KeyframeControl_ShowCommentsAsked;
                     box.MoveToCurrentTimeAsked += KeyframeControl_MoveToCurrentTimeAsked;
                     box.DeleteAsked += KeyframeControl_DeleteAsked;
+                    box.UpdateProperties();
+
                     pnlThumbnails2.Controls.Add(box);
+                    keyframeBoxes.Add(box);
+                    ctrlIndex++;
                     continue;
                 }
 
                 // Replace the keyframe in that control if needed.
-                var oldBox = pnlThumbnails2.Controls[i] as KeyframeBox;
-                if (oldBox.Keyframe.Id != keyframes[i].Id)
+                box = pnlThumbnails2.Controls[ctrlIndex] as KeyframeBox;
+                if (box.Keyframe.Id != kf.Id)
                 {
-                    oldBox.SetKeyframe(keyframes[i]);
-                    oldBox.Visible = true;
+                    box.SetKeyframe(kf);
                 }
+
+                box.Visible = true;
+                box.UpdateProperties();
+                keyframeBoxes.Add(box);
+                ctrlIndex++;
             }
 
             // Hide leftover controls.
@@ -4428,29 +4445,19 @@ namespace Kinovea.ScreenManager
                 oldBox.Visible = false;
             }
 
-            log.DebugFormat("Organized {0} keyframes in {1} ms.", keyframes.Count, sw.ElapsedMilliseconds);
+            log.DebugFormat("Organized {0}/{1} keyframes in {2} ms.", 
+                keyframeBoxes.Count, keyframes.Count, sw.ElapsedMilliseconds);
 
-            // Keep our own list in sync.
-            keyframeBoxes.Clear();
-            foreach (var box in pnlThumbnails2.Controls)
-            {
-                keyframeBoxes.Add(box as KeyframeBox);
-            }
-            
             pnlThumbnails2.ResumeLayout();
             
-            EnableDisableKeyframes();
-
             if (keyframes.Count == 0)
             {
                 CollapseKeyframePanel(true);
             }
 
-
-            m_iActiveKeyFrameIndex = Math.Min(m_iActiveKeyFrameIndex, 
-                Math.Min(keyframes.Count - 1, pnlThumbnails2.Controls.Count - 1));
-
             sidePanelKeyframes.OrganizeContent(m_FrameServer.Metadata);
+
+            ActivateKeyframe(m_iCurrentPosition);
 
             UpdateFramesMarkers();
             DoInvalidate(); // Because of trajectories with keyframes labels.
@@ -4474,13 +4481,13 @@ namespace Kinovea.ScreenManager
 
                 if (kf.Timestamp != timestamp)
                 {
-                    box.DisplayAsSelected(false);
+                    box.UpdateSelected(false);
                     continue;
                 }
 
                 m_iActiveKeyFrameIndex = i;
 
-                box.DisplayAsSelected(true);
+                box.UpdateSelected(true);
                 pnlThumbnails2.ScrollControlIntoView(box);
 
                 // If we haven't loaded the thumbnail yet, do it now.
@@ -4493,22 +4500,18 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void EnableDisableKeyframes()
+        
+        /// <summary>
+        /// Update keyframe controls visual aspect after a change in
+        /// time origin, working zone, time format.
+        /// </summary>
+        private void UpdateKeyframeControls()
         {
-            m_FrameServer.Metadata.EnableDisableKeyframes();
-
-            foreach (KeyframeBox box in keyframeBoxes)
-                box.UpdateEnableStatus();
+            // FIXME: calling UpdateProperties on the controls should be enough.
+            // No need to go through organize.
+            OrganizeKeyframes();
         }
 
-        // The keyframe name or color was changed.
-        public void OnKeyframeNameChanged()
-        {
-            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-            EnableDisableKeyframes();
-            UpdateFramesMarkers();
-            DoInvalidate();
-        }
         public void GotoNextKeyframe()
         {
             if (m_FrameServer.Metadata.Count == 0)
@@ -4933,14 +4936,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void UpdateKeyframeBox(Guid id)
         {
-            foreach (KeyframeBox box in keyframeBoxes)
-            {
-                if (box.Keyframe.Id == id)
-                {
-                    box.UpdateContent();
-                    break;
-                }
-            }
+            // FIXME: keep a dict of controls indexed by id.
+            var box = keyframeBoxes.FirstOrDefault(b => b.Keyframe.Id == id);
+            if (box != null)
+                box.UpdateProperties();
         }
         #endregion
 

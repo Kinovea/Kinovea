@@ -8,6 +8,8 @@ namespace Kinovea.ScreenManager
 {
     internal static class NativeMethods
     {
+        public const int WM_SETREDRAW = 11;
+
         #region Accurate timer
         [DllImport("winmm.dll", SetLastError = true)]
         internal static extern uint timeSetEvent(UInt32 msDelay, UInt32 msResolution, TimerCallback handler, UIntPtr dwUser, UInt32 eventType);
@@ -20,7 +22,6 @@ namespace Kinovea.ScreenManager
 
         internal delegate void TimerCallback(uint uTimerID, uint uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2);
         #endregion
-
 
         #region Monitor refresh rate.
         internal const uint MONITOR_DEFAULTTONEAREST = 2;
@@ -124,5 +125,9 @@ namespace Kinovea.ScreenManager
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool DestroyIcon(IntPtr hIcon);
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
+
     }
 }
