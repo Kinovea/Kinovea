@@ -915,7 +915,7 @@ namespace Kinovea.ScreenManager
       // 
       // tabPage1
       // 
-      this.tabPage1.ImageKey = "comments";
+      this.tabPage1.ImageKey = "keyimages";
       this.tabPage1.Location = new System.Drawing.Point(4, 28);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -925,7 +925,7 @@ namespace Kinovea.ScreenManager
       // 
       // tabPage2
       // 
-      this.tabPage2.ImageKey = "colorswatch2.png";
+      this.tabPage2.ImageKey = "drawing_properties";
       this.tabPage2.Location = new System.Drawing.Point(4, 28);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -935,7 +935,7 @@ namespace Kinovea.ScreenManager
       // 
       // tabPage3
       // 
-      this.tabPage3.ImageKey = "point3-16.png";
+      this.tabPage3.ImageKey = "tracking";
       this.tabPage3.Location = new System.Drawing.Point(4, 28);
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -947,10 +947,9 @@ namespace Kinovea.ScreenManager
       // 
       this.imgListPropertyTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListPropertyTabs.ImageStream")));
       this.imgListPropertyTabs.TransparentColor = System.Drawing.Color.Transparent;
-      this.imgListPropertyTabs.Images.SetKeyName(0, "comments");
-      this.imgListPropertyTabs.Images.SetKeyName(1, "colorswatch2.png");
-      this.imgListPropertyTabs.Images.SetKeyName(2, "tracking.png");
-      this.imgListPropertyTabs.Images.SetKeyName(3, "point3-16.png");
+      this.imgListPropertyTabs.Images.SetKeyName(0, "keyimages");
+      this.imgListPropertyTabs.Images.SetKeyName(1, "drawing_properties");
+      this.imgListPropertyTabs.Images.SetKeyName(2, "tracking");
       // 
       // pnlThumbnails2
       // 
@@ -962,7 +961,7 @@ namespace Kinovea.ScreenManager
       this.pnlThumbnails2.Location = new System.Drawing.Point(0, 25);
       this.pnlThumbnails2.Name = "pnlThumbnails2";
       this.pnlThumbnails2.Padding = new System.Windows.Forms.Padding(10, 10, 0, 0);
-      this.pnlThumbnails2.Size = new System.Drawing.Size(600, 102);
+      this.pnlThumbnails2.Size = new System.Drawing.Size(600, 106);
       this.pnlThumbnails2.TabIndex = 28;
       this.pnlThumbnails2.WrapContents = false;
       // 

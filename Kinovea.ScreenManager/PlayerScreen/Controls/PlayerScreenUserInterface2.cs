@@ -1110,11 +1110,11 @@ namespace Kinovea.ScreenManager
             };
 
             // Create and add all the side panels.
-            TabControl tabContainer = splitViewport_Properties.Panel2.Controls[0] as TabControl;
-            if (tabContainer == null)
+            TabControl annotationPane = splitViewport_Properties.Panel2.Controls[0] as TabControl;
+            if (annotationPane == null)
                 return;
 
-            tabContainer.TabPages[0].Controls.Add(sidePanelKeyframes);
+            annotationPane.TabPages[0].Controls.Add(sidePanelKeyframes);
             sidePanelKeyframes.OrganizeContent(m_FrameServer.Metadata);
             sidePanelKeyframes.Dock = DockStyle.Fill;
             sidePanelKeyframes.KeyframeAddAsked += (s, e) => btnAddKeyframe_Click(null, EventArgs.Empty);
@@ -1124,13 +1124,13 @@ namespace Kinovea.ScreenManager
             sidePanelKeyframes.KeyframeUpdated += KeyframeControl_KeyframeUpdated;
             sidePanelKeyframes.KeyframeDeletionAsked += KeyframeControl_KeyframeDeletionAsked;
 
-            tabContainer.TabPages[1].Controls.Add(sidePanelDrawing);
+            annotationPane.TabPages[1].Controls.Add(sidePanelDrawing);
             sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
             sidePanelDrawing.Dock = DockStyle.Fill;
             sidePanelDrawing.DrawingModified += DrawingControl_DrawingUpdated;
 
             sidePanelTracking = new SidePanelTracking(this);
-            tabContainer.TabPages[2].Controls.Add(sidePanelTracking);
+            annotationPane.TabPages[2].Controls.Add(sidePanelTracking);
             sidePanelTracking.SetMetadata(m_FrameServer.Metadata);
             sidePanelTracking.Dock = DockStyle.Fill;
             sidePanelTracking.DrawingModified += DrawingControl_DrawingUpdated;
