@@ -37,6 +37,7 @@ namespace Kinovea.ScreenManager
       this.btnPrev = new System.Windows.Forms.Button();
       this.btnShowAll = new System.Windows.Forms.Button();
       this.btnAddKeyframe = new System.Windows.Forms.Button();
+      this.lblCount = new System.Windows.Forms.Label();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -60,6 +61,7 @@ namespace Kinovea.ScreenManager
       this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.panel1.Controls.Add(this.lblCount);
       this.panel1.Controls.Add(this.btnNext);
       this.panel1.Controls.Add(this.btnPrev);
       this.panel1.Controls.Add(this.btnShowAll);
@@ -130,6 +132,17 @@ namespace Kinovea.ScreenManager
       this.btnAddKeyframe.UseVisualStyleBackColor = true;
       this.btnAddKeyframe.Click += new System.EventHandler(this.btnAddKeyframe_Click);
       // 
+      // lblCount
+      // 
+      this.lblCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblCount.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblCount.Location = new System.Drawing.Point(182, 7);
+      this.lblCount.Name = "lblCount";
+      this.lblCount.Size = new System.Drawing.Size(49, 23);
+      this.lblCount.TabIndex = 13;
+      this.lblCount.Text = "0/0";
+      this.lblCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
       // SidePanelKeyframes
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -153,5 +166,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
+        private System.Windows.Forms.Label lblCount;
     }
 }

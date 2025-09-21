@@ -46,6 +46,8 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
 
             toolTip1.SetToolTip(btnAddKeyframe, ScreenManagerLang.ToolTip_AddKeyframe);
+            toolTip1.SetToolTip(btnPrev, "Previous key image");
+            toolTip1.SetToolTip(btnNext, "Next key image");
             toolTip1.SetToolTip(btnShowAll, "Show all key images");
         }
 
@@ -223,6 +225,16 @@ namespace Kinovea.ScreenManager
             ResumeDraw();
             flowKeyframes.ResumeLayout();
             flowKeyframes.Refresh();
+
+            if (kfcbs.Count == keyframes.Count)
+            {
+                lblCount.Text = string.Format("{0}", keyframes.Count);
+            }
+            else
+            {
+                lblCount.Text = string.Format("{0}/{1}", kfcbs.Count, keyframes.Count);
+            }
+
         }
 
         private void SuspendDraw()
