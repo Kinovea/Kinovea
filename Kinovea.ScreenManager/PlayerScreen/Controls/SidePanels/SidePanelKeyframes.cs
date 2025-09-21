@@ -88,6 +88,12 @@ namespace Kinovea.ScreenManager
             if (kfcbs.ContainsKey(id))
                 kfcbs[id].UpdateContent();
         }
+
+        public void UpdateImage(Guid id)
+        {
+            if (kfcbs.ContainsKey(id))
+                kfcbs[id].UpdateImage();
+        }
         #endregion
 
 

@@ -110,8 +110,12 @@ namespace Kinovea.ScreenManager
             if (keyframe == null)
                 return;
 
+            bool wasSelected = isSelected;
             isSelected = keyframe.Timestamp == timestamp;
+            if (isSelected == wasSelected)
+                return;
 
+            // Selected status change.
             AfterColorChange();
             this.BackColor = isSelected ? Color.WhiteSmoke : Color.White;
             HomogenizeBackColor();
@@ -158,6 +162,15 @@ namespace Kinovea.ScreenManager
 
             // Capture the new state as the baseline, even if this is coming from undo.
             CaptureCurrentState();
+        }
+
+        /// <summary>
+        /// The thumbnail image was changed or initialized.
+        /// </summary>
+        public void UpdateImage()
+        {
+            this.pbThumbnail.Image = keyframe.Thumbnail;
+            this.Invalidate();
         }
         #endregion
 

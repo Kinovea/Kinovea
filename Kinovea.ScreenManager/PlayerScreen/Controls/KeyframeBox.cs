@@ -108,7 +108,12 @@ namespace Kinovea.ScreenManager
 
         public void DisplayAsSelected(bool selected)
         {
+            bool wasSelected = isSelected;
             isSelected = selected;
+            if (isSelected == wasSelected)
+                return;
+
+            // Selected status change.
             pbThumbnail.BackColor = selected ? keyframe.Color : Color.Black;
         }
         public void UpdateEnableStatus()

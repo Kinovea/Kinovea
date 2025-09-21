@@ -4444,8 +4444,11 @@ namespace Kinovea.ScreenManager
             if (keyframes.Count == 0)
             {
                 CollapseKeyframePanel(true);
-                m_iActiveKeyFrameIndex = -1;
             }
+
+
+            m_iActiveKeyFrameIndex = Math.Min(m_iActiveKeyFrameIndex, 
+                Math.Min(keyframes.Count - 1, pnlThumbnails2.Controls.Count - 1));
 
             sidePanelKeyframes.OrganizeContent(m_FrameServer.Metadata);
 
@@ -4453,48 +4456,40 @@ namespace Kinovea.ScreenManager
             DoInvalidate(); // Because of trajectories with keyframes labels.
         }
 
+        /// <summary>
+        /// Select the keyframe at the passed timestamp.
+        /// Or deselect all if passed -1.
+        /// </summary>
         private void ActivateKeyframe(long timestamp)
         {
-            ActivateKeyframe(timestamp, true);
-            sidePanelKeyframes.HighlightKeyframe(timestamp);
-        }
-        private void ActivateKeyframe(long _iPosition, bool _bAllowUIUpdate)
-        {
-            //--------------------------------------------------------------
-            // Black border every keyframe, unless it is at the given position.
-            // This method might be called with -1 to force complete blackout.
-            //--------------------------------------------------------------
-
             // This method is called on each frame during frame-by-frame navigation.
             // keep it fast or fix the strategy.
-
-            sidePanelKeyframes.HighlightKeyframe(_iPosition);
-
+            sidePanelKeyframes.HighlightKeyframe(timestamp);
             m_iActiveKeyFrameIndex = -1;
-            if (keyframeBoxes.Count != m_FrameServer.Metadata.Count)
-                return;
-
+            
             for (int i = 0; i < keyframeBoxes.Count; i++)
             {
-                if (m_FrameServer.Metadata[i].Timestamp == _iPosition)
-                {
-                    m_iActiveKeyFrameIndex = i;
-                    if (_bAllowUIUpdate)
-                    {
-                        keyframeBoxes[i].DisplayAsSelected(true);
-                        pnlThumbnails2.ScrollControlIntoView(keyframeBoxes[i]);
+                var box = keyframeBoxes[i];
+                var kf = box.Keyframe;
 
-                        if (!m_FrameServer.Metadata[i].HasThumbnails && m_FrameServer.CurrentImage != null)
-                        {
-                            m_FrameServer.Metadata[i].InitializeImage(m_FrameServer.CurrentImage);
-                            keyframeBoxes[i].UpdateImage();
-                        }
-                    }
-                }
-                else
+                if (kf.Timestamp != timestamp)
                 {
-                    if (_bAllowUIUpdate)
-                        keyframeBoxes[i].DisplayAsSelected(false);
+                    box.DisplayAsSelected(false);
+                    continue;
+                }
+
+                m_iActiveKeyFrameIndex = i;
+
+                box.DisplayAsSelected(true);
+                pnlThumbnails2.ScrollControlIntoView(box);
+
+                // If we haven't loaded the thumbnail yet, do it now.
+                // This happens when we open files with more than 20 keyframes. 
+                if (!kf.HasThumbnails && m_FrameServer.CurrentImage != null)
+                {
+                    kf.InitializeImage(m_FrameServer.CurrentImage);
+                    box.UpdateImage();
+                    sidePanelKeyframes.UpdateImage(kf.Id);
                 }
             }
         }
@@ -5817,7 +5812,7 @@ namespace Kinovea.ScreenManager
         {
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
+            ActivateKeyframe(m_iCurrentPosition);
         }
         #endregion
 
@@ -5868,7 +5863,7 @@ namespace Kinovea.ScreenManager
 
             m_iFramesToDecode = 1;
             ShowNextFrame(memoPosition, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
+            ActivateKeyframe(m_iCurrentPosition);
         }
 
         /// <summary>
