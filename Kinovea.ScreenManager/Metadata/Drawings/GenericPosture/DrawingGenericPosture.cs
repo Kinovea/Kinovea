@@ -55,6 +55,9 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = 0;
+
+                // FIXME: trackable points should not be included here, they will 
+                // trigger a dirty hash when they are moved by object tracking or camera tracking.
                 foreach(PointF p in genericPosture.PointList)
                     hash ^= p.GetHashCode();
                 

@@ -29,6 +29,7 @@ using System.Linq;
 using Kinovea.Services;
 using Kinovea.Video;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
@@ -44,7 +45,7 @@ namespace Kinovea.ScreenManager
     /// - detached (ex: a stopwatch or track object),
     /// - singletons (ex: the coordinate system or the number sequence).
     /// </summary>
-    public class Metadata
+    public class Metadata : IDisposable
     {
         #region Events and commands
         public EventHandler KVAImported;
@@ -514,7 +515,6 @@ namespace Kinovea.ScreenManager
 
         // Other helpers
         private AutoSaver autoSaver;
-        private Temporizer calibrationChangedTemporizer;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private ImageTransform imageTransform = new ImageTransform();
         private CameraTransformer cameraTransformer = new CameraTransformer();
@@ -576,6 +576,9 @@ namespace Kinovea.ScreenManager
         private Dictionary<VideoFilterType, IVideoFilter> videoFilters = new Dictionary<VideoFilterType, IVideoFilter>();
         private VideoFilterType activeVideoFilterType = VideoFilterType.None;
 
+        // Utilities
+        private Stopwatch stopwatch = new Stopwatch();
+
         // Static
         private static Guid staticKeyframeId = new Guid("02c9b2a8-dc78-422b-a5f1-359e063c597d");
         private static Color defaultBackgroundColor = Color.FromArgb(0, 255, 255, 255);
@@ -603,7 +606,6 @@ namespace Kinovea.ScreenManager
             ResetContentHash();
             SetupTempDirectory(id);
 
-            calibrationChangedTemporizer = new Temporizer(200, TracksCalibrationChanged);
             log.Debug("Constructed new Metadata object.");
         }
         public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
@@ -622,6 +624,29 @@ namespace Kinovea.ScreenManager
             MetadataSerializer serializer = new MetadataSerializer();
             serializer.Load(this, kvaString, false);
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        ~Metadata()
+        {
+            Dispose(false);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (IVideoFilter filter in videoFilters.Values)
+                    filter.Dispose();
+
+                // Note that we only want to delete the directory on graceful closes.
+                DeleteTempDirectory();
+            }
+        }
+
+
         #endregion
 
         #region Public Interface
@@ -883,11 +908,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Filtered iterators
-        public IEnumerable<DrawingTrack> Tracks()
+        public List<DrawingTrack> Tracks()
         {
-            foreach (AbstractDrawing drawing in TrackManager.Drawings)
-                if (drawing is DrawingTrack)
-                    yield return (DrawingTrack)drawing;
+            return TrackManager.Drawings
+                .OfType<DrawingTrack>()
+                .ToList();
         }
         public IEnumerable<AbstractDrawing> AttachedDrawings()
         {
@@ -1101,8 +1126,11 @@ namespace Kinovea.ScreenManager
             AfterDrawingCreation(track, 0);
 
             // The following is necessary for the "undo of deletion" case.
-            track.UpdateKinematics();
-            track.UpdateKeyframeLabels();
+            if (!kvaImporting)
+            {
+                track.UpdateKinematics();
+                track.UpdateKeyframeLabels();
+            }
 
             DrawingAdded?.Invoke(this, new DrawingEventArgs(track, trackManager.Id));
 
@@ -1478,13 +1506,6 @@ namespace Kinovea.ScreenManager
             return result;
         }
         
-        public void Close()
-        {
-            foreach (IVideoFilter filter in videoFilters.Values)
-                filter.Dispose();
-
-            DeleteTempDirectory();
-        }
         public void ShowCoordinateSystem()
         {
             drawingCoordinateSystem.Visible = true;
@@ -1557,7 +1578,7 @@ namespace Kinovea.ScreenManager
             using (var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(videoframe.Image))
             {
                 // Run tracking in parallel.
-                List<DrawingTrack> tt = Tracks().ToList();
+                List<DrawingTrack> tt = Tracks();
                 Parallel.ForEach(tt, t =>
                 {
                     if (t.Status == TrackStatus.Edit)
@@ -1593,13 +1614,14 @@ namespace Kinovea.ScreenManager
             TrackabilityManager.BeforeTrackingStep(timestamp);
         }
 
-
         /// <summary>
         /// Update all trackable drawings bound to tracks.
         /// This is called when the we move on the timeline without actively tracking.
         /// </summary>
         public void SyncTrackableDrawings(long timestamp)
         {
+            // This should be very fast as all the data is already calculated.
+            // No need for parallelization here, measured at 0 ms.
             foreach (DrawingTrack t in Tracks())
             {
                 if (TrackabilityManager.IsBoundToDrawing(t.Id))
@@ -1732,14 +1754,17 @@ namespace Kinovea.ScreenManager
 
         public void BeforeKVAImport()
         {
+            log.Debug("Before KVA Import vvvvvvvvvvvvvvvvvvvv");
             kvaImporting = true;
             StopAllTracking();
             DeselectAll();
-
             memoCoordinateSystemId = drawingCoordinateSystem.Id;
         }
         public void AfterKVAImport()
         {
+            log.Debug("After KVA Import ^^^^^^^^^^^^^^^^^^^^");
+            kvaImporting = false;
+
             // Make sure the new coordinate system object is registered for trackability.
             // This happens when we merge a KVA file.
             // In the case of unload we must have done this already.
@@ -1749,24 +1774,24 @@ namespace Kinovea.ScreenManager
                 trackabilityManager.UpdateId(memoCoordinateSystemId, drawingCoordinateSystem.Id);
             }
 
+            // Re-assign all trackable drawings to tracks.
+            List<DrawingTrack> allTracks = Tracks();
             foreach (ITrackable drawing in TrackableDrawings())
-                trackabilityManager.Assign(drawing, Tracks().ToList());
+                trackabilityManager.Assign(drawing, allTracks);
 
             trackabilityManager.CleanUnassigned();
 
+            // Reset coordinate system origin and rebuild track kinematics.
             AfterCalibrationChanged();
-            kvaImporting = false;
+            UpdateTrajectoriesForKeyframes();
 
-            if (KVAImported != null)
-                KVAImported(this, EventArgs.Empty);
+            KVAImported?.Invoke(this, EventArgs.Empty);
         }
         public void AfterUndoDeleteKeyframe(Keyframe keyframe)
         {
             SelectKeyframe(keyframe);
             UpdateTrajectoriesForKeyframes();
-
-            if (KeyframeAdded != null)
-                KeyframeAdded(this, new KeyframeEventArgs(keyframe.Id));
+            KeyframeAdded?.Invoke(this, new KeyframeEventArgs(keyframe.Id));
         }
         public void AfterManualExport()
         {
@@ -2398,6 +2423,10 @@ namespace Kinovea.ScreenManager
             hash ^= GetDetachedDrawingsContentHash();
             hash ^= GetSingletonDrawingsContentHash();
 
+            // Trackability
+            // The rest position of trackable drawings is here.
+            hash ^= trackabilityManager.ContentHash;
+
             // Video filters
             hash ^= GetVideoFiltersContentHash();
 
@@ -2576,19 +2605,35 @@ namespace Kinovea.ScreenManager
                 drawing is DrawingCounter;
         }
 
+        /// <summary>
+        /// Calibration was changed, trigger an update to the coordinate system origin 
+        /// and rebuild tracks kinematics.
+        /// </summary>
         private void AfterCalibrationChanged()
         {
+            // Bail out if we are in the process of importing, the creation of various drawings
+            // would trigger this multiple times. We'll be called once during AfterKVAImport.
+            if (kvaImporting)
+                return;
+
+            log.DebugFormat("AfterCalibrationChanged");
+
             if (drawingCoordinateSystem.CalibrationHelper == null)
                 drawingCoordinateSystem.CalibrationHelper = calibrationHelper;
 
             drawingCoordinateSystem.UpdateOrigin();
-            calibrationChangedTemporizer.Call();
+
+            // Rebuilding kinematics is somewhat costly but can be done in parallel.
+            stopwatch.Restart();
+            List<DrawingTrack> tt = Tracks();
+            Parallel.ForEach(tt, t =>
+            {
+                t.UpdateKinematics();
+            });
+
+            log.DebugFormat("Updated kinematics for all tracks: {0} ms.", stopwatch.ElapsedMilliseconds);
         }
-        private void TracksCalibrationChanged()
-        {
-            foreach (DrawingTrack t in Tracks())
-                t.CalibrationChanged();
-        }
+
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<MeasureLabelType> e)
         {
             mesureLabelType = e.Value;

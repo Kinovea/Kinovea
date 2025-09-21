@@ -240,6 +240,11 @@ namespace Kinovea.ScreenManager
         // Tracker tool.
         private AbstractTracker tracker;
 
+        // Cache for distortion and camera tracking.
+        private int distorterContentHash = 0;
+        private int cameraTransformerContentHash = 0;
+        private Dictionary<long, Dictionary<long, PointF>> cachedPoints = new Dictionary<long, Dictionary<long, PointF>>();
+
         // Hardwired parameters.
         private const int defaultCrossRadius = 4;
         private const int allowedFramesOver = 12;      // Number of frames over which the global fading spans (after end point).
@@ -343,7 +348,6 @@ namespace Kinovea.ScreenManager
             // Add the first point.
             positions.Add(new TimedPoint(p.X, p.Y, start));
             mapTimestampToIndex.Add(start, 0);
-
             miniLabel.SetAttach(p, true);
 
             // Visibility
@@ -581,6 +585,13 @@ namespace Kinovea.ScreenManager
             {
                 positions[hitPointIndex].X += dx;
                 positions[hitPointIndex].Y += dy;
+
+                // Invalidate the cache for this point.
+                foreach (var pointCache in cachedPoints)
+                {
+                    if (pointCache.Value.ContainsKey(positions[hitPointIndex].T))
+                        pointCache.Value.Remove(positions[hitPointIndex].T);
+                }
 
                 if (isConfiguring)
                 {
@@ -1025,10 +1036,10 @@ namespace Kinovea.ScreenManager
             switch (type)
             {
                 case MeasureLabelType.Position:
-                        double x = timeSeriesCollection[Kinematics.XRaw][index];
-                double y = timeSeriesCollection[Kinematics.YRaw][index];
-                displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", x, y, helper.GetLengthAbbreviation());
-                break;
+                    double x = timeSeriesCollection[Kinematics.XRaw][index];
+                    double y = timeSeriesCollection[Kinematics.YRaw][index];
+                    displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", x, y, helper.GetLengthAbbreviation());
+                    break;
 
                 case MeasureLabelType.TravelDistance:
                     displayText = GetKinematicsDisplayText(Kinematics.LinearDistance, index, helper.GetLengthAbbreviation());
@@ -1170,18 +1181,33 @@ namespace Kinovea.ScreenManager
         private List<PointF> GetPoints(DistortionHelper distorter, CameraTransformer cameraTransformer, long currentTimestamp)
         {
             var points = new List<PointF>(new PointF[positions.Count]);
+            CacheValidate(distorter, cameraTransformer);
             for (int i = 0; i < positions.Count; i++)
             {
                 var tp = positions[i];
                 PointF p = tp.Point;
 
-                if (distorter != null && distorter.Initialized)
-                    p = distorter.Undistort(p);
+                // Special shortcut if we don't have distortion nor camera motion.
+                if ((distorter == null || !distorter.Initialized) && (cameraTransformer == null || !cameraTransformer.Initialized))
+                {
+                    points[i] = p;
+                }
+                else
+                {
+                    bool cached = CacheRead(currentTimestamp, tp.T, ref p);
+                    if (!cached)
+                    {
+                        if (distorter != null && distorter.Initialized)
+                            p = distorter.Undistort(p);
 
-                if (cameraTransformer != null && cameraTransformer.Initialized)
-                    p = cameraTransformer.Transform(tp.T, currentTimestamp, p);
+                        if (cameraTransformer != null && cameraTransformer.Initialized)
+                            p = cameraTransformer.Transform(tp.T, currentTimestamp, p);
 
-                points[i] = p;
+                        CacheWrite(currentTimestamp, tp.T, p);
+                    }
+                
+                    points[i] = p;
+                }
 
                 // Find if there is a mini label attached to this point and update the attach point.
                 for (int j = 0; j < keyframeLabels.Count; j++)
@@ -1205,6 +1231,77 @@ namespace Kinovea.ScreenManager
 
             return points;
         }
+
+        #region Cache of transformed points
+        /// <summary>
+        /// Verify that the cache is still valid and purge it if not.
+        /// </summary>
+        private void CacheValidate(DistortionHelper distorter, CameraTransformer cameraTransformer)
+        {
+            bool distorterDirty = distorter != null && distorter.ContentHash != distorterContentHash;
+            bool cameraTransformerDirty = cameraTransformer != null && cameraTransformer.ContentHash != cameraTransformerContentHash;
+            if (distorterDirty || cameraTransformerDirty)
+            {
+                cachedPoints.Clear();
+                distorterContentHash = distorter != null ? distorter.ContentHash : 0;
+                cameraTransformerContentHash = cameraTransformer != null ? cameraTransformer.ContentHash : 0;
+            }
+        }
+
+        /// <summary>
+        /// Look for the value of the specified point at the current frame.
+        /// </summary>
+        private bool CacheRead(long frameTimestamp, long pointTimestamp, ref PointF point)
+        {
+            if (cachedPoints.ContainsKey(frameTimestamp))
+            {
+                // We've been on this frame before, see if we have that point.
+                if (cachedPoints[frameTimestamp].ContainsKey(pointTimestamp))
+                {
+                    point = cachedPoints[frameTimestamp][pointTimestamp];
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Add an entry in the cache for the specified point at the specified frame.
+        /// </summary>
+        private void CacheWrite(long frameTimestamp, long pointTimestamp, PointF point)
+        {
+            if (!cachedPoints.ContainsKey(frameTimestamp))
+                cachedPoints[frameTimestamp] = new Dictionary<long, PointF>();
+
+            cachedPoints[frameTimestamp][pointTimestamp] = point;
+        }
+
+        /// <summary>
+        /// Trim the cache after the specified index.
+        /// </summary>
+        private void CacheTrim(int lastIndex)
+        {
+            // The cache has two levels, each "frame" keeps each point.
+            // First, trim the points in all frames.
+            foreach (var ts in cachedPoints.Keys)
+            {
+                for (int i = lastIndex + 1; i < positions.Count; i++)
+                {
+                    if (cachedPoints[ts].ContainsKey(positions[i].T))
+                        cachedPoints[ts].Remove(positions[i].T);
+                }
+            }
+
+            // Then trim the frames themselves.
+            for (int i = lastIndex + 1; i < positions.Count; i++)
+            {
+                if (cachedPoints.ContainsKey(positions[i].T))
+                    cachedPoints.Remove(positions[i].T);
+            }
+        }
+        #endregion
+
         private int GetFirstVisiblePoint(int pointIndex)
         {
             int index = 0;
@@ -1435,12 +1532,14 @@ namespace Kinovea.ScreenManager
             drawPointIndex = FindClosestPoint(timestamp);
             if (drawPointIndex < positions.Count - 1)
             {
-                // Keep the reverse map in sync before remove range.
+                // Trim the reverse map.
                 for (int i = drawPointIndex + 1; i < positions.Count; i++)
                 {
                     if (mapTimestampToIndex.ContainsKey(positions[i].T))
                         mapTimestampToIndex.Remove(positions[i].T);
                 }
+
+                CacheTrim(drawPointIndex);
 
                 positions.RemoveRange(drawPointIndex + 1, positions.Count - drawPointIndex - 1);
 
@@ -1523,6 +1622,7 @@ namespace Kinovea.ScreenManager
 
             positions.Add(tp);
             mapTimestampToIndex.Add(tp.T, positions.Count - 1);
+            // This doesn't invalidate the cache as we only append points at the end.
 
             // Do not stop the tracking on matching failure.
             // The tracker should have kept the position the same, we'll just hope to 
@@ -1799,6 +1899,7 @@ namespace Kinovea.ScreenManager
             positions.Clear();
             mapTimestampToIndex.Clear();
             tracker.Clear();
+            cachedPoints.Clear();
             xmlReader.ReadStartElement();
 
             while (xmlReader.NodeType == XmlNodeType.Element)
@@ -1920,15 +2021,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Miscellaneous public methods
-        
-        /// <summary>
-        /// Force the track to update any data relying on calibration.
-        /// </summary>
-        public void CalibrationChanged()
-        {
-            UpdateKinematics();
-        }
-
         /// <summary>
         /// Force the track to update any data relying on keyframes state.
         /// </summary>
@@ -1960,14 +2052,16 @@ namespace Kinovea.ScreenManager
                 UpdateBoundingBoxes();
         }
 
+        /// <summary>
+        /// Force the track to update any information relying on calibration.
+        /// </summary>
         public void UpdateKinematics()
         {
             if (!isVisible)
                 return;
 
             stopwatch.Restart();
-            List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
-            filteredTrajectory.Initialize(samples, parentMetadata.CalibrationHelper);
+            filteredTrajectory.Initialize(positions, parentMetadata.CalibrationHelper);
             timeSeriesCollection = linearKinematics.BuildKinematics(filteredTrajectory, parentMetadata.CalibrationHelper);
             log.DebugFormat("Updated Kinematics for {0}: {1} ms.", this.name, stopwatch.ElapsedMilliseconds);
         }
@@ -1977,6 +2071,7 @@ namespace Kinovea.ScreenManager
             tracker.Clear();
             positions.Clear();
             mapTimestampToIndex.Clear();
+            cachedPoints.Clear();
             keyframeLabels.Clear();
         }
         

@@ -54,8 +54,6 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = 0;
-
-                // The hash of the points positions will be taken into account by trackability manager.
                 hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 hash ^= signedAngle.GetHashCode();

@@ -1691,15 +1691,13 @@ namespace Kinovea.ScreenManager
 
             // Add available tracks to the sub-menu.
             var metadata = ((PlayerScreen)screen).FrameServer.Metadata;
-            IEnumerable<DrawingTrack> tracks = metadata.Tracks();
             bool found = false;
-            foreach (var track in tracks)
+            foreach (var track in metadata.Tracks())
             {
                 // Add one track menu.
                 ToolStripMenuItem mnuStabilizationTrack = new ToolStripMenuItem();
                 mnuStabilizationTrack.Text = track.Name;
                 mnuStabilizationTrack.Tag = track.Id;
-                //mnuStabilizationTrack.Image = Properties.Resources.vector;
                 mnuStabilizationTrack.Click += mnuStabilizationTrack_OnClick;
                 mnuStabilizationTrack.MergeAction = MergeAction.Append;
 

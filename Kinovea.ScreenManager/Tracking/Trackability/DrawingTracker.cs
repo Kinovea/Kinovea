@@ -47,6 +47,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// The name of the drawing this tracker is responsible.
+        /// Only for information purposes / debugging.
+        /// </summary>
+        public string Name
+        {
+            get { return drawing == null ? "Unassigned" : drawing.Name; }
+        }
+
+        /// <summary>
         /// Whether the tracker is assigned to a drawing.
         /// </summary>
         public bool Assigned
@@ -69,6 +78,21 @@ namespace Kinovea.ScreenManager
         public bool IsCurrentlyTracking
         {
             get { return isCurrentlyTracking; }
+        }
+
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= drawingId.GetHashCode();
+                hash ^= isObjectTrackingInitialized.GetHashCode();
+                foreach (var point in trackablePoints2.Values)
+                {
+                    hash ^= point.ContentHash;
+                }
+                return hash;
+            }
         }
 
         #endregion
@@ -429,7 +453,24 @@ namespace Kinovea.ScreenManager
                 // by the camera transformer.
                 return;
             }
-                     
+
+            // Ignore camera motion for the coordinate system.
+            // We already know by this ponit that the coordinate system is not object-tracked.
+            // 1. If we don't have calibration data, the coordinate system is of no use.
+            // 2. If we do have calibration data, the coordinate system will already be moved
+            // by the calibration object, either via object tracking or via camera tracking on that calibration object.
+            // So we don't need to move it manually here. Furthermore changing the coordinate system origin
+            // triggers a change in the calibration, which triggers a rebuild of all kinematics data on all tracks,
+            // so we definitely avoid doing it unless necessary.
+            if (drawing is DrawingCoordinateSystem)
+            {
+                return;
+            }
+
+            // For calibration objects, if they are camera-tracked, they should be updated.
+            // This will cause the coordinate system origin to change and rebuild all kinematics data
+            // on all tracks.
+
             // Update the drawing based on camera motion data.
             foreach (var pair in trackablePoints2)
             {

@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
     /// Tracker using template matching.
     /// Each track has its own tracker instance.
     /// </summary>
-    public class TrackerTemplateMatching : AbstractTracker, IDisposable
+    public class TrackerTemplateMatching : AbstractTracker
     {
         #region Properties
         public override TrackingParameters Parameters
@@ -74,7 +74,7 @@ namespace Kinovea.ScreenManager
         {
             this.parameters = parameters;
         }
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

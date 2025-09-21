@@ -36,7 +36,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Tracker using Circle Hough Transform.
     /// </summary>
-    public class TrackerCircle : AbstractTracker, IDisposable
+    public class TrackerCircle : AbstractTracker
     {
         #region Properties
         public override TrackingParameters Parameters
@@ -83,7 +83,7 @@ namespace Kinovea.ScreenManager
         {
             this.parameters = parameters;
         }
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

@@ -46,6 +46,18 @@ namespace Kinovea.ScreenManager
         {
             get { return trackers.Values.Any((tracker) => tracker.IsCurrentlyTracking); }
         }
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                foreach (var tracker in trackers.Values)
+                {
+                    hash ^= tracker.ContentHash;
+                }
+                return hash;
+            }
+        }
         #endregion
 
         #region Members
@@ -58,23 +70,23 @@ namespace Kinovea.ScreenManager
         /// Add a tracker for a trackable drawing and register its points.
         /// videoFrame can contain a null image if this is added from a capture screen.
         /// </summary>
-        public void Add(ITrackable drawing, VideoFrame videoFrame)
+        public void Add(ITrackable drawing, long timestamp)
         {
             if(trackers.ContainsKey(drawing.Id))
             {
-                trackers[drawing.Id].Reassign(drawing, videoFrame.Timestamp);
+                trackers[drawing.Id].Reassign(drawing, timestamp);
             }
             else
             {
-                trackers.Add(drawing.Id, new DrawingTracker(drawing, videoFrame.Timestamp));
+                trackers.Add(drawing.Id, new DrawingTracker(drawing, timestamp));
             }
         }
 
         /// <summary>
         /// Finds the tracker responsible for this drawing and assign the drawing to it.
-        /// When we load the KVA, the trackers and drawings are loaded independently.
+        /// When we load from KVA, the trackers and drawings are loaded independently.
         /// At this point the tracker only knows the drawing id. 
-        /// This function re-inject the drawing instance into the tracker for convenience.
+        /// Re-inject the drawing instance into the tracker.
         /// </summary>
         public void Assign(ITrackable drawing, List<DrawingTrack> allTracks)
         {
@@ -104,11 +116,22 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void UpdateId(Guid oldId, Guid newId)
         {
-            if (oldId == newId || !trackers.ContainsKey(oldId) || trackers.ContainsKey(newId))
+            if (oldId == newId)
                 return;
 
-            trackers.Add(newId, trackers[oldId]);
-            trackers.Remove(oldId);
+            if (!trackers.ContainsKey(oldId))
+                return;
+                
+            if (trackers.ContainsKey(newId))
+            {
+                trackers.Remove(oldId);
+            }
+            else
+            {
+                trackers.Add(newId, trackers[oldId]);
+                trackers.Remove(oldId);
+            }
+
         }
 
         /// <summary>
@@ -352,6 +375,7 @@ namespace Kinovea.ScreenManager
             DrawingTracker tracker = trackers[id];
             w.WriteStartElement("TrackableDrawing");
             w.WriteAttributeString("id", tracker.Id.ToString());
+            w.WriteAttributeString("name", tracker.Name);
             tracker.WriteXml(w);
             w.WriteEndElement();
         }
@@ -560,7 +584,7 @@ namespace Kinovea.ScreenManager
             bool contains = trackers.ContainsKey(id);
             if (!contains)
             {
-                log.Error("This drawing was not registered for tracking.");
+                log.ErrorFormat("This drawing was not registered for tracking. {0}.", id.ToString());
 
 #if DEBUG
                 throw new ArgumentException("This drawing was not registered for tracking.");

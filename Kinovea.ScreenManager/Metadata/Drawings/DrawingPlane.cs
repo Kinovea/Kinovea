@@ -57,7 +57,6 @@ namespace Kinovea.ScreenManager
             get
             {
                 int hash = 0;
-                hash ^= quadImage.GetHashCode();
                 hash ^= styleData.ContentHash;
                 hash ^= infosFading.ContentHash;
                 hash ^= showGrid.GetHashCode();

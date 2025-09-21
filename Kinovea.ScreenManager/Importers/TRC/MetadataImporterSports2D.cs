@@ -123,6 +123,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Create the DrawingTrack objects from the collected timelines and add them to metadata.
+            log.DebugFormat("Import: Creating {0} tracks for Sports2D.", timelines.Count);
             Dictionary<string, DrawingTrack> tracks = new Dictionary<string, DrawingTrack>();
             for (int i = 0; i < timelines.Count; i++)
             {
@@ -143,6 +144,7 @@ namespace Kinovea.ScreenManager
                 metadata.AddDrawing(metadata.TrackManager.Id, track);
             }
 
+            log.DebugFormat("Import: Creating DrawingTracker.");
             // Import the trackable points into a tracker and add the tracker to the manager.
             DrawingTracker drawingTracker = new DrawingTracker(drawing, tracks);
             metadata.TrackabilityManager.ImportTracker(drawingTracker, tracks.Values.ToList());

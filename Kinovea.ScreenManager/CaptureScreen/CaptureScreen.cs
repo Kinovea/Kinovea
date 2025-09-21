@@ -437,7 +437,7 @@ namespace Kinovea.ScreenManager
                 view = null;
             }
 
-            metadata.Close();
+            metadata.Dispose();
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
 
             log.DebugFormat("Capture screen ready to be closed.");
@@ -1395,10 +1395,7 @@ namespace Kinovea.ScreenManager
 
         public void Metadata_OnTrackableDrawingAdded(ITrackable trackableDrawing)
         {
-            // We don't have a proper video frame but the trackability manager
-            // can work with that as long as we never ask for tracking.
-            VideoFrame videoFrame = new VideoFrame(0, null);
-            metadata.TrackabilityManager.Add(trackableDrawing, videoFrame);
+            metadata.TrackabilityManager.Add(trackableDrawing, 0);
         }
 
         /// <summary>

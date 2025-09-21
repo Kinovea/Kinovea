@@ -27,9 +27,15 @@ namespace Kinovea.ScreenManager
 {
 
     /// <summary>
-    /// Drawings that have points that are "volatile" and can change coordinates from outside the drawing, 
+    /// Drawings that have points that are "dynamic" and can change coordinates from outside the drawing, 
     /// without user intervention, based on the current frame.
-    /// This change in coordinates can come from point tracking or camera tracking.
+    /// This change in coordinates can come from object tracking or camera tracking.
+    /// 
+    /// ContentHash: these drawings should not include the trackable points coordinates in the content hash.
+    /// It is the responsibility of their DrawingTracker to keep track of the actual change
+    /// in the reference value.
+    /// Similarly for KVA export, they should ask the DrawingTracker to provide the reference value.
+    /// Note that the reference value is in relation to a specific frame, not necessarily the keyframe.
     /// </summary>
     public interface ITrackable
     {

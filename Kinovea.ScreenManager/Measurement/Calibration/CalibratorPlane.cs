@@ -493,6 +493,9 @@ namespace Kinovea.ScreenManager
 
                         origin = origin.Scale(scaling.X, scaling.Y);
                         break;
+                    case "Offset":
+                        offset = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
                     case "Axis":
                         calibrationAxis = (CalibrationAxis)Enum.Parse(typeof(CalibrationAxis), r.ReadElementContentAsString());
                         break;

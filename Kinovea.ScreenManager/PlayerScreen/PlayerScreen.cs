@@ -639,20 +639,24 @@ namespace Kinovea.ScreenManager
             // the close screen routine to detect if there is something left in the 
             // metadata and alerts the user.
             if(frameServer.Loaded)
+            {
                 view.StopPlaying();
+            }
         }
         public override void AfterClose()
         {
-            frameServer.Metadata.Close();
+            frameServer.Metadata.Dispose();
             replayWatcher.Stop();
-            
-            if(!frameServer.Loaded)
-                return;
-            
-            frameServer.VideoReader.Close();
-            view.ResetToEmptyState();
-            view.AfterClose();
+            replayWatcher.Dispose();
 
+            if (frameServer.Loaded)
+            {
+                frameServer.VideoReader.Close();
+                view.ResetToEmptyState();
+            }
+            
+            view.AfterClose();
+            view.Dispose();
             drawingToolbarPresenter.Dispose();
         }
 
@@ -1085,7 +1089,7 @@ namespace Kinovea.ScreenManager
         }
         private void AddTrackableDrawing(ITrackable trackableDrawing)
         {
-            frameServer.Metadata.TrackabilityManager.Add(trackableDrawing, frameServer.VideoReader.Current);
+            frameServer.Metadata.TrackabilityManager.Add(trackableDrawing, frameServer.VideoReader.Current.Timestamp);
         }
 
         private void ToggleTracking(object parameter)

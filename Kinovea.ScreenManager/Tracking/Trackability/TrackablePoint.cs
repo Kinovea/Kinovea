@@ -64,6 +64,7 @@ namespace Kinovea.ScreenManager
         private long referenceTimestamp;
         private PointF referenceValue;
         private Dictionary<long, PointF> cameraTrackCache = new Dictionary<long, PointF>();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public TrackablePoint(long timestamp, PointF value)
@@ -78,13 +79,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetReferenceValue(long timestamp, PointF value)
         {
-            if (timestamp != referenceTimestamp)
-            {
-                cameraTrackCache.Clear();
-                referenceTimestamp = timestamp;
-            }
-
+            referenceTimestamp = timestamp;
             referenceValue = value;
+            cameraTrackCache.Clear();
         }
 
         /// <summary>

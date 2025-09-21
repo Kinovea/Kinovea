@@ -25,10 +25,16 @@ namespace Kinovea.ScreenManager
         {
             get { return initialized; }
         }
+
+        public int ContentHash
+        {
+            get { return contentHash; }
+        }
         #endregion
 
         #region Members
         private bool initialized;
+        private int contentHash;
         private Dictionary<long, int> frameIndices = new Dictionary<long, int>();
         private List<OpenCvSharp.Mat> consecTransforms = new List<OpenCvSharp.Mat>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -45,6 +51,13 @@ namespace Kinovea.ScreenManager
             this.frameIndices = tracker.FrameIndices;
             this.consecTransforms = tracker.ConsecutiveTransforms;
             initialized = true;
+
+            // Compute content hash.
+            contentHash = 0;
+            foreach (var mat in consecTransforms)
+            {
+                contentHash ^= mat.GetHashCode();
+            }
         }
 
         /// <summary>
@@ -61,6 +74,7 @@ namespace Kinovea.ScreenManager
             }
             consecTransforms.Clear();
             initialized = false;
+            contentHash = 0;
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
     /// This class is not to be instanciated, use a concrete tracker instead,
     /// like TrackerSURF or TrackerBlock. 
     /// </summary>
-    public abstract class AbstractTracker
+    public abstract class AbstractTracker : IDisposable
     {
         public abstract TrackingParameters Parameters { get; }
 
@@ -85,6 +85,8 @@ namespace Kinovea.ScreenManager
         /// Draw the tracker gizmo.
         /// </summary>
         public abstract void Draw(Graphics canvas, TimedPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor, bool isConfiguring);
+
+        public abstract void Dispose();
 
         #endregion
     }

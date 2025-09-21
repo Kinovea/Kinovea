@@ -27,14 +27,12 @@ namespace Kinovea.ScreenManager
         }
         public int ContentHash
         {
-            get
-            {
-                return initialized && parameters != null ? parameters.ContentHash : 0;
-            }
+            get { return contentHash; }
         }
         #endregion
 
         private bool initialized;
+        private int contentHash;
         private DistortionParameters parameters;
         private Size imageSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -48,12 +46,15 @@ namespace Kinovea.ScreenManager
 
             this.imageSize = imageSize;
             initialized = true;
+
+            contentHash = parameters.ContentHash;
         }
 
         public void Uninitialize()
         {
             initialized = false;
             parameters = null;
+            contentHash = 0;
         }
 
         /// <summary>

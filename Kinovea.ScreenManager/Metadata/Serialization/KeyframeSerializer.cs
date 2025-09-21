@@ -140,13 +140,15 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
+            // Re-assign the drawings to their tracker.
+            List<DrawingTrack> allTracks = metadata.Tracks();
             foreach (AbstractDrawing drawing in keyframe.Drawings)
             {
                 ITrackable trackable = drawing as ITrackable;
                 if (trackable == null)
                     continue;
 
-                metadata.TrackabilityManager.Assign(trackable, metadata.Tracks().ToList());
+                metadata.TrackabilityManager.Assign(trackable, allTracks);
             }
         }
     }
