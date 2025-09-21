@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -42,20 +43,21 @@ namespace Kinovea.ScreenManager
 
         #region Public methods
         /// <summary>
-        /// Reset the list of keyframe comment boxes.
+        /// Update the list of keyframes.
         /// </summary>
         public void OrganizeContent(Metadata metadata)
         {
             this.parentMetadata = metadata;
             OrganizeContent();
-            log.DebugFormat("Side panel: ResetKeyframes");
         }
 
+        /// <summary>
+        /// Hide all keyframes.
+        /// </summary>
         public void Clear()
         {
             this.parentMetadata = null;
             OrganizeContent();
-            log.DebugFormat("Side panel: Clear");
         }
 
         /// <summary>
@@ -91,32 +93,74 @@ namespace Kinovea.ScreenManager
 
         private void OrganizeContent()
         {
-            // Import the keyframe list from scratch.
-            flowKeyframes.Controls.Clear();
-            foreach (var kfcb in kfcbs)
-            {
-                kfcb.Value.Dispose();
-            }
+            //-----------------------------------------------------------
+            // Recycle the existing controls as much as possible.
+            // Just change the keyframe they are pointing to.
+            // Also we don't delete controls, it's costly to recreate, just hide them.
+            //-----------------------------------------------------------
 
-            kfcbs.Clear();
+            Stopwatch sw = Stopwatch.StartNew();
 
-            if (parentMetadata == null || parentMetadata.Count == 0)
+            flowKeyframes.SuspendLayout();
+
+            if (parentMetadata == null)
             {
+                // Hide all the controls.
+                kfcbs.Clear();
+                for (int i = 0; i < flowKeyframes.Controls.Count; ++i)
+                {
+                    flowKeyframes.Controls[i].Visible = false;
+                }
+
+                flowKeyframes.ResumeLayout();
                 return;
             }
 
-            // The vertical margin between cards is defined in the KeyframeCommentBox control.
-            foreach (var kf in parentMetadata.Keyframes)
+            var keyframes = parentMetadata.Keyframes;
+            for (int i = 0; i < keyframes.Count; i++)
             {
-                ControlKeyframe kfb = new ControlKeyframe();
-                kfb.SetKeyframe(parentMetadata, kf);
-                kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
-                kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
-                kfb.DeletionAsked += (s, e) => KeyframeDeletionAsked?.Invoke(s, e);
+                // Add a control if needed.
+                if (flowKeyframes.Controls.Count < i + 1)
+                {
+                    ControlKeyframe kfb = new ControlKeyframe();
+                    kfb.SetKeyframe(parentMetadata, keyframes[i]);
+                    kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
+                    kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
+                    kfb.DeletionAsked += (s, e) => KeyframeDeletionAsked?.Invoke(s, e);
+                    flowKeyframes.Controls.Add(kfb);
+                    continue;
+                }
 
-                kfcbs.Add(kf.Id, kfb);
-                flowKeyframes.Controls.Add(kfb);
+                // Replace the keyframe in that control if needed.
+                var oldBox = flowKeyframes.Controls[i] as ControlKeyframe;
+                if (oldBox.Keyframe.Id != keyframes[i].Id)
+                {
+                    oldBox.SetKeyframe(parentMetadata, keyframes[i]);
+                    oldBox.Visible = true;
+                }
             }
+
+            // Hide leftover controls.
+            for (int i = keyframes.Count; i < flowKeyframes.Controls.Count; i++)
+            {
+                var oldBox = flowKeyframes.Controls[i] as ControlKeyframe;
+                oldBox.Visible = false;
+            }
+
+            log.DebugFormat("Organized {0} keyframes in {1} ms.", keyframes.Count, sw.ElapsedMilliseconds);
+
+            // Keep our dict in sync.
+            kfcbs.Clear();
+            for (int i = 0; i < flowKeyframes.Controls.Count; ++i)
+            {
+                var kfcb = flowKeyframes.Controls[i] as ControlKeyframe;
+                if (kfcb.Visible)
+                {
+                    kfcbs.Add(kfcb.Keyframe.Id, kfcb);
+                }
+            }
+
+            flowKeyframes.ResumeLayout();
         }
 
         private void flowKeyframes_Layout(object sender, LayoutEventArgs e)

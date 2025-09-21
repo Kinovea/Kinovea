@@ -4391,8 +4391,8 @@ namespace Kinovea.ScreenManager
             // In any case we need to handle multiple add/delete/move, 
             // and add/delete in the middle of the list.
             //
-            // We recycle the existing controls as much as possible, just change
-            // the keyframe they are hosting.
+            // We recycle the existing controls as much as possible.
+            // Just change the keyframe they are pointing to.
             // Also we don't delete controls, it's costly to recreate, just hide them.
             //-----------------------------------------------------------------
             Stopwatch sw = Stopwatch.StartNew();
