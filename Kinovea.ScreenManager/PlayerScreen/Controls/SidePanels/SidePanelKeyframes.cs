@@ -127,6 +127,18 @@ namespace Kinovea.ScreenManager
                     kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                     kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
                     kfb.DeletionAsked += (s, e) => KeyframeDeletionAsked?.Invoke(s, e);
+
+                    // https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/how-to-anchor-and-dock-child-controls-in-a-flowlayoutpanel-control
+                    // General rule for anchoring and docking in the FlowLayoutPanel control:
+                    // for vertical flow directions, the FlowLayoutPanel control calculates the width
+                    // of an implied column from the widest child control in the column.
+                    // All other controls in this column with Anchor or Dock properties are aligned or stretched
+                    // to fit this implied column.
+                    if (i == 0)
+                        kfb.Width = flowKeyframes.Width - 10;
+                    else
+                        kfb.Dock = DockStyle.Fill;
+                    
                     flowKeyframes.Controls.Add(kfb);
                     continue;
                 }
@@ -165,9 +177,10 @@ namespace Kinovea.ScreenManager
 
         private void flowKeyframes_Layout(object sender, LayoutEventArgs e)
         {
-            foreach (var kfcb in kfcbs)
+            // Simulate anchor left|right for the first, all the others will follow.
+            if (flowKeyframes.Controls.Count > 0)
             {
-                kfcb.Value.Width = flowKeyframes.ClientSize.Width - 10;
+                flowKeyframes.Controls[0].Width = flowKeyframes.ClientSize.Width - 10;
             }
         }
     }
