@@ -63,8 +63,9 @@ namespace Kinovea.Camera.DirectShow
         private HashSet<string> blacklist = new HashSet<string>();
         private Regex idsPattern = new Regex(@"^UI\d{3,4}");
         private Regex baslerPattern = new Regex(@"^Basler GenICam");
-        private Regex dahengPattern = new Regex(@"^Daheng Imaging");
         private Regex idsPeakPattern = new Regex(@"^peak");
+        private Regex dahengPattern = new Regex(@"^Daheng Imaging");
+        private Regex metaQuestPattern = new Regex(@"^Meta Quest");
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -347,6 +348,15 @@ namespace Kinovea.Camera.DirectShow
             // Daheng Imaging
             Match matchDaheng = dahengPattern.Match(name);
             if (matchDaheng.Success)
+            {
+                blacklist.Add(name);
+                return true;
+            }
+
+            // Meta Quest 
+            // September 2025: latest firmware update adds a bunch of direct show devices that don't exist.
+            Match matchMetaQuest = metaQuestPattern.Match(name);
+            if (matchMetaQuest.Success)
             {
                 blacklist.Add(name);
                 return true;
