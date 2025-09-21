@@ -44,17 +44,17 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Reset the list of keyframe comment boxes.
         /// </summary>
-        public void Reset(Metadata metadata)
+        public void OrganizeContent(Metadata metadata)
         {
             this.parentMetadata = metadata;
-            ResetContent();
+            OrganizeContent();
             log.DebugFormat("Side panel: ResetKeyframes");
         }
 
         public void Clear()
         {
             this.parentMetadata = null;
-            ResetContent();
+            OrganizeContent();
             log.DebugFormat("Side panel: Clear");
         }
 
@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
 
-        private void ResetContent()
+        private void OrganizeContent()
         {
             // Import the keyframe list from scratch.
             flowKeyframes.Controls.Clear();
@@ -97,10 +97,13 @@ namespace Kinovea.ScreenManager
             {
                 kfcb.Value.Dispose();
             }
+
             kfcbs.Clear();
 
             if (parentMetadata == null || parentMetadata.Count == 0)
+            {
                 return;
+            }
 
             // The vertical margin between cards is defined in the KeyframeCommentBox control.
             foreach (var kf in parentMetadata.Keyframes)
