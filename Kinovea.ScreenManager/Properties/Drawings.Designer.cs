@@ -893,16 +893,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap point3_16 {
-            get {
-                object obj = ResourceManager.GetObject("point3_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap polyarrow {
             get {
                 object obj = ResourceManager.GetObject("polyarrow", resourceCulture);
@@ -1206,6 +1196,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap trajconflabel {
             get {
                 object obj = ResourceManager.GetObject("trajconflabel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap trajectory6 {
+            get {
+                object obj = ResourceManager.GetObject("trajectory6", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

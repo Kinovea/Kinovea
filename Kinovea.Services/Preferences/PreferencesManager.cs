@@ -273,7 +273,7 @@ namespace Kinovea.Services
                 if (!success)
                     return;
 
-                log.DebugFormat("Exported prefs to temp file: {0} ms", stopwatch.ElapsedMilliseconds);
+                log.DebugFormat("Exported prefs to temp file: {0} ms.", stopwatch.ElapsedMilliseconds);
 
                 // 2. Swap the temp file.
                 try
@@ -300,7 +300,7 @@ namespace Kinovea.Services
                 // The swap worked.
                 FileChanged();
                 lastImport = DateTime.UtcNow;
-                log.DebugFormat("Exported prefs total time: {0} ms", stopwatch.ElapsedMilliseconds);
+                log.DebugFormat("Exported prefs total time: {0} ms.", stopwatch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {

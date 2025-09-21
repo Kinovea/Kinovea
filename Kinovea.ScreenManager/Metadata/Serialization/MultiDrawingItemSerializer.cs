@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
                 if (item is ITrackable)
                 {
                     metadata.TrackabilityManager.ReadTracker(r, identityScale, TimeHelper.IdentityTimestampMapper);
-                    metadata.TrackabilityManager.Assign(item as ITrackable);
+                    metadata.TrackabilityManager.Assign(item as ITrackable, metadata.Tracks().ToList());
                 }
             }
 

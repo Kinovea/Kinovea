@@ -463,7 +463,7 @@ namespace Kinovea.ScreenManager
             
             // Delegates implemented here but used by the view.
             view.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
-            view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
+            //view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
 
             frameServer.Metadata.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.Value);
             frameServer.Metadata.CameraCalibrationAsked += (s, e) => ShowCameraCalibration();
@@ -1094,8 +1094,8 @@ namespace Kinovea.ScreenManager
             ITrackable trackableDrawing = ConvertToTrackable(parameter);
             if(trackableDrawing == null)
                 return;
-            
-            frameServer.Metadata.TrackabilityManager.ToggleTracking(trackableDrawing);
+
+            frameServer.Metadata.ToggleTracking(trackableDrawing, frameServer.VideoReader.Current.Timestamp);
         }
         private bool IsTracking(object parameter)
         {
@@ -1128,13 +1128,13 @@ namespace Kinovea.ScreenManager
         /// Track trackable drawings in the current frame.
         /// This updates the trackable points coordinates to the current frame.
         /// </summary>
-        private void TrackDrawings(VideoFrame frameToUse)
-        {
-            VideoFrame frame = frameToUse ?? frameServer.VideoReader.Current;
-            if (frame.Image == null)
-                return;
+        //private void TrackDrawings(VideoFrame frameToUse)
+        //{
+        //    //VideoFrame frame = frameToUse ?? frameServer.VideoReader.Current;
+        //    //if (frame.Image == null)
+        //    //    return;
 
-            frameServer.Metadata.TrackabilityManager.Track(frame);
-        }
+        //    //frameServer.Metadata.TrackabilityManager.Track(frame);
+        //}
     }
 }

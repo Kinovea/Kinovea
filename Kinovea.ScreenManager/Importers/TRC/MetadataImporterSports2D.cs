@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Imports TRC from Sports2D (not a generic TRC parser).
-    /// This is for qualitative analysis of trajectories and posture over time, not measurement.
+    /// Imports TRC from Sports2D (this class is not a generic TRC parser).
+    /// For now this is for qualitative analysis of trajectories and posture over time, not measurement.
     /// 
     /// Example command line used for testing:
-    /// sports2d --video_input "video.mp4" --filter False --display_angle_values_on None 
+    /// > sports2d --video_input "video.mp4" --filter False --display_angle_values_on None 
+    /// 
     /// --filter False: is important to get the stick figure to match the video, the filtering will be done in Kinovea.
     /// --display_angle_values_on None: just to avoid cluttering the resulting video for comparison purposes.
+    /// 
     /// - Do not use multiperson=False unless there is really only one person throughout the video, 
     /// otherwise it will jump from one person to another.
     /// </summary>
@@ -54,6 +58,7 @@ namespace Kinovea.ScreenManager
             {
                 throw new InvalidDataException();
             }
+
             List<string> markers = new List<string>();
             for (int i = 0; i < numMarkers; i++)
             {
@@ -72,13 +77,17 @@ namespace Kinovea.ScreenManager
             }
 
             DrawingGenericPosture drawing = null;
-            Dictionary<string, Timeline<TrackingTemplate>> timelines = new Dictionary<string, Timeline<TrackingTemplate>>();
-            foreach (string marker in markers)
+
+            // Prepare track data for each marker.
+            // This should simulate DrawingTrack > ParseTrackPointList.
+            //Dictionary<string, List<TimedPoint>> timelines = new Dictionary<string, List<TimedPoint>>();
+            List<List<TimedPoint>> timelines = new List<List<TimedPoint>>();
+            for (int i = 0; i < markers.Count; i++)
             {
-                timelines.Add(marker, new Timeline<TrackingTemplate>());
+                timelines.Add(new List<TimedPoint>());
             }
 
-            // Parse the data into the drawing.
+            // Parse the data into the drawing object.
             // Each row of data contains a frame number followed by a time value followed by the (x, y, z) coordinates of each marker.
             for (int i = 5; i < numFrames; i++)
             {
@@ -99,35 +108,56 @@ namespace Kinovea.ScreenManager
                     string title = null;
                     Color color = Keyframe.DefaultColor;
                     string comments = "";
-                    Keyframe keyframe = new Keyframe(id, position, title, color, comments, new List<AbstractDrawing>() { drawing }, metadata);
+                    var drawingList = new List<AbstractDrawing>(){ drawing };
+                    Keyframe keyframe = new Keyframe(id, position, title, color, comments, drawingList, metadata);
                     metadata.MergeInsertKeyframe(keyframe);
-                    
+
                     // At this point the drawing should be added to the trackability manager.
                 }
 
-                foreach (var marker in markers)
+                for (int j = 0; j < markers.Count; j++)
                 {
-                    PointF value = posture.GetValue(marker);
-                    TrackingTemplate frame = new TrackingTemplate(timestamp, value, TrackingSource.Auto);
-                    timelines[marker].Insert(timestamp, frame);
+                    PointF p = posture.GetValue(markers[j]);
+                    timelines[j].Add(new TimedPoint(p.X, p.Y, timestamp));
                 }
             }
 
-            // Create the trackable points from the timelines.
-            TrackingParameters trackingParameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
-            Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
-            int index = 0;
-            foreach (var marker in markers)
+            // Create the DrawingTrack objects from the collected timelines and add them to metadata.
+            Dictionary<string, DrawingTrack> tracks = new Dictionary<string, DrawingTrack>();
+            for (int i = 0; i < timelines.Count; i++)
             {
-                PointF currentValue = timelines[marker].ClosestFrom(0).Location;
-                TrackablePoint trackablePoint = new TrackablePoint(trackingParameters, currentValue, timelines[marker]);
-                trackablePoints.Add(index.ToString(), trackablePoint);
-                index++;
+                Color color = drawing.GenericPosture.Points[i].Color;
+                int lineSize = 1;
+                var styleElements = GetStyleElements(color, lineSize);
+                string trackName = string.Format("{0}.{1}", drawing.Name, markers[i]);
+                
+                DrawingTrack track = new DrawingTrack(
+                    trackName, 
+                    timelines[i], 
+                    metadata.AverageTimeStampsPerFrame,
+                    styleElements);
+
+                // Trackable points inside the generic posture drawing are identified by their index,
+                // not by the custom name of the point.
+                tracks.Add(i.ToString(), track);
+                metadata.AddDrawing(metadata.TrackManager.Id, track);
             }
 
             // Import the trackable points into a tracker and add the tracker to the manager.
-            DrawingTracker drawingTracker = new DrawingTracker(drawing, trackablePoints);
-            metadata.TrackabilityManager.ImportTracker(drawingTracker);
+            DrawingTracker drawingTracker = new DrawingTracker(drawing, tracks);
+            metadata.TrackabilityManager.ImportTracker(drawingTracker, tracks.Values.ToList());
+        }
+
+        private static StyleElements GetStyleElements(Color color, int lineSize)
+        {
+            // Mostly defaults except for color and line size.
+            var styleElements = new StyleElements();
+            styleElements.Elements.Add("color", new StyleElementColor(color));
+            styleElements.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
+            styleElements.Elements.Add("line size", new StyleElementLineSize(lineSize));
+            styleElements.Elements.Add("TrackPointSize", new StyleElementPenSize(3));
+            styleElements.Elements.Add("label size", new StyleElementFontSize(8, ScreenManagerLang.StyleElement_FontSize_LabelSize));
+            return styleElements;
         }
 
         private static void ParsePosture(GenericPosture posture, string line, List<string> markers)

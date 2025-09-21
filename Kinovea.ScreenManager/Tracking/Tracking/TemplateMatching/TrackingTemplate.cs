@@ -111,53 +111,6 @@ namespace Kinovea.ScreenManager
             this.positionningSource = positionningSource;
         }
 
-        /// <summary>
-        /// Create a track frame from scratch. This is used by non-KVA importers.
-        /// FIXME: Refactoring in progress: importers should directly create timed points.
-        /// </summary>
-        public TrackingTemplate(long time, PointF location, TrackingSource positionningSource)
-        {
-            this.time = time;
-            this.location = location;
-            this.score = 1.0f;
-            this.positionningSource = positionningSource;
-        }
-
-        /// <summary>
-        /// Create a track frame from XML. This is used for KVA import.
-        /// FIXME: Refactoring in progress: importers should directly create timed points.
-        /// </summary>
-        public TrackingTemplate(XmlReader r, PointF scale, TimestampMapper timestampMapper)
-        {
-            bool isEmpty = r.IsEmptyElement;
-
-            long time = 0;
-            TrackingSource source = TrackingSource.Manual;
-            PointF location = PointF.Empty;
-
-            if (r.MoveToAttribute("time"))
-                time = timestampMapper(r.ReadContentAsLong());
-
-            if (r.MoveToAttribute("source"))
-                source = (TrackingSource)Enum.Parse(typeof(TrackingSource), r.ReadContentAsString());
-
-            if (r.MoveToAttribute("location"))
-            {
-                location = XmlHelper.ParsePointF(r.ReadContentAsString());
-                location = location.Scale(scale.X, scale.Y);
-            }
-
-            r.ReadStartElement();
-
-            if (!isEmpty)
-                r.ReadEndElement();
-
-            this.time = time;
-            this.location = location;
-            this.score = 1.0f;
-            this.positionningSource = source;
-        }
-
         public void Dispose()
         {
             Dispose(true);

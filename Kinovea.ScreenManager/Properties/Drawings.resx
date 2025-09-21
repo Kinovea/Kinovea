@@ -1025,9 +1025,6 @@
   <data name="play_green_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\play-green-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="point3_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\point3-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="stop2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\stop2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1036,5 +1033,8 @@
   </data>
   <data name="play_green2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\play-green2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="trajectory6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\trajectory6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

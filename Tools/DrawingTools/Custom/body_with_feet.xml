@@ -11,28 +11,28 @@
 
   <!-- Data -->
   <Points>
-    <Point name="Hip" value="352.1976;283.6089" color="#990033" />
-    <Point name="RHip" value="325.5242;294.496" color="#B30200" />
-    <Point name="RKnee" value="318.4476;389.7581" color="#996600" />
-    <Point name="RAnkle" value="314.6371;450.1814" color="#999900" />
-    <Point name="RBigToe" value="313.004;495.9073" color="#999900" />
-    <Point name="RSmallToe" value="297.2177;490.4637" color="#999900" />
-    <Point name="RHeel" value="319.5363;466.5121" color="#999900" />
-    <Point name="LHip" value="378.871;294.496" color="#993300" />
-    <Point name="LKnee" value="381.0484;390.8468" color="#996600" />
-    <Point name="LAnkle" value="385.9476;450.7258" color="#999900" />
-    <Point name="LBigToe" value="387.5806;496.9959" color="#999900" />
-    <Point name="LSmallToe" value="401.1895;490.4637" color="#669900" />
-    <Point name="LHeel" value="377.2379;467.0564" color="#339900" />
-    <Point name="Neck" value="350.0201;108.3266" color="#009900" />
-    <Point name="Head" value="352.1976;34.83871" color="#990000" />
-    <Point name="Nose" value="351.1089;77.84274" color="#009933" />
-    <Point name="RShoulder" value="296.129;132.8226" color="#009966" />
-    <Point name="RElbow" value="268.9113;207.3992" color="#009999" />
-    <Point name="RWrist" value="245.504;266.7339" color="#006699" />
-    <Point name="LShoulder" value="404.4556;131.7339" color="#003399" />
-    <Point name="LElbow" value="433.3064;206.8548" color="#000099" />
-    <Point name="LWrist" value="458.8911;264.5565" color="#990066" />
+    <Point name="Hip" value="352.1976;283.6089" color="#FF0000" />
+    <Point name="RHip" value="325.5242;294.496" color="#00F000" />
+    <Point name="RKnee" value="318.4476;389.7581" color="#00E767" />
+    <Point name="RAnkle" value="314.6371;450.1814" color="#00DEDE" />
+    <Point name="RBigToe" value="313.004;495.9073" color="#00DEDE" />
+    <Point name="RSmallToe" value="297.2177;490.4637" color="#00DEDE" />
+    <Point name="RHeel" value="319.5363;466.5121" color="#00DEDE" />
+    <Point name="LHip" value="378.871;294.496" color="#008BFF" />
+    <Point name="LKnee" value="381.0484;390.8468" color="#0039FF" />
+    <Point name="LAnkle" value="385.9476;450.7258" color="#0000FF" />
+    <Point name="LBigToe" value="387.5806;496.9959" color="#0000FF" />
+    <Point name="LSmallToe" value="401.1895;490.4637" color="#0000FF" />
+    <Point name="LHeel" value="377.2379;467.0564" color="#0000FF" />
+    <Point name="Neck" value="350.0201;108.3266" color="#FF0033" />
+    <Point name="Head" value="352.1976;34.83871" color="#FF0033" />
+    <Point name="Nose" value="351.1089;77.84274" color="#990066" />
+    <Point name="RShoulder" value="296.129;132.8226" color="#FF0F00" />
+    <Point name="RElbow" value="268.9113;207.3992" color="#E16200" />
+    <Point name="RWrist" value="245.504;266.7339" color="#B4B400" />
+    <Point name="LShoulder" value="404.4556;131.7339" color="#4BCA00" />
+    <Point name="LElbow" value="433.3064;206.8548" color="#00E100" />
+    <Point name="LWrist" value="458.8911;264.5565" color="#00F900" />
   </Points>
   <Segments>
     <Segment name="Neck" point1="13" point2="14" style="Solid" width="3" color="#FF0033" />

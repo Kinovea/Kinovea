@@ -146,7 +146,7 @@ namespace Kinovea.ScreenManager
                 if (trackable == null)
                     continue;
 
-                metadata.TrackabilityManager.Assign(trackable as ITrackable);
+                metadata.TrackabilityManager.Assign(trackable, metadata.Tracks().ToList());
             }
         }
     }

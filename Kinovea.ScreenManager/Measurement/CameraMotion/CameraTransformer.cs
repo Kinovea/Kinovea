@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Takes a point with coordinates p in the image at sourceTimestamp, 
         /// returns the corresponding point in image at targetTimestamp.
-        /// Typically reference timestamp is the timestamp where the point was placed
+        /// Typically source timestamp is the timestamp where the point was placed
         /// on top of a world object in the video. This is the starting point 
         /// of the transform stack.
         /// </summary>

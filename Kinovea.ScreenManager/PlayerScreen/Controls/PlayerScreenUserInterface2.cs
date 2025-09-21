@@ -1294,7 +1294,7 @@ namespace Kinovea.ScreenManager
 
             // Background context menu.
             mnuTimeOrigin.Image = Properties.Resources.marker;
-            mnuDirectTrack.Image = Properties.Resources.point3_16;
+            mnuDirectTrack.Image = Properties.Drawings.trajectory6;
             mnuBackground.Image = Properties.Resources.shading;
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
             mnuPastePic.Image = Properties.Drawings.paste;
@@ -1359,13 +1359,13 @@ namespace Kinovea.ScreenManager
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 
-            mnuDrawingTracking.Image = Properties.Resources.point3_16;
+            mnuDrawingTracking.Image = Drawings.trajectory6;
+            mnuDrawingTrackingConfigure.Image = Drawings.configure;
+            mnuDrawingTrackingStart.Image = Drawings.play_green2;
+            mnuDrawingTrackingStop.Image = Drawings.stop_16;
             mnuDrawingTrackingConfigure.Click += mnuDrawingTrackingConfigure_Click;
-            mnuDrawingTrackingConfigure.Image = Properties.Drawings.configure;
             mnuDrawingTrackingStart.Click += mnuDrawingTrackingToggle_Click;
-            mnuDrawingTrackingStart.Image = Properties.Drawings.play_green2;
             mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
-            mnuDrawingTrackingStop.Image = Properties.Drawings.stop_16;
             mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuDrawingTrackingStart,
                 mnuDrawingTrackingStop
@@ -1388,7 +1388,7 @@ namespace Kinovea.ScreenManager
             mnuMagnifierFreeze.Click += mnuMagnifierFreeze_Click;
             mnuMagnifierFreeze.Image = Properties.Resources.image;
             mnuMagnifierTrack.Click += mnuMagnifierTrack_Click;
-            mnuMagnifierTrack.Image = Properties.Resources.point3_16;
+            mnuMagnifierTrack.Image = Properties.Drawings.trajectory6;
             mnuMagnifierDirect.Click += mnuMagnifierDirect_Click;
             mnuMagnifierDirect.Image = Properties.Resources.expand_16;
             mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;
@@ -2690,7 +2690,7 @@ namespace Kinovea.ScreenManager
             // This is not concerned with decoding mode (prebuffering, caching, etc.) as this will be checked inside the reader.
             
             bool wasEnabled = customDecodingSizeIsEnabled;
-            customDecodingSizeIsEnabled = !_forceDisable && !m_FrameServer.Metadata.Tracking;
+            customDecodingSizeIsEnabled = !_forceDisable && !m_FrameServer.Metadata.AnyTracking;
 
             if (wasEnabled && !customDecodingSizeIsEnabled)
             {
@@ -2766,7 +2766,7 @@ namespace Kinovea.ScreenManager
             // Rendering in the context of continuous playback (play loop).
             m_TimeWatcher.Restart();
 
-            bool tracking = m_FrameServer.Metadata.Tracking;
+            bool tracking = m_FrameServer.Metadata.AnyTracking;
             int skip = tracking ? 0 : missedFrames;
 
             long estimateNext = m_iCurrentPosition + ((skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
@@ -2808,7 +2808,7 @@ namespace Kinovea.ScreenManager
                     DoInvalidate();
                     m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 
-                    TrackDrawingsCommand.Execute(null);
+                    //TrackDrawingsCommand.Execute(null);
                     ComputeOrStopTracking(skip == 0);
 
                     // This causes Invalidates and will postpone the idle event.
@@ -2864,26 +2864,61 @@ namespace Kinovea.ScreenManager
             m_iFramesToDecode = 0;
             sldrSpeed.StepJump(-0.05);
         }
-        private void ComputeOrStopTracking(bool _contiguous)
+
+
+        /// <summary>
+        /// Update tracks and trackable drawings for the new timestamp.
+        /// At the end of this all drawings bound to tracks must have been 
+        /// updated to the underlying position from the track, even if we are not actively tracking.
+        /// </summary>
+        private void ComputeOrStopTracking(bool contiguous)
         {
-            
-            if (!m_FrameServer.Metadata.Tracking)
+            // Subtlety: when at least one track is actively tracking we go through 
+            // the tracking step in a parallel-for. In this case all the points in all trackable drawings
+            // are updated via this loop, whether they are actively tracking or not.
+            // (updated means synched to the track data at that timestamp).
+            // This is done in `PerformTracking()`.
+            //
+            // When no track is actively tracking, we sync the drawings to the tracks sequentially.
+            // This is done in `SyncTrackableDrawings()`.
+            //
+            // If we have camera tracking active, we must go through all trackable points again,
+            // and apply the camera transform to them (only if they are not doing object tracking).
+            // This is done in `CameraTrackingStep`.
+            // At the end of this function all trackable drawings are up to date with the current timestamp.
+
+            long timestamp = m_FrameServer.VideoReader.Current.Timestamp;
+
+            if (!m_FrameServer.Metadata.AnyTracking)
             {
+                m_FrameServer.Metadata.BeforeTrackingStep(timestamp);
+                m_FrameServer.Metadata.SyncTrackableDrawings(timestamp);
+                m_FrameServer.Metadata.CameraTrackingStep();
+
                 sidePanelTracking.UpdateContent();
                 return;
             }
 
-            // Fixme: Tracking only supports contiguous frames,
-            // but this should be the responsibility of the track tool anyway.
-            if (!_contiguous)
+            if (!contiguous)
+            {
                 m_FrameServer.Metadata.StopAllTracking();
+
+                m_FrameServer.Metadata.BeforeTrackingStep(timestamp);
+                m_FrameServer.Metadata.SyncTrackableDrawings(timestamp);
+                m_FrameServer.Metadata.CameraTrackingStep();
+            }
             else
+            {
+                m_FrameServer.Metadata.BeforeTrackingStep(timestamp);
                 m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
+                m_FrameServer.Metadata.CameraTrackingStep();
+            }
 
             sidePanelTracking.UpdateContent();
             UpdateFramesMarkers();
             CheckCustomDecodingSize(false);
         }
+
         private void Application_Idle(object sender, EventArgs e)
         {
             // This event fires when the window has consumed all its messages.
@@ -2929,7 +2964,7 @@ namespace Kinovea.ScreenManager
 
                 m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 
-                TrackDrawingsCommand.Execute(null);
+                //TrackDrawingsCommand.Execute(null);
 
                 bool contiguous = _iSeekTarget < 0 && m_iFramesToDecode <= 1;
                 if (!refreshInPlace)
@@ -2938,6 +2973,11 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
+                    // Sync drawings bound to tracks.
+                    m_FrameServer.Metadata.BeforeTrackingStep(m_iCurrentPosition);
+                    m_FrameServer.Metadata.SyncTrackableDrawings(m_iCurrentPosition);
+                    m_FrameServer.Metadata.CameraTrackingStep();
+
                     // Not sure why when manually navigating refresh in place is true.
                     sidePanelTracking.UpdateContent();
                 }
@@ -3968,7 +4008,7 @@ namespace Kinovea.ScreenManager
                 ReportForSyncMerge();
             }
 
-            m_FrameServer.Metadata.InitializeCommit(m_FrameServer.VideoReader.Current, m_DescaledMouse);
+            m_FrameServer.Metadata.InitializeCommit(m_FrameServer.VideoReader.Current.Timestamp, m_DescaledMouse);
 
             if (m_bTextEdit && m_ActiveTool != m_PointerTool && m_iActiveKeyFrameIndex >= 0)
                 m_bTextEdit = false;
@@ -5127,9 +5167,7 @@ namespace Kinovea.ScreenManager
 
             DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             track.Status = TrackStatus.Edit;
-
-            if (DrawingAdding != null)
-                DrawingAdding(this, new DrawingEventArgs(track, m_FrameServer.Metadata.TrackManager.Id));
+            DrawingAdding?.Invoke(this, new DrawingEventArgs(track, m_FrameServer.Metadata.TrackManager.Id));
         }
 
         private void mnuBackground_Click(object sender, EventArgs e)
@@ -5907,7 +5945,8 @@ namespace Kinovea.ScreenManager
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(vf.Timestamp);
 
             // Make sure the trackable drawings are on the right context.
-            TrackDrawingsCommand.Execute(vf);
+            //TrackDrawingsCommand.Execute(vf);
+            m_FrameServer.Metadata.SyncTrackableDrawings(vf.Timestamp);
 
             using (Graphics canvas = Graphics.FromImage(output))
             {

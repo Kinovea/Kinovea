@@ -196,7 +196,7 @@ namespace Kinovea.ScreenManager
 
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             PointF imagePoint = transformer.Untransform(e.Location);
-            metadata.InitializeCommit(null, imagePoint);
+            metadata.InitializeCommit(0, imagePoint);
 
             screenToolManager.AfterToolUse();
         }

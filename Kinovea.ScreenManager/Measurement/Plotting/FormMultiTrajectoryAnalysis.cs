@@ -27,6 +27,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<TimeSeriesPlotData, FilteredTrajectory> filteredTrajectories = new Dictionary<TimeSeriesPlotData, FilteredTrajectory>();
         private PlotHelper plotHelper;
         private bool manualUpdate;
+        private HashSet<Guid> knownTracks = new HashSet<Guid>();
 
         public FormMultiTrajectoryAnalysis(Metadata metadata)
         {
@@ -49,14 +50,19 @@ namespace Kinovea.ScreenManager
 
         private void ImportData(Metadata metadata)
         {
-            ImportTrackData(metadata);
+            // Since drawings trackable points are based on tracks, import them first
+            // and do not add the individual tracks corresponding to the same points.
             ImportOtherDrawingsData(metadata);
+            ImportTrackData(metadata);
         }
 
         private void ImportTrackData(Metadata metadata)
         {
             foreach (DrawingTrack track in metadata.Tracks())
             {
+                if (knownTracks.Contains(track.Id))
+                    continue;
+
                 TimeSeriesPlotData data = new TimeSeriesPlotData(track.Name, track.MainColor, track.TimeSeriesCollection);
                 timeSeriesData.Add(data);
                 filteredTrajectories.Add(data, track.FilteredTrajectory);
@@ -68,36 +74,40 @@ namespace Kinovea.ScreenManager
             LinearKinematics linearKinematics = new LinearKinematics();
 
             // Trackable drawing's individual points.
-            foreach (ITrackable trackable in metadata.TrackableDrawings())
+            // 2025.1: these are now based on tracks instead of their own data structures.
+            foreach (ITrackable drawing in metadata.TrackableDrawings())
             {
-                Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(trackable);
+                Dictionary<string, DrawingTrack> tracks = metadata.TrackabilityManager.GetTrackingTracks(drawing);
 
-                if (trackablePoints == null)
+                if (tracks == null)
                     continue;
 
-                // Do not show points belonging to the calibration object, since it defines the coordinate system.
-                if (trackable.Id == metadata.CalibrationHelper.CalibrationDrawingId || trackable.Id == metadata.DrawingCoordinateSystem.Id)
-                    continue;
-
-                bool singlePoint = trackablePoints.Count == 1;
-                foreach (var pair in trackablePoints)
+                // Do not show points belonging to the calibration object,
+                // since it defines the coordinate system.
+                if (drawing.Id == metadata.CalibrationHelper.CalibrationDrawingId || drawing.Id == metadata.DrawingCoordinateSystem.Id)
                 {
-                    TrackablePoint tp = pair.Value;
-                    Timeline<TrackingTemplate> timeline = pair.Value.Timeline;
-                    if (timeline.Count == 0)
+                    foreach (var pair in tracks)
+                    {
+                        knownTracks.Add(pair.Value.Id);
+                    }
+                    
+                    continue;
+                }
+
+                bool singlePoint = tracks.Count == 1;
+                foreach (var pair in tracks)
+                {
+                    DrawingTrack track = pair.Value;
+                    if (knownTracks.Contains(track.Id))
                         continue;
 
-                    List<TimedPoint> samples = timeline.Enumerate().Select(p => new TimedPoint(p.Location.X, p.Location.Y, p.Time)).ToList();
-                    FilteredTrajectory traj = new FilteredTrajectory();
-                    traj.Initialize(samples, metadata.CalibrationHelper);
+                    TimeSeriesCollection tsc = track.TimeSeriesCollection;
 
-                    TimeSeriesCollection tsc = linearKinematics.BuildKinematics(traj, metadata.CalibrationHelper);
-
-                    string name = trackable.Name;
-                    Color color = trackable.Color;
+                    string name = drawing.Name;
+                    Color color = drawing.Color;
 
                     // Custom drawings may have dedicated names for their handles.
-                    DrawingGenericPosture dgp = trackable as DrawingGenericPosture;
+                    DrawingGenericPosture dgp = drawing as DrawingGenericPosture;
                     if (dgp == null)
                     {
                         if (!singlePoint)
@@ -111,14 +121,15 @@ namespace Kinovea.ScreenManager
                                 continue;
 
                             name = name + " - " + (string.IsNullOrEmpty(handle.Name) ? pair.Key : handle.Name);
-                            color = handle.Color == Color.Transparent ? trackable.Color : handle.Color;
+                            color = handle.Color == Color.Transparent ? drawing.Color : handle.Color;
                             break;
                         }
                     }
 
                     TimeSeriesPlotData data = new TimeSeriesPlotData(name, color, tsc);
                     timeSeriesData.Add(data);
-                    filteredTrajectories.Add(data, traj);
+                    filteredTrajectories.Add(data, track.FilteredTrajectory);
+                    knownTracks.Add(track.Id);
                 }
             }
         }

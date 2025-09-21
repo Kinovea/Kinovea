@@ -25,29 +25,15 @@ namespace Kinovea.ScreenManager
             // Create three filtered trajectories named o, a, b directly based on the trackable points.
             foreach (DrawingAngle drawingAngle in metadata.Angles())
             {
-                Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
-                Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(drawingAngle);
-
-                bool tracked = true;
-
-                foreach (string key in trackablePoints.Keys)
-                {
-                    Timeline<TrackingTemplate> timeline = trackablePoints[key].Timeline;
-                    if (timeline.Count == 0)
-                    {
-                        tracked = false;
-                        break;
-                    }
-
-                    List<TimedPoint> samples = timeline.Enumerate().Select(p => new TimedPoint(p.Location.X, p.Location.Y, p.Time)).ToList();
-                    FilteredTrajectory traj = new FilteredTrajectory();
-                    traj.Initialize(samples, metadata.CalibrationHelper);
-
-                    trajs.Add(key, traj);
-                }
-
-                if (!tracked)
+                if (!metadata.TrackabilityManager.IsObjectTrackingInitialized(drawingAngle.Id))
                     continue;
+
+                Dictionary<string, DrawingTrack> tracks = metadata.TrackabilityManager.GetTrackingTracks(drawingAngle);
+                Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
+                foreach (var pair in tracks)
+                {
+                    trajs.Add(pair.Key, pair.Value.FilteredTrajectory);
+                }
 
                 TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, drawingAngle.AngleOptions, metadata.CalibrationHelper);
                 TimeSeriesPlotData data = new TimeSeriesPlotData(drawingAngle.Name, drawingAngle.Color, tsc);
@@ -61,35 +47,16 @@ namespace Kinovea.ScreenManager
             
             foreach (DrawingGenericPosture drawing in metadata.GenericPostures())
             {
-                Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(drawing);
-
-                // First create trajectories for all the trackable points in the drawing.
-                // This avoids duplicating the filtering operation for points shared by more than one angle.
-                // Here the trajectories are indexed by the original alias in the custom tool, based on the index.
-                Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
-                bool tracked = true;
-
-                foreach (string key in trackablePoints.Keys)
-                {
-                    Timeline<TrackingTemplate> timeline = trackablePoints[key].Timeline;
-
-                    if (timeline.Count == 0)
-                    {
-                        // The point is trackable but doesn't have any timeline data.
-                        // This happens if the user is not tracking that drawing, so we don't need to go further.
-                        tracked = false;
-                        break;
-                    }
-
-                    List<TimedPoint> samples = timeline.Enumerate().Select(p => new TimedPoint(p.Location.X, p.Location.Y, p.Time)).ToList();
-                    FilteredTrajectory traj = new FilteredTrajectory();
-                    traj.Initialize(samples, metadata.CalibrationHelper);
-
-                    trajs.Add(key, traj);
-                }
-
-                if (!tracked)
+                if (!metadata.TrackabilityManager.IsObjectTrackingInitialized(drawing.Id))
                     continue;
+
+                // Get all the individual trajectories.
+                Dictionary<string, DrawingTrack> tracks = metadata.TrackabilityManager.GetTrackingTracks(drawing);
+                Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
+                foreach (var pair in tracks)
+                {
+                    trajs.Add(pair.Key, pair.Value.FilteredTrajectory);
+                }
 
                 // Loop over all angles in this drawing and find the trackable aliases of the points making up the particular angle.
                 // The final collection of trajectories for each angle should have indices named o, a, b.
@@ -106,9 +73,9 @@ namespace Kinovea.ScreenManager
 
                     // Remap to oab.
                     Dictionary<string, FilteredTrajectory> angleTrajs = new Dictionary<string, FilteredTrajectory>();
-                    angleTrajs.Add("o", trajs[keyO]);
-                    angleTrajs.Add("a", trajs[keyA]);
-                    angleTrajs.Add("b", trajs[keyB]);
+                    angleTrajs["o"] = trajs[keyO];
+                    angleTrajs["a"] = trajs[keyA];
+                    angleTrajs["b"] = trajs[keyB];
 
                     AngleOptions options = new AngleOptions(gpa.Signed, gpa.CCW, gpa.Supplementary);
                     TimeSeriesCollection tsc = angularKinematics.BuildKinematics(angleTrajs, options, metadata.CalibrationHelper);

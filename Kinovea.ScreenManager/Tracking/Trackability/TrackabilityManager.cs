@@ -31,43 +31,28 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Manages the drawing trackers.
-    /// Each tracker is identified by the ID of the drawing it is tracking.
+    /// Drawing trackers are responsible for updating the position of trackable points in drawings.
+    /// All drawings that have such points must have a drawing tracker even if they are not actively tracked.
+    /// This handles object tracking, camera tracking and non-tracking scenarios.
     /// </summary>
     public class TrackabilityManager
     {
         #region Properties
-        public bool Tracking
-        {
-            get { return trackers.Values.Any((tracker) => tracker.IsTracking); }
-        }
-        public int ContentHash
-        {
-            get 
-            {
-                int hash = 0;
-                foreach (DrawingTracker tracker in trackers.Values)
-                {
-                    if (tracker != null)
-                        hash ^= tracker.ContentHash;
-                }
 
-                return hash;
-            }
+        /// <summary>
+        /// True if at least one drawing is currently actively tracking.
+        /// </summary>
+        public bool AnyTracking
+        {
+            get { return trackers.Values.Any((tracker) => tracker.IsCurrentlyTracking); }
         }
         #endregion
 
         #region Members
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
-        private Size imageSize;
-        private CameraTransformer cameraTransformer;
+        private Dictionary<Guid, Guid> mapTrackIdToDrawingId = new Dictionary<Guid, Guid>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-
-        public void Initialize(Size imageSize, CameraTransformer cameraTransformer)
-        {
-            this.imageSize = imageSize;
-            this.cameraTransformer = cameraTransformer;
-        }
 
         /// <summary>
         /// Add a tracker for a trackable drawing and register its points.
@@ -75,16 +60,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
-            TrackingParameters parameters = drawing.CustomTrackingParameters ?? PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
-            TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            
             if(trackers.ContainsKey(drawing.Id))
             {
-                trackers[drawing.Id].Reinitialize(drawing, context, parameters);
+                trackers[drawing.Id].Reassign(drawing, videoFrame.Timestamp);
             }
             else
             {
-                trackers.Add(drawing.Id, new DrawingTracker(drawing, context, parameters));
+                trackers.Add(drawing.Id, new DrawingTracker(drawing, videoFrame.Timestamp));
             }
         }
 
@@ -94,19 +76,29 @@ namespace Kinovea.ScreenManager
         /// At this point the tracker only knows the drawing id. 
         /// This function re-inject the drawing instance into the tracker for convenience.
         /// </summary>
-        public void Assign(ITrackable drawing)
+        public void Assign(ITrackable drawing, List<DrawingTrack> allTracks)
         {
             if (trackers.ContainsKey(drawing.Id) && !trackers[drawing.Id].Assigned)
-                trackers[drawing.Id].Assign(drawing);
+            {
+                List<Guid> bound = trackers[drawing.Id].Assign(drawing, allTracks);
+
+                foreach (var id in bound)
+                {
+                    mapTrackIdToDrawingId.Add(id, drawing.Id);
+                }
+            }
         }
 
+        /// <summary>
+        /// Returns true if this drawing id has a tracker assigned to it.
+        /// </summary>
         public bool IsAssigned(Guid id)
         {
             return trackers.ContainsKey(id);
         }
 
         /// <summary>
-        /// Change the drawing id in the tracker.
+        /// Change the drawing id in the tracker without invalidating the tracking data.
         /// This happens when a drawing changes id. This might happen for some drawings
         /// like the coordinate system which is both a singleton drawing and trackable.
         /// </summary>
@@ -123,15 +115,12 @@ namespace Kinovea.ScreenManager
         /// Add a new point to an existing tracker.
         /// This is used for drawings that have a dynamic list of trackable points like polyline.
         /// </summary>
-        public void AddPoint(ITrackable drawing, VideoFrame videoFrame, string key, PointF point)
+        public void AddPoint(ITrackable drawing, string key, long timestamp, PointF point)
         {
             if (!trackers.ContainsKey(drawing.Id))
                 return;
 
-            TrackingParameters parameters = drawing.CustomTrackingParameters ?? PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
-            TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-
-            trackers[drawing.Id].AddPoint(context, parameters, key, point);
+            trackers[drawing.Id].AddPoint(key, timestamp, point);
         }
 
         public void RemovePoint(ITrackable drawing, string key)
@@ -153,6 +142,7 @@ namespace Kinovea.ScreenManager
                 if (pair.Value.Assigned)
                     continue;
 
+                ForgetTracks(pair.Value.Id);
                 pair.Value.Dispose();
                 pruneList.Add(pair.Key);
             }
@@ -169,7 +159,10 @@ namespace Kinovea.ScreenManager
         public void Clear()
         {
             foreach(DrawingTracker tracker in trackers.Values)
+            {
+                ForgetTracks(tracker.Id);
                 tracker.Dispose();
+            }
             
             trackers.Clear();
         }
@@ -181,28 +174,12 @@ namespace Kinovea.ScreenManager
         {
             if(trackers.Count == 0 || !trackers.ContainsKey(drawing.Id))
                 return;
-            
+
+            ForgetTracks(drawing.Id);
             trackers[drawing.Id].Dispose();
             trackers.Remove(drawing.Id);
         }
 
-        /// <summary>
-        /// Perform tracking for the current image.
-        /// Track all points in all trackable drawings or use existing tracking data.
-        /// Update the point coordinates in the drawing.
-        /// </summary>
-        public void Track(VideoFrame videoFrame)
-        {
-            TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            
-            foreach(DrawingTracker tracker in trackers.Values)
-            {
-                tracker.Track(context, cameraTransformer);
-            }
-
-            context.Dispose();
-        }
-        
         /// <summary>
         /// Returns true if the drawing is currently actively tracking.
         /// </summary>
@@ -211,22 +188,50 @@ namespace Kinovea.ScreenManager
             if (!SanityCheck(drawing.Id))
                 return false;
 
-            return trackers[drawing.Id].IsTracking;
+            return trackers[drawing.Id].IsCurrentlyTracking;
         }
 
         /// <summary>
-        /// Returns true if the drawing has data in its timeline.
+        /// Returns true if object tracking was ever turned on for the drawing.
         /// </summary>
-        public bool HasData(Guid id)
+        public bool IsObjectTrackingInitialized(Guid id)
         {
             if (!trackers.ContainsKey(id))
                 return false;
 
-            return trackers[id].HasData;
+            return trackers[id].IsObjectTrackingInitialized;
         }
-        
+
         /// <summary>
-        /// Set the drawing to actively tracking or not.
+        /// Turn on tracking for a drawing for the first time.
+        /// Takes the list of track ids assigned to each trackable point.
+        /// </summary>
+        public void InitializeTracking(ITrackable drawing, Dictionary<string, DrawingTrack> tracks)
+        {
+            if (!SanityCheck(drawing.Id))
+                return;
+
+            trackers[drawing.Id].InitializeTracking(tracks);
+
+            // Keep a map from track id to drawing, to quickly update the drawing when its underlying track changes.
+            foreach (var t in tracks.Values)
+            {
+                if (mapTrackIdToDrawingId.ContainsKey(t.Id))
+                {
+                    // Not supported.
+                    // Currently each track is exclusively associated to a trackable point.
+                    // It might be better in the future if two drawings can "share" a track object.
+                    // And that we can freely attach object points to existing tracks.
+                }
+                else
+                {
+                    mapTrackIdToDrawingId.Add(t.Id, drawing.Id);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Toggles the tracking mode for this drawing.
         /// </summary>
         public void ToggleTracking(ITrackable drawing)
         {
@@ -236,37 +241,91 @@ namespace Kinovea.ScreenManager
             trackers[drawing.Id].ToggleTracking();
         }
 
+        public void BeforeTrackingStep(long timestamp)
+        {
+            foreach (DrawingTracker tracker in trackers.Values)
+            {
+                tracker.BeforeTrackingStep(timestamp);
+            }
+        }
+
+        public bool IsBoundToDrawing(Guid trackId)
+        {
+            return mapTrackIdToDrawingId.ContainsKey(trackId);
+        }
+
         /// <summary>
-        /// Returns the list of trackable points for the drawing.
-        /// This is used by the kinematics forms.
+        /// One track has finished its tracking step.
+        /// TimedPoint has been set to an known position from a previous tracking 
+        /// step, to a new location after tracking or to null if tracking failed.
+        /// Update the corresponding trackable points in the trackable drawings.
+        /// This handles "object tracking". Camera tracking is handled after this step.
+        /// We must go through this for every frame whether the track is opened or not.
         /// </summary>
-        public Dictionary<string, TrackablePoint> GetTrackablePoints(ITrackable drawing)
+        public void AfterTrackTrackingStep(DrawingTrack track, TimedPoint tp)
+        {
+            // Threading:
+            // This may run in the tracking thread of this particular track if we are 
+            // actively tracking, that is, any time there is at least one track active
+            // and we move step by step.
+            // In this context multiple tracks referenced by a given drawing may come here at the same time.
+            // When not actively tracking this is run sequentially on the main thread.
+            if (!mapTrackIdToDrawingId.ContainsKey(track.Id))
+                return;
+            
+            Guid drawingId = mapTrackIdToDrawingId[track.Id];
+            if (!SanityCheck(drawingId))
+                return;
+
+            trackers[drawingId].ObjectTrackingStep(track, tp);
+        }
+
+        /// <summary>
+        /// Perform camera tracking step: update all trackable points of all trackable drawings 
+        /// that are not using object tracking to match the camera motion.
+        /// </summary>
+        public void CameraTrackingStep(CameraTransformer cameraTransformer)
+        {
+            if (!cameraTransformer.Initialized)
+                return;
+            
+            foreach (DrawingTracker tracker in trackers.Values)
+            {
+                tracker.CameraTrackingStep(cameraTransformer);
+            }
+        }
+
+        /// <summary>
+        /// Returns the list of tracks backing the trackable points for the drawing.
+        /// This is used by the kinematics diagrams.
+        /// </summary>
+        public Dictionary<string, DrawingTrack> GetTrackingTracks(ITrackable drawing)
         {
             if (!SanityCheck(drawing.Id))
                 return null;
 
-            return trackers[drawing.Id].TrackablePoints;
+            return trackers[drawing.Id].GetTracks();
         }
 
         /// <summary>
         /// Returns the position of the point nearest to that time.
-        /// This is used by linear kinematics.
+        /// This is used for moving coordinate systems.
         /// </summary>
-        public PointF GetLocation(ITrackable drawing, string key, long time)
+        public PointF GetPointAtTime(ITrackable drawing, string key, long time)
         {
-            return GetLocation(drawing.Id, key, time);
+            return GetPointAtTime(drawing.Id, key, time);
         }
 
         /// <summary>
         /// Returns the position of the point nearest to that time.
-        /// This is used by linear kinematics.
+        /// This is used for moving coordinate systems.
         /// </summary>
-        public PointF GetLocation(Guid id, string key, long time)
+        public PointF GetPointAtTime(Guid id, string key, long time)
         {
             if (!SanityCheck(id))
                 return PointF.Empty;
 
-            return trackers[id].GetLocation(key, time);
+            return trackers[id].GetPointAtTime(key, time);
         }
 
         public PointF GetReferenceValue(Guid id, string key)
@@ -277,127 +336,12 @@ namespace Kinovea.ScreenManager
             return trackers[id].GetReferenceValue(key);
         }
 
-        /// <summary>
-        /// Collect the data used for spreadsheet export.
-        /// Updates the passed list.
-        /// </summary>
-        public void CollectMeasuredData(Metadata metadata, List<MeasuredDataTimeseries> timelines)
-        {
-            foreach (DrawingTracker tracker in trackers.Values)
-            {
-                AbstractDrawing drawing = metadata.FindDrawing(tracker.ID);
-                if (drawing == null)
-                    continue;
 
-                MeasuredDataTimeseries mdt = new MeasuredDataTimeseries();
-                mdt.Name = drawing.Name;
-                List<long> timestamps = tracker.CollectTimeVector();
-                if (timestamps == null || timestamps.Count == 0)
-                    continue;
-
-                mdt.FirstTimestamp = timestamps[0];
-                Dictionary<string, List<PointF>> dataRaw = tracker.CollectData();
-
-                // Convert the values to the user coordinate system.
-                mdt.Times = timestamps.Select(ts => metadata.GetNumericalTime(ts, TimeType.UserOrigin)).ToList();
-                mdt.Data = new Dictionary<string, List<PointF>>();
-                foreach (var pair in dataRaw)
-                {
-                    // Each item here is the list of positions of this particular point over time.
-                    // We need to convert these pixel locations based on frame time to account for moving coordinate system.
-                    // All points in the object should have exactly the same number of entries, which should also match timestamps.Count.
-                    List<PointF> value = new List<PointF>();
-                    if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
-                    {
-                        int frame = 0;
-                        foreach (var p in pair.Value)
-                        {
-                            long ts = timestamps[frame];
-                            value.Add(metadata.CalibrationHelper.GetPointAtTime(p, ts));
-                            frame++;
-                        }
-                    }
-                    else
-                    {
-                        value = pair.Value;
-                    }
-                    
-                    string name = pair.Key;
-
-                    // For Generic posture drawings the trackable points are always named from their index.
-                    // Query the drawing itself here to get better names.
-                    if (drawing is DrawingGenericPosture)
-                        name = ((DrawingGenericPosture)drawing).GetTrackablePointName(pair.Key);
-                    
-                    mdt.Data.Add(name, value);
-                }
-
-                if (drawing is DrawingAngle drawingAngle)
-                {
-                    //retrieve the angleOptions from drawing
-                    AngleOptions angleOptions = drawingAngle.AngleOptions;
-
-                    //retrieve all trackable points from drawing
-                    Dictionary<string, TrackablePoint> trackablePoints = this.GetTrackablePoints(drawingAngle);
-                    if (trackablePoints == null || trackablePoints.Count != 3) //if the number of tracked points doesn't match, skip the code
-                        continue;
-
-                    //store angle keys
-                    List<string> keys = new List<string>{"o", "a", "b"};
-
-                    //the Timeline data of each key is save to a TrackingTemplate object
-                    Timeline<TrackingTemplate> timelineO = trackablePoints[keys[0]].Timeline;
-                    Timeline<TrackingTemplate> timelineA = trackablePoints[keys[1]].Timeline;
-                    Timeline<TrackingTemplate> timelineB = trackablePoints[keys[2]].Timeline;
-
-                    //lists of TimedPoint samples from the raw timelines is created
-                    List<TimedPoint> samplesO = new List<TimedPoint>();
-                    List<TimedPoint> samplesA = new List<TimedPoint>();
-                    List<TimedPoint> samplesB = new List<TimedPoint>();
-                    //now populate each individual sample with the X & Y coordinates and timestamp with its corresponding entry
-                    foreach (var entry in timelineO.Enumerate())
-                        samplesO.Add(new TimedPoint(entry.Location.X, entry.Location.Y, entry.Time));
-                    foreach (var entry in timelineA.Enumerate())
-                        samplesA.Add(new TimedPoint(entry.Location.X, entry.Location.Y, entry.Time));
-                    foreach (var entry in timelineB.Enumerate())
-                        samplesB.Add(new TimedPoint(entry.Location.X, entry.Location.Y, entry.Time));
-
-                    //create a new FilteredTrajectory for each point and call Initialize with samples and calibration settings
-                    FilteredTrajectory trajO = new FilteredTrajectory();
-                    trajO.Initialize(samplesO, metadata.CalibrationHelper);
-                    FilteredTrajectory trajA = new FilteredTrajectory();
-                    trajA.Initialize(samplesA, metadata.CalibrationHelper);
-                    FilteredTrajectory trajB = new FilteredTrajectory();
-                    trajB.Initialize(samplesB, metadata.CalibrationHelper);
-
-                    //dictionary maps keys to their FilteredTrajectory instances
-                    Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>()
-                    {
-                        {"o", trajO},
-                        {"a", trajA},
-                        {"b", trajB}
-                    };
-
-                    //BuildKinematics is called and an angular position of each frame is calculated
-                    //this returns the exact same angle data that is returned when calling from dedicated angle functions
-                    AngularKinematics angularKinematics = new AngularKinematics();
-                    TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, angleOptions, metadata.CalibrationHelper);
-
-                    //the mdt.AngleValues is populated with the computed angular position values
-                    mdt.AngleValues = new List<float>(tsc.Length);
-                    for (int i = 0; i < tsc.Length; i++)
-                    {
-                        mdt.AngleValues.Add((float)tsc[Kinematics.AngularPosition][i]);
-                    }
-                }
-                timelines.Add(mdt);
-            }
-        }
-
+        #region KVA Serialization
         public void WriteXml(XmlWriter w)
         {
             foreach (DrawingTracker tracker in trackers.Values)
-                WriteTracker(w, tracker.ID);
+                WriteTracker(w, tracker.Id);
         }
 
         public void WriteTracker(XmlWriter w, Guid id)
@@ -406,11 +350,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             DrawingTracker tracker = trackers[id];
-            if (tracker.Empty)
-                return;
-
             w.WriteStartElement("TrackableDrawing");
-            w.WriteAttributeString("id", tracker.ID.ToString());
+            w.WriteAttributeString("id", tracker.Id.ToString());
             tracker.WriteXml(w);
             w.WriteEndElement();
         }
@@ -436,14 +377,15 @@ namespace Kinovea.ScreenManager
             if (r.Name == "TrackableDrawing")
             {
                 DrawingTracker tracker = new DrawingTracker(r, scale, timeMapper);
-                if (trackers.ContainsKey(tracker.ID))
+                if (trackers.ContainsKey(tracker.Id))
                 {
-                    trackers[tracker.ID].Dispose();
-                    trackers[tracker.ID] = tracker;
+                    ForgetTracks(tracker.Id);
+                    trackers[tracker.Id].Dispose();
+                    trackers[tracker.Id] = tracker;
                 }
                 else
                 {
-                    trackers.Add(tracker.ID, tracker);
+                    trackers.Add(tracker.Id, tracker);
                 }
             }
             else
@@ -451,23 +393,150 @@ namespace Kinovea.ScreenManager
                 string unparsed = r.ReadOuterXml();
             }
         }
+        #endregion
+
+        #region Spreadsheet serialization
+        /// <summary>
+        /// Collect the data used for spreadsheet export.
+        /// Updates the passed list.
+        /// </summary>
+        public void CollectMeasuredData(Metadata metadata, List<MeasuredDataTimeseries> timelines)
+        {
+            foreach (DrawingTracker tracker in trackers.Values)
+            {
+                AbstractDrawing drawing = metadata.FindDrawing(tracker.Id);
+                if (drawing == null)
+                    continue;
+
+                if (!IsObjectTrackingInitialized(drawing.Id))
+                    continue;
+
+                MeasuredDataTimeseries mdt = new MeasuredDataTimeseries();
+                mdt.Name = drawing.Name;
+
+                var tracks = tracker.GetTracks();
+                if (tracks == null || tracks.Count == 0)
+                    continue;
+
+                // Get the list of times from the first track.
+                List<TimedPoint> timedPoints = tracks.First().Value.GetTimedPoints();
+                List<long> timestamps = timedPoints.Select(tp => tp.T).ToList();
+                if (timestamps == null || timestamps.Count == 0)
+                    continue;
+
+                // Logic elsewhere should have enforced that the tracks are synchronized. 
+                // Quick sanity check, just to check that we have the same number of entries.
+                bool sane = true;
+                foreach (var pair in tracks.Skip(1))
+                {
+                    if (pair.Value.GetTimedPoints().Count != timestamps.Count)
+                    {
+                        sane = false;
+                        break;
+                    }
+                }
+
+                if (!sane)
+                {
+                    log.ErrorFormat("Tracks desynchronized.");
+                    continue;
+                }
+
+                // From now on assume the tracks are in sync.
+                mdt.FirstTimestamp = timestamps[0];
+                Dictionary<string, List<PointF>> dataRaw = tracker.CollectObjectTrackingData();
+
+                // Convert the values to the user coordinate system.
+                // FIXME: this still go through the conversion manually but now that these points 
+                // are backed by trajectory objects we must already have functions to compute
+                // this elsewhere.
+                mdt.Times = timestamps.Select(ts => metadata.GetNumericalTime(ts, TimeType.UserOrigin)).ToList();
+                mdt.Data = new Dictionary<string, List<PointF>>();
+                foreach (var pair in dataRaw)
+                {
+                    // Each item here is the list of positions of this particular point over time.
+                    // We need to convert these pixel locations based on frame time to account for moving coordinate system.
+                    // All points in the object should have exactly the same number of entries, which should also match timestamps.Count.
+                    List<PointF> value = new List<PointF>();
+                    if (PreferencesManager.PlayerPreferences.ExportSpace == ExportSpace.WorldSpace)
+                    {
+                        int frame = 0;
+                        foreach (var p in pair.Value)
+                        {
+                            long ts = timestamps[frame];
+                            value.Add(metadata.CalibrationHelper.GetPointAtTime(p, ts));
+                            frame++;
+                        }
+                    }
+                    else
+                    {
+                        value = pair.Value;
+                    }
+
+                    string name = pair.Key;
+
+                    // For Generic posture drawings the trackable points are always named from their index.
+                    // Query the drawing itself here to get better names.
+                    if (drawing is DrawingGenericPosture)
+                        name = ((DrawingGenericPosture)drawing).GetTrackablePointName(pair.Key);
+
+                    mdt.Data.Add(name, value);
+                }
+
+                // Special case for angles, add the angle value to the time series.
+                if (drawing is DrawingAngle drawingAngle)
+                {
+                    Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
+                    foreach (var pair in tracks)
+                    {
+                        trajs.Add(pair.Key, pair.Value.FilteredTrajectory);
+                    }
+
+                    AngularKinematics angularKinematics = new AngularKinematics();
+                    TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, drawingAngle.AngleOptions, metadata.CalibrationHelper);
+                    mdt.AngleValues = tsc[Kinematics.AngularPosition].Select(value => (float)value).ToList();
+                }
+
+                timelines.Add(mdt);
+            }
+        }
 
         /// <summary>
         /// Import a drawing tracker from outside.
         /// This is used by non-KVA importers.
         /// </summary>
-        public void ImportTracker(DrawingTracker tracker)
+        public void ImportTracker(DrawingTracker tracker, List<DrawingTrack> tracks)
         {
-            if (trackers.ContainsKey(tracker.ID))
+            if (trackers.ContainsKey(tracker.Id))
             {
-                trackers[tracker.ID].Dispose();
-                trackers[tracker.ID] = tracker;
+                ForgetTracks(tracker.Id);
+                trackers[tracker.Id].Dispose();
+                trackers[tracker.Id] = tracker;
             }
             else
             {
-                trackers.Add(tracker.ID, tracker);
+                trackers.Add(tracker.Id, tracker);
+            }
+
+            // Add track mapping.
+            foreach (var track in tracks)
+            {
+                mapTrackIdToDrawingId.Add(track.Id, tracker.Id);
             }
         }
+        #endregion
+
+
+        /// <summary>
+        /// Forget track objects that are bound to the passed drawing.
+        /// </summary>
+        private void ForgetTracks(Guid id)
+        {
+            mapTrackIdToDrawingId = mapTrackIdToDrawingId
+                .Where(kv => kv.Value != id)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
+
 
         public void LogTrackers()
         {
@@ -483,7 +552,9 @@ namespace Kinovea.ScreenManager
             }
         }
 
-
+        /// <summary>
+        /// Verify that this drawing is assigned to a tracker.
+        /// </summary>
         private bool SanityCheck(Guid id)
         {
             bool contains = trackers.ContainsKey(id);

@@ -22,291 +22,582 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Web.UI;
 using System.Xml;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// The drawing tracker is responsible for storing the timeline of values for each trackable point in the drawing.
-    /// It knows about the drawing it tracks (via ITrackable) and updates it by pushing values directly to it.
-    /// The drawing doesn't know about its tracker, it just raises events when the user changes the point manually.
+    /// The drawing tracker is responsible for updating the position of trackable points in a drawing.
+    /// All trackable drawings must have a DrawingTracker, even if they are never actively tracked.
+    /// This handles both object tracking, camera tracking and no tracking.
+    /// The drawing itself doesn't know about its tracker or bound tracks.
     /// </summary>
     public class DrawingTracker
     {
         #region Properties
 
         /// <summary>
-        /// Returns true if the drawing is currently actively tracked.
-        /// A non tracked drawing can still have entries in its timeline. 
-        /// The position of the point is always the closest entry from the timeline, or a special non-tracked value if the timeline is empty.
+        /// The id of the drawing this tracker is responsible for.
         /// </summary>
-        public bool IsTracking
-        {
-            get { return isTracking; }
-        }
-
-        /// <summary>
-        /// Returns true if there are entries in the timelines.
-        /// </summary>
-        public bool HasData
-        {
-            get { return trackablePoints.Count > 0 && trackablePoints.First().Value.Timeline.HasData(); }
-        }
-
-        public Guid ID
+        public Guid Id
         {
             get { return drawingId; }
         }
 
+        /// <summary>
+        /// Whether the tracker is assigned to a drawing.
+        /// </summary>
         public bool Assigned
         {
             get { return assigned; }
         }
-        public int ContentHash
-        {
-            get
-            {
-                int hash = 0;
-                hash ^= isTracking.GetHashCode();
-                foreach (TrackablePoint point in trackablePoints.Values)
-                    hash ^= point.ContentHash;
 
-                return hash;
-            }
-        }
-        public bool Empty
+        /// <summary>
+        /// Whether object tracking was ever turned on for this drawing.
+        /// If true it should have a list of track ids associated with the trackable points.
+        /// </summary>
+        public bool IsObjectTrackingInitialized
         {
-            get 
-            {
-                foreach (TrackablePoint point in trackablePoints.Values)
-                    if (!point.Empty)
-                        return false;
-
-                return true;
-            }
+            get { return isObjectTrackingInitialized; }
         }
 
-        public Dictionary<string, TrackablePoint> TrackablePoints
+        /// <summary>
+        /// Returns true if the drawing is currently actively tracked.
+        /// </summary>
+        public bool IsCurrentlyTracking
         {
-            get
-            {
-                return trackablePoints;
-            }
+            get { return isCurrentlyTracking; }
         }
+
         #endregion
 
+        #region Members
         private ITrackable drawing;
         private Guid drawingId;
-        private bool isTracking;
         private bool assigned;
+
+        // Tracking mode
+        private bool isObjectTrackingInitialized; 
+        private bool isCurrentlyTracking;
         private long trackingTimestamp;
-        private bool isCameraTracking;
-        private TrackingParameters parameters;
-        private Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
+
+        // Mapping between trackable points and track objects, used for object tacking.
+        private Dictionary<string, DrawingTrack> mapPointToTrack = new Dictionary<string, DrawingTrack>();
+        private Dictionary<Guid, string> mapTrackIdToPoint = new Dictionary<Guid, string>();
+        // Mapping used for non-tracking or camera tracking.
+        private Dictionary<string, TrackablePoint2> trackablePoints2 = new Dictionary<string, TrackablePoint2>();
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
+
+        #region Creation and Assignation
 
         /// <summary>
         /// Create a tracker for a trackable drawing and register all its points.
+        /// This ctor is called when we first add the drawing interactively (not when loaded via KVA).
+        /// All trackable drawings must have a tracker assigned even if they are never actively tracked.
         /// </summary>
-        public DrawingTracker(ITrackable drawing, TrackingContext context, TrackingParameters parameters)
+        public DrawingTracker(ITrackable drawing, long timestamp)
         {
             this.drawing = drawing;
             this.drawingId = drawing.Id;
-            this.parameters = parameters;
-           
-            foreach(KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
-                trackablePoints.Add(pair.Key, new TrackablePoint(context, parameters, pair.Value));
-            
             drawing.TrackablePointMoved += drawing_TrackablePointMoved;
             assigned = true;
+
+            trackablePoints2.Clear();
+            foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
+            {
+                trackablePoints2.Add(pair.Key, new TrackablePoint2(timestamp, pair.Value));
+            }
         }
 
         /// <summary>
         /// Import data from the outside.
         /// This is used by non-KVA importers.
         /// </summary>
-        public DrawingTracker(ITrackable drawing, Dictionary<string, TrackablePoint> trackablePoints)
+        public DrawingTracker(ITrackable drawing, Dictionary<string, DrawingTrack> tracks)
+            : this(drawing, drawing.ReferenceTimestamp)
         {
-            this.drawing = drawing;
-            this.drawingId = drawing.Id;
-            this.parameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
-            this.trackablePoints = trackablePoints;
-            drawing.TrackablePointMoved += drawing_TrackablePointMoved;
-            assigned = true;
+            InitializeTracking(tracks);
+            isCurrentlyTracking = false;
+        }
+
+        public void Dispose()
+        {
+            // Refactoring 2025-09: since we don't use the trackable points with their 
+            // own tracker inside there is no native data held here anymore.
+
+            if (drawing != null)
+                drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
         }
 
         /// <summary>
-        /// Register the drawing this tracker is responsible for.
+        /// Assign the drawing this tracker is responsible for.
+        /// When we load the KVA, the trackers and drawings are loaded independently.
+        /// Before this point the tracker only knew the drawing id, not the drawing object itself.
+        /// Returns a list of track ids that were bound to the drawing points.
         /// </summary>
-        public void Assign(ITrackable drawing)
+        public List<Guid> Assign(ITrackable drawing, List<DrawingTrack> allTracks)
         {
+            List<Guid> bound = new List<Guid>();
             if (drawing.Id != drawingId)
-                return;
+            {
+                log.Error("Mismatched drawing Id during Assign.");
+                return bound;
+            }
 
             this.drawing = drawing;
             this.drawing.TrackablePointMoved += drawing_TrackablePointMoved;
-            AfterToggleTracking();
             assigned = true;
+
+            trackablePoints2.Clear();
+            foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
+            {
+                trackablePoints2.Add(pair.Key, new TrackablePoint2(drawing.ReferenceTimestamp, pair.Value));
+            }
+
+            if (mapTrackIdToPoint.Count > 0)
+            {
+                if (allTracks == null)
+                {
+                    log.DebugFormat("Tracks not defined.");
+                }
+
+                // Rebuild the map of point to track.
+                mapPointToTrack.Clear();
+                foreach (var pair in mapTrackIdToPoint)
+                {
+                    DrawingTrack track = allTracks.FirstOrDefault(t => t.Id == pair.Key);
+                    if (track != null)
+                    {
+                        mapPointToTrack[pair.Value] = track;
+                        track.PointMoving += drawingTrack_PointMoved;
+                        bound.Add(track.Id);
+                    }
+                    else
+                    {
+                        log.Error("DrawingTracker: could not find track with id " + pair.Key);
+                    }
+                }
+
+                if (mapPointToTrack.Count != mapTrackIdToPoint.Count)
+                {
+                    log.Error("DrawingTracker: some tracks were not found for the drawing.");
+                    mapPointToTrack.Clear();
+                    mapTrackIdToPoint.Clear();
+                    bound.Clear();
+                }
+
+                isObjectTrackingInitialized = true;
+            }
+
+            return bound;
         }
 
         /// <summary>
-        /// Add a new point to an existing tracker.
-        /// This is used for drawings that have a dynamic list of trackable points like polyline.
+        /// Forget which drawing this tracker was assigned to.
+        /// Only called when re-assigning a different drawing.
+        /// Reset everything.
         /// </summary>
-        public void AddPoint(TrackingContext context, TrackingParameters parameters, string key, PointF value)
+        public void Unassign()
         {
-            // Some drawings like polyline have a dynamic list of trackable points.
-            trackablePoints.Add(key, new TrackablePoint(context, parameters, value));
-        }
+            if (!assigned)
+                return;
 
-        /// <summary>
-        /// Remove a point from an existing tracker.
-        /// </summary>
-        public void RemovePoint(string key)
-        {
-            trackablePoints.Remove(key);
+            assigned = false;
+            this.drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
+            isCurrentlyTracking = false;
+            foreach (var track in mapPointToTrack.Values)
+            {
+                track.PointMoving -= drawingTrack_PointMoved;
+            }
+            trackablePoints2.Clear();
         }
 
         /// <summary>
         /// Update the tracker with a new version of the drawing object.
         /// This is used when the drawing is modified by other processes, not by the user nor tracking.
         /// For example when merging a KVA file and the drawing already existed we swap it with 
-        /// the one coming from the new KVA.
+        /// the one coming from the new KVA (ex: coordinate system).
         /// The drawing object itself changed so we re-init everything.
         /// </summary>
-        public void Reinitialize(ITrackable drawing, TrackingContext context, TrackingParameters parameters)
+        public void Reassign(ITrackable drawing, long timestamp)
         {
-            this.drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
+            Unassign();
 
             this.drawing = drawing;
             this.drawingId = drawing.Id;
-            this.parameters = parameters;
-
-            trackablePoints.Clear();
-            foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
-                trackablePoints.Add(pair.Key, new TrackablePoint(context, parameters, pair.Value));
-
             drawing.TrackablePointMoved += drawing_TrackablePointMoved;
             assigned = true;
-        }
 
-        /// <summary>
-        /// Track each trackable points in the current image, or use existing tracking data.
-        /// Update the point coordinate in the drawing.
-        /// </summary>
-        public void Track(TrackingContext context, CameraTransformer cameraTransformer)
-        {
-            // Backup the timestamp in case we move a point manually later.
-            trackingTimestamp = context.Time;
-            isCameraTracking = cameraTransformer.Initialized;
-
-            // This is where we would spawn new threads for each tracking.
-            Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
-            bool atLeastOneInserted = false;
-            foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            trackablePoints2.Clear();
+            foreach (KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
             {
-                bool inserted = pair.Value.Track(context);
-                PointF p = pair.Value.CameraTrack(context, cameraTransformer, drawing.ReferenceTimestamp);
-                drawing.SetTrackablePointValue(pair.Key, p, pair.Value.TimeDifference);
-
-                insertionMap[pair.Key] = inserted;
-                if (inserted)
-                    atLeastOneInserted = true;
+                trackablePoints2.Add(pair.Key, new TrackablePoint2(timestamp, pair.Value));
             }
 
-            if (atLeastOneInserted)
-                FixTimelineSync(insertionMap);
+            // We keep the association with the tracks if any.
+            // So we don't clear the mapPointToTrack and mapTrackIdToPoint.
         }
-        
+
         /// <summary>
-        /// Set this drawing to actively tracking or not.
+        /// Add a new point to an existing tracker.
+        /// Only used during the initial creation of a polyline object.
+        /// </summary>
+        public void AddPoint(string key, long timestamp, PointF value)
+        {
+            trackablePoints2.Add(key, new TrackablePoint2(timestamp, value));
+        }
+
+        /// <summary>
+        /// Remove a point from an existing tracker.
+        /// Only used during the initial creation of a polyline object.
+        /// </summary>
+        public void RemovePoint(string key)
+        {
+            trackablePoints2.Remove(key);
+        }
+        #endregion
+
+        #region Start/Stop object tracking
+
+        /// <summary>
+        /// Turn on tracking for the first time.
+        /// Takes the list of track ids assigned to each point.
+        /// </summary>
+        public void InitializeTracking(Dictionary<string, DrawingTrack> tracks)
+        {
+            // Keep a map of point to track to open/close them when the drawing start/stop tracking.
+            mapPointToTrack = tracks;
+            isObjectTrackingInitialized = true;
+            isCurrentlyTracking = true;
+
+            // Build the reverse map to quickly update points after a track step.
+            mapTrackIdToPoint.Clear();
+            foreach (KeyValuePair<string, DrawingTrack> pair in tracks)
+                mapTrackIdToPoint[pair.Value.Id] = pair.Key;
+
+            // Listen to point moved events from the tracks.
+            foreach (var track in tracks.Values)
+            {
+                track.PointMoving += drawingTrack_PointMoved;
+            }
+
+            // From now on we are never going to inject the non-tracking
+            // or camera tracking values into the drawing, but we still need them
+            // around to store a stable value for KVA serialization.
+            // Otherwise the value in the drawing is constantly changing from frame to frame.
+
+
+            // TODO: for polyline we'll need a way to initialize just the new point
+            // and de-initialize removed points.
+        }
+
+        /// <summary>
+        /// Open/Close this drawing for object tracking.
         /// </summary>
         public void ToggleTracking()
         {
-            isTracking = !isTracking;
-            AfterToggleTracking();
+            if (!isObjectTrackingInitialized)
+            {
+                log.Error("Toggling object tracking on unitialized drawing tracker");
+                return;
+            }
+
+            isCurrentlyTracking = !isCurrentlyTracking;
+
+            foreach (var pair in mapPointToTrack)
+            {
+                if (isCurrentlyTracking)
+                {
+                    pair.Value.StartTracking();
+                }
+                else
+                {
+                    pair.Value.StopTracking();
+                }
+            }
+        }
+        #endregion
+
+        #region Tracking step (on any frame)
+
+        /// <summary>
+        /// Called once per frame before object tracking and camera tracking steps.
+        /// </summary>
+        public void BeforeTrackingStep(long timestamp)
+        {
+            // We are guaranteed to come here at least once per frame, after video decode.
+            // Keep track of the current time in case the user moves a point manually.
+            // We'll need this to establish the reference point for camera tracking.
+            // We also need this for object tracking to calculate how far we are from
+            // the tracked segment.
+            trackingTimestamp = timestamp;
+        }
+
+        /// <summary>
+        /// Object tracking step (once per frame for each trackable point).
+        /// A track referenced by this drawing has finished its tracking step.
+        /// Synchronize the corresponding trackable point with the value in the track.
+        /// </summary>
+        public void ObjectTrackingStep(DrawingTrack track, TimedPoint tp)
+        {
+            //--------------------------------------------------------
+            // Note: the "tracking step" is not only for active tracking,
+            // it runs for every frame, and is where we synchronize the trackable points 
+            // with the underlying track data.
+            //
+            // Threading:
+            // If at least one track is open we run inside a parallel-for and
+            // come here in the tracking thread of a particular track.
+            // Hence multiple tracks of to the same drawing may come here at the same time.
+            //--------------------------------------------------------
+
+            if (!isObjectTrackingInitialized)
+            {
+                // Implementation error.
+                // If this drawing is not using object tracking we shouldn't have a track associated with it.
+                log.Error("DrawingTracker: object tracking is not initialized.");
+                return;
+            }
+
+            if (!mapTrackIdToPoint.ContainsKey(track.Id))
+            {
+                // Implementation error.
+                // If we have activated object tracking we should definitely know about the underlying track.
+                log.Error("DrawingTracker: track is not bound to any of our points.");
+                return;
+            }
+
+            string key = mapTrackIdToPoint[track.Id];
+
+            if (!isCurrentlyTracking)
+            {
+                if (tp != null)
+                {
+                    drawing.SetTrackablePointValue(key, tp.Point, tp.T - trackingTimestamp);
+                }
+                else
+                {
+                    // We shouldn't get here.
+                    // While not open for tracking the track should return whatever point is closest
+                    // and it should always have at least one point from creation.
+                    log.Error("DrawingTracker: No track data.");
+                }
+                
+                return;
+            }
+
+            if (tp == null)
+            {
+                // We are tracking but the tracking failed for some reason.
+                // Fallback to the closest point in the track.
+                // One case of this is stepping backward before the underlying tracks exist.
+                TimedPoint tp2 = track.GetTimedPoint(trackingTimestamp);
+                if (tp2 != null)
+                {
+                    drawing.SetTrackablePointValue(key, tp2.Point, tp2.T - trackingTimestamp);
+                }
+                else
+                {
+                    log.Error("DrawingTracker: No track data.");
+                }
+                
+                return;
+            }
+            else
+            {
+                // Tracking succeeded or we are on a frame where we already had tracking data.
+                drawing.SetTrackablePointValue(key, tp.Point, 0);
+            }
+        }
+
+        /// <summary>
+        /// Camera tracking step (called once per frame, only if camera tracking is active).
+        /// If the drawing is not using object tracking and we have camera motion information, 
+        /// synchronize the trackable points with the current frame motion.
+        /// </summary>
+        public void CameraTrackingStep(CameraTransformer cameraTransformer)
+        {
+            if (isObjectTrackingInitialized)
+            {
+                // Bail out if we have turned on object tracking for this drawing.
+                // The two are incompatible, camera tracking means the object stays static
+                // relative to the background, so the points positions are entirely managed
+                // by the camera transformer.
+                return;
+            }
+                     
+            // Update the drawing based on camera motion data.
+            foreach (var pair in trackablePoints2)
+            {
+                PointF p = pair.Value.CameraTrack(trackingTimestamp, cameraTransformer);
+                drawing.SetTrackablePointValue(pair.Key, p, -1);
+            }
+        }
+        #endregion
+
+        #region Manual placement
+        /// <summary>
+        /// Raised when the user manipulates an opened track (dragging the search area).
+        /// Update the corresponding trackable point in the drawing.
+        /// </summary>
+        private void drawingTrack_PointMoved(object sender, EventArgs<TimedPoint> e)
+        {
+            DrawingTrack drawingTrack = sender as DrawingTrack;
+            if (drawingTrack == null)
+            {
+                return;
+            }
+
+            if (!mapTrackIdToPoint.ContainsKey(drawingTrack.Id))
+            {
+                return;
+            }
+
+            TimedPoint tp = e.Value;
+            if (tp == null)
+            {
+                return;
+            }
+
+            string key = mapTrackIdToPoint[drawingTrack.Id];
+            drawing.SetTrackablePointValue(key, tp.Point, 0);
+        }
+
+        /// <summary>
+        /// Manual adjustment of a trackable point by the user.
+        /// When the user moves the entire drawing or just one point.
+        /// Also when the coordinate system origin is updated by a tracked calibration object.
+        /// </summary>
+        private void drawing_TrackablePointMoved(object sender, TrackablePointMovedEventArgs e)
+        {
+            if (isObjectTrackingInitialized)
+            {
+                if (mapPointToTrack.ContainsKey(e.PointName))
+                {
+                    // For now we don't support moving the object manually if it is tracked.
+                    // The user must turn tracking on and move the tracks.
+                    // TODO.
+                    //DrawingTrack track = mapPointToTrack[e.PointName];
+                }
+                else
+                {
+                    log.Error("DrawingTracker: the point is not bound to a track.");
+                }
+            }
+            else
+            {
+                // Set the new reference position for no-tracking and camera tracking.
+                // Even if we don't have camera tracking active right now, we may have it later,
+                // so we must keep the reference frame up to date. The user is saying that 
+                // the points are over the world elements at this frame.
+
+                if (trackablePoints2.ContainsKey(e.PointName))
+                {
+                    trackablePoints2[e.PointName].SetReferenceValue(trackingTimestamp, e.Position);
+                }
+                else
+                {
+                    log.Error("DrawingTracker: the point is unknown.");
+                }
+            }
+        }
+
+        #endregion
+
+        #region Extracting data
+        /// <summary>
+        /// Returns the coordinates of a point at the reference timestamp.
+        /// Used for storage in KVA fragments.
+        /// </summary>
+        public PointF GetReferenceValue(string key)
+        {
+            if (!trackablePoints2.ContainsKey(key))
+                return PointF.Empty;
+
+            return trackablePoints2[key].ReferenceValue;
+        }
+
+        /// <summary>
+        /// Returns the tracks used in object tracking.
+        /// Used for kinematics diagrams.
+        /// Returns null if the drawing is not doing object tracking.
+        /// </summary>
+        public Dictionary<string, DrawingTrack> GetTracks()
+        {
+            if (!isObjectTrackingInitialized)
+                return null;
+            
+            return mapPointToTrack;
         }
 
         /// <summary>
         /// Returns the position of the point nearest to that time.
-        /// This is used by linear kinematics.
+        /// Used for moving coordinate systems.
+        /// If the drawing is not tracked returns the reference position.
         /// </summary>
-        public PointF GetLocation(string key, long time)
+        public PointF GetPointAtTime(string key, long time)
         {
-            if (!trackablePoints.ContainsKey(key))
-                return PointF.Empty;
-
-            return trackablePoints[key].GetLocation(time);
+            if (isObjectTrackingInitialized)
+            {
+                if (mapPointToTrack.ContainsKey(key))
+                {
+                    return mapPointToTrack[key].GetTimedPoint(time).Point;
+                }
+                else
+                {
+                    return PointF.Empty;
+                }
+            }
+            else
+            {
+                if (trackablePoints2.ContainsKey(key))
+                {
+                    return trackablePoints2[key].ReferenceValue;
+                }
+                else
+                {
+                    return PointF.Empty;
+                }
+            }
         }
 
         /// <summary>
-        /// Returns the position of the point suitable for storage.
-        /// This is the location at the reference time.
+        /// Returns a map of point names to lists of raw 2D pixel coordinates.
+        /// Used for spreadsheet export.
         /// </summary>
-        public PointF GetReferenceValue(string key)
-        {
-            if (!trackablePoints.ContainsKey(key))
-                return PointF.Empty;
-
-            return trackablePoints[key].ReferenceValue;
-        }
-
-        public void Reset()
-        {
-            foreach (TrackablePoint trackablePoint in trackablePoints.Values)
-                trackablePoint.Reset();
-        }
-
-        public void Dispose()
-        {
-            foreach (TrackablePoint trackablePoint in trackablePoints.Values)
-                trackablePoint.Reset();
-                        
-            if (drawing != null)
-                drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
-        }
-
-        /// <summary>
-        /// Returns a single array of all the timestamps.
-        /// </summary>
-        public List<long> CollectTimeVector()
-        {
-            // Internally we keep different time vectors for each trackable point but they are always in sync.
-            if (trackablePoints == null || trackablePoints.Count == 0)
-                return null;
-            
-            KeyValuePair<string, TrackablePoint> pair = trackablePoints.First();
-            Timeline<TrackingTemplate> timeline = pair.Value.Timeline;
-            if (!timeline.HasData() || timeline.Times == null)
-                return null;
-
-            return new List<long>(timeline.Times);
-        }
-
-        /// <summary>
-        /// Returns a dictionary of the trackable points mapping names to list of 2D pixel coordinates.
-        /// </summary>
-        public Dictionary<string, List<PointF>> CollectData()
+        public Dictionary<string, List<PointF>> CollectObjectTrackingData()
         {
             Dictionary<string, List<PointF>> data = new Dictionary<string, List<PointF>>();
-            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            foreach (var pair in mapPointToTrack)
             {
                 string key = pair.Key;
-                List<PointF> values = pair.Value.Timeline.Enumerate().Select(frame => frame.Location).ToList();
+                List<PointF> values = pair.Value.GetTimedPoints().Select(tp => tp.Point).ToList();
                 data.Add(key, values);
             }
 
             return data;
         }
+        #endregion
 
+        #region Serialization
         public void WriteXml(XmlWriter w)
         {
-            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            foreach (KeyValuePair<string, TrackablePoint2> pair in trackablePoints2)
             {
                 w.WriteStartElement("TrackablePoint");
-                w.WriteAttributeString("key", pair.Key.ToString());
-                pair.Value.WriteXml(w);
+                w.WriteAttributeString("key", pair.Key);
+
+                if (isObjectTrackingInitialized && mapPointToTrack.ContainsKey(pair.Key))
+                {
+                    w.WriteElementString("TrackId", mapPointToTrack[pair.Key].Id.ToString());
+                }
+
+                w.WriteElementString("ReferenceTimestamp", pair.Value.ReferenceTimestamp.ToString());
+                w.WriteElementString("ReferenceValue", XmlHelper.WritePointF(pair.Value.ReferenceValue));
                 w.WriteEndElement();
             }
         }
@@ -317,8 +608,6 @@ namespace Kinovea.ScreenManager
 
             if (r.MoveToAttribute("id"))
                 drawingId = new Guid(r.ReadContentAsString());
-
-            isTracking = false;
 
             r.ReadStartElement();
 
@@ -337,107 +626,58 @@ namespace Kinovea.ScreenManager
 
             if (!isEmpty)
                 r.ReadEndElement();
-        }
 
-        public override string ToString()
-        {
-            return string.Format("{0} ({1}), hasData:{2}, tracking:{3}", drawing.Name, drawing.Id, HasData, IsTracking);
-        }
-
-        #region Private
-
-        private void AfterToggleTracking()
-        {
-            Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
-            bool atLeastOneInserted = false;
-
-            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            // At this point we only have the drawing id, not the drawing object itself.
+            // We will later get a call via "Assign()" with the drawing object.
+            // Similarly if we are object-tracking, we only have the track ids and we
+            // will get the actual tracks during Assign().
+            if (mapTrackIdToPoint.Count > 0 && mapTrackIdToPoint.Count != trackablePoints2.Count)
             {
-                bool inserted = pair.Value.SetTracking(isTracking);
-                insertionMap[pair.Key] = inserted;
-                if (inserted)
-                    atLeastOneInserted = true;
-            }
-
-            if (atLeastOneInserted)
-                FixTimelineSync(insertionMap);
-        }
-
-        /// <summary>
-        /// For drawings containing multiple trackable points, make sure that if any one of them 
-        /// successfully tracked by template matching, we have a corresponding data point in the timeline 
-        /// of the other trackable points. 
-        /// Contract: caller must gather that at least one point has tracked, and only call in here if so.
-        /// </summary>
-        private void FixTimelineSync(Dictionary<string, bool> insertionMap)
-        {
-            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
-            {
-                if (insertionMap[pair.Key])
-                    continue;
-
-                // Force insert using closest existing value.
-                pair.Value.ForceInsertClosestLocation();
-                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
-            }
-        }
-
-        private void drawing_TrackablePointMoved(object sender, TrackablePointMovedEventArgs e)
-        {
-            if (!trackablePoints.ContainsKey(e.PointName))
-                throw new ArgumentException("This point is not bound.");
-
-            bool inserted = trackablePoints[e.PointName].SetUserValue(e.Position);
-
-            // This is called when we manually move a point even though the object is not in tracking mode.
-            // In this case we may have added a new entry in the timeline. 
-            // We must ensure the other points have a data point at that time too. 
-            // This is also called programmatically when the origin of the coordinate system is updated for a moving system.
-            if (inserted)
-            {
-                foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
-                {
-                    if (pair.Key == e.PointName)
-                        continue;
-
-                    // Force insert using closest existing value.
-                    pair.Value.ForceInsertClosestLocation();
-                    drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
-                }
-            }
-
-            // Update the object reference timestamp, for camera tracking.
-            // From now on when we paint this object it should be relative to this frame.
-            if (drawing.ReferenceTimestamp != trackingTimestamp)
-            {
-                drawing.ReferenceTimestamp = trackingTimestamp;
-
-                // This means all the points must be commited to their current location on this frame.
-                var sourcePoints = drawing.GetTrackablePoints();
-                foreach (KeyValuePair<string, PointF> sp in sourcePoints)
-                {
-                    if (trackablePoints.ContainsKey(sp.Key))
-                    {
-                        trackablePoints[sp.Key].CommitNonTrackingValue(sp.Value);
-                    }
-                }
+                log.Error("Deserialized drawing tracker has inconsistent trackable points vs track ids.");
             }
         }
 
         private void ParseTrackablePoint(XmlReader r, PointF scale, TimestampMapper timeMapper)
         {
             string key = "";
-
-            bool isEmpty = r.IsEmptyElement;
+            long referenceTimestamp = 0;
+            PointF referenceValue = PointF.Empty;
 
             if (r.MoveToAttribute("key"))
                 key = r.ReadContentAsString();
 
-            TrackablePoint point = new TrackablePoint(r, scale, timeMapper);
-            trackablePoints.Add(key, point);
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "TrackId":
+                        Guid trackId = XmlHelper.ParseGuid(r.ReadElementContentAsString());
+                        mapTrackIdToPoint[trackId] = key;
+                        break;
+                    case "ReferenceTimestamp":
+                        referenceTimestamp = r.ReadElementContentAsLong();
+                        break;
+                    case "ReferenceValue":
+                        referenceValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+
+            TrackablePoint2 point = new TrackablePoint2(referenceTimestamp, referenceValue);
+            trackablePoints2.Add(key, point);
         }
 
-
+        public override string ToString()
+        {
+            return string.Format("{0} ({1}), hasTrackingData:{2}, tracking:{3}", drawing.Name, drawing.Id, IsObjectTrackingInitialized, IsCurrentlyTracking);
+        }
         #endregion
     }
 }

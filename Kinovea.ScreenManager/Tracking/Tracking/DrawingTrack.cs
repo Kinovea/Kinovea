@@ -59,6 +59,11 @@ namespace Kinovea.ScreenManager
         /// Event raised when the tracking status is changed from active to inactive or vice versa.
         /// </summary>
         public event EventHandler TrackingStatusChanged;
+
+        /// <summary>
+        /// Event raised when the user manually moves a point.
+        /// </summary>
+        public event EventHandler<EventArgs<TimedPoint>> PointMoving;
         #endregion
 
         #region Delegates
@@ -78,7 +83,6 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                // Combine all relevant fields with XOR to get the Hash.
                 int hash = 0;
                 hash ^= visibleTimestamp.GetHashCode();
                 hash ^= invisibleTimestamp.GetHashCode();
@@ -222,7 +226,12 @@ namespace Kinovea.ScreenManager
         // Current state.
         private TrackStatus trackStatus = TrackStatus.Interactive;
         private bool isConfiguring = false;
-        private int movingHandler = -1;
+
+        // Handle ids
+        // -1: no hit.
+        // In interactive mode: 0: track, 1: current point on track, 2: main label, 3+: keyframe label.
+        // In config/edit mode: 1: search window, 2-5: search window corners, 6-10: block window corners.
+        private int movingHandler = -1;    
         private bool invalid;                                 // Used for XML import.
         private bool scalingDone;
         private bool isVisible = true;
@@ -238,6 +247,7 @@ namespace Kinovea.ScreenManager
 
         // Internal data.
         private List<TimedPoint> positions = new List<TimedPoint>();
+        private Dictionary<long, int> mapTimestampToIndex = new Dictionary<long, int>();
         private FilteredTrajectory filteredTrajectory = new FilteredTrajectory();
         private TimeSeriesCollection timeSeriesCollection;
         private LinearKinematics linearKinematics = new LinearKinematics();
@@ -332,6 +342,8 @@ namespace Kinovea.ScreenManager
             
             // Add the first point.
             positions.Add(new TimedPoint(p.X, p.Y, start));
+            mapTimestampToIndex.Add(start, 0);
+
             miniLabel.SetAttach(p, true);
 
             // Visibility
@@ -402,7 +414,7 @@ namespace Kinovea.ScreenManager
                 mnuHideAfter });
 
             // Tracking
-            mnuTracking.Image = Properties.Resources.point3_16;
+            mnuTracking.Image = Properties.Drawings.trajectory6;
             mnuTrackingStart.Image = Properties.Drawings.play_green2;
             mnuTrackingStop.Image = Properties.Drawings.stop_16;
             mnuTrackingTrim.Image = Properties.Resources.bin_empty;
@@ -573,6 +585,11 @@ namespace Kinovea.ScreenManager
                 if (isConfiguring)
                 {
                     UpdateBoundingBoxes();
+                }
+                else
+                {
+                    // Immediately update drawings that are bound to the trajectory.
+                    PointMoving?.Invoke(this, new EventArgs<TimedPoint>(positions[hitPointIndex]));
                 }
 
                 return;
@@ -1082,6 +1099,9 @@ namespace Kinovea.ScreenManager
                 // The image will be reseted at mouse up. (=> UpdateTrackPoint)
                 positions[hitPointIndex].X += dx;
                 positions[hitPointIndex].Y += dy;
+
+                // Immediately update drawings that are bound to the trajectory.
+                PointMoving?.Invoke(this, new EventArgs<TimedPoint>(positions[hitPointIndex]));
             }
             else
             {
@@ -1277,7 +1297,6 @@ namespace Kinovea.ScreenManager
 
             host.UpdateFramesMarkers();
 
-            
             InvalidateFromMenu(sender);
         }
         
@@ -1362,6 +1381,9 @@ namespace Kinovea.ScreenManager
 
         #region Tracking
 
+        /// <summary>
+        /// Open or close tracking.
+        /// </summary>
         public void ToggleTracking()
         {
             if (trackStatus == TrackStatus.Interactive)
@@ -1374,6 +1396,9 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Open the tracking. 
+        /// </summary>
         public void StartTracking()
         {
             if (trackStatus == TrackStatus.Edit)
@@ -1385,7 +1410,7 @@ namespace Kinovea.ScreenManager
             TrackingStatusChanged?.Invoke(this, EventArgs.Empty);
         }
         /// <summary>
-        /// Close the tracking. The points are now read only until tracking is started again.
+        /// Close the tracking.
         /// </summary>
         public void StopTracking()
         {
@@ -1410,6 +1435,13 @@ namespace Kinovea.ScreenManager
             drawPointIndex = FindClosestPoint(timestamp);
             if (drawPointIndex < positions.Count - 1)
             {
+                // Keep the reverse map in sync before remove range.
+                for (int i = drawPointIndex + 1; i < positions.Count; i++)
+                {
+                    if (mapTimestampToIndex.ContainsKey(positions[i].T))
+                        mapTimestampToIndex.Remove(positions[i].T);
+                }
+
                 positions.RemoveRange(drawPointIndex + 1, positions.Count - drawPointIndex - 1);
 
                 // Synchronize internal tracker state.
@@ -1426,23 +1458,29 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Perform tracking at the current frame.
+        /// This may be called for frames we have already tracked.
+        /// On new frames it will store the new point in its timeline.
+        /// The returned point can be used to update drawings that are bound to the trajectory.
+        /// May return null for various error cases or if there is a gap in the data.
         /// </summary>
-        public void TrackStep(VideoFrame current, OpenCvSharp.Mat cvImage)
+        public TimedPoint PerformTracking(VideoFrame current, OpenCvSharp.Mat cvImage)
         {
-            // Threading: this runs in a parallel-for.
-
+            //---------------------------------------------
             // Match the previous point in current image.
-            // New points to trajectories are always created from here.
+            // New points to trajectories are always created here and always appended at the end
+            // (unless we reload from KVA).
+            //
+            // Threading: this runs in a parallel-for.
+            //---------------------------------------------
 
             // Retrieve the last tracked point before the passed frame.
             TimedPoint lastTrackedPoint = positions.Last();
 
-            // This should never happen, the trajectory always has at least one point from 
-            // when it's created.
             if (lastTrackedPoint == null)
             {
+                // This should never happen, the trajectory always has at least one point.
                 log.Error("Tracking impossible: trajectory doesn't have a first point.");
-                return;
+                return null;
             }
 
             // Some trackers need the image to draw configuration feedback, 
@@ -1453,7 +1491,14 @@ namespace Kinovea.ScreenManager
             // The track is dense and can only be extended by the end.
             if (current.Timestamp <= lastTrackedPoint.T)
             {
-                return;
+                if (mapTimestampToIndex.ContainsKey(current.Timestamp))
+                {
+                    return positions[mapTimestampToIndex[current.Timestamp]];
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             // Check if the tracker is ready to track.
@@ -1473,10 +1518,11 @@ namespace Kinovea.ScreenManager
             if (tp == null)
             {
                 StopTracking();
-                return;
+                return null;
             }
 
             positions.Add(tp);
+            mapTimestampToIndex.Add(tp.T, positions.Count - 1);
 
             // Do not stop the tracking on matching failure.
             // The tracker should have kept the position the same, we'll just hope to 
@@ -1492,6 +1538,30 @@ namespace Kinovea.ScreenManager
             // 1. we are in tracking mode we don't draw the labels.
             // 2. the mini labels use text measurement which is done in a helper tool 
             // that is not thread safe.
+
+            return tp;
+        }
+
+        /// <summary>
+        /// Get a timed point at the passed timestamp.
+        /// If an exact match is not found, returns the closest point.
+        /// </summary>
+        public TimedPoint GetTimedPoint(long timestamp)
+        {
+            if (mapTimestampToIndex.ContainsKey(timestamp))
+                return positions[mapTimestampToIndex[timestamp]];
+
+            if (timestamp < positions[0].T)
+                return positions[0];
+
+            if (timestamp > positions[positions.Count - 1].T)
+                return positions[positions.Count - 1];
+
+            // We come here in the unsupported scenario of sparse trajectory.
+            // The user closed the track and reopened it somewhere else, and 
+            // we have a gap in the middle.
+            // FIXME: find the closest point and return that.
+            return null;
         }
 
         /// <summary>
@@ -1500,7 +1570,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void UpdateTrackPoint(OpenCvSharp.Mat cvImage, IImageToViewportTransformer transformer)
         {
-            // The coordinate of the point have already been updated during the mouse move.
+            // The coordinates of the point have already been updated during the mouse move.
             if (cvImage == null || positions.Count < 1 || drawPointIndex < 0)
                 return;
 
@@ -1722,32 +1792,12 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             scalingDone = true;
 
-            InitializeTracker(trackingParameters);
-            UpdateBoundingBoxes();
-            
-
-            if (positions.Count > 0)
-            {
-                endTimeStamp = positions.Last().T;
-                miniLabel.SetAttach(positions[0].Point, false);
-                
-                if (positions.Count > 1 ||
-                   positions[0].X != 0 ||
-                   positions[0].Y != 0 ||
-                   positions[0].T != 0)
-                {
-                    invalid = false;
-                }
-            }
-
-            SanityCheckValues();
-
-            // Depending on the order of parsing the main style initialization may have not impacted the mini labels.
-            AfterMainStyleChange();
+            AfterImportXML(trackingParameters);
         }
         public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             positions.Clear();
+            mapTimestampToIndex.Clear();
             tracker.Clear();
             xmlReader.ReadStartElement();
 
@@ -1763,6 +1813,7 @@ namespace Kinovea.ScreenManager
                     float radius = tp.R * scale.X;
                     long time = timestampMapper(tp.T);
                     positions.Add(new TimedPoint(point.X, point.Y, time, radius));
+                    mapTimestampToIndex[time] = positions.Count - 1;
                 }
                 else
                 {
@@ -1809,6 +1860,63 @@ namespace Kinovea.ScreenManager
             visibleTimestamp = Math.Max(visibleTimestamp, 0);
             invisibleTimestamp = Math.Max(invisibleTimestamp, 0);
         }
+        
+        /// <summary>
+        /// Import from non-KVA data.
+        /// </summary>
+        public DrawingTrack(string name, List<TimedPoint> timedPoints, long averageTimeStampsPerFrame, StyleElements styleElements)
+            : this(timedPoints[0].Point, timedPoints[0].T, averageTimeStampsPerFrame)
+        {
+            invalid = true;
+
+            this.name = name;
+
+            // Import the point list.
+            foreach (var tp in timedPoints)
+            {
+                positions.Add(tp);
+                mapTimestampToIndex[tp.T] = positions.Count - 1;
+            }
+
+            // Visibility
+            visibleTimestamp = positions[0].T;
+            invisibleTimestamp = long.MaxValue;
+            beginTimeStamp = positions[0].T;
+            endTimeStamp = positions.Last().T;
+
+            this.styleElements = styleElements;
+            BindStyle();
+
+            TrackingParameters parameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
+            AfterImportXML(parameters);
+        }
+
+        private void AfterImportXML(TrackingParameters trackingParameters)
+        {
+            InitializeTracker(trackingParameters);
+            UpdateBoundingBoxes();
+
+            if (positions.Count > 0)
+            {
+                endTimeStamp = positions.Last().T;
+                miniLabel.SetAttach(positions[0].Point, false);
+
+                if (positions.Count > 1 ||
+                   positions[0].X != 0 ||
+                   positions[0].Y != 0 ||
+                   positions[0].T != 0)
+                {
+                    invalid = false;
+                }
+            }
+
+            SanityCheckValues();
+
+            // Depending on the order of parsing the main style initialization may have not impacted the mini labels.
+            AfterMainStyleChange();
+        }
+        
+        
         #endregion
 
         #region Miscellaneous public methods
@@ -1861,13 +1969,14 @@ namespace Kinovea.ScreenManager
             List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
             filteredTrajectory.Initialize(samples, parentMetadata.CalibrationHelper);
             timeSeriesCollection = linearKinematics.BuildKinematics(filteredTrajectory, parentMetadata.CalibrationHelper);
-            log.DebugFormat("Updated Kinematics for {0}: {1} ms", this.name, stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("Updated Kinematics for {0}: {1} ms.", this.name, stopwatch.ElapsedMilliseconds);
         }
 
         public void Clear()
         {
             tracker.Clear();
             positions.Clear();
+            mapTimestampToIndex.Clear();
             keyframeLabels.Clear();
         }
         
@@ -1993,14 +2102,13 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Extract the track data to a list of timed points.
+        /// Returns the timeline of points.
         /// </summary>
         public List<TimedPoint> GetTimedPoints()
         {
             return positions;
         }
-        
-        
+
         public void SetTrackingAlgorithm(TrackingAlgorithm algorithm)
         {
             if (tracker.Parameters.TrackingAlgorithm == algorithm)

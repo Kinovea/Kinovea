@@ -78,8 +78,10 @@ namespace Kinovea.ScreenManager
 
                 if (drawing is ITrackable)
                 {
+                    // TODO: we should have stored the tracks directly here as well and parse them back.
+                    // For now we just don't delete them in the first place.
                     metadata.TrackabilityManager.ReadTracker(r, identityScale, TimeHelper.IdentityTimestampMapper);
-                    metadata.TrackabilityManager.Assign(drawing as ITrackable);
+                    metadata.TrackabilityManager.Assign(drawing as ITrackable, metadata.Tracks().ToList());
                 }
             }
 
@@ -118,7 +120,7 @@ namespace Kinovea.ScreenManager
                 if (drawing is ITrackable)
                 {
                     metadata.TrackabilityManager.ReadTracker(r, identityScale, TimeHelper.IdentityTimestampMapper);
-                    metadata.TrackabilityManager.Assign(drawing as ITrackable);
+                    metadata.TrackabilityManager.Assign(drawing as ITrackable, metadata.Tracks().ToList());
                 }
             }
         }

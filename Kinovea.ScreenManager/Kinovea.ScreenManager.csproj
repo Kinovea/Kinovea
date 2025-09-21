@@ -365,6 +365,7 @@
     <Compile Include="Exporters\Images\ImageExportFormat.cs" />
     <Compile Include="Exporters\Video\VideoExporter.cs" />
     <Compile Include="Exporters\Video\VideoExportFormat.cs" />
+    <Compile Include="Tracking\Trackability\TrackablePoint2.cs" />
     <Compile Include="Variables\CsvTextFieldParser.cs" />
     <Compile Include="Variables\DynamicPathResolver.cs" />
     <Compile Include="Variables\ContextVariableCategory.cs" />
@@ -819,11 +820,8 @@
     <Compile Include="Metadata\Timeline.cs" />
     <Compile Include="Tracking\Trackability\DrawingTracker.cs" />
     <Compile Include="Tracking\Tracking\TrackingSource.cs" />
-    <Compile Include="Tracking\Trackability\Tracker.cs" />
     <Compile Include="Tracking\Trackability\TrackabilityManager.cs" />
-    <Compile Include="Tracking\Trackability\TrackablePoint.cs" />
     <Compile Include="Tracking\Tracking\TemplateMatching\TrackingTemplate.cs" />
-    <Compile Include="Tracking\Trackability\TrackingContext.cs" />
     <Compile Include="Tracking\Tracking\TemplateMatching\TemplateMatchResult.cs" />
     <Compile Include="Tracking\Tracking\AbstractTracker.cs" />
     <Compile Include="Tracking\Tracking\DrawingTrack.cs" />
@@ -2552,6 +2550,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\sort-right-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trajectory6.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

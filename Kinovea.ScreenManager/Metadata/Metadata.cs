@@ -139,7 +139,6 @@ namespace Kinovea.ScreenManager
             set
             {
                 imageSize = value;
-                trackabilityManager.Initialize(imageSize, cameraTransformer);
                 calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
             }
         }
@@ -302,11 +301,12 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Whether we are currently in the process of tracking objects.
         /// </summary>
-        public bool Tracking
+        public bool AnyTracking
         {
             get
             {
-                return TrackManager.Drawings.Any(t => ((DrawingTrack)t).Status == TrackStatus.Edit) || TrackabilityManager.Tracking;
+                return TrackManager.Drawings.Any(t => ((DrawingTrack)t).Status == TrackStatus.Edit) || 
+                       TrackabilityManager.AnyTracking;
             }
         }
 
@@ -1191,7 +1191,7 @@ namespace Kinovea.ScreenManager
             trackabilityManager.Remove(drawing);
         }
 
-        public void InitializeCommit(VideoFrame videoFrame, PointF point)
+        public void InitializeCommit(long timestamp, PointF point)
         {
             magnifier.InitializeCommit(point);
 
@@ -1206,7 +1206,7 @@ namespace Kinovea.ScreenManager
 
             ITrackable trackable = hitDrawing as ITrackable;
             if (trackable != null)
-                trackabilityManager.AddPoint(trackable, videoFrame, key, point);
+                trackabilityManager.AddPoint(trackable, key, timestamp, point);
         }
         public void InitializeEnd(bool cancelCurrentPoint)
         {
@@ -1477,9 +1477,6 @@ namespace Kinovea.ScreenManager
             string result = string.Format("{0} {1}", cadence, abbr);
             return result;
         }
-
-        
-
         
         public void Close()
         {
@@ -1505,6 +1502,37 @@ namespace Kinovea.ScreenManager
         }
 
         #region Tracking and trajectories
+        public void ToggleTracking(ITrackable trackableDrawing, long timestamp)
+        {
+            if (!TrackabilityManager.IsObjectTrackingInitialized(trackableDrawing.Id))
+            {
+                // Create a track for each trackable point of the drawing.
+                // First time that we ask to track this drawing.
+                // Create the corresponding tracks.
+                var points = trackableDrawing.GetTrackablePoints();
+                List<string> names = points.Keys.ToList();
+                List<PointF> values = points.Values.ToList();
+                Dictionary<string, DrawingTrack> tracks = new Dictionary<string, DrawingTrack>();
+                for (int i = 0; i < names.Count; i++)
+                {
+                    string name = names[i]; 
+                    PointF value = values[i];
+
+                    DrawingTrack track = new DrawingTrack(value, timestamp, averageTimeStampsPerFrame);
+                    track.Status = TrackStatus.Edit;
+                    track.Name = string.Format("{0}.{1}", trackableDrawing.Name, name);
+                    tracks.Add(name, track);
+                    AddTrack(track);
+                }
+
+                TrackabilityManager.InitializeTracking(trackableDrawing, tracks);
+            }
+            else
+            {
+                TrackabilityManager.ToggleTracking(trackableDrawing);
+            }
+
+        }
         public void UpdateTrajectoriesForKeyframes()
         {
             foreach (DrawingTrack t in Tracks())
@@ -1520,6 +1548,10 @@ namespace Kinovea.ScreenManager
             foreach (DrawingText label in Labels())
                 label.SetEditMode(false, PointF.Empty, null);
         }
+
+        /// <summary>
+        /// Perform one track step.
+        /// </summary>
         public void PerformTracking(VideoFrame videoframe)
         {
             using (var cvImage = OpenCvSharp.Extensions.BitmapConverter.ToMat(videoframe.Image))
@@ -1529,7 +1561,16 @@ namespace Kinovea.ScreenManager
                 Parallel.ForEach(tt, t =>
                 {
                     if (t.Status == TrackStatus.Edit)
-                        t.TrackStep(videoframe, cvImage);
+                    {
+                        TimedPoint tp = t.PerformTracking(videoframe, cvImage);
+                        TrackabilityManager.AfterTrackTrackingStep(t, tp);
+                    }
+                    else
+                    {
+                        // Update trackable drawings bound to this track even if not tracking.
+                        TimedPoint tp = t.GetTimedPoint(videoframe.Timestamp);
+                        TrackabilityManager.AfterTrackTrackingStep(t, tp);
+                    }
                 });
             }
         }
@@ -1543,6 +1584,44 @@ namespace Kinovea.ScreenManager
             foreach(DrawingTrack t in Tracks())
                 t.StopTracking();
         }
+
+        /// <summary>
+        /// Update the current timestamp for trackable drawings.
+        /// </summary>
+        public void BeforeTrackingStep(long timestamp)
+        {
+            TrackabilityManager.BeforeTrackingStep(timestamp);
+        }
+
+
+        /// <summary>
+        /// Update all trackable drawings bound to tracks.
+        /// This is called when the we move on the timeline without actively tracking.
+        /// </summary>
+        public void SyncTrackableDrawings(long timestamp)
+        {
+            foreach (DrawingTrack t in Tracks())
+            {
+                if (TrackabilityManager.IsBoundToDrawing(t.Id))
+                {
+                    TimedPoint tp = t.GetTimedPoint(timestamp);
+                    TrackabilityManager.AfterTrackTrackingStep(t, tp);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Synchronize all trackable points of all trackable drawings that are not 
+        /// actively tracking to the camera transform.
+        /// </summary>
+        public void CameraTrackingStep()
+        {
+            if (!cameraTransformer.Initialized)
+                return;
+
+            TrackabilityManager.CameraTrackingStep(cameraTransformer);
+        }
+
         public void UpdateTrackPoint(Bitmap bitmap)
         {
             if (bitmap == null)
@@ -1669,9 +1748,9 @@ namespace Kinovea.ScreenManager
             {
                 trackabilityManager.UpdateId(memoCoordinateSystemId, drawingCoordinateSystem.Id);
             }
-            
+
             foreach (ITrackable drawing in TrackableDrawings())
-                trackabilityManager.Assign(drawing);
+                trackabilityManager.Assign(drawing, Tracks().ToList());
 
             trackabilityManager.CleanUnassigned();
 
@@ -2021,7 +2100,6 @@ namespace Kinovea.ScreenManager
             if (init)
             {
                 calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
-                trackabilityManager.Initialize(imageSize, cameraTransformer);
             }
 
             if (!initialized)
@@ -2054,9 +2132,7 @@ namespace Kinovea.ScreenManager
 
             // By the time we call this function the caller already set up some properties.
             // image level properties: size, aspect, rotation, mirror, demosaicing, deinterlacing, stabil track, background color.
-            
             calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
-            trackabilityManager.Initialize(imageSize, cameraTransformer);
 
             foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
                 AfterDrawingCreation(d, 0);
@@ -2318,7 +2394,6 @@ namespace Kinovea.ScreenManager
 
             // Drawings
             hash ^= calibrationHelper.ContentHash;
-            hash ^= trackabilityManager.ContentHash;
             hash ^= GetKeyframesContentHash();
             hash ^= GetDetachedDrawingsContentHash();
             hash ^= GetSingletonDrawingsContentHash();
@@ -2529,7 +2604,7 @@ namespace Kinovea.ScreenManager
 
             // When using CalibrationLine and a tracked coordinate system,
             // this function retrieves the coordinates origin based on the specified time.
-            return trackabilityManager.GetLocation(drawingCoordinateSystem, "0", time);
+            return trackabilityManager.GetPointAtTime(drawingCoordinateSystem, "0", time);
         }
 
         /// <summary>
@@ -2550,17 +2625,17 @@ namespace Kinovea.ScreenManager
             if (calibratorType == CalibratorType.Plane)
             {
                 // Get the corners of the quad.
-                PointF a = trackabilityManager.GetLocation(calibrationDrawingId, "0", time);
-                PointF b = trackabilityManager.GetLocation(calibrationDrawingId, "1", time);
-                PointF c = trackabilityManager.GetLocation(calibrationDrawingId, "2", time);
-                PointF d = trackabilityManager.GetLocation(calibrationDrawingId, "3", time);
+                PointF a = trackabilityManager.GetPointAtTime(calibrationDrawingId, "0", time);
+                PointF b = trackabilityManager.GetPointAtTime(calibrationDrawingId, "1", time);
+                PointF c = trackabilityManager.GetPointAtTime(calibrationDrawingId, "2", time);
+                PointF d = trackabilityManager.GetPointAtTime(calibrationDrawingId, "3", time);
 
                 quadImage = new QuadrilateralF(a, b, c, d);
             }
             else
             {
-                PointF a = trackabilityManager.GetLocation(calibrationDrawingId, "a", time);
-                PointF b = trackabilityManager.GetLocation(calibrationDrawingId, "b", time);
+                PointF a = trackabilityManager.GetPointAtTime(calibrationDrawingId, "a", time);
+                PointF b = trackabilityManager.GetPointAtTime(calibrationDrawingId, "b", time);
 
                 // Create a fake quad just to transport the segment.
                 // This will be turned into a real quad based on the calibration axis in the caller.
@@ -2572,7 +2647,7 @@ namespace Kinovea.ScreenManager
 
         private bool HasTrackingData(Guid id)
         {
-            return trackabilityManager.HasData(id);
+            return trackabilityManager.IsObjectTrackingInitialized(id);
         }
 
         private void CreateVideoFilters()

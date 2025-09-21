@@ -148,7 +148,16 @@ namespace Kinovea.ScreenManager
         public override int GetHashCode()
         {
             int hash = 0;
-            hash ^= background.Rectangle.Location.GetHashCode();
+
+            // Use the relative position for the content hash.
+            // Otherwise when the main minilabel of a track is moved around to 
+            // follow the current point we become dirty without actually changing anything.
+            PointF p = background.Rectangle.Location;
+            float dx = p.X - this.attachLocation.X;
+            float dy = p.Y - this.attachLocation.Y;
+            hash ^= dx.GetHashCode();
+            hash ^= dy.GetHashCode();
+
             hash ^= styleData.ContentHash;
             return hash;
         }

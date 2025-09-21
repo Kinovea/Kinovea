@@ -110,6 +110,9 @@ namespace Kinovea.Camera
 
             try
             {
+                FileVersionInfo fileInfo = FileVersionInfo.GetVersionInfo(assemblyFile);
+                log.DebugFormat("Loading camera plugin: {0} version: {1}", info.AssemblyName, fileInfo.FileVersion);
+
                 // LoadFrom is problematic on many systems for assemblies downloaded from the Internet.
                 // Loading into a different AppDomain is not really possible, the code is too tightly coupled for perfs.
                 Assembly a = Assembly.LoadFrom(assemblyFile);
@@ -286,7 +289,6 @@ namespace Kinovea.Camera
         /// </summary>
         public static long DiscoveryStep()
         {
-            log.Debug("Camera discovery step.");
             Stopwatch stopwatch = new Stopwatch();
             IEnumerable<CameraBlurb> cameraBlurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
 
