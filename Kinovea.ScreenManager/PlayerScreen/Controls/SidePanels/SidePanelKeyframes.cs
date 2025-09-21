@@ -102,11 +102,11 @@ namespace Kinovea.ScreenManager
             Stopwatch sw = Stopwatch.StartNew();
 
             flowKeyframes.SuspendLayout();
-
+            kfcbs.Clear();
+            
             if (parentMetadata == null)
             {
                 // Hide all the controls.
-                kfcbs.Clear();
                 for (int i = 0; i < flowKeyframes.Controls.Count; ++i)
                 {
                     flowKeyframes.Controls[i].Visible = false;
@@ -119,10 +119,12 @@ namespace Kinovea.ScreenManager
             var keyframes = parentMetadata.Keyframes;
             for (int i = 0; i < keyframes.Count; i++)
             {
+                ControlKeyframe kfb;
+                
                 // Add a control if needed.
                 if (flowKeyframes.Controls.Count < i + 1)
                 {
-                    ControlKeyframe kfb = new ControlKeyframe();
+                    kfb = new ControlKeyframe();
                     kfb.SetKeyframe(parentMetadata, keyframes[i]);
                     kfb.Selected += (s, e) => KeyframeSelected?.Invoke(s, e);
                     kfb.Updated += (s, e) => KeyframeUpdated?.Invoke(s, e);
@@ -140,16 +142,19 @@ namespace Kinovea.ScreenManager
                         kfb.Dock = DockStyle.Fill;
                     
                     flowKeyframes.Controls.Add(kfb);
+                    kfcbs.Add(keyframes[i].Id, kfb);
                     continue;
                 }
 
                 // Replace the keyframe in that control if needed.
-                var oldBox = flowKeyframes.Controls[i] as ControlKeyframe;
-                if (oldBox.Keyframe.Id != keyframes[i].Id)
+                kfb = flowKeyframes.Controls[i] as ControlKeyframe;
+                if (kfb.Keyframe.Id != keyframes[i].Id)
                 {
-                    oldBox.SetKeyframe(parentMetadata, keyframes[i]);
-                    oldBox.Visible = true;
+                    kfb.SetKeyframe(parentMetadata, keyframes[i]);
+                    kfb.Visible = true;
                 }
+
+                kfcbs.Add(keyframes[i].Id, kfb);
             }
 
             // Hide leftover controls.
@@ -160,17 +165,6 @@ namespace Kinovea.ScreenManager
             }
 
             log.DebugFormat("Organized {0} keyframes in {1} ms.", keyframes.Count, sw.ElapsedMilliseconds);
-
-            // Keep our dict in sync.
-            kfcbs.Clear();
-            for (int i = 0; i < flowKeyframes.Controls.Count; ++i)
-            {
-                var kfcb = flowKeyframes.Controls[i] as ControlKeyframe;
-                if (kfcb.Visible)
-                {
-                    kfcbs.Add(kfcb.Keyframe.Id, kfcb);
-                }
-            }
 
             flowKeyframes.ResumeLayout();
         }
