@@ -408,9 +408,9 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuVisibilityConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTracking = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDrawingTrackingConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTrackingStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTrackingStop = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDrawingTrackingDeleteTracks = new ToolStripMenuItem();
         private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
         private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
         private ToolStripSeparator mnuSepDrawing3 = new ToolStripSeparator();
@@ -1359,15 +1359,16 @@ namespace Kinovea.ScreenManager
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 
             mnuDrawingTracking.Image = Drawings.trajectory6;
-            mnuDrawingTrackingConfigure.Image = Drawings.configure;
             mnuDrawingTrackingStart.Image = Drawings.play_green2;
             mnuDrawingTrackingStop.Image = Drawings.stop_16;
-            mnuDrawingTrackingConfigure.Click += mnuDrawingTrackingConfigure_Click;
+            mnuDrawingTrackingDeleteTracks.Image = Drawings.delete;
             mnuDrawingTrackingStart.Click += mnuDrawingTrackingToggle_Click;
             mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
+            mnuDrawingTrackingDeleteTracks.Click += mnuDrawingTrackingDeleteTracks_Click;
             mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuDrawingTrackingStart,
-                mnuDrawingTrackingStop
+                mnuDrawingTrackingStop,
+                mnuDrawingTrackingDeleteTracks
             });
 
             mnuCutDrawing.Click += new EventHandler(mnuCutDrawing_Click);
@@ -3090,7 +3091,7 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
 
             mnuDrawingTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
-            mnuDrawingTrackingConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+            mnuDrawingTrackingDeleteTracks.Text = "Delete tracks";
             mnuDrawingTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
             mnuDrawingTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
 
@@ -5336,9 +5337,14 @@ namespace Kinovea.ScreenManager
             RefreshImage();
         }
 
-        private void mnuDrawingTrackingConfigure_Click(object sender, EventArgs e)
+        private void mnuDrawingTrackingDeleteTracks_Click(object sender, EventArgs e)
         {
+            ITrackable drawing = m_FrameServer.Metadata.HitDrawing as ITrackable;
+            if (drawing == null)
+                return;
 
+            m_FrameServer.Metadata.DeleteAttachedTracks(drawing);
+            RefreshImage();
         }
 
         private void mnuCutDrawing_Click(object sender, EventArgs e)

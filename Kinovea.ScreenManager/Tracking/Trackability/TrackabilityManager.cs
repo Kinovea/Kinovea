@@ -273,7 +273,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public bool IsBoundToDrawing(Guid trackId)
+        /// <summary>
+        /// Returns true if the track is bound to any drawing.
+        /// </summary>
+        public bool IsTrackBoundToAnyDrawing(Guid trackId)
         {
             return mapTrackIdToDrawingId.ContainsKey(trackId);
         }
@@ -321,7 +324,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Returns the list of tracks backing the trackable points for the drawing.
-        /// This is used by the kinematics diagrams.
+        /// This is used by the kinematics diagrams and for batch manipulation of tracks via the drawing menus.
         /// </summary>
         public Dictionary<string, DrawingTrack> GetTrackingTracks(ITrackable drawing)
         {
@@ -329,6 +332,18 @@ namespace Kinovea.ScreenManager
                 return null;
 
             return trackers[drawing.Id].GetTracks();
+        }
+
+        /// <summary>
+        /// Turn the drawing back to non-tracking mode.
+        /// </summary>
+        public void DeinitializeTracking(ITrackable drawing)
+        {
+            if (!SanityCheck(drawing.Id))
+                return;
+
+            // At this point it shouldn't have any bound tracks.
+            trackers[drawing.Id].DeinitializeTracking();
         }
 
         /// <summary>

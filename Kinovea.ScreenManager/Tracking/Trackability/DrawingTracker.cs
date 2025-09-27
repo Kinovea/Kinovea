@@ -316,10 +316,6 @@ namespace Kinovea.ScreenManager
             // or camera tracking values into the drawing, but we still need them
             // around to store a stable value for KVA serialization.
             // Otherwise the value in the drawing is constantly changing from frame to frame.
-
-
-            // TODO: for polyline we'll need a way to initialize just the new point
-            // and de-initialize removed points.
         }
 
         /// <summary>
@@ -368,6 +364,32 @@ namespace Kinovea.ScreenManager
                 mapPointToTrack[key].PointMoving -= drawingTrack_PointMoving;
                 mapPointToTrack.Remove(key);
             }
+        }
+
+        /// <summary>
+        /// Turn the drawing back to non-tracking/camera-tracking mode.
+        /// This is done after all tracks have been unbound already.
+        /// </summary>
+        public void DeinitializeTracking()
+        {
+            if (!isObjectTrackingInitialized)
+            {
+                return;
+            }
+
+            if (mapTrackIdToPoint.Count > 0 || mapPointToTrack.Count > 0)
+            {
+                log.Error("Deinitializing tracking while some tracks are still bound.");
+                foreach (var key in mapTrackIdToPoint.Keys)
+                {
+                    ForgetTrack(key);
+                }
+            }
+
+            isObjectTrackingInitialized = false;
+            isCurrentlyTracking = false;
+            mapPointToTrack.Clear();
+            mapTrackIdToPoint.Clear();
         }
         #endregion
 
@@ -451,7 +473,8 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    log.Error("No track data.");
+                    // The track has a gap in the middle.
+                    //log.Error("No track data.");
                 }
                 
                 return;

@@ -1219,6 +1219,24 @@ namespace Kinovea.ScreenManager
             trackabilityManager.Remove(drawing);
         }
 
+        /// <summary>
+        /// Delete all tracks attached to this drawing.
+        /// </summary>
+        public void DeleteAttachedTracks(ITrackable drawing)
+        {
+            var tracks = trackabilityManager.GetTrackingTracks(drawing);
+            if (tracks == null)
+                return;
+            
+            var trackIds = tracks.Values.Select(t => t.Id).ToList();
+            for (int i = trackIds.Count - 1; i >= 0; i--)
+            {
+                DeleteDrawing(trackManager.Id, trackIds[i]);
+            }
+
+            trackabilityManager.DeinitializeTracking(drawing);
+        }
+
         public void InitializeCommit(long timestamp, PointF point)
         {
             magnifier.InitializeCommit(point);
@@ -1624,7 +1642,7 @@ namespace Kinovea.ScreenManager
             // No need for parallelization here, measured at 0 ms.
             foreach (DrawingTrack t in Tracks())
             {
-                if (TrackabilityManager.IsBoundToDrawing(t.Id))
+                if (TrackabilityManager.IsTrackBoundToAnyDrawing(t.Id))
                 {
                     TimedPoint tp = t.GetTimedPoint(timestamp);
                     TrackabilityManager.AfterTrackTrackingStep(t, tp);
