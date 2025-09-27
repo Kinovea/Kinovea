@@ -27,7 +27,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// <summary>
     /// Helper class to encapsulate the transform between rectified image space and screen space.
-    /// Note : This is not the image to world transform, that one is in Measurement/Calibration/CalibrationHelper.cs.
+    /// Note: This is not the image to world transform, that one is in Measurement/Calibration/CalibrationHelper.cs.
     ///
     /// Rectified image space is based on the original image space but adjusted for aspect ratio, rotation and distortion.
     ///
@@ -114,14 +114,21 @@ namespace Kinovea.ScreenManager
             get { return zoomWindowInDecodedImage; }
         }
 
+        /// <summary>
+        /// True for synchronized superposition, to allow the pan to go out of the image bounds.
+        /// </summary>
         public bool AllowOutOfScreen
         {
             get { return allowOutOfScreen; }
             set { allowOutOfScreen = value; }
         }
+
+        /// <summary>
+        /// Returns a barebone system with no stretch and no zoom, based on current image size. Used for saving.
+        /// </summary>
         public ImageTransform Identity
         {
-            // Return a barebone system with no stretch and no zoom, based on current image size. Used for saving.
+            
             get { return new ImageTransform(referenceSize); }
         }
         #endregion
@@ -138,9 +145,8 @@ namespace Kinovea.ScreenManager
         // Variables used by the paint routine to render the image on the rendering surface.
         private float decodingScale = 1.0f;
         private Rectangle zoomWindowInDecodedImage;
+        private bool allowOutOfScreen = false;
 
-        private bool allowOutOfScreen;
-        private bool forceContain = true;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -226,7 +232,7 @@ namespace Kinovea.ScreenManager
                 newSizeUV.Height * referenceSize.Height
             ).ToRectangle();
 
-            if (contain || forceContain)
+            if (contain || !allowOutOfScreen)
                 directZoomWindow.Location = ConfineZoomWindow(directZoomWindow, referenceSize);
 
             UpdateZoomWindowInDecodedImage();
@@ -236,7 +242,7 @@ namespace Kinovea.ScreenManager
             // Move the zoom window keeping the same zoom factor.
             directZoomWindow.Location = new PointF(directZoomWindow.Left - dx, directZoomWindow.Top - dy).ToPoint();
 
-            if (contain || forceContain)
+            if (contain || !allowOutOfScreen)
                 directZoomWindow.Location = ConfineZoomWindow(directZoomWindow, referenceSize);
 
             UpdateZoomWindowInDecodedImage();
