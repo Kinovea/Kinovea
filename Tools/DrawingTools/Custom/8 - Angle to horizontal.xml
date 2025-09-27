@@ -29,7 +29,7 @@
 
   <!-- Interaction -->
   <Handles>
-    <Handle type="Point" reference="0" trackable="true">
+    <Handle type="Point" reference="0">
       <Constraint type="HorizontalSlide"/>
     </Handle>
     <Handle type="Point" reference="1" trackable="true">
@@ -38,7 +38,7 @@
         <VerticalAlign point="2"/>
       </Impacts>
     </Handle>
-    <Handle type="Point" reference="2" trackable="true">
+    <Handle type="Point" reference="2">
       <Constraint type="HorizontalSlide"/>
     </Handle>
     <Handle type="Point" reference="3" trackable="true"/>
