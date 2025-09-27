@@ -105,6 +105,7 @@ namespace Kinovea.ScreenManager
         // Tracking mode
         private bool isObjectTrackingInitialized; 
         private bool isCurrentlyTracking;
+        private bool togglingTracking;
         private long trackingTimestamp;
 
         // Mapping between trackable points and track objects, used for object tacking.
@@ -333,7 +334,7 @@ namespace Kinovea.ScreenManager
             }
 
             isCurrentlyTracking = !isCurrentlyTracking;
-
+            togglingTracking = true;
             foreach (var pair in mapPointToTrack)
             {
                 if (isCurrentlyTracking)
@@ -345,6 +346,7 @@ namespace Kinovea.ScreenManager
                     pair.Value.StopTracking();
                 }
             }
+            togglingTracking = false;
         }
 
         public void ForgetTrack(Guid id)
@@ -567,7 +569,13 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            // A track bound to this drawing has changed its tracking status.
+            if (togglingTracking)
+            {
+                // We are the ones who toggled the tracking status, ignore this event.
+                return;
+            }
+
+            // A track bound to this drawing has changed its tracking status from the outside.
             // The tracks status can be modified all at once from the drawing context menu
             // or individually from the track context menu or from other events like video end
             // or ESC key, or command to start all tracking.

@@ -1805,9 +1805,6 @@
   <data name="sine_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sine-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="tracking" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\center-of-gravity-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="caliper_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\caliper-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

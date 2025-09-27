@@ -1113,16 +1113,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap track {
-            get {
-                object obj = ResourceManager.GetObject("track", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap track_and_field_16 {
             get {
                 object obj = ResourceManager.GetObject("track_and_field_16", resourceCulture);
@@ -1133,9 +1123,49 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap trackingplay {
+        internal static System.Drawing.Bitmap tracking {
             get {
-                object obj = ResourceManager.GetObject("trackingplay", resourceCulture);
+                object obj = ResourceManager.GetObject("tracking", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tracking_delete {
+            get {
+                object obj = ResourceManager.GetObject("tracking_delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tracking_start {
+            get {
+                object obj = ResourceManager.GetObject("tracking_start", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tracking_stop {
+            get {
+                object obj = ResourceManager.GetObject("tracking_stop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tracking_trim {
+            get {
+                object obj = ResourceManager.GetObject("tracking_trim", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1146,26 +1176,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap trackshape {
             get {
                 object obj = ResourceManager.GetObject("trackshape", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap trackstop {
-            get {
-                object obj = ResourceManager.GetObject("trackstop", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap tracktrim {
-            get {
-                object obj = ResourceManager.GetObject("tracktrim", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1196,16 +1206,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap trajconflabel {
             get {
                 object obj = ResourceManager.GetObject("trajconflabel", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap trajectory6 {
-            get {
-                object obj = ResourceManager.GetObject("trajectory6", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

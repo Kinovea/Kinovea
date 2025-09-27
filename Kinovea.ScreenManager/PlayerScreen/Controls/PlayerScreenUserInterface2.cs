@@ -410,6 +410,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDrawingTracking = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTrackingStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTrackingStop = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDrawingTrackingTrimTracks = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTrackingDeleteTracks = new ToolStripMenuItem();
         private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
         private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
@@ -1293,7 +1294,7 @@ namespace Kinovea.ScreenManager
 
             // Background context menu.
             mnuTimeOrigin.Image = Properties.Resources.marker;
-            mnuDirectTrack.Image = Properties.Drawings.trajectory6;
+            mnuDirectTrack.Image = Properties.Drawings.tracking;
             mnuBackground.Image = Properties.Resources.shading;
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
             mnuPastePic.Image = Properties.Drawings.paste;
@@ -1358,16 +1359,20 @@ namespace Kinovea.ScreenManager
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 
-            mnuDrawingTracking.Image = Drawings.trajectory6;
-            mnuDrawingTrackingStart.Image = Drawings.play_green2;
-            mnuDrawingTrackingStop.Image = Drawings.stop_16;
-            mnuDrawingTrackingDeleteTracks.Image = Drawings.delete;
+            mnuDrawingTracking.Image = Drawings.tracking;
+            mnuDrawingTrackingStart.Image = Drawings.tracking_start;
+            mnuDrawingTrackingStop.Image = Drawings.tracking_stop;
+            mnuDrawingTrackingTrimTracks.Image = Drawings.tracking_trim;
+            mnuDrawingTrackingDeleteTracks.Image = Drawings.tracking_delete;
             mnuDrawingTrackingStart.Click += mnuDrawingTrackingToggle_Click;
             mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
+            mnuDrawingTrackingTrimTracks.Click += mnuDrawingTrackingTrimTracks_Click;
             mnuDrawingTrackingDeleteTracks.Click += mnuDrawingTrackingDeleteTracks_Click;
             mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuDrawingTrackingStart,
                 mnuDrawingTrackingStop,
+                new ToolStripSeparator(),
+                mnuDrawingTrackingTrimTracks,
                 mnuDrawingTrackingDeleteTracks
             });
 
@@ -1388,7 +1393,7 @@ namespace Kinovea.ScreenManager
             mnuMagnifierFreeze.Click += mnuMagnifierFreeze_Click;
             mnuMagnifierFreeze.Image = Properties.Resources.image;
             mnuMagnifierTrack.Click += mnuMagnifierTrack_Click;
-            mnuMagnifierTrack.Image = Properties.Drawings.trajectory6;
+            mnuMagnifierTrack.Image = Properties.Drawings.tracking;
             mnuMagnifierDirect.Click += mnuMagnifierDirect_Click;
             mnuMagnifierDirect.Image = Properties.Resources.expand_16;
             mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;
@@ -3091,6 +3096,7 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
 
             mnuDrawingTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
+            mnuDrawingTrackingTrimTracks.Text = "Delete tracks after this point";
             mnuDrawingTrackingDeleteTracks.Text = "Delete tracks";
             mnuDrawingTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
             mnuDrawingTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
@@ -3739,9 +3745,12 @@ namespace Kinovea.ScreenManager
 
             if ((drawing.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
             {
-                bool tracked = ToggleTrackingCommand.CurrentState(drawing);
-                mnuDrawingTrackingStart.Visible = !tracked;
-                mnuDrawingTrackingStop.Visible = tracked;
+                bool isObjectTrackingInitialized = m_FrameServer.Metadata.TrackabilityManager.IsObjectTrackingInitialized(drawing.Id);
+                bool isTracking = m_FrameServer.Metadata.TrackabilityManager.IsTracking(drawing as ITrackable);
+                mnuDrawingTrackingStart.Visible = !isTracking;
+                mnuDrawingTrackingStop.Visible = isTracking;
+                mnuDrawingTrackingTrimTracks.Enabled = isObjectTrackingInitialized;
+                mnuDrawingTrackingDeleteTracks.Enabled = isObjectTrackingInitialized;
                 popMenu.Items.Add(mnuDrawingTracking);
             }
         }
@@ -5337,6 +5346,17 @@ namespace Kinovea.ScreenManager
             RefreshImage();
         }
 
+        private void mnuDrawingTrackingTrimTracks_Click(object sender, EventArgs e)
+        {
+            ITrackable drawing = m_FrameServer.Metadata.HitDrawing as ITrackable;
+            if (drawing == null)
+                return;
+
+            m_FrameServer.Metadata.TrimAttachedTracks(drawing, m_iCurrentPosition);
+            UpdateFramesMarkers();
+            RefreshImage();
+        }
+
         private void mnuDrawingTrackingDeleteTracks_Click(object sender, EventArgs e)
         {
             ITrackable drawing = m_FrameServer.Metadata.HitDrawing as ITrackable;
@@ -5344,6 +5364,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             m_FrameServer.Metadata.DeleteAttachedTracks(drawing);
+            UpdateFramesMarkers();
             RefreshImage();
         }
 

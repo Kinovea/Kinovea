@@ -91,6 +91,8 @@ namespace Kinovea.ScreenManager
 
             btnStartStop.Image = Properties.Drawings.play_green2;
             btnStartStop.ImageAlign = ContentAlignment.MiddleLeft;
+
+            btnTrimTrack.Image = Properties.Drawings.tracking_trim;
         }
         #endregion
 
@@ -313,7 +315,7 @@ namespace Kinovea.ScreenManager
         {
             if (track != null)
             {
-                btnStartStop.Image = track.Status == TrackStatus.Interactive ? Properties.Drawings.play_green2 : Properties.Drawings.stop_16;
+                btnStartStop.Image = track.Status == TrackStatus.Interactive ? Properties.Drawings.tracking_start : Properties.Drawings.tracking_stop;
                 btnStartStop.Text = track.Status == TrackStatus.Interactive ? "Start tracking" : "Stop tracking";
             }
         }

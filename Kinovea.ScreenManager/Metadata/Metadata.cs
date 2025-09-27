@@ -1219,6 +1219,18 @@ namespace Kinovea.ScreenManager
             trackabilityManager.Remove(drawing);
         }
 
+        public void TrimAttachedTracks(ITrackable drawing, long timestamp)
+        {
+            var tracks = trackabilityManager.GetTrackingTracks(drawing);
+            if (tracks == null)
+                return;
+
+            foreach (var track in tracks.Values)
+            {
+                track.Trim(timestamp);
+            }
+        }
+
         /// <summary>
         /// Delete all tracks attached to this drawing.
         /// </summary>

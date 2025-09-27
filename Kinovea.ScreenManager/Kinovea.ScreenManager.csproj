@@ -2553,6 +2553,21 @@
   <ItemGroup>
     <None Include="Resources\trajectory6.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tracking_stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tracking_trim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tracking.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tracking_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tracking_start.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

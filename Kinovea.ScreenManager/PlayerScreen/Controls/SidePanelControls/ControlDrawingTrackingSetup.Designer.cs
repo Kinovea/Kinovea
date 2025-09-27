@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnTrimTrack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.btnTrimTrack.ForeColor = System.Drawing.Color.Black;
-      this.btnTrimTrack.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
+      this.btnTrimTrack.Image = global::Kinovea.ScreenManager.Properties.Drawings.tracking_trim;
       this.btnTrimTrack.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnTrimTrack.Location = new System.Drawing.Point(28, 213);
       this.btnTrimTrack.Name = "btnTrimTrack";
