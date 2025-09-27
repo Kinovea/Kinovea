@@ -307,9 +307,20 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
-            List<string> csv = GetCSV();
-            if (csv.Count > 1)
-                File.WriteAllLines(saveFileDialog.FileName, csv);
+            try
+            {
+                List<string> csv = GetCSV();
+                if (csv.Count > 1)
+                    File.WriteAllLines(saveFileDialog.FileName, csv);
+            }
+            catch (IOException ioException)
+            {
+                MessageBox.Show(string.Format(ioException.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch
+            {
+                // Other error.
+            }
         }
 
         private List<string> GetCSV()
