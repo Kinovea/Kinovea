@@ -34,7 +34,6 @@ Project:
 - Twitter: @Kinovea
 - Instagram: @kinovea
 
-
 Changelog:
 ----------
 
@@ -56,7 +55,7 @@ Changelog:
     Improved - General: ability to quickly restart closed windows.
     Improved - General: ability to start, stop and delete older windows.
     Improved - General: improved performance of application startup and detecting cameras.
-    Improved - General: dual screen mode can now be in vertical layout.
+    Improved - General: option to have dual screens in a vertical layout.
     Improved - General: irrelevant or confusing entries are now filtered out from the folder tree view.
     Improved - General: improved folder tree view presentation.
     Improved - Browser: improved performances of thumbnails view.
@@ -64,10 +63,11 @@ Changelog:
     Improved - Browser: improved thumbnails layout.
     Improved - Browser: status bar now shows the folder being browsed.
     Improved - Player: continue playback after a jump if we were playing.
+    Improved - Player: option to disable bilinear filtering.
     Improved - Player: show the full path to the video in the tooltip of the infobar.
     Improved - Player: remember the state of the key image panel at the bottom between sessions.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
-    Improved - Annotations: button to toggle the side panel visibility.
+    Improved - Annotations: button to toggle the annotation pane.
     Improved - Annotations: improved performances of annotation pane and bottom panel for large number of key images.
     Improved - Annotations: improved user interface of key image cards in the key image tab.
     Improved - Annotations: key image tab now defaults to only show key images that are inside the working zone.
@@ -78,14 +78,14 @@ Changelog:
     Improved - Annotations: angle tool now has an option to show the full circle.
     Improved - Annotations: support custom font size in drawings with mini labels (arrow variants, circle, marker, line variants, time segment).
     Improved - Annotations: better track style options.
-    Improved - Annotations: label tool can now show a circle instead of an arrow.
+    Improved - Annotations: label tool can now show a circle at the end.
     Improved - Annotations: label tool supports changing the line size independently of the font size.
     Improved - Annotations: default KVA paths can use custom variables.
     Improved - Tracking: object tracking in now performed in parallel.
     Improved - Tracking: kinematics calculations are now done in parallel.
-    Improved - Tracking: use of parabolic fit for refinement in template matching algorithm.
-    Improved - Tracking: tracking drawings overhaul, now uses tracks to implement tracking.
-    Improved - Tracking: improved performance of tracks when using camera tracking.
+    Improved - Tracking: use of parabolic fit for position refinement in template matching algorithm.
+    Improved - Tracking: trackable drawings overhaul, now uses tracks to implement tracking.
+    Improved - Tracking: improved performance of tracks rendering when using camera tracking.
     Improved - Tracking: new command to start all trackers at once.
     Improved - Tracking: in camera motion estimation mode automatically create masks from rectangle objects.
     Improved - Export: restored the export of trajectories to text in GnuPlot format.

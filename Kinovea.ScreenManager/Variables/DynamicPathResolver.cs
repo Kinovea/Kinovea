@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using Kinovea.Services;
+using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
@@ -120,33 +121,51 @@ namespace Kinovea.ScreenManager
                 hasEmbeddedDirectory = true;
 
             string previous = hasEmbeddedDirectory ? Path.GetFileName(previousWithoutExtension) : previousWithoutExtension;
-
-            // Find all numbers in the name, if any.
-            Regex r = new Regex(@"\d+");
-            MatchCollection mc = r.Matches(previous);
-
             string next = "";
-            if (mc.Count > 0)
+            bool numberFound = false;
+            try
             {
-                // Number(s) found. Increment the last one retaining leading zeroes.
-                // Note that the parameter passed in is without extension, to avoid incrementing "mp4" for example.
-                Match m = mc[mc.Count - 1];
-                int value = int.Parse(m.Value);
-                value++;
+                // Find all numbers in the name, if any.
+                Regex r = new Regex(@"\d+");
+                MatchCollection mc = r.Matches(previous);
+                
+                if (mc.Count > 0)
+                {
+                    // Number(s) found. Increment the last one retaining leading zeroes.
+                    // Note that the parameter passed in is without extension, to avoid incrementing "mp4" for example.
+                    Match m = mc[mc.Count - 1];
 
-                string token = value.ToString().PadLeft(m.Value.Length, '0');
+                    int value;
+                    bool parsed = int.TryParse(m.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out value);
+                    if (parsed)
+                    {
+                        value++;
+                        string token = value.ToString().PadLeft(m.Value.Length, '0');
 
-                // Replace the number in the original.
-                next = r.Replace(previous, token, 1, m.Index);
+                        // Replace the number in the original.
+                        next = r.Replace(previous, token, 1, m.Index);
+                        numberFound = true;
+                    }
+                    else
+                    {
+                        log.DebugFormat("Number found but not parseable as 32 bit integer");
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // No number found, add suffix.
+                log.Error("Error while computing next filename.", ex);
+            }
+
+            if (!numberFound)
+            {
                 next = string.Format("{0} - 2", previous);
             }
 
             if (hasEmbeddedDirectory)
+            {
                 next = Path.Combine(embeddedDirectory, next);
+            }
 
             return next;
         }
