@@ -48,7 +48,6 @@ namespace Kinovea.Root
         /// </summary>
         private void InitializeComponent()
         {
-      this.chkDeinterlace = new System.Windows.Forms.CheckBox();
       this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
       this.lblWorkingZoneMemory = new System.Windows.Forms.Label();
       this.tabSubPages = new System.Windows.Forms.TabControl();
@@ -58,27 +57,21 @@ namespace Kinovea.Root
       this.btnPlaybackKVA = new System.Windows.Forms.Button();
       this.chkSyncByMotion = new System.Windows.Forms.CheckBox();
       this.chkDetectImageSequences = new System.Windows.Forms.CheckBox();
-      this.chkInteractiveTracker = new System.Windows.Forms.CheckBox();
-      this.cmbImageFormats = new System.Windows.Forms.ComboBox();
-      this.lblImageFormat = new System.Windows.Forms.Label();
       this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
       this.tabMemory = new System.Windows.Forms.TabPage();
       this.cbCacheInTimeline = new System.Windows.Forms.CheckBox();
+      this.tabImage = new System.Windows.Forms.TabPage();
+      this.chkEnablePixelFiltering = new System.Windows.Forms.CheckBox();
+      this.cmbImageFormats = new System.Windows.Forms.ComboBox();
+      this.lblAspectRatio = new System.Windows.Forms.Label();
+      this.chkDeinterlace = new System.Windows.Forms.CheckBox();
+      this.chkInteractiveTracker = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
+      this.tabImage.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // chkDeinterlace
-      // 
-      this.chkDeinterlace.Location = new System.Drawing.Point(23, 193);
-      this.chkDeinterlace.Name = "chkDeinterlace";
-      this.chkDeinterlace.Size = new System.Drawing.Size(369, 20);
-      this.chkDeinterlace.TabIndex = 23;
-      this.chkDeinterlace.Text = "dlgPreferences_DeinterlaceByDefault";
-      this.chkDeinterlace.UseVisualStyleBackColor = true;
-      this.chkDeinterlace.CheckedChanged += new System.EventHandler(this.ChkDeinterlaceCheckedChanged);
       // 
       // trkMemoryBuffer
       // 
@@ -108,6 +101,7 @@ namespace Kinovea.Root
       // 
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabMemory);
+      this.tabSubPages.Controls.Add(this.tabImage);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
       this.tabSubPages.Name = "tabSubPages";
@@ -122,11 +116,7 @@ namespace Kinovea.Root
       this.tabGeneral.Controls.Add(this.btnPlaybackKVA);
       this.tabGeneral.Controls.Add(this.chkSyncByMotion);
       this.tabGeneral.Controls.Add(this.chkDetectImageSequences);
-      this.tabGeneral.Controls.Add(this.chkInteractiveTracker);
-      this.tabGeneral.Controls.Add(this.cmbImageFormats);
-      this.tabGeneral.Controls.Add(this.lblImageFormat);
       this.tabGeneral.Controls.Add(this.chkLockSpeeds);
-      this.tabGeneral.Controls.Add(this.chkDeinterlace);
       this.tabGeneral.Location = new System.Drawing.Point(4, 22);
       this.tabGeneral.Name = "tabGeneral";
       this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
@@ -138,7 +128,7 @@ namespace Kinovea.Root
       // lblPlaybackKVA
       // 
       this.lblPlaybackKVA.AutoSize = true;
-      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 227);
+      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 111);
       this.lblPlaybackKVA.Name = "lblPlaybackKVA";
       this.lblPlaybackKVA.Size = new System.Drawing.Size(121, 13);
       this.lblPlaybackKVA.TabIndex = 61;
@@ -148,7 +138,7 @@ namespace Kinovea.Root
       // 
       this.tbPlaybackKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 225);
+      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 109);
       this.tbPlaybackKVA.Name = "tbPlaybackKVA";
       this.tbPlaybackKVA.Size = new System.Drawing.Size(175, 20);
       this.tbPlaybackKVA.TabIndex = 62;
@@ -163,7 +153,7 @@ namespace Kinovea.Root
       this.btnPlaybackKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnPlaybackKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnPlaybackKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 224);
+      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 108);
       this.btnPlaybackKVA.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnPlaybackKVA.Name = "btnPlaybackKVA";
       this.btnPlaybackKVA.Size = new System.Drawing.Size(20, 20);
@@ -191,34 +181,6 @@ namespace Kinovea.Root
       this.chkDetectImageSequences.Text = "dlgPreferences_DetectImageSequences";
       this.chkDetectImageSequences.UseVisualStyleBackColor = true;
       this.chkDetectImageSequences.CheckedChanged += new System.EventHandler(this.ChkDetectImageSequencesCheckedChanged);
-      // 
-      // chkInteractiveTracker
-      // 
-      this.chkInteractiveTracker.Location = new System.Drawing.Point(23, 106);
-      this.chkInteractiveTracker.Name = "chkInteractiveTracker";
-      this.chkInteractiveTracker.Size = new System.Drawing.Size(369, 20);
-      this.chkInteractiveTracker.TabIndex = 30;
-      this.chkInteractiveTracker.Text = "dlgPreferences_InteractiveFrameTracker";
-      this.chkInteractiveTracker.UseVisualStyleBackColor = true;
-      this.chkInteractiveTracker.CheckedChanged += new System.EventHandler(this.ChkInteractiveTrackerCheckedChanged);
-      // 
-      // cmbImageFormats
-      // 
-      this.cmbImageFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbImageFormats.Location = new System.Drawing.Point(263, 158);
-      this.cmbImageFormats.Name = "cmbImageFormats";
-      this.cmbImageFormats.Size = new System.Drawing.Size(201, 21);
-      this.cmbImageFormats.TabIndex = 29;
-      this.cmbImageFormats.SelectedIndexChanged += new System.EventHandler(this.cmbImageAspectRatio_SelectedIndexChanged);
-      // 
-      // lblImageFormat
-      // 
-      this.lblImageFormat.AutoSize = true;
-      this.lblImageFormat.Location = new System.Drawing.Point(20, 161);
-      this.lblImageFormat.Name = "lblImageFormat";
-      this.lblImageFormat.Size = new System.Drawing.Size(110, 13);
-      this.lblImageFormat.TabIndex = 28;
-      this.lblImageFormat.Text = "Default image format :";
       // 
       // chkLockSpeeds
       // 
@@ -253,6 +215,68 @@ namespace Kinovea.Root
       this.cbCacheInTimeline.UseVisualStyleBackColor = true;
       this.cbCacheInTimeline.CheckedChanged += new System.EventHandler(this.cbCacheInTimeline_CheckedChanged);
       // 
+      // tabImage
+      // 
+      this.tabImage.Controls.Add(this.chkEnablePixelFiltering);
+      this.tabImage.Controls.Add(this.cmbImageFormats);
+      this.tabImage.Controls.Add(this.lblAspectRatio);
+      this.tabImage.Controls.Add(this.chkDeinterlace);
+      this.tabImage.Controls.Add(this.chkInteractiveTracker);
+      this.tabImage.Location = new System.Drawing.Point(4, 22);
+      this.tabImage.Name = "tabImage";
+      this.tabImage.Size = new System.Drawing.Size(482, 296);
+      this.tabImage.TabIndex = 2;
+      this.tabImage.Text = "Image";
+      this.tabImage.UseVisualStyleBackColor = true;
+      // 
+      // chkEnablePixelFiltering
+      // 
+      this.chkEnablePixelFiltering.Location = new System.Drawing.Point(24, 58);
+      this.chkEnablePixelFiltering.Name = "chkEnablePixelFiltering";
+      this.chkEnablePixelFiltering.Size = new System.Drawing.Size(369, 20);
+      this.chkEnablePixelFiltering.TabIndex = 35;
+      this.chkEnablePixelFiltering.Text = "dlgPreferences_EnablePixelFiltering";
+      this.chkEnablePixelFiltering.UseVisualStyleBackColor = true;
+      this.chkEnablePixelFiltering.CheckedChanged += new System.EventHandler(this.chkEnablePixelFiltering_CheckedChanged);
+      // 
+      // cmbImageFormats
+      // 
+      this.cmbImageFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbImageFormats.Location = new System.Drawing.Point(264, 88);
+      this.cmbImageFormats.Name = "cmbImageFormats";
+      this.cmbImageFormats.Size = new System.Drawing.Size(201, 21);
+      this.cmbImageFormats.TabIndex = 34;
+      this.cmbImageFormats.SelectedIndexChanged += new System.EventHandler(this.cmbImageAspectRatio_SelectedIndexChanged);
+      // 
+      // lblAspectRatio
+      // 
+      this.lblAspectRatio.AutoSize = true;
+      this.lblAspectRatio.Location = new System.Drawing.Point(21, 91);
+      this.lblAspectRatio.Name = "lblAspectRatio";
+      this.lblAspectRatio.Size = new System.Drawing.Size(102, 13);
+      this.lblAspectRatio.TabIndex = 33;
+      this.lblAspectRatio.Text = "Default aspect ratio:";
+      // 
+      // chkDeinterlace
+      // 
+      this.chkDeinterlace.Location = new System.Drawing.Point(24, 123);
+      this.chkDeinterlace.Name = "chkDeinterlace";
+      this.chkDeinterlace.Size = new System.Drawing.Size(369, 20);
+      this.chkDeinterlace.TabIndex = 32;
+      this.chkDeinterlace.Text = "dlgPreferences_DeinterlaceByDefault";
+      this.chkDeinterlace.UseVisualStyleBackColor = true;
+      this.chkDeinterlace.CheckedChanged += new System.EventHandler(this.chkDeinterlace_CheckedChanged);
+      // 
+      // chkInteractiveTracker
+      // 
+      this.chkInteractiveTracker.Location = new System.Drawing.Point(24, 32);
+      this.chkInteractiveTracker.Name = "chkInteractiveTracker";
+      this.chkInteractiveTracker.Size = new System.Drawing.Size(369, 20);
+      this.chkInteractiveTracker.TabIndex = 31;
+      this.chkInteractiveTracker.Text = "dlgPreferences_InteractiveFrameTracker";
+      this.chkInteractiveTracker.UseVisualStyleBackColor = true;
+      this.chkInteractiveTracker.CheckedChanged += new System.EventHandler(this.chkInteractiveTracker_CheckedChanged);
+      // 
       // PreferencePanelPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -267,24 +291,28 @@ namespace Kinovea.Root
       this.tabGeneral.PerformLayout();
       this.tabMemory.ResumeLayout(false);
       this.tabMemory.PerformLayout();
+      this.tabImage.ResumeLayout(false);
+      this.tabImage.PerformLayout();
       this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.Label lblImageFormat;
-        private System.Windows.Forms.ComboBox cmbImageFormats;
         private System.Windows.Forms.CheckBox chkLockSpeeds;
         private System.Windows.Forms.TabPage tabMemory;
         private System.Windows.Forms.TabPage tabGeneral;
         private System.Windows.Forms.TabControl tabSubPages;
         private System.Windows.Forms.Label lblWorkingZoneMemory;
         private System.Windows.Forms.TrackBar trkMemoryBuffer;
-        private System.Windows.Forms.CheckBox chkDeinterlace;
-        private System.Windows.Forms.CheckBox chkInteractiveTracker;
         private System.Windows.Forms.CheckBox chkDetectImageSequences;
         private System.Windows.Forms.CheckBox chkSyncByMotion;
         private System.Windows.Forms.Label lblPlaybackKVA;
         private System.Windows.Forms.TextBox tbPlaybackKVA;
         private System.Windows.Forms.Button btnPlaybackKVA;
         private System.Windows.Forms.CheckBox cbCacheInTimeline;
+        private System.Windows.Forms.TabPage tabImage;
+        private System.Windows.Forms.CheckBox chkInteractiveTracker;
+        private System.Windows.Forms.CheckBox chkEnablePixelFiltering;
+        private System.Windows.Forms.ComboBox cmbImageFormats;
+        private System.Windows.Forms.Label lblAspectRatio;
+        private System.Windows.Forms.CheckBox chkDeinterlace;
     }
 }

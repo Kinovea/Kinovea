@@ -362,6 +362,7 @@ namespace Kinovea.ScreenManager
         private bool showDrawings = true;
         private bool drawOnPlay = true;
         private bool defaultFadingEnabled = true;
+        private bool enablePixelFiltering = true;
 
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
@@ -984,9 +985,10 @@ namespace Kinovea.ScreenManager
             showCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
             trkFrame.ShowCacheInTimeline = showCacheInTimeline;
             defaultFadingEnabled = PreferencesManager.PlayerPreferences.DefaultFading.Enabled;
+            enablePixelFiltering = PreferencesManager.PlayerPreferences.EnablePixelFiltering;
 
             // Update default fading for all drawings.
-            
+
 
             // Labels
             lblSelStartSelection.AutoSize = true;
@@ -4169,31 +4171,33 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Metadata.TextEditingInProgress)
                 pbSurfaceScreen.Focus();
         }
+
+        /// <summary>
+        /// Paint the current video frame, synched video frame and drawings.
+        /// Used by the main rendering loop and all image and video export functions.
+        /// </summary>
         private void FlushOnGraphics(Bitmap _sourceImage, Graphics g, Size _renderingSize, int _iKeyFrameIndex, long _iPosition, ImageTransform _transform)
         {
-            // This function is used both by the main rendering loop and by image export functions.
-            // Video export get its image from the VideoReader or the cache.
-
-            // Notes on performances:
+            // Performances:
             // - The global performance depends on the size of the *source* image. Not destination.
-            //   (rendering 1 pixel from an HD source will still be slow)
-            // - Using a matrix transform instead of the buit in interpolation doesn't seem to do much.
-            // - InterpolationMode has a sensible effect. but can look ugly for lowest values.
-            // - Using unmanaged BitBlt or StretchBlt doesn't seem to do much... (!?)
-            // - the scaling and interpolation better be done directly from ffmpeg. (cut on memory usage too)
-            // - furthermore ffmpeg has a mode called 'FastBilinear' that seems more promising.
-            // - Drawing unscaled avoid the interpolation altogether and provide ~8x perfs.
+            //   (rendering 1 pixel from a 4K source will be slow)
+            // What makes the most difference is being able to render the image without scaling.
+            // Using unmanaged BitBlt or StretchBlt doesn't seem to do much, DrawingUnscaled() must already do that.
+            // The scaling better be done directly in ffmpeg, this cuts on memory usage too.
+            // This is why we try to decode the image directly at the rendering size (customDecodingSize).
+            // When rescaling is required:
+            // - Using a matrix transform instead of the buit-in interpolation doesn't seem to do much.
+            // - InterpolationMode has a sensible effect, but nearest neighbor can look bad.
 
             // 1. Image
-            g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+            // Using PixelOffsetMode.Half aligns the pixels as expected.
+            g.InterpolationMode = enablePixelFiltering ? InterpolationMode.Bilinear : InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.Half;
             //g.CompositingQuality = CompositingQuality.HighSpeed;
-            //g.InterpolationMode = InterpolationMode.Bilinear;
-            //g.InterpolationMode = InterpolationMode.NearestNeighbor;
             //g.SmoothingMode = SmoothingMode.None;
 
             m_TimeWatcher.LogTime("Before DrawImage");
 
-            // New.
             Rectangle rDst = new Rectangle(Point.Empty, _renderingSize);
 
             bool drawn = false;
@@ -4255,6 +4259,7 @@ namespace Kinovea.ScreenManager
                     g.FillRectangle(brush, rDst);
             }
 
+            // Drawings.
             if (
                 (showDrawings && m_bIsCurrentlyPlaying && drawOnPlay) ||
                 (showDrawings && !m_bIsCurrentlyPlaying))

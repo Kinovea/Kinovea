@@ -60,17 +60,20 @@ namespace Kinovea.Root
         private Bitmap icon;
         private List<PreferenceTab> tabs = new List<PreferenceTab> { 
             PreferenceTab.Player_General, 
-            PreferenceTab.Player_Memory 
+            PreferenceTab.Player_Memory,
+            PreferenceTab.Player_Image
         };
-        private bool deinterlaceByDefault;
+
         private bool detectImageSequences;
-        private bool interactiveFrameTracker;
-        private ImageAspectRatio imageAspectRatio;
         private bool syncLockSpeeds;
         private bool syncByMotion;
         private int memoryBuffer;
-        private bool showCacheInTimeline;
         private string playbackKVA;
+        private bool showCacheInTimeline;
+        private bool interactiveFrameTracker;
+        private bool enablePixelFiltering;
+        private ImageAspectRatio imageAspectRatio;
+        private bool deinterlaceByDefault;
         #endregion
         
         #region Construction & Initialization
@@ -101,20 +104,22 @@ namespace Kinovea.Root
 
         private void ImportPreferences()
         {
-            deinterlaceByDefault = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;
             detectImageSequences = PreferencesManager.PlayerPreferences.DetectImageSequences;
-            interactiveFrameTracker = PreferencesManager.PlayerPreferences.InteractiveFrameTracker;
-            imageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
-            memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
-            showCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
             playbackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
+            showCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
+            interactiveFrameTracker = PreferencesManager.PlayerPreferences.InteractiveFrameTracker;
+            enablePixelFiltering = PreferencesManager.PlayerPreferences.EnablePixelFiltering;
+            imageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;
+            deinterlaceByDefault = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;
+            memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
         }
         private void InitPage()
         {
             InitPageGeneral();
             InitPageMemory();
+            InitPageImage();
         }
 
         private void InitPageGeneral()
@@ -123,27 +128,15 @@ namespace Kinovea.Root
             chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
             chkSyncByMotion.Text = "Use motion synchronization mode";
-            chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
-
-            // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
-            lblImageFormat.Text = RootLang.dlgPreferences_Player_lblImageFormat;
-            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatAuto);
-            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce43);
-            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce169);
-            
-            chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
 
             chkDetectImageSequences.Checked = detectImageSequences;
             chkLockSpeeds.Checked = syncLockSpeeds;
             chkSyncByMotion.Checked = syncByMotion;
-            chkInteractiveTracker.Checked = interactiveFrameTracker;
-            chkDeinterlace.Checked = deinterlaceByDefault;
+            
             lblPlaybackKVA.Text = RootLang.dlgPreferences_Player_DefaultKVA;
             tbPlaybackKVA.Text = playbackKVA;
 
-            // Select current image format.
-            int selected = (int)imageAspectRatio;
-            cmbImageFormats.SelectedIndex = selected < cmbImageFormats.Items.Count ? selected : 0;
+            
         }
 
         private void InitPageMemory()
@@ -162,14 +155,32 @@ namespace Kinovea.Root
 
             cbCacheInTimeline.Visible = false;
         }
+        
+        private void InitPageImage()
+        {
+            tabImage.Text = "Image";
+
+            chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
+            chkInteractiveTracker.Checked = interactiveFrameTracker;
+
+            chkEnablePixelFiltering.Text = "Enable pixel filtering";
+            chkEnablePixelFiltering.Checked = enablePixelFiltering;
+
+            // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
+            lblAspectRatio.Text = RootLang.dlgPreferences_Player_lblImageFormat;
+            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatAuto);
+            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce43);
+            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce169);
+            int currentAspectIndex = (int)imageAspectRatio;
+            cmbImageFormats.SelectedIndex = currentAspectIndex < cmbImageFormats.Items.Count ? currentAspectIndex : 0;
+
+            chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
+            chkDeinterlace.Checked = deinterlaceByDefault;
+        }
         #endregion
 
         #region Handlers
         #region General
-        private void ChkDeinterlaceCheckedChanged(object sender, EventArgs e)
-        {
-            deinterlaceByDefault = chkDeinterlace.Checked;
-        }
         private void ChkDetectImageSequencesCheckedChanged(object sender, EventArgs e)
         {
             detectImageSequences = chkDetectImageSequences.Checked;
@@ -181,14 +192,6 @@ namespace Kinovea.Root
         private void chkSyncByMotion_CheckedChanged(object sender, EventArgs e)
         {
             syncByMotion = chkSyncByMotion.Checked;
-        }
-        private void ChkInteractiveTrackerCheckedChanged(object sender, EventArgs e)
-        {
-            interactiveFrameTracker = chkInteractiveTracker.Checked;
-        }
-        private void cmbImageAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            imageAspectRatio = (ImageAspectRatio)cmbImageFormats.SelectedIndex;
         }
         private void tbPlaybackKVA_TextChanged(object sender, EventArgs e)
         {
@@ -235,19 +238,42 @@ namespace Kinovea.Root
             showCacheInTimeline = cbCacheInTimeline.Checked;
         }
         #endregion
+
+        #region Image
+        private void chkInteractiveTracker_CheckedChanged(object sender, EventArgs e)
+        {
+            interactiveFrameTracker = chkInteractiveTracker.Checked;
+        }
+        private void chkEnablePixelFiltering_CheckedChanged(object sender, EventArgs e)
+        {
+            enablePixelFiltering = chkEnablePixelFiltering.Checked;
+        }
+        private void cmbImageAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            imageAspectRatio = (ImageAspectRatio)cmbImageFormats.SelectedIndex;
+        }
+        private void chkDeinterlace_CheckedChanged(object sender, EventArgs e)
+        {
+            deinterlaceByDefault = chkDeinterlace.Checked;
+        }
+        #endregion
+
         #endregion
 
         public void CommitChanges()
         {
-            PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
             PreferencesManager.PlayerPreferences.DetectImageSequences = detectImageSequences;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
             PreferencesManager.PlayerPreferences.SyncByMotion = syncByMotion;
-            PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
-            PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
             PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;
-            PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
             PreferencesManager.PlayerPreferences.ShowCacheInTimeline = showCacheInTimeline;
+
+            PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
+
+            PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
+            PreferencesManager.PlayerPreferences.EnablePixelFiltering = enablePixelFiltering;
+            PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
+            PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
         }
     }
 }

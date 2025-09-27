@@ -144,6 +144,13 @@ namespace Kinovea.Services
             get { BeforeRead(); return defaultFading; }
             set { defaultFading = value; Save(); }
         }
+
+        public bool EnablePixelFiltering
+        {
+            get { BeforeRead(); return enablePixelFiltering; }
+            set { enablePixelFiltering = value; Save(); }
+        }
+
         public bool DrawOnPlay
         {
             get { BeforeRead(); return drawOnPlay; }
@@ -260,6 +267,7 @@ namespace Kinovea.Services
         private bool interactiveFrameTracker = true;
         private int workingZoneMemory = 768;
         private InfosFading defaultFading = new InfosFading();
+        private bool enablePixelFiltering = true;
         private bool drawOnPlay = true;
         private List<Color> recentColors = new List<Color>();
         private int maxRecentColors = 12;
@@ -330,8 +338,10 @@ namespace Kinovea.Services
             writer.WriteStartElement("InfoFading");
             defaultFading.WriteXml(writer);
             writer.WriteEndElement();
-            
-            writer.WriteElementString("DrawOnPlay", drawOnPlay ? "true" : "false");
+
+            writer.WriteElementString("EnablePixelFiltering", XmlHelper.WriteBoolean(enablePixelFiltering));
+
+            writer.WriteElementString("DrawOnPlay", XmlHelper.WriteBoolean(drawOnPlay));
             
             if(recentColors.Count > 0)
             {
@@ -353,8 +363,8 @@ namespace Kinovea.Services
             trackingParameters.WriteXml(writer);
             writer.WriteEndElement();
 
-            writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
-            writer.WriteElementString("EnableCustomToolsDebugMode", enableCustomToolsDebugMode ? "true" : "false");
+            writer.WriteElementString("EnableFiltering", XmlHelper.WriteBoolean(enableFiltering));
+            writer.WriteElementString("EnableCustomToolsDebugMode", XmlHelper.WriteBoolean(enableCustomToolsDebugMode));
             writer.WriteElementString("DefaultReplaySpeed", defaultReplaySpeed.ToString("0", CultureInfo.InvariantCulture));
             writer.WriteElementString("DetectImageSequences", XmlHelper.WriteBoolean(detectImageSequences));
             writer.WriteElementString("PreloadKeyframes", preloadKeyframes.ToString());
@@ -456,6 +466,9 @@ namespace Kinovea.Services
                         break;
                     case "InfoFading":
                         defaultFading.ReadXml(reader);
+                        break;
+                    case "EnablePixelFiltering":
+                        enablePixelFiltering = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "DrawOnPlay":
                         drawOnPlay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
