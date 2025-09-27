@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -125,6 +125,21 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// Whether the screens are layout vertically or horizontally.
+        /// </summary>
+        public bool DualScreenVerticalLayout
+        {
+            get { return dualScreenVerticalLayout; }
+            set { dualScreenVerticalLayout = value; }
+        }
+
+        public float DualScreenSplitterRatio
+        {
+            get { return dualScreenSplitterRatio; }
+            set { dualScreenSplitterRatio = value; }
+        }
+
+        /// <summary>
         /// This is a backup of a screen descriptor living in the window
         /// even when the window doesn't have a capture screen.
         /// This is used to backup and restore defaults values.
@@ -154,6 +169,8 @@ namespace Kinovea.Services
         private float explorerFilesSplitterRatio = 0.25f;
         private float shortcutsFilesSplitterRatio = 0.25f;
         private BrowserContentType activeTab = BrowserContentType.Files;
+        private bool dualScreenVerticalLayout = false;
+        private float dualScreenSplitterRatio = 0.5f;
 
         // Backup screen state.
         private ScreenDescriptorCapture screenDescriptorCaptureBackup;
@@ -210,6 +227,8 @@ namespace Kinovea.Services
             writer.WriteElementString("ExplorerFilesSplitterRatio", XmlHelper.WriteFloat(explorerFilesSplitterRatio));
             writer.WriteElementString("ShortcutsFilesSplitterRatio", XmlHelper.WriteFloat(shortcutsFilesSplitterRatio));
             writer.WriteElementString("ActiveTab", activeTab.ToString());
+            writer.WriteElementString("DualScreenVerticalLayout", XmlHelper.WriteBoolean(dualScreenVerticalLayout));
+            writer.WriteElementString("DualScreenSplitterRatio", XmlHelper.WriteFloat(dualScreenSplitterRatio));
 
             if (screenDescriptorCaptureBackup != null)
             {
@@ -266,6 +285,14 @@ namespace Kinovea.Services
                         break;
                     case "ActiveTab":
                         activeTab = XmlHelper.ParseEnum<BrowserContentType>(reader.ReadElementContentAsString(), BrowserContentType.Files);
+                        break;
+                    case "DualScreenVerticalLayout":
+                        dualScreenVerticalLayout = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "DualScreenSplitterRatio":
+                        dualScreenSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        if (dualScreenSplitterRatio <= 0)
+                            dualScreenSplitterRatio = 0.5f;
                         break;
                     case "ScreenDescriptorCaptureBackup":
                         screenDescriptorCaptureBackup = new ScreenDescriptorCapture();

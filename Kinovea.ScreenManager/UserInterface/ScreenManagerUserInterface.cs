@@ -46,6 +46,11 @@ namespace Kinovea.ScreenManager
             get { return !splitScreensPanel.Panel2Collapsed; }
         }
 
+        public bool IsTopBottomLayout
+        {
+            get { return splitScreens.Orientation == Orientation.Horizontal; }
+        }
+
         protected override CreateParams CreateParams
         {
             get
@@ -59,6 +64,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        bool initialized = false;
         private ThumbnailViewerContainer thumbnailViewerContainer = new ThumbnailViewerContainer();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -76,6 +82,12 @@ namespace Kinovea.ScreenManager
             thumbnailViewerContainer.BringToFront();
             pnlScreens.BringToFront();
             pnlScreens.Dock = DockStyle.Fill;
+
+            splitScreens.Orientation = WindowManager.ActiveWindow.DualScreenVerticalLayout ? Orientation.Horizontal : Orientation.Vertical;
+            float num = splitScreens.Orientation == Orientation.Vertical ? splitScreens.Width : splitScreens.Height;
+            splitScreens.SplitterDistance = (int)(num * WindowManager.ActiveWindow.DualScreenSplitterRatio);
+
+            initialized = true;
         }
         
         #region Public methods
@@ -135,6 +147,15 @@ namespace Kinovea.ScreenManager
         public void SetFullScreen(bool isFullScreen)
         {
             thumbnailViewerContainer.SetFullScreen(isFullScreen);
+        }
+        public void ToggleDualScreenOrientation()
+        {
+            float ratio = (float)splitScreens.SplitterDistance / (splitScreens.Orientation == Orientation.Vertical ? splitScreens.Width : splitScreens.Height);
+            splitScreens.Orientation = (splitScreens.Orientation == Orientation.Vertical) ? Orientation.Horizontal : Orientation.Vertical;
+            splitScreens.SplitterDistance = (int)(ratio * (splitScreens.Orientation == Orientation.Vertical ? splitScreens.Width : splitScreens.Height));
+
+            WindowManager.ActiveWindow.DualScreenVerticalLayout = splitScreens.Orientation == Orientation.Horizontal;
+            WindowManager.SaveActiveWindow();
         }
         public string GetBrowserStatusString()
         {
@@ -247,5 +268,15 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+
+        private void splitScreens_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            if (!initialized)
+                return;
+
+            float denom = splitScreens.Orientation == Orientation.Vertical ? splitScreens.Width : splitScreens.Height;
+            WindowManager.ActiveWindow.DualScreenSplitterRatio = (float)splitScreens.SplitterDistance / denom;
+            WindowManager.SaveActiveWindow();
+        }
     }
 }

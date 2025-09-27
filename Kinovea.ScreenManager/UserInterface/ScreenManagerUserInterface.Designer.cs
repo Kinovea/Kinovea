@@ -92,6 +92,7 @@ namespace Kinovea.ScreenManager
       this.splitScreens.Size = new System.Drawing.Size(574, 315);
       this.splitScreens.SplitterDistance = 287;
       this.splitScreens.TabIndex = 0;
+      this.splitScreens.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitScreens_SplitterMoved);
       // 
       // ScreenManagerUserInterface
       // 

@@ -122,8 +122,9 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuOneCapture = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTwoCaptures = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSwapScreens = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVerticalLayout = new ToolStripMenuItem();
         private ToolStripMenuItem mnuToggleCommonCtrls = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSwapScreens = new ToolStripMenuItem();
 
         // Image
         private ToolStripMenuItem mnuDeinterlace = new ToolStripMenuItem();
@@ -421,7 +422,7 @@ namespace Kinovea.ScreenManager
             index++;
             mnuCloseFile.Image = Properties.Resources.close_player;
             mnuCloseFile.Enabled = false;
-            mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
+            mnuCloseFile.Click += mnuCloseFileOnClick;
             mnuCloseFile.MergeIndex = index;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
@@ -429,7 +430,7 @@ namespace Kinovea.ScreenManager
             mnuCloseFile2.Image = Properties.Resources.close_player;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
-            mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);
+            mnuCloseFile2.Click += mnuCloseFile2OnClick;
             mnuCloseFile2.MergeIndex = index;
             mnuCloseFile2.MergeAction = MergeAction.Insert;
 
@@ -467,13 +468,13 @@ namespace Kinovea.ScreenManager
             mnuCatchEdit.MergeAction = MergeAction.MatchOnly;
 
             mnuCutDrawing.Image = Properties.Drawings.cut;
-            mnuCutDrawing.Click += new EventHandler(mnuCutDrawing_OnClick);
+            mnuCutDrawing.Click += mnuCutDrawing_OnClick;
             mnuCutDrawing.MergeAction = MergeAction.Append;
             mnuCopyDrawing.Image = Properties.Drawings.copy;
-            mnuCopyDrawing.Click += new EventHandler(mnuCopyDrawing_OnClick);
+            mnuCopyDrawing.Click += mnuCopyDrawing_OnClick;
             mnuCopyDrawing.MergeAction = MergeAction.Append;
             mnuPasteDrawing.Image = Properties.Drawings.paste;
-            mnuPasteDrawing.Click += new EventHandler(mnuPasteDrawing_OnClick);
+            mnuPasteDrawing.Click += mnuPasteDrawing_OnClick;
             mnuPasteDrawing.MergeAction = MergeAction.Append;
 
             ToolStripItem[] subEdit = new ToolStripItem[] {
@@ -491,40 +492,49 @@ namespace Kinovea.ScreenManager
             mnuCatchScreens.MergeAction = MergeAction.MatchOnly;
 
             mnuOnePlayer.Image = Properties.Resources.television;
-            mnuOnePlayer.Click += new EventHandler(mnuOnePlayerOnClick);
+            mnuOnePlayer.Click += mnuOnePlayerOnClick;
             mnuOnePlayer.MergeAction = MergeAction.Append;
             mnuTwoPlayers.Image = Properties.Resources.dualplayback;
-            mnuTwoPlayers.Click += new EventHandler(mnuTwoPlayersOnClick);
+            mnuTwoPlayers.Click += mnuTwoPlayersOnClick;
             mnuTwoPlayers.MergeAction = MergeAction.Append;
             mnuOneCapture.Image = Properties.Resources.camera_video;
-            mnuOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
+            mnuOneCapture.Click += mnuOneCaptureOnClick;
             mnuOneCapture.MergeAction = MergeAction.Append;
             mnuTwoCaptures.Image = Properties.Resources.dualcapture2;
-            mnuTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
+            mnuTwoCaptures.Click += mnuTwoCapturesOnClick;
             mnuTwoCaptures.MergeAction = MergeAction.Append;
             mnuTwoMixed.Image = Properties.Resources.dualmixed3;
-            mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
+            mnuTwoMixed.Click += mnuTwoMixedOnClick;
             mnuTwoMixed.MergeAction = MergeAction.Append;
 
             mnuSwapScreens.Image = Properties.Resources.flatswap3d;
             mnuSwapScreens.Enabled = false;
-            mnuSwapScreens.Click += new EventHandler(mnuSwapScreensOnClick);
+            mnuSwapScreens.Click += mnuSwapScreensOnClick;
             mnuSwapScreens.MergeAction = MergeAction.Append;
 
-            mnuToggleCommonCtrls.Image = Properties.Resources.common_controls;
+            mnuVerticalLayout.Image = Properties.Resources.application_split;
+            mnuVerticalLayout.Enabled = false;
+            mnuVerticalLayout.Click += mnuVerticalLayout_Click;
+            mnuVerticalLayout.MergeAction = MergeAction.Append;
+
+            mnuToggleCommonCtrls.Image = Properties.Resources.application_common_controls2;
             mnuToggleCommonCtrls.Enabled = false;
             mnuToggleCommonCtrls.ShortcutKeys = Keys.F5;
-            mnuToggleCommonCtrls.Click += new EventHandler(mnuToggleCommonCtrlsOnClick);
+            mnuToggleCommonCtrls.Click += mnuToggleCommonCtrlsOnClick;
             mnuToggleCommonCtrls.MergeAction = MergeAction.Append;
 
-            ToolStripItem[] subScreens = new ToolStripItem[] { 		mnuOnePlayer,
-                                                                    mnuTwoPlayers,
-                                                                    mnuOneCapture,
-                                                                    mnuTwoCaptures,
-                                                                    mnuTwoMixed,
-                                                                    new ToolStripSeparator(),
-                                                                    mnuSwapScreens,
-                                                                    mnuToggleCommonCtrls };
+            ToolStripItem[] subScreens = new ToolStripItem[] { 		
+                mnuOnePlayer,
+                mnuTwoPlayers,
+                mnuOneCapture,
+                mnuTwoCaptures,
+                mnuTwoMixed,
+                new ToolStripSeparator(),
+                mnuToggleCommonCtrls,
+                mnuVerticalLayout,
+                mnuSwapScreens
+            };
+            
             mnuCatchScreens.DropDownItems.AddRange(subScreens);
             #endregion
 
@@ -536,7 +546,7 @@ namespace Kinovea.ScreenManager
             mnuDeinterlace.Image = Properties.Resources.deinterlace;
             mnuDeinterlace.Checked = false;
             mnuDeinterlace.ShortcutKeys = Keys.Control | Keys.D;
-            mnuDeinterlace.Click += new EventHandler(mnuDeinterlaceOnClick);
+            mnuDeinterlace.Click += mnuDeinterlaceOnClick;
             mnuDeinterlace.MergeAction = MergeAction.Append;
 
             mnuDemosaicNone.Click += mnuDemosaicNone_Click;
@@ -620,7 +630,7 @@ namespace Kinovea.ScreenManager
             mnuCatchTools.MergeAction = MergeAction.MatchOnly;
 
             mnuImportImage.Image = Properties.Resources.image;
-            mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
+            mnuImportImage.Click += mnuImportImage_OnClick;
             mnuImportImage.MergeAction = MergeAction.Append;
 
             mnuBackground.Image = Properties.Resources.shading;
@@ -632,7 +642,7 @@ namespace Kinovea.ScreenManager
             mnuTestGrid.MergeAction = MergeAction.Append;
 
             mnuTimeCalibration.Image = Properties.Drawings.clock_frame;
-            mnuTimeCalibration.Click += new EventHandler(mnuTimebase_OnClick);
+            mnuTimeCalibration.Click += mnuTimebase_OnClick;
             mnuTimeCalibration.MergeAction = MergeAction.Append;
 
             mnuLensCalibration.Image = Properties.Resources.checkerboard;
@@ -740,7 +750,7 @@ namespace Kinovea.ScreenManager
             // Save
             toolSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolSave.Image = Properties.Resources.save_annotations;
-            toolSave.Click += new EventHandler(mnuSaveOnClick);
+            toolSave.Click += mnuSaveOnClick;
 
             toolToggleNavigationPane.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolToggleNavigationPane.Image = Properties.Resources.navigation_pane;
@@ -748,27 +758,27 @@ namespace Kinovea.ScreenManager
 
             toolExplorer.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolExplorer.Image = Properties.Resources.file_browser;
-            toolExplorer.Click += new EventHandler(mnuExplorer_OnClick);
+            toolExplorer.Click += mnuExplorer_OnClick;
 
             toolOnePlayer.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolOnePlayer.Image = Properties.Resources.television;
-            toolOnePlayer.Click += new EventHandler(mnuOnePlayerOnClick);
+            toolOnePlayer.Click += mnuOnePlayerOnClick;
 
             toolTwoPlayers.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolTwoPlayers.Image = Properties.Resources.dualplayback;
-            toolTwoPlayers.Click += new EventHandler(mnuTwoPlayersOnClick);
+            toolTwoPlayers.Click += mnuTwoPlayersOnClick;
 
             toolOneCapture.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolOneCapture.Image = Properties.Resources.camera_video;
-            toolOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
+            toolOneCapture.Click += mnuOneCaptureOnClick;
 
             toolTwoCaptures.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolTwoCaptures.Image = Properties.Resources.dualcapture2;
-            toolTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
+            toolTwoCaptures.Click += mnuTwoCapturesOnClick;
 
             toolTwoMixed.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolTwoMixed.Image = Properties.Resources.dualmixed3;
-            toolTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
+            toolTwoMixed.Click += mnuTwoMixedOnClick;
 
             ToolStrip ts = new ToolStrip(new ToolStripItem[] {
                                             toolSave,
@@ -1480,15 +1490,17 @@ namespace Kinovea.ScreenManager
             switch (screenList.Count)
             {
                 case 0:
-                    mnuSwapScreens.Enabled = false;
                     mnuToggleCommonCtrls.Enabled = false;
+                    mnuVerticalLayout.Enabled = false;
+                    mnuSwapScreens.Enabled = false;
                     hasNothingToClose = true;
                     canSaveSideBySide = false;
                     break;
 
                 case 1:
-                    mnuSwapScreens.Enabled = false;
                     mnuToggleCommonCtrls.Enabled = false;
+                    mnuVerticalLayout.Enabled = false;
+                    mnuSwapScreens.Enabled = false;
                     canSaveSideBySide = false;
 
                     if(!screenList[0].Full)
@@ -1512,8 +1524,10 @@ namespace Kinovea.ScreenManager
                     break;
 
                 case 2:
-                    mnuSwapScreens.Enabled = true;
                     mnuToggleCommonCtrls.Enabled = canShowCommonControls;
+                    mnuVerticalLayout.Enabled = true;
+                    mnuVerticalLayout.Checked = view.IsTopBottomLayout;
+                    mnuSwapScreens.Enabled = true;
 
                     // Left Screen
                     if (screenList[0] is PlayerScreen)
@@ -1569,8 +1583,9 @@ namespace Kinovea.ScreenManager
 
                 default:
                     // KO.
-                    mnuSwapScreens.Enabled       = false;
                     mnuToggleCommonCtrls.Enabled = false;
+                    mnuVerticalLayout.Enabled = false;
+                    mnuSwapScreens.Enabled = false;
                     hasNothingToClose = true;
                     break;
             }
@@ -1869,7 +1884,7 @@ namespace Kinovea.ScreenManager
                 mnuLensCalibrationFile.Text = Path.GetFileNameWithoutExtension(file);
                 mnuLensCalibrationFile.Tag = file;
                 mnuLensCalibrationFile.Image = Properties.Resources.vector;
-                mnuLensCalibrationFile.Click += new EventHandler(mnuLensCalibrationFile_OnClick);
+                mnuLensCalibrationFile.Click += mnuLensCalibrationFile_OnClick;
                 mnuLensCalibrationFile.MergeAction = MergeAction.Append;
 
                 // Add to parent.
@@ -2095,8 +2110,9 @@ namespace Kinovea.ScreenManager
             mnuOneCapture.Text = ScreenManagerLang.mnuOneCapture;
             mnuTwoCaptures.Text = ScreenManagerLang.mnuTwoCaptures;
             mnuTwoMixed.Text = ScreenManagerLang.mnuTwoMixed;
-            mnuSwapScreens.Text = ScreenManagerLang.mnuSwapScreens;
             mnuToggleCommonCtrls.Text = ScreenManagerLang.mnuToggleCommonCtrls;
+            mnuVerticalLayout.Text = "Vertical layout";
+            mnuSwapScreens.Text = ScreenManagerLang.mnuSwapScreens;
 
             // Image
             mnuAspectRatio.Text = ScreenManagerLang.mnuFormat;
@@ -2780,6 +2796,14 @@ namespace Kinovea.ScreenManager
             OrganizeCommonControls();
             OrganizeMenus();
         }
+
+        private void mnuVerticalLayout_Click(object sender, EventArgs e)
+        {
+            view.ToggleDualScreenOrientation();
+            mnuVerticalLayout.Checked = view.IsTopBottomLayout;
+        }
+
+
         private void mnuSwapScreensOnClick(object sender, EventArgs e)
         {
             if (screenList.Count != 2)
