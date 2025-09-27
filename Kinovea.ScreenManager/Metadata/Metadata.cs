@@ -1749,7 +1749,10 @@ namespace Kinovea.ScreenManager
                 ((DrawingDistortionGrid)drawing).LensCalibrationAsked -= Drawing_LensCalibrationAsked;
 
             if (drawing is DrawingTrack)
-                ((DrawingTrack)drawing).Clear();
+            {
+                ((DrawingTrack)drawing).BeforeDelete();
+                trackabilityManager.ForgetTrack(drawing.Id);
+            }
         }
 
         public void BeforeKVAImport()

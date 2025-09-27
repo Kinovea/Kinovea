@@ -165,10 +165,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuLensCalibrationManual = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLensCalibrationNone = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCalibrationValidation = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTrajectoryAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuScatterDiagram = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuAngularAnalysis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuAngleAngleAnalysis = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLinearKinematics = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAngularKinematics = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAngleAngleDiagram = new ToolStripMenuItem();
 
         // Options
         private ToolStripMenuItem mnuVariables = new ToolStripMenuItem();
@@ -660,17 +660,17 @@ namespace Kinovea.ScreenManager
             mnuScatterDiagram.Click += mnuScatterDiagram_OnClick;
             mnuScatterDiagram.MergeAction = MergeAction.Append;
 
-            mnuTrajectoryAnalysis.Image = Properties.Resources.plot_16;
-            mnuTrajectoryAnalysis.Click += mnuTrajectoryAnalysis_OnClick;
-            mnuTrajectoryAnalysis.MergeAction = MergeAction.Append;
+            mnuLinearKinematics.Image = Properties.Resources.plot_16;
+            mnuLinearKinematics.Click += mnuLinearKinematics_OnClick;
+            mnuLinearKinematics.MergeAction = MergeAction.Append;
 
-            mnuAngularAnalysis.Image = Properties.Resources.sine_16;
-            mnuAngularAnalysis.Click += mnuAngularAnalysis_OnClick;
-            mnuAngularAnalysis.MergeAction = MergeAction.Append;
+            mnuAngularKinematics.Image = Properties.Resources.sine_16;
+            mnuAngularKinematics.Click += mnuAngularKinematics_OnClick;
+            mnuAngularKinematics.MergeAction = MergeAction.Append;
 
-            mnuAngleAngleAnalysis.Image = Properties.Resources.plot_16;
-            mnuAngleAngleAnalysis.Click += mnuAngleAngleAnalysis_OnClick;
-            mnuAngleAngleAnalysis.MergeAction = MergeAction.Append;
+            mnuAngleAngleDiagram.Image = Properties.Resources.plot_16;
+            mnuAngleAngleDiagram.Click += mnuAngleAngleDiagram_OnClick;
+            mnuAngleAngleDiagram.MergeAction = MergeAction.Append;
 
             mnuCatchTools.DropDownItems.AddRange(new ToolStripItem[] {
                 mnuImportImage,
@@ -683,9 +683,9 @@ namespace Kinovea.ScreenManager
                 mnuCalibrationValidation,
                 new ToolStripSeparator(),
                 mnuScatterDiagram,
-                mnuTrajectoryAnalysis,
-                mnuAngularAnalysis,
-                mnuAngleAngleAnalysis
+                mnuLinearKinematics,
+                mnuAngularKinematics,
+                mnuAngleAngleDiagram
             });
 
             #endregion
@@ -1341,9 +1341,9 @@ namespace Kinovea.ScreenManager
                     ConfigureLensCalibrationMenus(player);
                     mnuCalibrationValidation.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
-                    mnuTrajectoryAnalysis.Enabled = true;
-                    mnuAngularAnalysis.Enabled = true;
-                    mnuAngleAngleAnalysis.Enabled = true;
+                    mnuLinearKinematics.Enabled = true;
+                    mnuAngularKinematics.Enabled = true;
+                    mnuAngleAngleDiagram.Enabled = true;
 
                     mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
                     mnuTestGrid.Checked = activeScreen.TestGridVisible;
@@ -1395,9 +1395,9 @@ namespace Kinovea.ScreenManager
                     mnuLensCalibration.Enabled = false;
                     mnuCalibrationValidation.Enabled = true;
                     mnuScatterDiagram.Enabled = false;
-                    mnuTrajectoryAnalysis.Enabled = false;
-                    mnuAngularAnalysis.Enabled = false;
-                    mnuAngleAngleAnalysis.Enabled = false;
+                    mnuLinearKinematics.Enabled = false;
+                    mnuAngularKinematics.Enabled = false;
+                    mnuAngleAngleDiagram.Enabled = false;
 
                     mnuCoordinateSystem.Checked = activeScreen.CoordinateSystemVisible;
                     mnuTestGrid.Checked = activeScreen.TestGridVisible;
@@ -1458,9 +1458,9 @@ namespace Kinovea.ScreenManager
                 mnuLensCalibration.Enabled = false;
                 mnuCalibrationValidation.Enabled = false;
                 mnuScatterDiagram.Enabled = false;
-                mnuTrajectoryAnalysis.Enabled = false;
-                mnuAngularAnalysis.Enabled = false;
-                mnuAngleAngleAnalysis.Enabled = false;
+                mnuLinearKinematics.Enabled = false;
+                mnuAngularKinematics.Enabled = false;
+                mnuAngleAngleDiagram.Enabled = false;
 
                 mnuCoordinateSystem.Checked = false;
                 mnuTestGrid.Checked = false;
@@ -2138,9 +2138,9 @@ namespace Kinovea.ScreenManager
             mnuCoordinateSystem.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuCalibrationValidation.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_CalibrationValidation;
             mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
-            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
-            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
-            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
+            mnuLinearKinematics.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
+            mnuAngularKinematics.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
+            mnuAngleAngleDiagram.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
 
             // Options
             mnuVariables.Text = "Context";
@@ -3007,14 +3007,6 @@ namespace Kinovea.ScreenManager
             thisScreen.ShowCalibrationValidation(otherScreen);
         }
 
-        private void mnuTrajectoryAnalysis_OnClick(object sender, EventArgs e)
-        {
-            PlayerScreen ps = activeScreen as PlayerScreen;
-            if (ps == null)
-                return;
-
-            ps.ShowTrajectoryAnalysis();
-        }
         private void mnuScatterDiagram_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
@@ -3023,21 +3015,29 @@ namespace Kinovea.ScreenManager
 
             ps.ShowScatterDiagram();
         }
-        private void mnuAngularAnalysis_OnClick(object sender, EventArgs e)
+        private void mnuLinearKinematics_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps == null)
                 return;
 
-            ps.ShowAngularAnalysis();
+            ps.ShowLinearKinematics();
         }
-        private void mnuAngleAngleAnalysis_OnClick(object sender, EventArgs e)
+        private void mnuAngularKinematics_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps == null)
                 return;
 
-            ps.ShowAngleAngleAnalysis();
+            ps.ShowAngularKinematics();
+        }
+        private void mnuAngleAngleDiagram_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen ps = activeScreen as PlayerScreen;
+            if (ps == null)
+                return;
+
+            ps.ShowAngleAngleDiagram();
         }
         #endregion
 

@@ -191,29 +191,32 @@ namespace Kinovea.ScreenManager
 
                 // Rebuild the map of point to track.
                 mapPointToTrack.Clear();
+                List<Guid> missingTracks = new List<Guid>();
                 foreach (var pair in mapTrackIdToPoint)
                 {
                     DrawingTrack track = allTracks.FirstOrDefault(t => t.Id == pair.Key);
                     if (track != null)
                     {
                         mapPointToTrack[pair.Value] = track;
-                        track.PointMoving += drawingTrack_PointMoved;
+                        track.PointMoving += drawingTrack_PointMoving;
                         bound.Add(track.Id);
                     }
                     else
                     {
-                        log.Error("DrawingTracker: could not find track with id " + pair.Key);
+                        log.Error("Could not find track with id " + pair.Key);
+                        missingTracks.Add(pair.Key);
                     }
                 }
 
-                if (mapPointToTrack.Count != mapTrackIdToPoint.Count)
+                // Forget about missing tracks.
+                foreach (var missing in missingTracks)
                 {
-                    log.Error("DrawingTracker: some tracks were not found for the drawing.");
-                    mapPointToTrack.Clear();
-                    mapTrackIdToPoint.Clear();
-                    bound.Clear();
+                    mapTrackIdToPoint.Remove(missing);
                 }
 
+                // We don't completely fail if some tracks are missing, we just ignore them.
+                // This allows the scenario where the user manually deletes a track
+                // and recreate it later. We don't want to lose the binding with the other tracks.
                 isObjectTrackingInitialized = true;
             }
 
@@ -235,7 +238,7 @@ namespace Kinovea.ScreenManager
             isCurrentlyTracking = false;
             foreach (var track in mapPointToTrack.Values)
             {
-                track.PointMoving -= drawingTrack_PointMoved;
+                track.PointMoving -= drawingTrack_PointMoving;
             }
             trackablePoints2.Clear();
         }
@@ -306,7 +309,7 @@ namespace Kinovea.ScreenManager
             // Listen to point moved events from the tracks.
             foreach (var track in tracks.Values)
             {
-                track.PointMoving += drawingTrack_PointMoved;
+                track.PointMoving += drawingTrack_PointMoving;
             }
 
             // From now on we are never going to inject the non-tracking
@@ -342,6 +345,28 @@ namespace Kinovea.ScreenManager
                 {
                     pair.Value.StopTracking();
                 }
+            }
+        }
+
+        public void ForgetTrack(Guid id)
+        {
+            // A track bound to this drawing is about to be deleted.
+            if (!isObjectTrackingInitialized)
+            {
+                return;
+            }
+
+            if (!mapTrackIdToPoint.ContainsKey(id))
+            {
+                return;
+            }
+
+            string key = mapTrackIdToPoint[id];
+            mapTrackIdToPoint.Remove(id);
+            if (mapPointToTrack.ContainsKey(key))
+            {
+                mapPointToTrack[key].PointMoving -= drawingTrack_PointMoving;
+                mapPointToTrack.Remove(key);
             }
         }
         #endregion
@@ -383,7 +408,7 @@ namespace Kinovea.ScreenManager
             {
                 // Implementation error.
                 // If this drawing is not using object tracking we shouldn't have a track associated with it.
-                log.Error("DrawingTracker: object tracking is not initialized.");
+                log.Error("Object tracking is not initialized.");
                 return;
             }
 
@@ -391,7 +416,7 @@ namespace Kinovea.ScreenManager
             {
                 // Implementation error.
                 // If we have activated object tracking we should definitely know about the underlying track.
-                log.Error("DrawingTracker: track is not bound to any of our points.");
+                log.Error("Track is not bound to any of our points.");
                 return;
             }
 
@@ -408,7 +433,7 @@ namespace Kinovea.ScreenManager
                     // We shouldn't get here.
                     // While not open for tracking the track should return whatever point is closest
                     // and it should always have at least one point from creation.
-                    log.Error("DrawingTracker: No track data.");
+                    log.Error("No track data.");
                 }
                 
                 return;
@@ -426,7 +451,7 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    log.Error("DrawingTracker: No track data.");
+                    log.Error("No track data.");
                 }
                 
                 return;
@@ -485,7 +510,7 @@ namespace Kinovea.ScreenManager
         /// Raised when the user manipulates an opened track (dragging the search area).
         /// Update the corresponding trackable point in the drawing.
         /// </summary>
-        private void drawingTrack_PointMoved(object sender, EventArgs<TimedPoint> e)
+        private void drawingTrack_PointMoving(object sender, EventArgs<TimedPoint> e)
         {
             DrawingTrack drawingTrack = sender as DrawingTrack;
             if (drawingTrack == null)
@@ -520,13 +545,16 @@ namespace Kinovea.ScreenManager
                 if (mapPointToTrack.ContainsKey(e.PointName))
                 {
                     // For now we don't support moving the object manually if it is tracked.
-                    // The user must turn tracking on and move the tracks.
-                    // TODO.
-                    //DrawingTrack track = mapPointToTrack[e.PointName];
+                    // The user must turn tracking back on and move the tracks themselves.
+                    log.WarnFormat("Moving tracked object by hand.");
                 }
                 else
                 {
-                    log.Error("DrawingTracker: the point is not bound to a track.");
+                    // The user deleted a track and is now moving the point by hand, we honor this.
+                    if (trackablePoints2.ContainsKey(e.PointName))
+                    {
+                        trackablePoints2[e.PointName].SetReferenceValue(trackingTimestamp, e.Position);
+                    }
                 }
             }
             else
@@ -535,14 +563,13 @@ namespace Kinovea.ScreenManager
                 // Even if we don't have camera tracking active right now, we may have it later,
                 // so we must keep the reference frame up to date. The user is saying that 
                 // the points are over the world elements at this frame.
-
                 if (trackablePoints2.ContainsKey(e.PointName))
                 {
                     trackablePoints2[e.PointName].SetReferenceValue(trackingTimestamp, e.Position);
                 }
                 else
                 {
-                    log.Error("DrawingTracker: the point is unknown.");
+                    log.Error("The point is unknown.");
                 }
             }
         }
@@ -674,7 +701,9 @@ namespace Kinovea.ScreenManager
             // will get the actual tracks during Assign().
             if (mapTrackIdToPoint.Count > 0 && mapTrackIdToPoint.Count != trackablePoints2.Count)
             {
-                log.Error("Deserialized drawing tracker has inconsistent trackable points vs track ids.");
+                // This is allowed, the user may have deleted individual tracks manually.
+                log.WarnFormat("Inconsistent drawing tracker. Trackable points: {0}, Track ids: {1}.", 
+                    trackablePoints2.Count, mapTrackIdToPoint.Count);
             }
         }
 

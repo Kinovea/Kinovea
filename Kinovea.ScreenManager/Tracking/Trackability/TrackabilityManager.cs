@@ -83,7 +83,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Finds the tracker responsible for this drawing and assign the drawing to it.
+        /// Finds the tracker responsible for this drawing and assign the drawing to it,
+        /// and optionally all the tracks if object tracking was initialized.
         /// When we load from KVA, the trackers and drawings are loaded independently.
         /// At this point the tracker only knows the drawing id. 
         /// Re-inject the drawing instance into the tracker.
@@ -552,13 +553,27 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Forget track objects that are bound to the passed drawing.
+        /// Forget all tracks bound to the passed drawing.
         /// </summary>
         private void ForgetTracks(Guid id)
         {
             mapTrackIdToDrawingId = mapTrackIdToDrawingId
                 .Where(kv => kv.Value != id)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
+
+        /// <summary>
+        /// Forget one track that is about to be deleted.
+        /// </summary>
+        public void ForgetTrack(Guid id)
+        {
+            if (!mapTrackIdToDrawingId.ContainsKey(id))
+                return;
+
+            if (trackers.ContainsKey(mapTrackIdToDrawingId[id]))
+                trackers[mapTrackIdToDrawingId[id]].ForgetTrack(id);
+
+            mapTrackIdToDrawingId.Remove(id);
         }
 
 

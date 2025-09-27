@@ -911,7 +911,7 @@ namespace Kinovea.ScreenManager
             view.RefreshImage();
         }
 
-        public void ShowTrajectoryAnalysis()
+        public void ShowLinearKinematics()
         {
             FormMultiTrajectoryAnalysis f = new FormMultiTrajectoryAnalysis(frameServer.Metadata);
             FormsHelper.Locate(f);
@@ -927,7 +927,7 @@ namespace Kinovea.ScreenManager
             fpa.Dispose();
         }
 
-        public void ShowAngularAnalysis()
+        public void ShowAngularKinematics()
         {
             FormAngularAnalysis f = new FormAngularAnalysis(frameServer.Metadata);
             FormsHelper.Locate(f);
@@ -935,7 +935,7 @@ namespace Kinovea.ScreenManager
             f.Dispose();
         }
 
-        public void ShowAngleAngleAnalysis()
+        public void ShowAngleAngleDiagram()
         {
             FormAngleAngleAnalysis f = new FormAngleAngleAnalysis(frameServer.Metadata);
             FormsHelper.Locate(f);

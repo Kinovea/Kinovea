@@ -2066,7 +2066,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Updated Kinematics for {0}: {1} ms.", this.name, stopwatch.ElapsedMilliseconds);
         }
 
-        public void Clear()
+        public void BeforeDelete()
         {
             tracker.Clear();
             positions.Clear();
