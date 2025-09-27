@@ -199,6 +199,7 @@ namespace Kinovea.ScreenManager
                     {
                         mapPointToTrack[pair.Value] = track;
                         track.PointMoving += drawingTrack_PointMoving;
+                        track.TrackingStatusChanged += drawingTrack_StatusChanged;
                         bound.Add(track.Id);
                     }
                     else
@@ -239,6 +240,7 @@ namespace Kinovea.ScreenManager
             foreach (var track in mapPointToTrack.Values)
             {
                 track.PointMoving -= drawingTrack_PointMoving;
+                track.TrackingStatusChanged -= drawingTrack_StatusChanged;
             }
             trackablePoints2.Clear();
         }
@@ -310,6 +312,7 @@ namespace Kinovea.ScreenManager
             foreach (var track in tracks.Values)
             {
                 track.PointMoving += drawingTrack_PointMoving;
+                track.TrackingStatusChanged += drawingTrack_StatusChanged;
             }
 
             // From now on we are never going to inject the non-tracking
@@ -362,6 +365,7 @@ namespace Kinovea.ScreenManager
             if (mapPointToTrack.ContainsKey(key))
             {
                 mapPointToTrack[key].PointMoving -= drawingTrack_PointMoving;
+                mapPointToTrack[key].TrackingStatusChanged -= drawingTrack_StatusChanged;
                 mapPointToTrack.Remove(key);
             }
         }
@@ -554,6 +558,26 @@ namespace Kinovea.ScreenManager
 
             string key = mapTrackIdToPoint[drawingTrack.Id];
             drawing.SetTrackablePointValue(key, tp.Point, 0);
+        }
+
+        private void drawingTrack_StatusChanged(object sender, EventArgs e)
+        {
+            if (!isObjectTrackingInitialized)
+            {
+                return;
+            }
+
+            // A track bound to this drawing has changed its tracking status.
+            // The tracks status can be modified all at once from the drawing context menu
+            // or individually from the track context menu or from other events like video end
+            // or ESC key, or command to start all tracking.
+            // We keep track of this in cas all tracks are closed or reopened, to keep the drawing
+            // in sync.
+            // Note: the start/stop tracking menu in the drawing is using the drawing tracker state
+            // to show the right menu.
+
+            // If we have at least one track open we consider the drawing open.
+            isCurrentlyTracking = mapPointToTrack.Values.Any(t => t.Status == TrackStatus.Edit);
         }
 
         /// <summary>

@@ -4910,7 +4910,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// A drawing was modified from a drawing style configurator control (side panel).
+        /// A drawing was modified from the style tab or tracking tab of the annotation pane.
         /// Update the preset and the drawing on the screen.
         /// </summary>
         private void DrawingControl_DrawingUpdated(object sender, DrawingEventArgs e)

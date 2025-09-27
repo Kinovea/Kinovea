@@ -1543,34 +1543,31 @@ namespace Kinovea.ScreenManager
         #region Tracking and trajectories
         public void ToggleTracking(ITrackable trackableDrawing, long timestamp)
         {
-            if (!TrackabilityManager.IsObjectTrackingInitialized(trackableDrawing.Id))
-            {
-                // Create a track for each trackable point of the drawing.
-                // First time that we ask to track this drawing.
-                // Create the corresponding tracks.
-                var points = trackableDrawing.GetTrackablePoints();
-                List<string> names = points.Keys.ToList();
-                List<PointF> values = points.Values.ToList();
-                Dictionary<string, DrawingTrack> tracks = new Dictionary<string, DrawingTrack>();
-                for (int i = 0; i < names.Count; i++)
-                {
-                    string name = names[i]; 
-                    PointF value = values[i];
-
-                    DrawingTrack track = new DrawingTrack(value, timestamp, averageTimeStampsPerFrame);
-                    track.Status = TrackStatus.Edit;
-                    track.Name = string.Format("{0}.{1}", trackableDrawing.Name, name);
-                    tracks.Add(name, track);
-                    AddTrack(track);
-                }
-
-                TrackabilityManager.InitializeTracking(trackableDrawing, tracks);
-            }
-            else
+            if (TrackabilityManager.IsObjectTrackingInitialized(trackableDrawing.Id))
             {
                 TrackabilityManager.ToggleTracking(trackableDrawing);
+                return;
             }
 
+            // First time that we are asked to track this drawing.
+            // Create a track for each trackable point of the drawing.
+            var points = trackableDrawing.GetTrackablePoints();
+            List<string> names = points.Keys.ToList();
+            List<PointF> values = points.Values.ToList();
+            Dictionary<string, DrawingTrack> tracks = new Dictionary<string, DrawingTrack>();
+            for (int i = 0; i < names.Count; i++)
+            {
+                string name = names[i]; 
+                PointF value = values[i];
+
+                DrawingTrack track = new DrawingTrack(value, timestamp, averageTimeStampsPerFrame);
+                track.Status = TrackStatus.Edit;
+                track.Name = string.Format("{0}.{1}", trackableDrawing.Name, name);
+                tracks.Add(name, track);
+                AddTrack(track);
+            }
+
+            TrackabilityManager.InitializeTracking(trackableDrawing, tracks);
         }
         public void UpdateTrajectoriesForKeyframes()
         {
