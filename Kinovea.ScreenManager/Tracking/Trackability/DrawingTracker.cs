@@ -370,6 +370,12 @@ namespace Kinovea.ScreenManager
                 mapPointToTrack[key].TrackingStatusChanged -= drawingTrack_StatusChanged;
                 mapPointToTrack.Remove(key);
             }
+
+            if (mapPointToTrack.Count == 0)
+            {
+                // We have no more tracks, turn off object tracking.
+                DeinitializeTracking();
+            }
         }
 
         /// <summary>
