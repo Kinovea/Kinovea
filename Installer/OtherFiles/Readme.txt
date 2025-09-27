@@ -56,60 +56,63 @@ Changelog:
     Improved - General: ability to quickly restart closed windows.
     Improved - General: ability to start, stop and delete older windows.
     Improved - General: improved performance of application startup and detecting cameras.
-    Improved - File browser: improved performances of thumbnails view.
-    Improved - File browser: show the second thumbnail by default instead of the first when available.
-    Improved - File browser: improved thumbnails layout.
-    Improved - File browser: status bar now shows the folder being browsed.
-    Improved - File browser: irrelevant or confusing entries are now filtered out from the folder tree view.
-    Improved - File browser: improved folder tree view presentation.
-    Improved - Player: replay windows automatically wake up and bring themselves to front.
-    Improved - Player: improved mechanics of switching between single-video player and replay watcher.
-    Improved - Player: menus to open replay folder observers on configured capture folders.
-    Improved - Player: replay folders support target folders with variables.
-    Improved - Player: when picking a folder for replay observer, it is automatically added as a capture folder.
+    Improved - General: dual screen mode can now be in vertical layout.
+    Improved - General: irrelevant or confusing entries are now filtered out from the folder tree view.
+    Improved - General: improved folder tree view presentation.
+    Improved - Browser: improved performances of thumbnails view.
+    Improved - Browser: show the second thumbnail by default instead of the first when available.
+    Improved - Browser: improved thumbnails layout.
+    Improved - Browser: status bar now shows the folder being browsed.
     Improved - Player: continue playback after a jump if we were playing.
     Improved - Player: show the full path to the video in the tooltip of the infobar.
     Improved - Player: remember the state of the key image panel at the bottom between sessions.
     Improved - Annotations: new menus to manage annotations (unload, save as default, reload).
-    Improved - Annotations: default KVA paths can use custom variables.
-    Improved - Annotations: improved performances of side panel and bottom panel for large number of key images.
-    Improved - Annotations: key image panel now defaults to only show key images that are inside the working zone.
-    Improved - Annotations: new key image panel toolbar to create and navigate key images.
+    Improved - Annotations: button to toggle the side panel visibility.
+    Improved - Annotations: improved performances of annotation pane and bottom panel for large number of key images.
+    Improved - Annotations: improved user interface of key image cards in the key image tab.
+    Improved - Annotations: key image tab now defaults to only show key images that are inside the working zone.
+    Improved - Annotations: new toolbar to create and navigate key images.
     Improved - Annotations: changing the style of a drawing now automatically changes the style preset for the tool.
     Improved - Annotations: angle tool now supports a custom number of decimal places.
     Improved - Annotations: angle tool now has an arrow showing the direction in which the angle is measured.
     Improved - Annotations: angle tool now has an option to show the full circle.
     Improved - Annotations: support custom font size in drawings with mini labels (arrow variants, circle, marker, line variants, time segment).
     Improved - Annotations: better track style options.
-    Improved - Annotations: better user interface for the key frame cards in the side panel.
-    Improved - Annotations: button to toggle the side panel visibility.
     Improved - Annotations: label tool can now show a circle instead of an arrow.
     Improved - Annotations: label tool supports changing the line size independently of the font size.
-    Improved - Tracking: improved performances using parallel tracking.
-    Improved - Tracking: fixed sub pixel precision in template matching algorithm.
-    Improved - Tracking: use parabolic fit for refinement in template matching algorithm.
+    Improved - Annotations: default KVA paths can use custom variables.
+    Improved - Tracking: object tracking in now performed in parallel.
+    Improved - Tracking: kinematics calculations are now done in parallel.
+    Improved - Tracking: use of parabolic fit for refinement in template matching algorithm.
+    Improved - Tracking: tracking drawings overhaul, now uses tracks to implement tracking.
+    Improved - Tracking: improved performance of tracks when using camera tracking.
     Improved - Tracking: new command to start all trackers at once.
-    Improved - Camera motion: automatically create masks from rectangle objects.
+    Improved - Tracking: in camera motion estimation mode automatically create masks from rectangle objects.
     Improved - Export: restored the export of trajectories to text in GnuPlot format.
     Improved - Export: allow saving of annotations from the capture screen.
     Improved - Capture: improved stability of camera discovery.
-    Improved - Capture: Context toolbar with drop downs of custom variables, to select the context of the recording.
-    Improved - Capture: capture folders and post-recording command can use custom variables.
-    Improved - Capture: toolbox to insert variables and common characters in folder paths, with just-in-time examples.
-    Improved - Capture: changed syntax of variables from "%keyword" to "%keyword%" when used in paths or commands.
-    Improved - Capture: option to disable the auto-numbering of file names when not using dynamic file names.
-    Improved - Capture: post-recording command now starts in a background thread.
-    Improved - Capture: post-recording command supports multiple calls to external programs per command.
-    Improved - Capture: post-recording command can be disabled without deleting the command.
-    Improved - Capture: post-recording command now uses a text editor with line numbers and wrapping, and custom syntax highlighting.
-    Improved - Capture: post-recording command supports comments and blank lines.
-    Improved - Capture: button to switch between live view and delayed view.
+    Improved - Capture: context toolbar with drop downs of custom variables, to select the context of the recording.
     Improved - Capture: max duration of recording is now directly accessible on the user interface.
     Improved - Capture: combined image and video capture folder selector.
-    Improved - Capture: added option to exclude drawings and calibration from the exported kva.
-    Improved - Capture: added option to set the default trigger arming state.
-    Improved - Capture: added `kva` built-in variable to post-recording command and homogenized naming between paths and file names.
     Improved - Capture: remember the state of the captured files panel between sessions.
+    Improved - Recording: capture folders and post-recording command can use custom variables.
+    Improved - Recording: toolbox to insert variables and common characters in folder paths, with just-in-time examples.
+    Improved - Recording: changed syntax of variables from "%keyword" to "%keyword%" when used in paths or commands.
+    Improved - Recording: option to disable the auto-numbering of file names when not using dynamic file names.
+    Improved - Recording: post-recording command now starts in a background thread.
+    Improved - Recording: post-recording command supports multiple calls to external programs per command.
+    Improved - Recording: post-recording command can be disabled without deleting the command.
+    Improved - Recording: post-recording command now uses a text editor with line numbers and wrapping, and custom syntax highlighting.
+    Improved - Recording: post-recording command supports comments and blank lines.
+    Improved - Recording: added option to set the default trigger arming state.
+    Improved - Recording: added option to exclude drawings and calibration from the exported kva.
+    Improved - Recording: added `kva` built-in variable to post-recording command and homogenized naming between paths and file names.
+    Improved - Delay and replay: button to switch between live view and delayed view.
+    Improved - Delay and replay: replay windows automatically wake up and bring themselves to front.
+    Improved - Delay and replay: improved mechanics of switching between single-video player and replay watcher.
+    Improved - Delay and replay: menus to open replay folder observers on configured capture folders.
+    Improved - Delay and replay: replay folders support target folders with variables.
+    Improved - Delay and replay: when picking a folder for replay observer, it is automatically added as a capture folder.
     Fixed - General: in preferences, capture folders selectors were not working.
     Fixed - General: using the portable version from within a synchronized OneDrive directory could cause a crash.
     Fixed - General: saving a workspace with high speed camera configuration wasn't working properly.
@@ -122,20 +125,25 @@ Changelog:
     Fixed - Annotations: resucitated drawings after undo of delete of a keyframe were not properly registered for tracking.
     Fixed - Annotations: grabbing of lines perfectly vertical or horizontal wasn't working.
     Fixed - Annotations: positions of drawings during rendering were not accurate inside the pixel.
-    Fixed - Camera motion: reset of camera motion data wasn't working.
+    Fixed - Tracking: sub pixel precision in template matching algorithm was off.
+    Fixed - Tracking: tracked drawings were triggering the save as dialog even if they hadn't been modified.
+    Fixed - Tracking: angle-to-vertical and angle-to-horizontal weren't working correctly when tracked.
+    Fixed - Tracking: reset of camera motion data wasn't working.
+    Fixed - Measurement: fixed crash when exporting CSV from kinematics diagrams if the file is in use.
     Fixed - Export: copy image to clipboard wasn't working correctly.
 
 
 2024.1 - August 2024
-    Added - Camera motion estimation video mode.
-    Added - Lens calibration video mode.
-    Added - Calibration validation window, with 3D camera position and control points.
+	Added - General: New locales: Croatian, Traditional Chinese, Ukrainian.
     Added - Player: Alternate pointers.
 	Added - Annotations: Counter tool.
     Added - Annotations: Background layer with color and opacity, between video and drawings.
-    Added - Measurement: Support for an extra offset applied to coordinates.
-	Added - General: New locales: Croatian, Traditional Chinese, Ukrainian.
+    Added - Measurement: Lens calibration video mode.
+    Added - Measurement: Calibration validation window, with 3D camera position and control points.
+    Added - Tracking: Camera motion estimation video mode.
     Improved - Player: better feedback regarding the active video mode.
+    Improved - Player: Kinogram mode supports moving tiles in time.
+    Improved - Player: Kinogram mode supports changing label color and font size.
     Improved - Annotations: Added "filled" option to rectangle and circle.
     Improved - Annotations: Support changing font size for mini labels.
     Improved - Annotations: Support transparent background on the text tool.
@@ -144,25 +152,24 @@ Changelog:
     Improved - Annotations: Increased max duration of opaque and fading.
     Improved - Annotations: Support setting markers as single dot.
     Improved - Annotations: Hide cursor completely when moving markers and grid corners.
-    Improved - Measurement: Direct menu to import a lens calibration file.
-    Improved - Measurement: Direct menus for existing lens calibration files.
-    Improved - Measurement: Direct menu to reset the lens calibration.
+    Improved - Measurement: Menu to import a lens calibration file.
+    Improved - Measurement: Menus for existing lens calibration files.
+    Improved - Measurement: Menu to reset the lens calibration.
+    Improved - Measurement: Support an extra offset applied to coordinates.
     Improved - Measurement: Support setting the number of decimal places to use for display.
     Improved - Measurement: Support flipping axes and changing reference corner.
     Improved - Measurement: Show average pixel size in world units on calibration dialog.
     Improved - Measurement: Support resetting the alignment of the coordinate system to the grid.
-    Improved - Kinogram: Support moving tiles in time.
-    Improved - Kinogram: Support changing label color and font size.
-    Improved - Data export: Export comments in JSON export.
+    Improved - Export: Export comments in JSON export.
     Fixed - General: reading tool preset coming from a different version was broken.
     Fixed - File browser: when opening a file the file explorer and shortcuts tab weren't synchronized correctly.
     Fixed - Annotations: Copy-pasting a drawing to a different time was not working.
     Fixed - Annotations: End caps on trajectory drawings were wrong.
-    Fixed - Video export: side-by-side export was very slow.
     Fixed - Annotations: mini labels of trajectories weren't updated correctly after a change in the side panel.
-    Fixed - Data export: Markdown export was broken for files with keyframes out of the selection.
     Fixed - Annotations: Marker objects were drawn aliased to the image pixel grid.
     Fixed - Annotations: Pencil drawing with a single point was invisible or could not be deleted.
+    Fixed - Export: side-by-side export was very slow.
+    Fixed - Export: Markdown export was broken for files with keyframes out of the selection.
     Removed - Measurement: Distance grid tool (functionality integrated into the grid tool).
 
 
