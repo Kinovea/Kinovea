@@ -5973,7 +5973,9 @@ namespace Kinovea.ScreenManager
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(vf.Timestamp);
 
             // Make sure the trackable drawings are on the right frame.
+            m_FrameServer.Metadata.BeforeTrackingStep(vf.Timestamp);
             m_FrameServer.Metadata.SyncTrackableDrawings(vf.Timestamp);
+            m_FrameServer.Metadata.CameraTrackingStep();
 
             using (Graphics canvas = Graphics.FromImage(output))
             {
