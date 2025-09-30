@@ -70,4 +70,7 @@
   <data name="lblCameras" xml:space="preserve">
     <value>Kameralar</value>
   </data>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>Qısayol əlavə et</value>
+  </data>
 </root>
