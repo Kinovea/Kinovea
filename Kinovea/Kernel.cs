@@ -362,7 +362,7 @@ namespace Kinovea.Root
             mnuHistoryReset.Click += mnuHistoryResetOnClick;
             
             mnuQuit.Image = Properties.Resources.close2_16;
-            mnuQuit.Click += new EventHandler(menuQuitOnClick);
+            mnuQuit.Click += menuQuitOnClick;
 
             // The indices are used by the other modules to insert their menus.
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] {
@@ -656,6 +656,8 @@ namespace Kinovea.Root
         }
         private void menuQuitOnClick(object sender, EventArgs e)
         {
+            // Close all other windows then close myself.
+            WindowManager.StopAll();
             Application.Exit();
         }
         #endregion

@@ -713,6 +713,11 @@ namespace Kinovea.Services
             }
         }
 
+        public static void StopAll()
+        {
+            SendMessage("Kinovea:Window.Close");
+        }
+
         /// <summary>
         /// Wake up our own window using the handle of the main form.
         /// </summary>
