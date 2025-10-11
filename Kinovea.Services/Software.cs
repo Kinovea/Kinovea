@@ -65,6 +65,11 @@ namespace Kinovea.Services
         public static string CameraPluginsDirectory { get; private set; }
 
         /// <summary>
+        /// A repository of KVA files used for the context-aware KVA system.
+        /// </summary>
+        public static string KVARepository { get; private set; }
+
+        /// <summary>
         /// Images used for custom pointers.
         /// </summary>
         public static string PointersDirectory { get; private set; }
@@ -137,6 +142,7 @@ namespace Kinovea.Services
             CameraCalibrationDirectory  = Path.Combine(SettingsDirectory, "CameraCalibration");
             CameraProfilesDirectory     = Path.Combine(SettingsDirectory, "CameraProfiles");
             ColorProfileDirectory       = Path.Combine(SettingsDirectory, "ColorProfiles");
+            KVARepository               = Path.Combine(SettingsDirectory, "KVARepository");
             LogsDirectory               = Path.Combine(SettingsDirectory, "Logs");
             CameraPluginsDirectory      = Path.Combine(SettingsDirectory, "Plugins", "Camera");
             PointersDirectory           = Path.Combine(SettingsDirectory, "Pointers");
@@ -164,6 +170,7 @@ namespace Kinovea.Services
             CreateDirectory(CameraPluginsDirectory);
             CreateDirectory(CameraProfilesDirectory);
             CreateDirectory(ColorProfileDirectory);
+            CreateDirectory(KVARepository);
             CreateDirectory(LogsDirectory);
             CreateDirectory(PointersDirectory);
             CreateDirectory(SettingsDirectory);

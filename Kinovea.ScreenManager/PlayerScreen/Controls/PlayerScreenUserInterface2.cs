@@ -65,6 +65,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler SaveDefaultCaptureAnnotationsAsked;
         public event EventHandler UnloadAnnotationsAsked;
         public event EventHandler ReloadDefaultPlayerAnnotationsAsked;
+        public event EventHandler LoadDefaultAnnotationsAsked;
         public event EventHandler CloseAsked;
         public event EventHandler StopWatcherAsked;
         public event EventHandler<EventArgs<CaptureFolder>> StartWatcherAsked;
@@ -684,7 +685,7 @@ namespace Kinovea.ScreenManager
                 Metadata metadata = m_FrameServer.Metadata;
 
                 // 1. Load the default player KVA.
-                LoadDefaultKVA();
+                LoadDefaultAnnotationsAsked?.Invoke(this, EventArgs.Empty);
 
                 // 2. Load the sidecar KVA if it exists.
                 // Note: we don't stop at the first one found, load all of them.
@@ -721,24 +722,6 @@ namespace Kinovea.ScreenManager
             Application.Idle += PostLoad_Idle;
 
             return 0;
-        }
-
-        /// <summary>
-        /// Load the default KVA if any.
-        /// </summary>
-        private void LoadDefaultKVA()
-        {
-            string path = "";
-            bool forPlayer = true;
-            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, forPlayer);
-
-            if (!found)
-                return;
-
-            LoadKVA(path);
-
-            // Never let the default file become the working file.
-            m_FrameServer.Metadata.ResetKVAPath();
         }
 
         private void AfterKVAImported()

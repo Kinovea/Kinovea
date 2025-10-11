@@ -179,11 +179,6 @@ namespace Kinovea.ScreenManager
         public abstract void AddImageDrawing(string filename, bool isSvg);
         public abstract void AddImageDrawing(Bitmap bmp);
         public abstract void FullScreen(bool fullScreen);
-        
-        /// <summary>
-        /// Tell the screen its index in the screen list.
-        /// </summary>
-        public abstract void Identify(int index);
         public abstract void ExecuteScreenCommand(int cmd);
         public abstract void LoadKVA(string path);
 
@@ -196,8 +191,22 @@ namespace Kinovea.ScreenManager
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+
+        /// <summary>
+        /// Returns the index of the screen in the screen list.
+        /// </summary>
+        public int Index { get; set; }
+
         public AbstractScreen()
         {
+        }
+
+        /// <summary>
+        /// Tell the screen its index in the screen list.
+        /// </summary>
+        public void Identify(int index)
+        {
+            this.Index = index;
         }
 
         /// <summary>
@@ -271,12 +280,15 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                targetPath = DynamicPathResolver.Resolve(currentPreferencesPath, null);
+                // The path is set, and it's not the standard path.
+                // It can be either a raw path or a path with variables.
+                var builtinVariables = DynamicPathResolver.BuildKVAPathContext(this);
+                targetPath = DynamicPathResolver.Resolve(currentPreferencesPath, builtinVariables);
 
                 // Check for unresolved variables.
                 if (!FilesystemHelper.IsValidPath(targetPath))
                 {
-                    log.ErrorFormat("Path to default annotations did not resolve correctly. {0}", targetPath);
+                    log.ErrorFormat("The default KVA path is invalid. \"{0}\"", targetPath);
                     return;
                 }
 
@@ -284,16 +296,17 @@ namespace Kinovea.ScreenManager
                 // This might happen if the user puts a random filename in there instead of a full path.
                 if (!Path.IsPathRooted(targetPath))
                 {
-                    log.ErrorFormat("Unrecognized path to default annotations. The path must resolve to an existing directory and start at the root of a drive. {0}", targetPath);
+                    log.ErrorFormat("The default KVA path must be rooted. \"{0}\"", targetPath);
                     return;
                 }
 
                 // TODO: if the full path including the file already exists, ask the user for confirmation?
                 // Bail out if cancelled.
                 
-                
-                // If path is correctly rooted but parts of it don't exist create them.
+                // If the path is correctly rooted but parts of it don't exist create them.
                 // The file itself doesn't have to exist yet but the directory must exist.
+                // This handles the case where the path contains a context variable like a name
+                // that we are seeing for the first time.
                 var directory = Path.GetDirectoryName(targetPath);
                 if (!Directory.Exists(directory))
                 {
@@ -341,22 +354,27 @@ namespace Kinovea.ScreenManager
             AfterLastKVAPathChanged();
         }
 
-        public void ReloadDefaultAnnotations(bool forPlayer)
+        /// <summary>
+        /// Load or reload the default annotations for the screen.
+        /// By the time this is called the .Index property must be valid.
+        /// </summary>
+        public void ReloadDefaultAnnotations(bool forPlayer, bool reload)
         {
             if (this.Metadata == null)
                 return;
 
             string path = "";
-            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, forPlayer);
-
+            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, this, forPlayer);
             if (!found)
                 return;
 
-            bool confirmed = BeforeUnloadingAnnotations();
+            bool confirmed = (!reload) || BeforeUnloadingAnnotations();
             if (!confirmed)
                 return;
 
-            this.Metadata.Unload();
+            if (reload)
+                this.Metadata.Unload();
+            
             LoadKVA(path);
 
             // Never let the default file become the working file.

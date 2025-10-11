@@ -273,7 +273,7 @@ namespace Kinovea.ScreenManager
             viewportController.SaveDefaultPlayerAnnotationsAsked += (s, e) => SaveDefaultAnnotations(true);
             viewportController.SaveDefaultCaptureAnnotationsAsked += (s, e) => SaveDefaultAnnotations(false);
             viewportController.UnloadAnnotationsAsked += (s, e) => UnloadAnnotations();
-            viewportController.ReloadDefaultCaptureAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(false);
+            viewportController.ReloadDefaultCaptureAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(false, true);
 
             // Implemented locally.
             viewportController.ConfigureAsked += (s, e) => ConfigureCamera();
@@ -465,11 +465,6 @@ namespace Kinovea.ScreenManager
             view.FullScreen(fullScreen);
         }
 
-        public override void Identify(int index)
-        {
-            this.index = index;
-        }
-        
         public override void ExecuteScreenCommand(int cmd)
         {
             view.ExecuteScreenCommand(cmd);
@@ -1383,8 +1378,8 @@ namespace Kinovea.ScreenManager
             metadata.AverageTimeStampsPerSecond = 1000000;
             metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / 25.0);
 
-            LoadDefaultKVA();
-            
+            ReloadDefaultAnnotations(false, false);
+
             metadataRenderer = new MetadataRenderer(metadata, false);
             metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
             
@@ -1396,24 +1391,6 @@ namespace Kinovea.ScreenManager
         public void Metadata_OnTrackableDrawingAdded(ITrackable trackableDrawing)
         {
             metadata.TrackabilityManager.Add(trackableDrawing, 0);
-        }
-
-        /// <summary>
-        /// Load the default capture KVA if any.
-        /// </summary>
-        private void LoadDefaultKVA()
-        {
-            string path = "";
-            bool forPlayer = false;
-            bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, forPlayer);
-
-            if (!found)
-                return;
-
-            LoadKVA(path);
-
-            // Never let the default file become the working file.
-            metadata.ResetKVAPath();
         }
 
         private void InitializeTools()

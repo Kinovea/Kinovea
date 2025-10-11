@@ -18,12 +18,11 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Get the default KVA path of either player or capture, with interpolation of context variables.
-        /// These don't support built-in variables. The path to a default shouldn't move with the date.
         /// If found returns true and put the path in `path`, otherwise returns false.
         /// This is for reading, not for saving.
         /// For saving use AbstractScreen.SaveDefaultAnnotations().
         /// </summary>
-        public static bool GetDefaultKVAPath(ref string path, bool forPlayer)
+        public static bool GetDefaultKVAPath(ref string path, AbstractScreen screen, bool forPlayer)
         {
             path = forPlayer ? PreferencesManager.PlayerPreferences.PlaybackKVA : PreferencesManager.CapturePreferences.CaptureKVA;
             if (string.IsNullOrEmpty(path))
@@ -40,7 +39,9 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                path = Resolve(path, null);
+                // Non-standard location, it may contain variables.
+                var builtinVariables = BuildKVAPathContext(screen);
+                path = Resolve(path, builtinVariables);
 
                 if (!FilesystemHelper.IsValidPath(path))
                 {
@@ -88,6 +89,31 @@ namespace Kinovea.ScreenManager
                 context["second"]       = string.Format("{0:ss}", now);
                 context["millisecond"]  = string.Format("{0:fff}", now);
             }
+
+            return context;
+        }
+
+        /// <summary>
+        /// Build the basic context for KVA path interpolation.
+        /// </summary>
+        public static Dictionary<string, string> BuildKVAPathContext(AbstractScreen screen)
+        {
+            Dictionary<string, string> context = new Dictionary<string, string>();
+
+            // The only built-in variable we support is a stable screen identifier.
+            // This is not the screen id itself otherwise closing and reopening a screen
+            // in the same window would lose the link to the annotations.
+            // We use something more stable, based on the window id and the screen index.
+            string windowIdName = WindowManager.ActiveWindow.Id.ToString().Substring(0, 8);
+            string screenIndex = screen.Index.ToString();
+            string screenFolder = string.Format("{0}-{1}", windowIdName, screenIndex);
+            context["screen"] = screenFolder;
+
+            // Add the standard path to the KVA repository + screen derived identifier.
+            // This is what we'll actually use internally.
+            // The other one is kept for convenience in case the user wants to recreate
+            // the feature manually at an other location.
+            context["kvarepo"] = Path.Combine(Software.KVARepository, screenFolder);
 
             return context;
         }

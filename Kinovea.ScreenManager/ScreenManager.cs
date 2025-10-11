@@ -1117,6 +1117,8 @@ namespace Kinovea.ScreenManager
 
             foreach (PlayerScreen p in playerScreens)
                 p.Synched = false;
+
+            IdentifyScreens();
         }
 
         public void SwapScreens()
@@ -1127,6 +1129,18 @@ namespace Kinovea.ScreenManager
             AbstractScreen temp = screenList[0];
             screenList[0] = screenList[1];
             screenList[1] = temp;
+
+            IdentifyScreens();
+        }
+
+        /// <summary>
+        /// Make sure the screens know their index in the list.
+        /// Should be called after any change to the screen list.
+        /// </summary>
+        private void IdentifyScreens()
+        {
+            for (int i = 0; i < screenList.Count; i++)
+                screenList[i].Identify(i);
         }
 
         /// <summary>
@@ -1134,11 +1148,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void OrganizeScreens()
         {
+            IdentifyScreens();
+
             view.OrganizeScreens(screenList);
             NotificationCenter.RaiseUpdateStatus();
-
-            for (int i = 0; i < screenList.Count; i++)
-                screenList[i].Identify(i);
 
             if (captureScreens.Count() == 0)
             {
@@ -3323,7 +3336,6 @@ namespace Kinovea.ScreenManager
             autoLaunchInProgress = true;
             foreach (IScreenDescriptor sd in screenDescriptors)
             {
-
                 // Note: the screens should work with copies of the screen descriptors, 
                 // to avoid saving the screen descriptor when they shouldn't. 
                 // If the window is in "specific screens" startup mode we should not 
@@ -3494,6 +3506,7 @@ namespace Kinovea.ScreenManager
 
             AddScreenEventHandlers(screen);
             screenList.Add(screen);
+            IdentifyScreens();
         }
         private void AddScreenEventHandlers(AbstractScreen screen)
         {

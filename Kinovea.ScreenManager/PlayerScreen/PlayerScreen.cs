@@ -385,7 +385,6 @@ namespace Kinovea.ScreenManager
         private HistoryStack historyStack; 
         private FrameServerPlayer frameServer;
         private bool synched;
-        private int index;
         private ReplayWatcher replayWatcher;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -431,8 +430,9 @@ namespace Kinovea.ScreenManager
             view.SaveDefaultPlayerAnnotationsAsked += (s, e) => SaveDefaultAnnotations(true);
             view.SaveDefaultCaptureAnnotationsAsked += (s, e) => SaveDefaultAnnotations(false);
             view.UnloadAnnotationsAsked += (s, e) => UnloadAnnotations();
-            view.ReloadDefaultPlayerAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(true);
-
+            view.ReloadDefaultPlayerAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(true, true);
+            view.LoadDefaultAnnotationsAsked += (s, e) => ReloadDefaultAnnotations(true, false);
+            
             // Implemented locally.
             view.StopWatcherAsked += View_StopWatcherAsked;
             view.StartWatcherAsked += View_StartWatcherAsked;
@@ -735,12 +735,6 @@ namespace Kinovea.ScreenManager
         {
             view.FullScreen(_bFullScreen);
         }
-
-        public override void Identify(int index)
-        {
-            this.index = index;
-        }
-        
 
         public override void ExecuteScreenCommand(int cmd)
         {
