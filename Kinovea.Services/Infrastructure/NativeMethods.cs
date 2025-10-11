@@ -11,6 +11,9 @@ namespace Kinovea.Services
         public const int SW_RESTORE = 9;
         public static uint WM_COPYDATA = 0x004A;
 
+        [DllImport("kernel32.dll")]
+        public static extern bool AttachConsole(int dwProcessId);
+
         [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static unsafe extern int memcpy(void* dest, void* src, int count);
 

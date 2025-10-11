@@ -43,18 +43,19 @@ namespace Kinovea.Services
         public static string RequestedWindowId { get; set; }
 
         /// <summary>
-        /// Screen descriptor optionally created during the parsing of the command line. 
-        /// This is for the -video argument or drag and dropping a video file directly on the program/shortcut.
+        /// Screen descriptors optionally created during the parsing of the command line. 
+        /// This is for the -video and -video2 arguments, or for drag and dropping a video 
+        /// directly on the program/shortcut.
         /// This is incompatible with starting on a specific window by name or id.
-        /// This descriptor will be placed in the window descriptors.
+        /// These descriptors will be injected in the window descriptors.
         /// </summary>
-        public static ScreenDescriptorPlayback CommandLineScreenDescriptor { get; set; }
+        public static List<IScreenDescriptor> ScreenList {get; set; } = new List<IScreenDescriptor>();
 
         /// <summary>
-        /// When starting on a single video with -video option, this describes the state of the navigation pane.
+        /// When starting on video path with -video option, this describes the state of the navigation pane.
         /// This is equivalent to .ExplorerVisible in the window descriptor.
-        /// Loading a single video is basically recreating a simplified window descriptor here, but 
-        /// we don't care about the other window-specific properties like splitter distances.
+        /// Loading via path is basically recreating a simplified window descriptor here, but 
+        /// we don't care about the other UI elements like splitter distances.
         /// </summary>
         public static bool ExplorerVisible { get; set; } = true;
     }

@@ -800,12 +800,12 @@ namespace Kinovea.Services
             // when drag and dropping a video file onto the program shortcut.
             // These are incompatible with starting on a specific window so
             // there shouldn't be any data loss here.
-            if (LaunchSettingsManager.CommandLineScreenDescriptor == null)
+            if (LaunchSettingsManager.ScreenList.Count == 0)
                 return;
             
             if (ActiveWindow.ScreenList.Count > 0)
             {
-                log.WarnFormat("Command line screen descriptor in non empty window");
+                log.WarnFormat("Command line tries to load screens in non empty window");
 
                 // This is not so great because when we start the program without any window spec
                 // it will pick the last window used… If that one is in "continue where you left off" mode
@@ -814,7 +814,7 @@ namespace Kinovea.Services
                 if (ActiveWindow.StartupMode == WindowStartupMode.ScreenList)
                 {
                     // In this case we should probably not force replace the screens.
-                    log.ErrorFormat("Command line screen descriptor in window with specific screen list. Ignoring command line.");
+                    log.ErrorFormat("Command line tries to load a screen in a window with specific screen list. Ignoring command line.");
                     return;
                 }
                 else
@@ -823,7 +823,11 @@ namespace Kinovea.Services
                 }
             }
 
-            ActiveWindow.ScreenList.Add(LaunchSettingsManager.CommandLineScreenDescriptor.Clone());
+            // Replace the screens.
+            foreach (var sd in LaunchSettingsManager.ScreenList)
+            {
+                ActiveWindow.ScreenList.Add(sd.Clone());
+            }
         }
 
         /// <summary>
