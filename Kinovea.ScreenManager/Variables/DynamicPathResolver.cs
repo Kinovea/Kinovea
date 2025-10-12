@@ -66,6 +66,33 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Returns true if we can show a menu to save the default KVA for the other screen type.
+        /// ex: in player screen, do we show a menu to save the default capture KVA?
+        /// When the KVA path contains variables it becomes screen-specific.
+        /// In this case to avoid any confusion we only show the menu of the corresponding screen type.
+        /// Uses the presence of "%" character as a proxy for "contains variables".
+        /// </summary>
+        public static bool CanSaveCrossDefaultKVA(bool forPlayer)
+        {
+            // In a player screen check if the capture kva is screen specific.
+            string defaultCaptureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
+            if (forPlayer && !string.IsNullOrEmpty(defaultCaptureKVA))
+            {
+                return !defaultCaptureKVA.Contains("%");
+            }
+
+            // In a capture screen check if the player kva is screen specific.
+            string defaultPlaybackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
+            if (!forPlayer && !string.IsNullOrEmpty(defaultPlaybackKVA))
+            {
+                return !defaultPlaybackKVA.Contains("%");
+            }
+
+            return true;
+        }
+
+
+        /// <summary>
         /// Build the basic context for the current date.
         /// Suitable for folders and files.
         /// </summary>

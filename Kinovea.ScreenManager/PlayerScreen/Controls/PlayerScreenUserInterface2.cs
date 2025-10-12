@@ -3666,6 +3666,8 @@ namespace Kinovea.ScreenManager
                 new ToolStripSeparator(),
                 mnuCloseScreen
             });
+
+            mnuSaveDefaultCaptureAnnotations.Visible = DynamicPathResolver.CanSaveCrossDefaultKVA(true);
         }
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
