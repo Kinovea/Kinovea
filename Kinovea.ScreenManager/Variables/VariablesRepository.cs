@@ -80,15 +80,18 @@ namespace Kinovea.ScreenManager
         public static void LoadFile(string file, Dictionary<string, string> savedContext = null)
         {
             string tableName = Path.GetFileNameWithoutExtension(file);
-            if (VariableTables.ContainsKey(tableName))
-            {
-                log.ErrorFormat("Variable table \"{0}\" already exists.", tableName);
-                return;
-            }
-
             VariableTable table = new VariableTable();
             table.Import(file);
-            VariableTables.Add(tableName, table);
+
+            if (VariableTables.ContainsKey(tableName))
+            {
+                log.WarnFormat("Variable table \"{0}\" already exists, replacing data.", tableName);
+                VariableTables[tableName] = table;
+            }
+            else
+            {
+                VariableTables.Add(tableName, table);
+            }
 
             // Restore the saved context if any.
             if (savedContext != null && savedContext.ContainsKey(tableName))

@@ -3174,12 +3174,33 @@ namespace Kinovea.ScreenManager
 
             // "Importing" a variable table means we copy the file to the variables directory and reload.
             // Copy the file to the variables directory.
-            string target = Path.Combine(Software.VariablesDirectory, Path.GetFileName(openFileDialog.FileName));
-            if (!File.Exists(target))
+            string filename = Path.GetFileName(openFileDialog.FileName);
+            string target = Path.Combine(Software.VariablesDirectory, filename);
+            bool canCopy = true;
+            bool inPlace = target == openFileDialog.FileName;
+            if (File.Exists(target) && !inPlace)
             {
-                File.Copy(openFileDialog.FileName, target);
+                // Ask for confirmation.
+                //string msgTitle = "File already exists";
+                string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
+                string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, filename).Replace("\\n", "\n");
+
+                DialogResult result = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (result != DialogResult.Yes)
+                    canCopy = false;
+            }
+            
+            if (!canCopy)
+            {
+                log.Warn("Import of Variable table cancelled.");
+                return;
             }
 
+            if (!inPlace)
+            {
+                File.Copy(openFileDialog.FileName, target, true);
+            }
+            
             // Load the variable table.
             VariablesRepository.LoadFile(target);
             OrganizeMenus();
