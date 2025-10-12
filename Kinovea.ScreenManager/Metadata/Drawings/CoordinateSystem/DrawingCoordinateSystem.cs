@@ -446,7 +446,7 @@ namespace Kinovea.ScreenManager
             // The point we just read is only valid in the reference frame.
             // We should wait until after we have reloaded the camera transforms
             // and compute the location of the coordinate system in 3D.
-            CalibrationHelper.SetOrigin(points["0"]);
+            CalibrationHelper?.SetOrigin(points["0"]);
             SignalTrackablePointMoved();
 
             r.ReadEndElement();
