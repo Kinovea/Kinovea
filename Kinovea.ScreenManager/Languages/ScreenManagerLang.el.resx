@@ -571,4 +571,10 @@
   <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
     <value>Άνοιγμα ως παρατηρητής φακέλου επανάληψης…</value>
   </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>Διάγραμμα</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Επίπεδο βαθμονόμησης</value>
+  </data>
 </root>
