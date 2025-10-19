@@ -1019,6 +1019,12 @@ namespace Kinovea.FileBrowser
             wizard.Dispose();
         }
 
+        private void btnCameraRefresh_Click(object sender, EventArgs e)
+        {
+            // Run one step of discovery. This can be used to manually refresh the list
+            // as we don't run auto-discovery while a camera is streaming/recording.
+            CameraTypeManager.DiscoveryStep();
+        }
         #endregion
 
         #region File list

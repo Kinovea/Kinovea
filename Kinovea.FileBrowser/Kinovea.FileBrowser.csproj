@@ -369,6 +369,9 @@
   <ItemGroup>
     <None Include="Resources\camera_video.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow_refresh.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
     <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />

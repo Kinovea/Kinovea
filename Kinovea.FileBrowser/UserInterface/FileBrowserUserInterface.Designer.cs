@@ -54,6 +54,7 @@ namespace Kinovea.FileBrowser
       this.label1 = new System.Windows.Forms.Label();
       this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
       this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
+      this.btnCameraRefresh = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.tabPageClassic.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitExplorerFiles)).BeginInit();
@@ -336,6 +337,7 @@ namespace Kinovea.FileBrowser
       // 
       // tabPageCameras
       // 
+      this.tabPageCameras.Controls.Add(this.btnCameraRefresh);
       this.tabPageCameras.Controls.Add(this.olvCameras);
       this.tabPageCameras.Controls.Add(this.lvCaptured);
       this.tabPageCameras.Controls.Add(this.lblCaptureHistory);
@@ -428,7 +430,7 @@ namespace Kinovea.FileBrowser
       this.label1.Location = new System.Drawing.Point(0, 8);
       this.label1.Name = "label1";
       this.label1.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-      this.label1.Size = new System.Drawing.Size(305, 20);
+      this.label1.Size = new System.Drawing.Size(272, 20);
       this.label1.TabIndex = 3;
       this.label1.Text = "Cameras";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -441,6 +443,24 @@ namespace Kinovea.FileBrowser
       this.imgListTabs.Images.SetKeyName(1, "shortcuts");
       this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
       this.imgListTabs.Images.SetKeyName(3, "camera");
+      // 
+      // btnCameraRefresh
+      // 
+      this.btnCameraRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCameraRefresh.BackColor = System.Drawing.Color.Transparent;
+      this.btnCameraRefresh.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.arrow_refresh;
+      this.btnCameraRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnCameraRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCameraRefresh.FlatAppearance.BorderSize = 0;
+      this.btnCameraRefresh.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnCameraRefresh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnCameraRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCameraRefresh.Location = new System.Drawing.Point(285, 8);
+      this.btnCameraRefresh.Name = "btnCameraRefresh";
+      this.btnCameraRefresh.Size = new System.Drawing.Size(20, 20);
+      this.btnCameraRefresh.TabIndex = 12;
+      this.btnCameraRefresh.UseVisualStyleBackColor = false;
+      this.btnCameraRefresh.Click += new System.EventHandler(this.btnCameraRefresh_Click);
       // 
       // FileBrowserUserInterface
       // 
@@ -493,5 +513,6 @@ namespace Kinovea.FileBrowser
         public System.Windows.Forms.Label lblFolders;
         private System.Windows.Forms.ListView lvCaptured;
         private BrightIdeasSoftware.ObjectListView olvCameras;
+        private System.Windows.Forms.Button btnCameraRefresh;
     }
 }
