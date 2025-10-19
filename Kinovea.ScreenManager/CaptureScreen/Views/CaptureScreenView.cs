@@ -242,6 +242,15 @@ namespace Kinovea.ScreenManager
                             changingContext = true;
                             tablePair.Value.CurrentKey = cb.SelectedItem.ToString();
                             VariablesRepository.SaveContext(UpdateCaptureFolder);
+
+                            // If we use dynamic default annotations reload them now.
+                            string defaultCaptureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
+                            bool isDynamic = DynamicPathResolver.IsDynamicPath(defaultCaptureKVA);
+                            if (isDynamic)
+                            {
+                                presenter.ReloadDefaultAnnotations(false, true);
+                            }
+
                             changingContext = false;
                         }
                     };

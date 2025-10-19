@@ -161,8 +161,8 @@ namespace Kinovea.ScreenManager
         private bool toggleRecordingInProgress;
 
         private bool prepareFailed;
-        private ImageDescriptor prepareFailedImageDescriptor;
-        private ImageDescriptor imageDescriptor;
+        private ImageDescriptor prepareFailedImageDescriptor = ImageDescriptor.Invalid;
+        private ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
         
         private CameraSummary cameraSummary;
         private CameraManager cameraManager;
@@ -1467,33 +1467,47 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Interpolate the capture folder and file name with the current context.
         /// </summary>
-        /// <returns></returns>
         private string BuildRecordingPath(bool video)
         {
             CaptureFolder cf = view.CaptureFolder;
             if (cf == null)
             {
-                log.ErrorFormat("Cannot start recording. No capture folder defined.");
+                log.ErrorFormat("Cannot build recording path. No capture folder defined.");
                 return null;
             }
 
             string filenameWithoutExtension = view.CurrentFilename;
-
-            string extension = "";
-            if (video)
+            string path = null;
+            try
             {
-                bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
-                extension = FilesystemHelper.GetCaptureVideoExtension(uncompressed);
-            }
-            else
-            {
-                extension = FilesystemHelper.GetCaptureImageExtension();
-            }
+                string extension = "";
+                if (video)
+                {
+                    // Because this function is called to create the tooltip of the capture folder combo,
+                    // the image descriptor may not be ready yet. In this case we don't build an accurate file path.
+                    // This has no impact on the actual file we record as we re-evaluate the extension at that time.
+                    bool uncompressed = 
+                            PreferencesManager.CapturePreferences.SaveUncompressedVideo &&
+                            imageDescriptor != null && 
+                            imageDescriptor != ImageDescriptor.Invalid &&
+                            imageDescriptor.Format != Services.ImageFormat.JPEG;
+                    
+                    extension = FilesystemHelper.GetCaptureVideoExtension(uncompressed);
+                }
+                else
+                {
+                    extension = FilesystemHelper.GetCaptureImageExtension();
+                }
         
-            Dictionary<string, string> context = BuildCaptureContext();
-            string folder = DynamicPathResolver.Resolve(cf.Path, context);
-            string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, context);
-            string path = Path.Combine(folder, filename + extension);
+                Dictionary<string, string> context = BuildCaptureContext();
+                string folder = DynamicPathResolver.Resolve(cf.Path, context);
+                string filename = DynamicPathResolver.Resolve(filenameWithoutExtension, context);
+                path = Path.Combine(folder, filename + extension);
+            }
+            catch (Exception exception)
+            {
+                log.Error("Exception while building the recording path.", exception);
+            }
 
             return path;
         }

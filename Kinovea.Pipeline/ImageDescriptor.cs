@@ -19,7 +19,7 @@ namespace Kinovea.Pipeline
         public bool TopDown { get; private set; }
         public int BufferSize { get; private set; }
         
-        private static ImageDescriptor invalid = new ImageDescriptor(ImageFormat.None, 0, 0, true, 0);
+        private static readonly ImageDescriptor invalid = new ImageDescriptor(ImageFormat.None, 0, 0, true, 0);
 
         public ImageDescriptor(ImageFormat format, int width, int height, bool topDown, int bufferSize)
         {

@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns true if we can show a menu to save the default KVA for the other screen type.
+        /// Returns true the default KVA for the passed screen type is dynamic.
         /// ex: in player screen, do we show a menu to save the default capture KVA?
         /// When the KVA path contains variables it becomes screen-specific.
         /// In this case to avoid any confusion we only show the menu of the corresponding screen type.
@@ -78,17 +78,22 @@ namespace Kinovea.ScreenManager
             string defaultCaptureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
             if (forPlayer && !string.IsNullOrEmpty(defaultCaptureKVA))
             {
-                return !defaultCaptureKVA.Contains("%");
+                return IsDynamicPath(defaultCaptureKVA);
             }
 
             // In a capture screen check if the player kva is screen specific.
             string defaultPlaybackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
             if (!forPlayer && !string.IsNullOrEmpty(defaultPlaybackKVA))
             {
-                return !defaultPlaybackKVA.Contains("%");
+                return IsDynamicPath(defaultPlaybackKVA);
             }
 
             return true;
+        }
+
+        public static bool IsDynamicPath(string path)
+        {
+            return !string.IsNullOrEmpty(path) && path.Contains("%");
         }
 
 

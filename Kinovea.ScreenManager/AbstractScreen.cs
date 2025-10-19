@@ -366,7 +366,19 @@ namespace Kinovea.ScreenManager
             string path = "";
             bool found = DynamicPathResolver.GetDefaultKVAPath(ref path, this, forPlayer);
             if (!found)
+            {
+                // We ask to reload the default and there is no default file: unload.
+                // This can happen when the default path is defined but there is nothing there, 
+                // because it's a dynamic path with variables that we haven't seen yet.
+                if (reload)
+                {
+                    BeforeUnloadingAnnotations();
+                    this.Metadata.Unload();
+                    AfterLastKVAPathChanged();
+                }
+
                 return;
+            }
 
             bool confirmed = (!reload) || BeforeUnloadingAnnotations();
             if (!confirmed)
@@ -376,6 +388,7 @@ namespace Kinovea.ScreenManager
                 this.Metadata.Unload();
             
             LoadKVA(path);
+            this.Metadata.ResetContentHash();
 
             // Never let the default file become the working file.
             this.Metadata.ResetKVAPath();
