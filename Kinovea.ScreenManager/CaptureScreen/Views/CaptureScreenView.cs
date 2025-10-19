@@ -89,6 +89,7 @@ namespace Kinovea.ScreenManager
         private bool contextEnabled = true;
         private bool changingContext;
         private Func<bool, string> buildRecordingPath;
+        private string memoContext = "";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -242,15 +243,7 @@ namespace Kinovea.ScreenManager
                             changingContext = true;
                             tablePair.Value.CurrentKey = cb.SelectedItem.ToString();
                             VariablesRepository.SaveContext(UpdateCaptureFolder);
-
-                            // If we use dynamic default annotations reload them now.
-                            string defaultCaptureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
-                            bool isDynamic = DynamicPathResolver.IsDynamicPath(defaultCaptureKVA);
-                            if (isDynamic)
-                            {
-                                presenter.ReloadDefaultAnnotations(false, true);
-                            }
-
+                            AfterContextUpdate();
                             changingContext = false;
                         }
                     };
@@ -265,7 +258,30 @@ namespace Kinovea.ScreenManager
                 pnlTitle.Height = 24;
             }
 
+            AfterContextUpdate();
+
             FitViewport();
+        }
+
+        /// <summary>
+        /// If the context string changed we may need to reload the default annotations.
+        /// </summary>
+        private void AfterContextUpdate()
+        {
+            if (presenter == null)
+                return;
+
+            string newContext = VariablesRepository.GetContextString();
+            if (newContext != memoContext)
+            {
+                string defaultCaptureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
+                if (DynamicPathResolver.IsDynamicPath(defaultCaptureKVA))
+                {
+                    presenter.ReloadDefaultAnnotations(false, true);
+                }
+            }
+
+            memoContext = newContext;
         }
 
         public void UpdateLoadStatus(float load)

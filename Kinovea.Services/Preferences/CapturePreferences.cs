@@ -149,14 +149,30 @@ namespace Kinovea.Services
             PreferencesManager.BeforeRead();
         }
 
-        public void AddCamera(CameraBlurb blurb)
+        /// <summary>
+        /// Add or update a camera blurb.
+        /// Returns true if we modified the alias.
+        /// </summary>
+        public bool AddCamera(CameraBlurb blurb)
         {
-            // Note: there should be a way to remove old entries.
-            if(cameraBlurbs.ContainsKey(blurb.Identifier))
-                cameraBlurbs.Remove(blurb.Identifier);
-                
-            cameraBlurbs.Add(blurb.Identifier, blurb);
+            bool modifiedAlias = false;
+            
+            if (cameraBlurbs.ContainsKey(blurb.Identifier))
+            {
+                string oldAlias = cameraBlurbs[blurb.Identifier].Alias;
+                if (oldAlias != blurb.Alias)
+                    modifiedAlias = true;
+
+                cameraBlurbs[blurb.Identifier] = blurb;
+            }
+            else
+            {
+                cameraBlurbs.Add(blurb.Identifier, blurb);
+            }
+
             Save();
+
+            return modifiedAlias;
         }
         
         public void RemoveCamera(string identifier)

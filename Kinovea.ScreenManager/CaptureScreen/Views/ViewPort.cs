@@ -380,7 +380,9 @@ namespace Kinovea.ScreenManager
             // Recompute the current zoom value to keep it in sync.
             float oldZoom = zoomHelper.Value;
             float newZoom = (float)displayRectangle.Size.Width / referenceSize.Width;
-            
+            if (oldZoom == newZoom)
+                return;
+
             zoomHelper.Value = newZoom;
             
             float maxDifference = 0.1f;

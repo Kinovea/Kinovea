@@ -1101,8 +1101,13 @@ namespace Kinovea.Root
                     // Another window has updated one of the camera metadata (name, icon).
                     // This is stored in the shared preferences.
                     // At this point we should already have detected the date change on the file.
+
                     log.DebugFormat("Camera metadata updated in an other window.");
                     PreferencesManager.BeforeRead();
+
+                    // Ignore the message if we don't have the camera tab open.
+                    if (WindowManager.ActiveWindow.ActiveTab != BrowserContentType.Cameras)
+                            break;
 
                     // Trigger one discovery step to update the navigation pane camera list and browser.
                     CameraTypeManager.DiscoveryStep();

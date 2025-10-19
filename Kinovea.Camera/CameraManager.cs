@@ -165,10 +165,11 @@ namespace Kinovea.Camera
 
         /// <summary>
         /// Called after the user personalizes a camera. Should persist the customized information.
+        /// Returns true if the alias has changed.
         /// </summary>
-        public void UpdatedCameraSummary(CameraSummary summary)
+        public bool UpdatedCameraSummary(CameraSummary summary)
         {
-            PreferencesManager.CapturePreferences.AddCamera(BlurbFromSummary(summary));
+            return PreferencesManager.CapturePreferences.AddCamera(BlurbFromSummary(summary));
         }
 
     }

@@ -150,9 +150,9 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Return a string representation of the currently selected context.
         /// </summary>
-        private static string GetContextString()
+        public static string GetContextString()
         {
-            // Stores the context as a comma separated list of "key:value" pairs in CSV compliant format.
+            // Returns the context as a comma separated list of "key:value" pairs in CSV compliant format.
             // Enclosed in quotes to handle commas in names. No spacing between cells.
             List<string> contexts = new List<string>();
             foreach (var table in VariableTables)

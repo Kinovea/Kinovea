@@ -227,14 +227,17 @@ namespace Kinovea.ScreenManager
 
         public void InitializeDisplayRectangle(Rectangle displayRectangle, Size referenceSize)
         {
+            this.displayRectangle = displayRectangle;
             view.InitializeDisplayRectangle(displayRectangle, referenceSize);
         }
 
         public void UpdateDisplayRectangle(Rectangle rectangle)
         {
+            if (rectangle == displayRectangle)
+                return;
+
             displayRectangle = rectangle;
-            if (DisplayRectangleUpdated != null)
-                DisplayRectangleUpdated(this, EventArgs.Empty);
+            DisplayRectangleUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         public void ToastMessage(string message, int duration)

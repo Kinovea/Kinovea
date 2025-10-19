@@ -219,12 +219,16 @@ namespace Kinovea.Camera
         /// </summary>
         public static void UpdatedCameraSummary(CameraSummary summary)
         {
-            summary.Manager.UpdatedCameraSummary(summary);
+            bool modifiedAlias = summary.Manager.UpdatedCameraSummary(summary);
 
-            // Trigger one discovery step so the navigation pane can consolidate its camera list.
+            // If the change involves the camera alias or icon we need to trigger 
+            // a discovery step so the navigation pane can consolidate its camera list.
+            if (!modifiedAlias)
+                return;
+
             DiscoveryStep();
 
-            // Send a global event to other instances.
+            // Also send a global event to other instances.
             WindowManager.SendMessage("Kinovea:Window.CameraUpdated");
         }
 
