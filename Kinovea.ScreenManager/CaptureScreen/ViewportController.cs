@@ -559,9 +559,7 @@ namespace Kinovea.ScreenManager
                 mnuCloseScreen
             });
 
-            bool canSaveDefaultPlayerKVA = DynamicPathResolver.CanSaveCrossDefaultKVA(false);
-            mnuSaveDefaultPlayerAnnotations.Visible = canSaveDefaultPlayerKVA;
-            mnuSaveDefaultPlayerAnnotations.Enabled = canSaveDefaultPlayerKVA;
+            mnuSaveDefaultPlayerAnnotations.Available = DynamicPathResolver.CanSaveCrossDefaultKVA(false);
         }
 
         /// <summary>
