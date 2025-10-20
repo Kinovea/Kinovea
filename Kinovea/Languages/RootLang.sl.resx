@@ -58,82 +58,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuSortBy" xml:space="preserve">
-    <value>Сортувати за</value>
+  <data name="dlgAbout_Translation" xml:space="preserve">
+    <value>Prevod</value>
   </data>
-  <data name="mnuSortBy_Size" xml:space="preserve">
-    <value>Розмір</value>
-  </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Відкрити як спостерігача за папкою відтворення</value>
-  </data>
-  <data name="lblFolders" xml:space="preserve">
-    <value>Папки</value>
+  <data name="dlgAbout_License" xml:space="preserve">
+    <value>Licenca</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve">
-    <value>Скасувати</value>
-  </data>
-  <data name="lblVideoFiles" xml:space="preserve">
-    <value>Відеофайли</value>
-  </data>
-  <data name="lblCaptureHistory" xml:space="preserve">
-    <value>Історія захоплення</value>
-  </data>
-  <data name="lblCameras" xml:space="preserve">
-    <value>Камери</value>
-  </data>
-  <data name="mnuAddShortcut" xml:space="preserve">
-    <value>Додати ярлик</value>
-  </data>
-  <data name="mnuAddToShortcuts" xml:space="preserve">
-    <value>Додати до ярликів</value>
-  </data>
-  <data name="mnuDeleteShortcut" xml:space="preserve">
-    <value>Видалити ярлик</value>
-  </data>
-  <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Знайти в провіднику Windows </value>
-  </data>
-  <data name="mnuVideoDelete" xml:space="preserve">
-    <value>Видалити файл</value>
-  </data>
-  <data name="ForgetCustomSettings" xml:space="preserve">
-    <value>Забути спеціальні налаштування</value>
-  </data>
-  <data name="Generic_Open" xml:space="preserve">
-    <value>Відкрити</value>
-  </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Провідник</value>
-  </data>
-  <data name="tabShortcuts" xml:space="preserve">
-    <value>Ярлик</value>
-  </data>
-  <data name="FormCameraWizard_Title" xml:space="preserve">
-    <value>Ручне підключення</value>
-  </data>
-  <data name="FormCameraWizard_CameraType" xml:space="preserve">
-    <value>Тип камери</value>
-  </data>
-  <data name="FormCameraWizard_Parameters" xml:space="preserve">
-    <value>Параметри</value>
-  </data>
-  <data name="FormCameraWizard_Test" xml:space="preserve">
-    <value>Тест</value>
-  </data>
-  <data name="FormCameraWizard_Create" xml:space="preserve">
-    <value>Створити камеру</value>
-  </data>
-  <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>Висхідний</value>
-  </data>
-  <data name="mnuSortBy_Date" xml:space="preserve">
-    <value>Дата</value>
-  </data>
-  <data name="mnuSortBy_Name" xml:space="preserve">
-    <value>Ім'я</value>
-  </data>
-  <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>Низхідний</value>
+    <value>Prekliči</value>
   </data>
 </root>

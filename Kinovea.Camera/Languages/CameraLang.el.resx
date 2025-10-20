@@ -108,7 +108,7 @@
     <value>Μορφή</value>
   </data>
   <data name="FormConnectionWizard_Authentication" xml:space="preserve">
-    <value>Πιστοποίηση</value>
+    <value>Αυθεντικοποίηση</value>
   </data>
   <data name="FormConnectionWizard_Password" xml:space="preserve">
     <value>Κωδικός</value>
@@ -136,5 +136,8 @@
   </data>
   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
     <value>Σελίδες ιδιοτήτων συσκευής</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Εξυπηρετητής (Διεύθυνση IP)</value>
   </data>
 </root>

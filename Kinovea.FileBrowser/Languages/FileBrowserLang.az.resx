@@ -58,82 +58,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuSortBy" xml:space="preserve">
-    <value>Сортувати за</value>
-  </data>
-  <data name="mnuSortBy_Size" xml:space="preserve">
-    <value>Розмір</value>
-  </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Відкрити як спостерігача за папкою відтворення</value>
-  </data>
   <data name="lblFolders" xml:space="preserve">
-    <value>Папки</value>
-  </data>
-  <data name="Generic_Cancel" xml:space="preserve">
-    <value>Скасувати</value>
+    <value>Qovluqlar</value>
   </data>
   <data name="lblVideoFiles" xml:space="preserve">
-    <value>Відеофайли</value>
+    <value>Video faylları</value>
   </data>
   <data name="lblCaptureHistory" xml:space="preserve">
-    <value>Історія захоплення</value>
+    <value>Görüntü tarixçəsi</value>
   </data>
   <data name="lblCameras" xml:space="preserve">
-    <value>Камери</value>
+    <value>Kameralar</value>
   </data>
   <data name="mnuAddShortcut" xml:space="preserve">
-    <value>Додати ярлик</value>
+    <value>Qısayol əlavə et</value>
   </data>
   <data name="mnuAddToShortcuts" xml:space="preserve">
-    <value>Додати до ярликів</value>
+    <value>Qısayollara əlavə et</value>
   </data>
   <data name="mnuDeleteShortcut" xml:space="preserve">
-    <value>Видалити ярлик</value>
+    <value>Qısayolu sil</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Знайти в провіднику Windows </value>
+    <value>Windows Fayl İdarəedicisində tap </value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
-    <value>Видалити файл</value>
+    <value>Faylı sil</value>
+  </data>
+  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
+    <value>Təkrar oynatma qovluğu müşahidəçisi kimi aç</value>
   </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
-    <value>Забути спеціальні налаштування</value>
+    <value>Fərdi parametrləri unut</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Ləğv et</value>
   </data>
   <data name="Generic_Open" xml:space="preserve">
-    <value>Відкрити</value>
+    <value>Aç</value>
   </data>
   <data name="tabExplorer" xml:space="preserve">
-    <value>Провідник</value>
+    <value>Fayl İdarəedicisi</value>
   </data>
   <data name="tabShortcuts" xml:space="preserve">
-    <value>Ярлик</value>
+    <value>Qısayollar</value>
   </data>
   <data name="FormCameraWizard_Title" xml:space="preserve">
-    <value>Ручне підключення</value>
+    <value>Əl ilə bağlantı</value>
   </data>
   <data name="FormCameraWizard_CameraType" xml:space="preserve">
-    <value>Тип камери</value>
+    <value>Kamera növü</value>
   </data>
   <data name="FormCameraWizard_Parameters" xml:space="preserve">
-    <value>Параметри</value>
+    <value>Parametrlər</value>
   </data>
   <data name="FormCameraWizard_Test" xml:space="preserve">
-    <value>Тест</value>
+    <value>Test</value>
   </data>
   <data name="FormCameraWizard_Create" xml:space="preserve">
-    <value>Створити камеру</value>
+    <value>Kamera yarat</value>
   </data>
   <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>Висхідний</value>
+    <value>Artan</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sırala</value>
   </data>
   <data name="mnuSortBy_Date" xml:space="preserve">
-    <value>Дата</value>
+    <value>Tarix</value>
   </data>
   <data name="mnuSortBy_Name" xml:space="preserve">
-    <value>Ім'я</value>
+    <value>Ad</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Ölçü</value>
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>Низхідний</value>
+    <value>Azalan</value>
   </data>
 </root>
