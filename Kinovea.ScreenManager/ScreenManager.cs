@@ -1025,6 +1025,13 @@ namespace Kinovea.ScreenManager
             // We need to also reset all the sync states.
             ResetSync();
         }
+
+        private void Player_DrawingAdded(object sender, EventArgs e)
+        {
+            // Make sure the export options are correctly enabled.
+            OrganizeMenus();
+        }
+
         private void Capture_CameraDiscoveryComplete(object sender, EventArgs<string> e)
         {
             // A capture screen has just completed its camera discovery,
@@ -3550,6 +3557,7 @@ namespace Kinovea.ScreenManager
             screen.KVAImported += Player_KVAImported;
             screen.FilterExited += Player_FilterExited;
             screen.ResetAsked += Player_ResetAsked;
+            screen.DrawingAdded += Player_DrawingAdded;
         }
         private void AddCaptureScreenEventHandlers(CaptureScreen screen)
         {
@@ -3576,6 +3584,7 @@ namespace Kinovea.ScreenManager
             screen.KVAImported -= Player_KVAImported;
             screen.FilterExited -= Player_FilterExited;
             screen.ResetAsked -= Player_ResetAsked;
+            screen.DrawingAdded -= Player_DrawingAdded;
         }
 
         private void RemoveCaptureScreenEventHandlers(CaptureScreen screen)

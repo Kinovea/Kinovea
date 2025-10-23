@@ -285,7 +285,8 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                // This is used to know if there is anything to draw on the images when saving.
+                // This is used to know if there is anything to draw on the images when saving
+                // and to know if we should enable the "Export spreadsheet" menu.
                 // All objects should be taken into account here, even those
                 // that we currently don't save to the .kva but only draw on the image.
                 return keyframes.Count > 0 ||

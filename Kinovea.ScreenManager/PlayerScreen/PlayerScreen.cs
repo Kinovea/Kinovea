@@ -50,6 +50,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
         public event EventHandler FilterExited;
         public event EventHandler ResetAsked;
+        public event EventHandler DrawingAdded;
         #endregion
 
         #region Properties
@@ -466,6 +467,7 @@ namespace Kinovea.ScreenManager
 
             frameServer.Metadata.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.Value);
             frameServer.Metadata.CameraCalibrationAsked += (s, e) => ShowCameraCalibration();
+            frameServer.Metadata.DrawingAdded += (s, e) => DrawingAdded?.Invoke(this, EventArgs.Empty);
         }
 
         #region General events handlers
