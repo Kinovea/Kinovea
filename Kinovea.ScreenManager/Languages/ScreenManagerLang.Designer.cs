@@ -61,6 +61,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert.
+        /// </summary>
+        public static string btnInsert {
+            get {
+                return ResourceManager.GetString("btnInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Synchronize videos on the current frames.
         /// </summary>
         public static string btnSync_ToolTip {
@@ -2041,6 +2050,78 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert context variable.
+        /// </summary>
+        public static string formInsertContextVariable_Title {
+            get {
+                return ResourceManager.GetString("formInsertContextVariable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string formInsertVariable_Description {
+            get {
+                return ResourceManager.GetString("formInsertVariable_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example.
+        /// </summary>
+        public static string formInsertVariable_Example {
+            get {
+                return ResourceManager.GetString("formInsertVariable_Example", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyword.
+        /// </summary>
+        public static string formInsertVariable_Keyword {
+            get {
+                return ResourceManager.GetString("formInsertVariable_Keyword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable post-recording command.
+        /// </summary>
+        public static string formPostRecordingCommand_EnablePostRecordingCommand {
+            get {
+                return ResourceManager.GetString("formPostRecordingCommand_EnablePostRecordingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert a variable….
+        /// </summary>
+        public static string formPostRecordingCommand_InsertAVariable {
+            get {
+                return ResourceManager.GetString("formPostRecordingCommand_InsertAVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save and continue.
+        /// </summary>
+        public static string formPostRecordingCommand_SaveAndContinue {
+            get {
+                return ResourceManager.GetString("formPostRecordingCommand_SaveAndContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post-recording command.
+        /// </summary>
+        public static string formPostRecordingCommand_Title {
+            get {
+                return ResourceManager.GetString("formPostRecordingCommand_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Progress.
         /// </summary>
         public static string FormProgressBar_Title {
@@ -2878,6 +2959,33 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure camera….
+        /// </summary>
+        public static string mnuConfigureCamera {
+            get {
+                return ResourceManager.GetString("mnuConfigureCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure capture folders.
+        /// </summary>
+        public static string mnuConfigureCaptureFolders {
+            get {
+                return ResourceManager.GetString("mnuConfigureCaptureFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Context.
+        /// </summary>
+        public static string mnuContext {
+            get {
+                return ResourceManager.GetString("mnuContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Coordinate system.
         /// </summary>
         public static string mnuCoordinateSystem {
@@ -2964,6 +3072,24 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuDeleteEndOfTrajectory {
             get {
                 return ResourceManager.GetString("mnuDeleteEndOfTrajectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete tracks.
+        /// </summary>
+        public static string mnuDeleteTracks {
+            get {
+                return ResourceManager.GetString("mnuDeleteTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete tracks after this point.
+        /// </summary>
+        public static string mnuDeleteTracksAfterThisPoint {
+            get {
+                return ResourceManager.GetString("mnuDeleteTracksAfterThisPoint", resourceCulture);
             }
         }
         
@@ -3418,6 +3544,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string mnuNext {
+            get {
+                return ResourceManager.GetString("mnuNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One capture screen.
         /// </summary>
         public static string mnuOneCapture {
@@ -3432,6 +3567,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuOnePlayer {
             get {
                 return ResourceManager.GetString("mnuOnePlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open folder….
+        /// </summary>
+        public static string mnuOpenFolder {
+            get {
+                return ResourceManager.GetString("mnuOpenFolder", resourceCulture);
             }
         }
         
@@ -3643,11 +3787,56 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Post-recording command….
+        /// </summary>
+        public static string mnuPostRecordingCommand {
+            get {
+                return ResourceManager.GetString("mnuPostRecordingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous.
+        /// </summary>
+        public static string mnuPrevious {
+            get {
+                return ResourceManager.GetString("mnuPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Properties.
         /// </summary>
         public static string mnuProperties {
             get {
                 return ResourceManager.GetString("mnuProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload default capture annotations.
+        /// </summary>
+        public static string mnuReloadDefaultCaptureAnnotations {
+            get {
+                return ResourceManager.GetString("mnuReloadDefaultCaptureAnnotations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload default player annotations.
+        /// </summary>
+        public static string mnuReloadDefaultPlayerAnnotations {
+            get {
+                return ResourceManager.GetString("mnuReloadDefaultPlayerAnnotations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload linked annotations.
+        /// </summary>
+        public static string mnuReloadLinkedAnnotations {
+            get {
+                return ResourceManager.GetString("mnuReloadLinkedAnnotations", resourceCulture);
             }
         }
         
@@ -3697,6 +3886,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save as default capture annotations.
+        /// </summary>
+        public static string mnuSaveAsDefaultCaptureAnnotations {
+            get {
+                return ResourceManager.GetString("mnuSaveAsDefaultCaptureAnnotations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as default player annotations.
+        /// </summary>
+        public static string mnuSaveAsDefaultPlayerAnnotations {
+            get {
+                return ResourceManager.GetString("mnuSaveAsDefaultPlayerAnnotations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set style as default.
         /// </summary>
         public static string mnuSetStyleAsDefault {
@@ -3729,6 +3936,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuShowBefore {
             get {
                 return ResourceManager.GetString("mnuShowBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show circle.
+        /// </summary>
+        public static string mnuShowCircle {
+            get {
+                return ResourceManager.GetString("mnuShowCircle", resourceCulture);
             }
         }
         
@@ -3810,6 +4026,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuSortBy_Size {
             get {
                 return ResourceManager.GetString("mnuSortBy_Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stabilization.
+        /// </summary>
+        public static string mnuStabilization {
+            get {
+                return ResourceManager.GetString("mnuStabilization", resourceCulture);
             }
         }
         
@@ -3945,6 +4170,24 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuTwoPlayers {
             get {
                 return ResourceManager.GetString("mnuTwoPlayers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unload annotations.
+        /// </summary>
+        public static string mnuUnloadAnnotations {
+            get {
+                return ResourceManager.GetString("mnuUnloadAnnotations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical layout.
+        /// </summary>
+        public static string mnuVerticalLayout {
+            get {
+                return ResourceManager.GetString("mnuVerticalLayout", resourceCulture);
             }
         }
         
@@ -4458,6 +4701,168 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_trkSelection {
             get {
                 return ResourceManager.GetString("ToolTip_trkSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation file name.
+        /// </summary>
+        public static string variable_AnnotationFileName {
+            get {
+                return ResourceManager.GetString("variable_AnnotationFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera alias.
+        /// </summary>
+        public static string variable_CameraAlias {
+            get {
+                return ResourceManager.GetString("variable_CameraAlias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera frame rate.
+        /// </summary>
+        public static string variable_CameraFrameRate {
+            get {
+                return ResourceManager.GetString("variable_CameraFrameRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date (ISO 8601).
+        /// </summary>
+        public static string variable_DateISO8601 {
+            get {
+                return ResourceManager.GetString("variable_DateISO8601", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Day.
+        /// </summary>
+        public static string variable_Day {
+            get {
+                return ResourceManager.GetString("variable_Day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File extension.
+        /// </summary>
+        public static string variable_FileExtension {
+            get {
+                return ResourceManager.GetString("variable_FileExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name with extension.
+        /// </summary>
+        public static string variable_FileNameWithExtension {
+            get {
+                return ResourceManager.GetString("variable_FileNameWithExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name without extension.
+        /// </summary>
+        public static string variable_FileNameWithoutExtension {
+            get {
+                return ResourceManager.GetString("variable_FileNameWithoutExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hours.
+        /// </summary>
+        public static string variable_Hours {
+            get {
+                return ResourceManager.GetString("variable_Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Milliseconds.
+        /// </summary>
+        public static string variable_Milliseconds {
+            get {
+                return ResourceManager.GetString("variable_Milliseconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minute.
+        /// </summary>
+        public static string variable_Minutes {
+            get {
+                return ResourceManager.GetString("variable_Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Months.
+        /// </summary>
+        public static string variable_Month {
+            get {
+                return ResourceManager.GetString("variable_Month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path to capture folder.
+        /// </summary>
+        public static string variable_PathToCaptureFolder {
+            get {
+                return ResourceManager.GetString("variable_PathToCaptureFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path to video file.
+        /// </summary>
+        public static string variable_PathToVideoFile {
+            get {
+                return ResourceManager.GetString("variable_PathToVideoFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received framerate.
+        /// </summary>
+        public static string variable_ReceivedFrameRate {
+            get {
+                return ResourceManager.GetString("variable_ReceivedFrameRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seconds.
+        /// </summary>
+        public static string variable_Seconds {
+            get {
+                return ResourceManager.GetString("variable_Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time (ISO 8601).
+        /// </summary>
+        public static string variable_TimeISO8601 {
+            get {
+                return ResourceManager.GetString("variable_TimeISO8601", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        public static string variable_Year {
+            get {
+                return ResourceManager.GetString("variable_Year", resourceCulture);
             }
         }
         

@@ -1094,4 +1094,25 @@
   <data name="FormCrashRecovery_Recover" xml:space="preserve">
     <value>Atkūrimas</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Kameros pseudonimas</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Metai</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Sekundė</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Gautas kadrų dažnis</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Mėnuo</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Diena</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minutė</value>
+  </data>
 </root>

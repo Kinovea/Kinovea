@@ -1249,6 +1249,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preset {0}:.
+        /// </summary>
+        internal static string lblPreset {
+            get {
+                return ResourceManager.GetString("lblPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About Kinovea….
         /// </summary>
         internal static string mnuAbout {

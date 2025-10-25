@@ -1361,4 +1361,25 @@
   <data name="DataAnalysis_TimeModel" xml:space="preserve">
     <value>Aika :</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Kameran nimimerkki</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Vuosi</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Sekunti</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Vastaanotettu kuvataajuus</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Kuukausi</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Päivä</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minuutti</value>
+  </data>
 </root>

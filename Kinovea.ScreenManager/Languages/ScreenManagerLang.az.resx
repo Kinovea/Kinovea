@@ -58,4 +58,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Kamera təxəllüsü</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>İl</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Saniyə</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Alınan çərçivə sürəti</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Ay</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Gün</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Dəqiqə</value>
+  </data>
 </root>

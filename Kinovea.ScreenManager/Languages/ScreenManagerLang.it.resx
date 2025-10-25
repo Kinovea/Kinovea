@@ -1361,4 +1361,25 @@
   <data name="mnuExport_Spreadsheet" xml:space="preserve">
     <value>Esporta un foglio di calcolo</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Alias fotocamera</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Anno</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Secondo</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Framerate ricevuto</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Mese</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Giorno</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minuto</value>
+  </data>
 </root>

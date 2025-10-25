@@ -1094,4 +1094,25 @@
   <data name="FormIconPicker_Title" xml:space="preserve">
     <value>Iconuri</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Alias al camerei</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Anul</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Secunda</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Rata de cadre primite</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Luna</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Ziua</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minutul</value>
+  </data>
 </root>

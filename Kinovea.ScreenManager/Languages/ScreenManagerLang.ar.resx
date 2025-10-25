@@ -1139,4 +1139,25 @@
   <data name="Generic_OK" xml:space="preserve">
     <value>حسناً</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>الاسم المستعار للكاميرا</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>السنة</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>الثانية</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>معدل الكادرات المستلمة</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>الشهر</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>اليوم</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>الدقيقة</value>
+  </data>
 </root>

@@ -467,7 +467,7 @@ namespace Kinovea.FileBrowser
             // Menus
             mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
             mnuLocateFolder.Text = FileBrowserLang.mnuVideoLocate;
-            mnuDeleteShortcut.Text = "Remove from shortcuts";
+            mnuDeleteShortcut.Text = Kinovea.FileBrowser.Languages.FileBrowserLang.mnuRemoveFromShortcuts;
             mnuSortBy.Text = FileBrowserLang.mnuSortBy;
             mnuSortByName.Text = FileBrowserLang.mnuSortBy_Name;
             mnuSortByDate.Text = FileBrowserLang.mnuSortBy_Date;
@@ -482,9 +482,9 @@ namespace Kinovea.FileBrowser
 
             // ToolTips
             //ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
-            ttTabs.SetToolTip(tabPageClassic, "File system");
-            ttTabs.SetToolTip(tabPageShortcuts, "Shortcuts");
-            ttTabs.SetToolTip(tabPageCameras, "Cameras");
+            ttTabs.SetToolTip(tabPageClassic, Kinovea.FileBrowser.Languages.FileBrowserLang.navPane_FileSystem);
+            ttTabs.SetToolTip(tabPageShortcuts, Kinovea.FileBrowser.Languages.FileBrowserLang.tabShortcuts);
+            ttTabs.SetToolTip(tabPageCameras, Kinovea.FileBrowser.Languages.FileBrowserLang.tabCameras);
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
             ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
         }

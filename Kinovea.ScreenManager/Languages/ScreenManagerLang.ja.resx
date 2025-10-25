@@ -1370,4 +1370,25 @@
   <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
     <value>横線を表示</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>カメラの別名</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>年</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>受信フレームレート</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>月</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>日</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>分</value>
+  </data>
 </root>

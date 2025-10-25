@@ -502,4 +502,25 @@
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>แสดงวงกลมที่เหมาะสมที่สุด</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>ชื่อของกล้อง</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>ปี</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>วินาที</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>เฟรมเรทที่ได้รับ</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>เดือน</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>วัน</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>นาที</value>
+  </data>
 </root>

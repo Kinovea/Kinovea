@@ -1340,4 +1340,25 @@
   <data name="mnuExport_Video" xml:space="preserve">
     <value>导出视频</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>摄像机别名</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>年</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>接收的帧率</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>月</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>天</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>分钟</value>
+  </data>
 </root>

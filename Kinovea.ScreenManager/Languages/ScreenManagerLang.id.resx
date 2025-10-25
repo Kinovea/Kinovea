@@ -1375,4 +1375,25 @@
   <data name="DrawingCounter_Double" xml:space="preserve">
     <value>Ganda</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Nama lain kamera</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Tahun</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Detik</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Framerate diterima</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Bulan</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Hari</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Menit</value>
+  </data>
 </root>

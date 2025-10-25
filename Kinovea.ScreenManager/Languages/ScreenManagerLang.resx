@@ -1644,4 +1644,139 @@
   <data name="filterName_LensCalibration" xml:space="preserve">
     <value>Lens calibration</value>
   </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>Configure camera…</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Post-recording command…</value>
+  </data>
+  <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Save as default player annotations</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Save as default capture annotations</value>
+  </data>
+  <data name="mnuUnloadAnnotations" xml:space="preserve">
+    <value>Unload annotations</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Reload default capture annotations</value>
+  </data>
+  <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
+    <value>Reload linked annotations</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>Post-recording command</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>Enable post-recording command</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>Insert a variable…</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>Save and continue</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>Show circle</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>Open folder…</value>
+  </data>
+  <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Reload default player annotations</value>
+  </data>
+  <data name="mnuDeleteTracksAfterThisPoint" xml:space="preserve">
+    <value>Delete tracks after this point</value>
+  </data>
+  <data name="mnuDeleteTracks" xml:space="preserve">
+    <value>Delete tracks</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Configure capture folders</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>Stabilization</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>Context</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>Insert context variable</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>Example</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>Keyword</value>
+  </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Camera alias</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>Camera frame rate</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Received framerate</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>Path to video file</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>Path to capture folder</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>File name with extension</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>File name without extension</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>File extension</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>Annotation file name</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>Date (ISO 8601)</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Months</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="variable_TimeISO8601" xml:space="preserve">
+    <value>Time (ISO 8601)</value>
+  </data>
+  <data name="variable_Hours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Seconds</value>
+  </data>
+  <data name="variable_Milliseconds" xml:space="preserve">
+    <value>Milliseconds</value>
+  </data>
+  <data name="mnuNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="mnuPrevious" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="mnuVerticalLayout" xml:space="preserve">
+    <value>Vertical layout</value>
+  </data>
 </root>

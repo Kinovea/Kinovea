@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
         {
             ToolStripMenuItem mnuConfigureCaptureFolders = new ToolStripMenuItem();
             mnuConfigureCaptureFolders.Image = Properties.Capture.explorer_video;
-            mnuConfigureCaptureFolders.Text = "Configure capture folders";
+            mnuConfigureCaptureFolders.Text = ScreenManagerLang.mnuConfigureCaptureFolders;
 
             mnuConfigureCaptureFolders.Click += (s, e) => {
                 NotificationCenter.RaisePreferenceTabAsked(PreferenceTab.Capture_Paths);

@@ -196,6 +196,15 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove from shortcuts.
+        /// </summary>
+        internal static string mnuRemoveFromShortcuts {
+            get {
+                return ResourceManager.GetString("mnuRemoveFromShortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sort by.
         /// </summary>
         internal static string mnuSortBy {
@@ -264,6 +273,24 @@ namespace Kinovea.FileBrowser.Languages {
         internal static string mnuVideoLocate {
             get {
                 return ResourceManager.GetString("mnuVideoLocate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File system.
+        /// </summary>
+        internal static string navPane_FileSystem {
+            get {
+                return ResourceManager.GetString("navPane_FileSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cameras.
+        /// </summary>
+        internal static string tabCameras {
+            get {
+                return ResourceManager.GetString("tabCameras", resourceCulture);
             }
         }
         

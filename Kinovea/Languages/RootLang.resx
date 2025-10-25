@@ -759,4 +759,7 @@
   <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
     <value>Enable pixel filtering</value>
   </data>
+  <data name="lblPreset" xml:space="preserve">
+    <value>Preset {0}:</value>
+  </data>
 </root>

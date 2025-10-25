@@ -1990,14 +1990,14 @@ namespace Kinovea.ScreenManager
         {
             // Menus to move to next/previous profile.
             ToolStripMenuItem mnuNext = new ToolStripMenuItem();
-            mnuNext.Text = "Next";
+            mnuNext.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuNext;
             mnuNext.Image = Properties.Resources.arrow_down2_16;
             mnuNext.Click += (s, e) => {
                 MoveToNextProfile(mnuTable, true);
             };
 
             ToolStripMenuItem mnuPrev = new ToolStripMenuItem();
-            mnuPrev.Text = "Previous";
+            mnuPrev.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuPrevious;
             mnuPrev.Image = Properties.Resources.arrow_up2_16;
             mnuPrev.Click += (s, e) => {
                 MoveToNextProfile(mnuTable, false);
@@ -2088,7 +2088,7 @@ namespace Kinovea.ScreenManager
             mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSave.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
-            mnuUnloadAnnotations.Text = "Unload annotations";
+            mnuUnloadAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuUnloadAnnotations;
 
             mnuExportVideo.Text = ScreenManagerLang.mnuExport_Video;
             mnuExportVideoVideo.Text = ScreenManagerLang.mnuExport_Video_Video;
@@ -2110,7 +2110,6 @@ namespace Kinovea.ScreenManager
             mnuExportTXTTrajectory.Text = "Trajectory text…";
             mnuExportJSON.Text = "JSON…";
 
-
             mnuExportDocument.Text = ScreenManagerLang.mnuExport_Document;
             mnuExportODT.Text = "LibreOffice Writer…";
             mnuExportDOCX.Text = "Microsoft Word…";
@@ -2131,7 +2130,7 @@ namespace Kinovea.ScreenManager
             mnuTwoCaptures.Text = ScreenManagerLang.mnuTwoCaptures;
             mnuTwoMixed.Text = ScreenManagerLang.mnuTwoMixed;
             mnuToggleCommonCtrls.Text = ScreenManagerLang.mnuToggleCommonCtrls;
-            mnuVerticalLayout.Text = "Vertical layout";
+            mnuVerticalLayout.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuVerticalLayout;
             mnuSwapScreens.Text = ScreenManagerLang.mnuSwapScreens;
 
             // Image
@@ -2156,7 +2155,7 @@ namespace Kinovea.ScreenManager
             mnuDemosaicGRBG.Text = "GRBG";
             mnuDemosaicGBRG.Text = "GBRG";
 
-            mnuStabilization.Text = "Stabilization";
+            mnuStabilization.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuStabilization;
             mnuStabilizationTrackNone.Text = ScreenManagerLang.ScreenManagerKernel_LensCalibration_None;
 
             RefreshCultureMenuFilters();
@@ -2179,8 +2178,8 @@ namespace Kinovea.ScreenManager
             mnuAngleAngleDiagram.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
 
             // Options
-            mnuVariables.Text = "Context";
-            mnuImportVariables.Text = "Import…";
+            mnuVariables.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuContext;
+            mnuImportVariables.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.Generic_Import;
         }
 
         private void RefreshCultureMenuFilters()

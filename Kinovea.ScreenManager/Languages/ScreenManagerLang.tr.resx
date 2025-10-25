@@ -995,4 +995,25 @@
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>Azalan</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Kamera diğer adı</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Yıl</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Saniye</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Alınan framerate</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Ay</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Gün</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Dakika</value>
+  </data>
 </root>

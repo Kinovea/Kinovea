@@ -39,8 +39,8 @@ namespace Kinovea.ScreenManager
         public FormInsertVariable(ContextVariableCategory categories, string path = null)
         {
             InitializeComponent();
-            this.Text = "Insert context variable";
-            btnOk.Text = "Insert";
+            this.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formInsertContextVariable_Title;
+            btnOk.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.btnInsert;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             PrepareListView();
             InitList(categories, path);
@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
             colDesc.IsEditable = false;
             colDesc.MinimumWidth = 200;
             colDesc.TextAlign = HorizontalAlignment.Left;
-            colDesc.Text = "Description";
+            colDesc.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formInsertVariable_Description;
             
 
             var colExample = new OLVColumn();
@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
             colExample.MinimumWidth = 100;
             colExample.FillsFreeSpace = true;
             colExample.TextAlign = HorizontalAlignment.Left;
-            colExample.Text = "Example";
+            colExample.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formInsertVariable_Example;
 
             var colKeyword = new OLVColumn();
             colKeyword.AspectName = "Keyword";
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
             colKeyword.MinimumWidth = 100;
             colKeyword.MaximumWidth = 100;
             colKeyword.TextAlign = HorizontalAlignment.Left;
-            colKeyword.Text = "Keyword";
+            colKeyword.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formInsertVariable_Keyword;
 
             olvVariables.AllColumns.AddRange(new OLVColumn[] {
                 colDesc,
@@ -135,9 +135,9 @@ namespace Kinovea.ScreenManager
             if ((categories & ContextVariableCategory.Camera) == ContextVariableCategory.Camera)
             {
                 Color cameraColor = Color.MistyRose;
-                rows.Add(MakeRow("Camera alias", "webcam", "camalias", cameraColor));
-                rows.Add(MakeRow("Camera frame rate", "100.00", "camfps", cameraColor));
-                rows.Add(MakeRow("Received frame rate", "100.00", "recvfps", cameraColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_CameraAlias, "webcam", "camalias", cameraColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_CameraFrameRate, "100.00", "camfps", cameraColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_ReceivedFrameRate, "100.00", "recvfps", cameraColor));
             }
 
             if ((categories & ContextVariableCategory.PostRecordingCommand) == ContextVariableCategory.PostRecordingCommand)
@@ -146,34 +146,34 @@ namespace Kinovea.ScreenManager
                     path = "D:\\temp\\videos\\video.mp4";
 
                 Color commandColor = Color.MistyRose;
-                rows.Add(MakeRow("Path to video file", path, "filepath", commandColor));
-                rows.Add(MakeRow("Path to capture folder", Path.GetDirectoryName(path), "folderpath", commandColor));
-                rows.Add(MakeRow("File name with extension", Path.GetFileName(path), "filename.ext", commandColor));
-                rows.Add(MakeRow("File name without extension", Path.GetFileNameWithoutExtension(path), "filename", commandColor));
-                rows.Add(MakeRow("File extension", Path.GetExtension(path).Substring(1), "ext", commandColor));
-                rows.Add(MakeRow("Annotation file name", Path.GetFileNameWithoutExtension(path) + ".kva", "kva", commandColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_PathToVideoFile, path, "filepath", commandColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_PathToCaptureFolder, Path.GetDirectoryName(path), "folderpath", commandColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_FileNameWithExtension, Path.GetFileName(path), "filename.ext", commandColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_FileNameWithoutExtension, Path.GetFileNameWithoutExtension(path), "filename", commandColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_FileExtension, Path.GetExtension(path).Substring(1), "ext", commandColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_AnnotationFileName, Path.GetFileNameWithoutExtension(path) + ".kva", "kva", commandColor));
             }
 
             if ((categories & ContextVariableCategory.Date) == ContextVariableCategory.Date)
             {
                 // Date variables.
                 Color dateColor = Color.LightCyan;
-                rows.Add(MakeRow("Date (ISO 8601)", string.Format("{0:yyyy-MM-dd}", now), "date", dateColor));
-                rows.Add(MakeRow("Date (ISO 8601)", string.Format("{0:yyyyMMdd}", now), "dateb", dateColor));
-                rows.Add(MakeRow("Year", string.Format("{0:yyyy}", now), "year", dateColor));
-                rows.Add(MakeRow("Month", string.Format("{0:MM}", now), "month", dateColor));
-                rows.Add(MakeRow("Day", string.Format("{0:dd}", now), "day", dateColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_DateISO8601, string.Format("{0:yyyy-MM-dd}", now), "date", dateColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_DateISO8601, string.Format("{0:yyyyMMdd}", now), "dateb", dateColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_Year, string.Format("{0:yyyy}", now), "year", dateColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_Month, string.Format("{0:MM}", now), "month", dateColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_Day, string.Format("{0:dd}", now), "day", dateColor));
             }
 
             if ((categories & ContextVariableCategory.Time) == ContextVariableCategory.Time)
             {
                 // Time variables.
                 Color timeColor = Color.Lavender;
-                rows.Add(MakeRow("Time (ISO 8601)", string.Format("{0:HHmmss}", now), "time", timeColor));
-                rows.Add(MakeRow("Hours", string.Format("{0:HH}", now), "hour", timeColor));
-                rows.Add(MakeRow("Minutes", string.Format("{0:mm}", now), "minute", timeColor));
-                rows.Add(MakeRow("Seconds", string.Format("{0:ss}", now), "second", timeColor));
-                rows.Add(MakeRow("Milliseconds", string.Format("{0:fff}", now), "millisecond", timeColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_TimeISO8601, string.Format("{0:HHmmss}", now), "time", timeColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_Hours, string.Format("{0:HH}", now), "hour", timeColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_Minutes, string.Format("{0:mm}", now), "minute", timeColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_Seconds, string.Format("{0:ss}", now), "second", timeColor));
+                rows.Add(MakeRow(Kinovea.ScreenManager.Languages.ScreenManagerLang.variable_Milliseconds, string.Format("{0:fff}", now), "millisecond", timeColor));
             }
 
             olvVariables.SetObjects(rows);

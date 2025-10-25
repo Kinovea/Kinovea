@@ -1579,4 +1579,25 @@
   <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
     <value>Podešavanje snopa</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Alias kamera</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Godina</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Sekunda</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Primljen broj kadrova u sekundi</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Mjesec</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Dan</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minuta</value>
+  </data>
 </root>

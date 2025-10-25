@@ -1160,4 +1160,25 @@
   <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
     <value>alle Zeiten löschen</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Kamera-Name</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Jahr</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Sekunde</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Empfangene Bildrate</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Monat</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minute</value>
+  </data>
 </root>

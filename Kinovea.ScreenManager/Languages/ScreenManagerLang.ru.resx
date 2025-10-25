@@ -1445,4 +1445,25 @@
   <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
     <value>Нумерация на основе нулей</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Наименование камеры</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Год</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Секунда</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Полученная частота кадров</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Месяц</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>День</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Минута</value>
+  </data>
 </root>

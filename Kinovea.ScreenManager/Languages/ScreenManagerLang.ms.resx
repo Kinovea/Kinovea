@@ -361,4 +361,25 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>Keluar</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Alias kamera</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Tahun</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Saat</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Kadar bingkai diterima</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Bulan</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Hari</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minit</value>
+  </data>
 </root>

@@ -1592,4 +1592,25 @@
   <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
     <value>Wielkość etykiety</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Nazwa Kamery</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Rok</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Sekunda</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Lidzba klatek na sekunde odbiornika</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Miesiąc</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Dzień</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minuta</value>
+  </data>
 </root>

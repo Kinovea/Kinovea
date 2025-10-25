@@ -284,18 +284,18 @@ namespace Kinovea.Root
                 if (((ScreenDescriptorPlayback)screen).IsReplayWatcher)
                 {
                     btn.Image = Properties.Resources.user_detective;
-                    lbl.Text = string.Format("Replay: {0}", screen.FriendlyName);
+                    lbl.Text = string.Format(Kinovea.Root.Languages.RootLang.formWindowProperties_Replay0, screen.FriendlyName);
                 }
                 else
                 {
                     btn.Image = Properties.Resources.television;
-                    lbl.Text = string.Format("Playback: {0}", screen.FriendlyName);
+                    lbl.Text = string.Format(Kinovea.Root.Languages.RootLang.formWindowProperties_Playback0, screen.FriendlyName);
                 }
             }
             else if (screen.ScreenType == ScreenType.Capture)
             {
                 btn.Image = Properties.Resources.camera_video;
-                lbl.Text = string.Format("Capture: {0}", screen.FriendlyName);
+                lbl.Text = string.Format(Kinovea.Root.Languages.RootLang.formWindowProperties_Capture0, screen.FriendlyName);
             }
         }
 

@@ -462,19 +462,19 @@ namespace Kinovea.ScreenManager
         private void ReloadMenusCulture()
         {
             // Background context menu
-            mnuConfigure.Text = "Configure camera…";
-            mnuCommand.Text = "Post-recording command…";
+            mnuConfigure.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuConfigureCamera;
+            mnuCommand.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuPostRecordingCommand;
             //mnuBackground.Text = ScreenManagerLang.PlayerScreenUserInterface_Background;
             //mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             //mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
-            mnuSaveDefaultPlayerAnnotations.Text = "Save as default player annotations";
-            mnuSaveDefaultCaptureAnnotations.Text = "Save as default capture annotations";
-            mnuUnloadAnnotations.Text = "Unload annotations";
-            mnuReloadDefaultCaptureAnnotations.Text = "Reload default capture annotations";
-            mnuReloadLinkedAnnotations.Text = "Reload linked annotations";
+            mnuSaveDefaultPlayerAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuSaveAsDefaultPlayerAnnotations;
+            mnuSaveDefaultCaptureAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuSaveAsDefaultCaptureAnnotations;
+            mnuUnloadAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuUnloadAnnotations;
+            mnuReloadDefaultCaptureAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuReloadDefaultCaptureAnnotations;
+            mnuReloadLinkedAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuReloadLinkedAnnotations;
             //mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             //mnuExportImage.Text = ScreenManagerLang.Generic_SaveImage;
             //mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
@@ -524,12 +524,12 @@ namespace Kinovea.ScreenManager
             {
                 string filename = Path.GetFileName(lastExportedKVA);
                 mnuReloadLinkedAnnotations.Text = string.Format("{0} ({1})",
-                    "Reload linked annotations", filename);
+                    Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuReloadLinkedAnnotations, filename);
                 mnuReloadLinkedAnnotations.Enabled = true;
             }
             else
             {
-                mnuReloadLinkedAnnotations.Text = "Reload linked annotations";
+                mnuReloadLinkedAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuReloadLinkedAnnotations;
                 mnuReloadLinkedAnnotations.Enabled = false;
             }
 

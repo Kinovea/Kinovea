@@ -1361,4 +1361,25 @@
   <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
     <value>Прикажи градација</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Назив на камерата</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Година</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Секунда</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Добиена фреквенција на кадрите</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Месец</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Ден</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Минута</value>
+  </data>
 </root>

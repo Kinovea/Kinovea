@@ -575,4 +575,19 @@
   <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
     <value>Επίπεδο βαθμονόμησης</value>
   </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Έτος</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Δευτερόλεπτο</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Μήνας</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Ημέρα</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Λεπτό</value>
+  </data>
 </root>

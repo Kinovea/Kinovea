@@ -192,4 +192,13 @@
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>Descending</value>
   </data>
+  <data name="mnuRemoveFromShortcuts" xml:space="preserve">
+    <value>Remove from shortcuts</value>
+  </data>
+  <data name="navPane_FileSystem" xml:space="preserve">
+    <value>File system</value>
+  </data>
+  <data name="tabCameras" xml:space="preserve">
+    <value>Cameras</value>
+  </data>
 </root>

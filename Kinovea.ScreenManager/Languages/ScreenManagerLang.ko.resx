@@ -1592,4 +1592,25 @@
   <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
     <value>재투영된 모서리 표시</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>카메라 별칭</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>년</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>초</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>수신된 프레임속도</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>월</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>일</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>분</value>
+  </data>
 </root>

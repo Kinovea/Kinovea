@@ -62,10 +62,10 @@ namespace Kinovea.ScreenManager
 
         private void LocalizeForm()
         {
-            this.Text = "Post-recording command";
-            cbEnable.Text = "Enable post-recording command";
-            btnInsertVariable.Text = "Insert a variable…";
-            btnSaveAndContinue.Text = "Save and continue";
+            this.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formPostRecordingCommand_Title;
+            cbEnable.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formPostRecordingCommand_EnablePostRecordingCommand;
+            btnInsertVariable.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formPostRecordingCommand_InsertAVariable;
+            btnSaveAndContinue.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.formPostRecordingCommand_SaveAndContinue;
             btnOK.Text = ScreenManagerLang.Generic_Save;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }

@@ -1361,4 +1361,25 @@
   <data name="mnuDemosaic" xml:space="preserve">
     <value>Interpolação cromática</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Apelido da câmera</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Ano</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Segundo</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Taxa de quadros recebida</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Mês</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Dia</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minuto</value>
+  </data>
 </root>

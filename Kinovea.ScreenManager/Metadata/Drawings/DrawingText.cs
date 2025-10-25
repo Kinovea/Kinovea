@@ -578,7 +578,7 @@ namespace Kinovea.ScreenManager
             // Options
             mnuOptions.Text = ScreenManagerLang.Generic_Options;
             mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
-            mnuShowCircle.Text = "Show circle";
+            mnuShowCircle.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuShowCircle;
             mnuHasBackground.Text = ScreenManagerLang.DrawingText_Background;
         }
         #endregion

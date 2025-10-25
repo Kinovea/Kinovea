@@ -1256,4 +1256,25 @@
   <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
     <value>Herstel deze tegel</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Camera alias</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Jaar</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Seconde</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Ontvangen framerate</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Maand</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Dag</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minuut</value>
+  </data>
 </root>

@@ -1592,4 +1592,25 @@
   <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
     <value>Mostrar elementos internos</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Alias de cámara</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Año</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Segundo</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Fotogramas por segundo recibidos</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Mes</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>Día</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Minutos</value>
+  </data>
 </root>

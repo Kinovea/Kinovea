@@ -1585,4 +1585,25 @@
   <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
     <value>Показати вертикальну вісь</value>
   </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Назва камери</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Рік</value>
+  </data>
+  <data name="variable_Seconds" xml:space="preserve">
+    <value>Секунда</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Отримана частота кадрів</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Місяць</value>
+  </data>
+  <data name="variable_Day" xml:space="preserve">
+    <value>День</value>
+  </data>
+  <data name="variable_Minutes" xml:space="preserve">
+    <value>Хвилина</value>
+  </data>
 </root>

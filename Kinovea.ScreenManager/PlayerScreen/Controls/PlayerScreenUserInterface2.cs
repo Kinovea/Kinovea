@@ -3049,14 +3049,14 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
-            mnuOpenReplayWatcherFolder.Text = "Open folder…";
+            mnuOpenReplayWatcherFolder.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuOpenFolder;
             mnuLoadAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveAnnotations.Text = ScreenManagerLang.Generic_SaveKVA;
             mnuSaveAnnotationsAs.Text = ScreenManagerLang.Generic_SaveKVAAs;
-            mnuSaveDefaultPlayerAnnotations.Text = "Save as default player annotations";
-            mnuSaveDefaultCaptureAnnotations.Text = "Save as default capture annotations";
-            mnuUnloadAnnotations.Text = "Unload annotations";
-            mnuReloadDefaultPlayerAnnotations.Text = "Reload default player annotations";
+            mnuSaveDefaultPlayerAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuSaveAsDefaultPlayerAnnotations;
+            mnuSaveDefaultCaptureAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuSaveAsDefaultCaptureAnnotations;
+            mnuUnloadAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuUnloadAnnotations;
+            mnuReloadDefaultPlayerAnnotations.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuReloadDefaultPlayerAnnotations;
             mnuExportVideo.Text = ScreenManagerLang.Generic_ExportVideo;
             mnuExportImage.Text = ScreenManagerLang.Generic_SaveImage;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
@@ -3081,8 +3081,8 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
 
             mnuDrawingTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
-            mnuDrawingTrackingTrimTracks.Text = "Delete tracks after this point";
-            mnuDrawingTrackingDeleteTracks.Text = "Delete tracks";
+            mnuDrawingTrackingTrimTracks.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuDeleteTracksAfterThisPoint;
+            mnuDrawingTrackingDeleteTracks.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuDeleteTracks;
             mnuDrawingTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
             mnuDrawingTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
 
@@ -3608,7 +3608,7 @@ namespace Kinovea.ScreenManager
         {
             ToolStripMenuItem mnuConfigureCaptureFolders = new ToolStripMenuItem();
             mnuConfigureCaptureFolders.Image = Properties.Capture.explorer_video;
-            mnuConfigureCaptureFolders.Text = "Configure capture folders";
+            mnuConfigureCaptureFolders.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuConfigureCaptureFolders;
 
             mnuConfigureCaptureFolders.Click += (s, e) => {
                 NotificationCenter.RaisePreferenceTabAsked(PreferenceTab.Capture_Paths);

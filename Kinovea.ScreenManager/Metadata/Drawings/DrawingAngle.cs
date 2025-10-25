@@ -572,7 +572,7 @@ namespace Kinovea.ScreenManager
             mnuSignedAngle.Text = ScreenManagerLang.mnuSignedAngle;
             mnuCounterClockwise.Text = ScreenManagerLang.mnuCounterClockwise;
             mnuSupplementaryAngle.Text = ScreenManagerLang.mnuSupplementaryAngle;
-            mnuShowCircle.Text = "Show circle";
+            mnuShowCircle.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuShowCircle;
         }
         #endregion
     } 
