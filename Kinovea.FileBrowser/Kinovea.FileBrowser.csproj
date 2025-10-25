@@ -229,6 +229,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Languages\FileBrowserLang.ar.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.az.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.bg.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.ca.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.cs.resx" />
@@ -246,6 +247,7 @@
     <EmbeddedResource Include="Languages\FileBrowserLang.nl.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.no.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.ru.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.sl.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.sv.resx" />

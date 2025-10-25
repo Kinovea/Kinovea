@@ -46,6 +46,15 @@ namespace Kinovea.Services
 
             languages = new Dictionary<string, string>();
             languages.Add("ar", "العَرَبِية");
+            languages.Add("fa", "فارسی");
+
+            languages.Add("ja", "日本語");
+            languages.Add("zh-CHS", "简体中文");
+            languages.Add("zh-CHT", "繁體中文");
+            languages.Add("ko", "한국어");
+            languages.Add("th", "ไทย");
+
+            languages.Add("az", "Azərbaycanca");
             languages.Add("bg", "Български");
             languages.Add("ca", "Català");
             languages.Add("cs", "Čeština");
@@ -54,9 +63,7 @@ namespace Kinovea.Services
             languages.Add("el", "Ελληνικά");
             languages.Add("en", "English");
             languages.Add("es", "Español");
-            languages.Add("fa", "فارسی");
             languages.Add("fr", "Français");
-            languages.Add("ko", "한국어");
             languages.Add("hr", "Hrvatski");
             languages.Add("id", "Bahasa Indonesia");
             languages.Add("it", "Italiano");
@@ -64,21 +71,19 @@ namespace Kinovea.Services
             languages.Add("mk", "Македонски");
             languages.Add("ms", "Bahasa Melayu");
             languages.Add("nl", "Nederlands");
-            languages.Add("ja", "日本語");
             languages.Add("no", "Norsk bokmål");
             languages.Add("pl", "Polski");
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
             languages.Add("ru", "Русский");
+            languages.Add("sl", "Slovenščina");
             languages.Add("sr-Cyrl-RS", "Српски");
             languages.Add("sr-Latn-RS", "Srpski");
             languages.Add("fi", "Suomi");
             languages.Add("sv", "Svenska");
-            languages.Add("th", "ไทย");
             languages.Add("tr", "Türkçe");
             languages.Add("uk", "Українська");
-            languages.Add("zh-CHS", "简体中文");
-            languages.Add("zh-CHT", "繁體中文");
+            
 
             if (Debugger.IsAttached)
                 return;
@@ -102,11 +107,13 @@ namespace Kinovea.Services
             // Last check: 2024-08-25.
 
             // Languages with less than 50% translation coverage.
+            languages.Remove("az");         // Azerbaijani.
             languages.Remove("da");         // Danish.
             languages.Remove("el");         // Greek.
             languages.Remove("ms");         // Malay.
             languages.Remove("no");         // Norwegian.
             languages.Remove("sr-Latn-RS"); // Serbian (latin)
+            languages.Remove("sl");         // Slovenian.
             languages.Remove("th");         // Thai.
 
             // Languages between 50% and 85%.

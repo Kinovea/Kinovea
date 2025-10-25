@@ -210,6 +210,7 @@
       <DependentUpon>UpdateDialog2.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Languages\UpdaterLang.ar.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.az.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.bg.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ca.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.cs.resx" />
@@ -226,6 +227,7 @@
     <EmbeddedResource Include="Languages\UpdaterLang.ms.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.no.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ru.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.sl.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sv.resx" />
