@@ -808,42 +808,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Marker:.
-        /// </summary>
-        public static string dlgConfigureTrajectory_LabelMarker {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_LabelMarker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Circle.
-        /// </summary>
-        public static string dlgConfigureTrajectory_MarkerCircle {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_MarkerCircle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cross.
-        /// </summary>
-        public static string dlgConfigureTrajectory_MarkerCross {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_MarkerCross", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Target.
-        /// </summary>
-        public static string dlgConfigureTrajectory_MarkerTarget {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_MarkerTarget", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Configure trajectory tool.
         /// </summary>
         public static string dlgConfigureTrajectory_Title {
@@ -2041,15 +2005,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Icons.
-        /// </summary>
-        public static string FormIconPicker_Title {
-            get {
-                return ResourceManager.GetString("FormIconPicker_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Insert context variable.
         /// </summary>
         public static string formInsertContextVariable_Title {
@@ -2329,15 +2284,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Divisions:.
-        /// </summary>
-        public static string Generic_GridDivisionsPicker {
-            get {
-                return ResourceManager.GetString("Generic_GridDivisionsPicker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Image.
         /// </summary>
         public static string Generic_Image {
@@ -2397,15 +2343,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string Generic_Options {
             get {
                 return ResourceManager.GetString("Generic_Options", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Paste.
-        /// </summary>
-        public static string Generic_Paste {
-            get {
-                return ResourceManager.GetString("Generic_Paste", resourceCulture);
             }
         }
         
@@ -2568,15 +2505,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string lblConfig_ImageSize {
             get {
                 return ResourceManager.GetString("lblConfig_ImageSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delay (s):.
-        /// </summary>
-        public static string lblDelay_Text {
-            get {
-                return ResourceManager.GetString("lblDelay_Text", resourceCulture);
             }
         }
         
@@ -3355,15 +3283,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Explorer panel.
-        /// </summary>
-        public static string mnuHome {
-            get {
-                return ResourceManager.GetString("mnuHome", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import image….
         /// </summary>
         public static string mnuImportImage {
@@ -3904,15 +3823,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set style as default.
-        /// </summary>
-        public static string mnuSetStyleAsDefault {
-            get {
-                return ResourceManager.GetString("mnuSetStyleAsDefault", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show after this point.
         /// </summary>
         public static string mnuShowAfter {
@@ -4098,15 +4008,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuThumbnailRename {
             get {
                 return ResourceManager.GetString("mnuThumbnailRename", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Thumbnails.
-        /// </summary>
-        public static string mnuThumbnails {
-            get {
-                return ResourceManager.GetString("mnuThumbnails", resourceCulture);
             }
         }
         
@@ -4381,15 +4282,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Arm capture trigger. Current state: disarmed..
-        /// </summary>
-        public static string ToolTip_ArmTrigger {
-            get {
-                return ResourceManager.GetString("ToolTip_ArmTrigger", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Go to previous frame.
         /// </summary>
         public static string ToolTip_Back {
@@ -4431,15 +4323,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_ConfigureCamera {
             get {
                 return ResourceManager.GetString("ToolTip_ConfigureCamera", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disarm capture trigger. Current state: armed..
-        /// </summary>
-        public static string ToolTip_DisarmTrigger {
-            get {
-                return ResourceManager.GetString("ToolTip_DisarmTrigger", resourceCulture);
             }
         }
         
@@ -4908,15 +4791,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string VideoFilterCameraMotion_FindHomographies {
             get {
                 return ResourceManager.GetString("VideoFilterCameraMotion_FindHomographies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import mask.
-        /// </summary>
-        public static string VideoFilterCameraMotion_ImportMask {
-            get {
-                return ResourceManager.GetString("VideoFilterCameraMotion_ImportMask", resourceCulture);
             }
         }
         

@@ -83,9 +83,6 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Annullér</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Stifinder</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>Genveje</value>
   </data>

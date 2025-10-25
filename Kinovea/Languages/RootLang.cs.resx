@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Formát videa:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Rok</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Měsíc</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Den</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Hodina</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minuta</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Sekunda</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Paměť</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>O Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Otovřít log složku…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Editovat</value>
@@ -215,9 +194,6 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>Překlad</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Čas (HHMMSS)</value>
-  </data>
   <data name="dlgAbout_License" xml:space="preserve">
     <value>Licence</value>
   </data>
@@ -239,9 +215,6 @@
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>Nahrát nekomprimované video</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Datum (YYYYMMDD)</value>
-  </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>Nahrávání</value>
   </data>
@@ -250,36 +223,6 @@
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>Zpomalení: zpomalený záznam.</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Alias pro fotoaparát</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Konfigurace snímkové frekvence</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Přijatá snímková frekvence</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Escape sekvence</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Adresář pro zachytávání videa</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Zachytit název souboru</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Datum a čas  (YYYYMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Kontextové proměnné</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Kontext</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Ignorovat upozornění na přepsání souboru</value>
@@ -302,14 +245,8 @@
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Spouštěcí práh:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Zastavit nahrávání po (s):</value>
-  </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Doba nečinnosti (s):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Příkaz po nahrávání:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Vlastní jednotka délky :</value>
@@ -386,23 +323,11 @@
   <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
     <value>Otáčky za minutu ({0})</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Sledování</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Výchozí parametry sledování</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Okno objektu:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Vyhledávací okno:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Procenta</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pixely</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorie</value>
@@ -415,9 +340,6 @@
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Pracovní prostor</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Uložit jako výchozí pracovní prostor</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
     <value>Použít</value>

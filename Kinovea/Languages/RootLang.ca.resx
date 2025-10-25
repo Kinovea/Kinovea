@@ -119,60 +119,6 @@
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>Retard: enregistra fotogrames retardats.</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Any</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Mes</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Dia</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Hora</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minut</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Segon</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Sobrenom de la càmera</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Nombre d'imatges per segon configurat</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Nombre d'imatges per segon rebudes</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Seqüència d’escapada</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Directori d’enregistrament</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Nom del fitxer enregistrat</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Data (AAAAMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Hora (HHMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Data i hora (AAAAMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Variables contextuals</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Contexte</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Macro</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Memòria</value>
   </data>
@@ -202,12 +148,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Llindar del disparador:</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Aturar l’enregistrament per temps(s):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Ordre post enregistrament:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>Mostra els dibuixos mentre el video es reprodueix</value>
@@ -314,23 +254,11 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Unitats de distàncies personalitzades:</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Seguiment</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Paràmetres del seguiment per defecte</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Finestra de l'objecte:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Finestra de cerca:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Percentatge</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pixels</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Categories</value>
@@ -361,9 +289,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Quant al Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Obre el fitxer de registres…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Edita</value>
@@ -427,9 +352,6 @@
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
     <value>Deumilèssimes d'hora</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Desa com a espai de treball per defecte</value>
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Espai de treball</value>

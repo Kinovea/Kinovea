@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Formato video:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Anno</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Mese</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Giorno</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Ora</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minuto</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Secondo</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Memoria</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Riguardo Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Apri cartella del Log…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Modifica</value>
@@ -218,9 +197,6 @@
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>Totale in microsecondi</value>
   </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Salvare come spazio di lavoro predefinito</value>
-  </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Spazio di lavoro</value>
   </data>
@@ -245,23 +221,11 @@
   <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
     <value>Comandi</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pixel</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Percentuale</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Finestra di ricerca:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Finestra dell'oggetto:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Parametri di tracciamento predefiniti</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Tracciamento</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Unità di lunghezza personalizzata:</value>
@@ -317,12 +281,6 @@
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Abilita il filtraggio delle coordinate</value>
   </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Comando di post registrazione:</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Interrompi la registrazione dopo (s):</value>
-  </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Soglia di attivazione:</value>
   </data>
@@ -346,33 +304,6 @@
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Ignora l'avviso di sovrascrittura dei file</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>macro</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Contesto</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Data e ora (AAAAMMGG-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Ora (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Directory di acquisizione</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Nome del file acquisito</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Sequenza di escape</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Framerate ricevuto</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Framerate configurato</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Retroattivo: registra i fotogrammi quando la registrazione si interrompe.</value>
@@ -409,15 +340,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
     <value>Formato video non compresso:</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Alias fotocamera</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Data (AAAAMMGG)</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Variabili di contesto</value>
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Tempo di inattività (s):</value>

@@ -167,9 +167,6 @@
   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
     <value>podstawowa nieprzeźroczystości dla nowego rysunku:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Dodaj dane poleceń nagrywania:</value>
-  </data>
   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
     <value>Włączone własne narzędzia trybu debugowania</value>
   </data>
@@ -178,12 +175,6 @@
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>Pokarz rysowanie kiedy film jest odtwarzany</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Otwórz dziennik folderów…</value>
   </data>
   <data name="mnuFullScreen" xml:space="preserve">
     <value>Pełen ekran</value>
@@ -196,9 +187,6 @@
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Stanowisko</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Zapisz podstawowe stanowisko</value>
   </data>
   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
     <value>Całkowite Milisekundy</value>
@@ -224,23 +212,11 @@
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorie</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Piksele</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Procenty</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Znajdź okno:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Cel okna:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Podstawowe parametry śledzenia</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Śledzenie</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Własna jednostka długości:</value>
@@ -311,9 +287,6 @@
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Czas bezczynności (s):</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Czas trwania zatrzymania nagrania (s):</value>
-  </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Próg wyzwalacza:</value>
   </data>
@@ -334,27 +307,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
     <value>Pamięć przeznaczona na bufor opóźnienia: {0} MB.</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Lidzba klatek na sekunde odbiornika</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Kontekst</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Kontekst zmiennych</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Przechwyć nazwe pliku</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Przechwyć katalog</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Zakończ sekwencje</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Nazwa Kamery</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Wsteczne: nagrywanie klatek kiedy zatrzymano przechwytywanie.</value>
@@ -388,36 +340,6 @@
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Pamięć</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Data i Czas (RRRRMMDD-GGMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Czas (GGMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Data (RRRRMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Konfiguracja Odświerzania</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Sekunda</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minuta</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Godzina</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Dzień</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Miesiąc</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Rok</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>Nagrywanie</value>

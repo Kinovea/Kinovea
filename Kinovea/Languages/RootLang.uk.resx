@@ -91,9 +91,6 @@
   <data name="mnuPreferences" xml:space="preserve">
     <value>Налаштування…</value>
   </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Зберегти робочу область за замовчуванням</value>
-  </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>Структурні блоки</value>
   </data>
@@ -130,36 +127,6 @@
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>Відкладено: запис кадрів із затримкою.</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Рік</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Година</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Хвилина</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Секунда</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Назва камери</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Налаштована частота кадрів</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Отримана частота кадрів</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Вихідна послідовність</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Каталог захоплення</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Назва записаного файлу</value>
-  </data>
   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
     <value>Увімкнути режим налагодження спеціальних інструментів</value>
   </data>
@@ -168,24 +135,6 @@
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Увімкнути фільтрацію координат</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Дата (YYYYMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Час (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Дата та час (YYYYMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Контекстні змінні</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Контекст</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Макро</value>
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Пам'ять</value>
@@ -216,9 +165,6 @@
   </data>
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
     <value>Увімкнути звуковий поріг</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Зупинити запис тривалістю (s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Час очікування (s):</value>
@@ -304,23 +250,11 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Користувацькі одиниці вимірювання довжини:</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Відстеження</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Параметри відстеження за замовчуванням</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Вікно об'єкта:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Вікно пошуку:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Відсоток</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Пікселі</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Категорії</value>
@@ -348,9 +282,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Про Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Відкрити папку з журналами…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Редагувати</value>
@@ -456,15 +387,6 @@
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Ретроактивний: запис кадрів після зупинки зйомки.</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Місяць</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>День</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Команда післязапису:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>Відображати креслення під час відтворення відео</value>

@@ -98,42 +98,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>صيغة الفيديو:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>السنة</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>الشهر</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>اليوم</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>الساعة</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>الدقيقة</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>الثانية</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>الاسم المستعار للكاميرا</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>تهيئة معدل الكادرات</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>معدل الكادرات المستلمة</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>متغيرات السياق</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>السياق</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>ماكرو</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>الذاكرة</value>
   </data>
@@ -230,23 +194,11 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>تخصيص وحدة الطول:</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>تتبع</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>بارامترات التتبع الافتراضية</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>إطار الهدف:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>إطار البحث:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>النسبة المئوية</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>بكسل</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>الفئات</value>
@@ -277,9 +229,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>حول كينوفيا…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>فتح مجلد السجل…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>تعديل</value>
@@ -356,9 +305,6 @@
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>عرض معدل الإطارات (إطار/ثانية):</value>
   </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>حفظ كمساحة عمل افتراضية</value>
-  </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>ملف افتراضي للتعليقات التوضيحية:</value>
   </data>
@@ -368,14 +314,8 @@
   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
     <value>التعتيم الافتراضي لعناصر الرسم الجديدة:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>تشغيل الأمر التالي بعد التسجيل:</value>
-  </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>الوقت الضائع (ث):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>إيقاف التسجيل بمدة (ث):</value>
   </data>
   <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
     <value>تشغيل تلقائي</value>
@@ -388,12 +328,6 @@
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>تجاهل التحذير عند الكتابة فوق الملف</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>اسم الملف المسجل</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>دليل التسجيلات</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>الكاميرا: تسجيل كادرات في الوقت الحقيقي.</value>
@@ -430,18 +364,6 @@
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>كاميرات عالية السرعة</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>التاريخ والوقت (YYYYMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>الوقت (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>التاريخ (YYYYMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>تسلسل الهروب</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>وضع التسجيل والتأخير</value>

@@ -61,9 +61,6 @@
   <data name="Generic_Apply" xml:space="preserve">
     <value>確認</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>圖示</value>
-  </data>
   <data name="FormConfiguration_Title" xml:space="preserve">
     <value>相機(錄影機)設置</value>
   </data>
@@ -159,8 +156,5 @@
   </data>
   <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
     <value>結果幀率：</value>
-  </data>
-  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
-    <value>匯出裝置 GenICam XML 檔案</value>
   </data>
 </root>

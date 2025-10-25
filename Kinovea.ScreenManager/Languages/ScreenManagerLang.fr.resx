@@ -239,18 +239,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Configuration de l'outil trajectoire</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Marqueur :</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Croix</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Cercle</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Cible</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Position</value>
   </data>
@@ -515,9 +503,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Icône :</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Icônes</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>Progression :</value>
   </data>
@@ -559,9 +544,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Calibrage</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Divisions :</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Taille de la police :</value>
@@ -626,9 +608,6 @@
   <data name="Generic_Copy" xml:space="preserve">
     <value>Copier</value>
   </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Coller</value>
-  </data>
   <data name="Generic_PlayPause" xml:space="preserve">
     <value>Lecture | Pause</value>
   </data>
@@ -658,9 +637,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Annotations non sauvées</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Délai (s) :</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve">
     <value>Contrôles communs :</value>
@@ -815,9 +791,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Masquer</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Panel d’exploration</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importer une image…</value>
   </data>
@@ -913,9 +886,6 @@
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Coller le dessin</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Utiliser en tant que style par défaut</value>
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>Fondu par défaut</value>
@@ -1063,12 +1033,6 @@
   </data>
   <data name="ToolTip_trkSelection" xml:space="preserve">
     <value>Spécifier la Zone de Travail</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Désarmer le déclencheur de capture. État actuel : armé.</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Armer le déclencheur de capture. État actuel : désarmé.</value>
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Récupération automatique</value>
@@ -1331,9 +1295,6 @@
   <data name="mnuTimeSections" xml:space="preserve">
     <value>Sections de temps</value>
   </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>Miniatures</value>
-  </data>
   <data name="mnuMeasure_Label_Menu" xml:space="preserve">
     <value>Label</value>
   </data>
@@ -1474,9 +1435,6 @@
   </data>
   <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
     <value>Construire les chemins</value>
-  </data>
-  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
-    <value>Importer un masque</value>
   </data>
   <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
     <value>Supprimer les données</value>

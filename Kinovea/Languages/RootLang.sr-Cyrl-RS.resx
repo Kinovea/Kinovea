@@ -98,42 +98,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Видео формат:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Година</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Месец</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Дан</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Сат</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Минут</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Секунд</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Camera alias</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Подешен број слика у секунди</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Примљен број слика у секунди</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Контекст промељиве</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Контекст</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Macro</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Меморија</value>
   </data>
@@ -230,23 +194,11 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Бирана јединица дужине:</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Праћење</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Подразумевана вредност параметара за праћење</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Прозор објекта:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Прозор претраге:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Проценат</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Пиксели</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Категорије</value>
@@ -277,9 +229,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>O Kinovea ...</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Отвори фасциклу евиденција...</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Измени</value>

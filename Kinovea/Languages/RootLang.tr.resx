@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Video formatı:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Yıl</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Ay</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Gün</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Saat</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Dakika</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Saniye</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Bellek</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Kinovea Hakkında…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Log klasörünü aç…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Düzenle</value>
@@ -206,42 +185,6 @@
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
     <value>Bir saatin on bindesi</value>
   </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Bağlam</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Bağlam değişkenleri</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Tarih ve zaman (YYYYMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Saat (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Tarih (YYYYMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Kaydedilmiş dosya adı</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Kaydedilenler dizini</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Kaçış sırası</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Alınan framerate</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Yapılandırılmış framerate</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Kamera diğer adı</value>
-  </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Geriye dönük: kayıt durduğunda frameleri kaydeder.</value>
   </data>
@@ -284,9 +227,6 @@
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Boşta kalma süresi (leri):</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Süreye göre kaydı durdur:</value>
-  </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Tetik eşiği:</value>
   </data>
@@ -323,17 +263,11 @@
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
     <value>Videonun tamamı için görünür</value>
   </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Kayıt sonrası komutu:</value>
-  </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
     <value>Yedek kare hızı (fps):</value>
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>Toplam mikrosaniye</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Varsayılan çalışma alanı olarak kaydet</value>
   </data>
   <data name="mnuTools" xml:space="preserve">
     <value>Aletler</value>
@@ -356,23 +290,11 @@
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategoriler</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Piksel</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Yüzde</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Arama penceresi:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Obje penceresi:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Varsayılan izleme parametreleri</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>İzleme</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Özel uzunluk birimi:</value>

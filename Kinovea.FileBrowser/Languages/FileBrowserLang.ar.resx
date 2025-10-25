@@ -92,9 +92,6 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>فتح</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>المتصفح</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>الاختصارات</value>
   </data>

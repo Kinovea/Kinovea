@@ -76,9 +76,6 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Poništi</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Pretraživač</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>Prečice</value>
   </data>

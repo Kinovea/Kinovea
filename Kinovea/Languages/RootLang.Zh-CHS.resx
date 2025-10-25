@@ -116,9 +116,6 @@
   <data name="mnuAbout" xml:space="preserve">
     <value>关于本软件…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>打开记录文件夹…</value>
-  </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>编辑</value>
   </data>
@@ -173,9 +170,6 @@
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>启用坐标过滤</value>
   </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>录音后命令:</value>
-  </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>触发阈值:</value>
   </data>
@@ -202,60 +196,6 @@
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>内存</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>宏指令</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>上下文</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>上下文变量</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>日期和时间（年月日-小时分钟秒）</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>时间（小时分钟秒）</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>日期（年月日）</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>采集的文件名</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>采集目录</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>转义序列</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>接收的帧率</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>配置的帧率</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>摄像机别名</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>秒</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>分钟</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>小时</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>天</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>月</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>年</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>延迟:记录延迟的帧。</value>
@@ -308,9 +248,6 @@
   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
     <value>总毫秒数</value>
   </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>另存为默认工作区</value>
-  </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>工作区</value>
   </data>
@@ -341,23 +278,11 @@
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>类别</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>像素</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>百分比</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>搜索窗口：</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>对象窗口：</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>默认跟踪参数</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>追踪</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>自定义长度单位：</value>
@@ -436,9 +361,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>空闲时间 (s):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>停止录制按持续时间 (s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
     <value>为延迟缓冲区分配的内存：{0} MB。</value>

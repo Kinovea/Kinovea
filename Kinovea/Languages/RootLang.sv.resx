@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Videoformat:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>År</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Månad</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Dag</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Timme</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minuter</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Sekunder</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Minne</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Om Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Öppna logg-mapp…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Redigera</value>
@@ -227,32 +206,11 @@
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>Höghastighetskameror</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pixlar</value>
-  </data>
   <data name="mnuTimeFormat" xml:space="preserve">
     <value>Tid</value>
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>Spela in okomprimerad video</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Kontext</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Kontextvariabler</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Datum och tid (YYYYMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Tid (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Datum (YYYYMMDD)</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorier</value>
@@ -296,29 +254,11 @@
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Retroaktiv: spelar in bildrutor när inspelningen stoppas.</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Kamera-alias</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Konfigurerad bildhastighet</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Mottagen bildhastighet</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Inspelat filnamn</value>
-  </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Ignorera varning för filöverskrivning</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
     <value>Tröskelvärde för ersättning av bildhastighet (fps):</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Utrymningssekvens</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Fångst-katalog</value>
   </data>
   <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
     <value>Automatisering</value>
@@ -331,9 +271,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Tröskel för utlösare:</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Stoppa inspelningen efter varaktighet (er):</value>
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Aktivera filtrering av koordinater</value>
@@ -383,26 +320,14 @@
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Standardparametrar för spårning</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Objektfönster:</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Spara som standard-arbetsyta</value>
-  </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
     <value>Ersättande bildfrekvens (fps):</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Sökfönster:</value>
   </data>
   <data name="mnuTools" xml:space="preserve">
     <value>Verktyg</value>
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Enheter</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Spårning</value>
   </data>
   <data name="mnuFullScreen" xml:space="preserve">
     <value>Fullskärm</value>
@@ -418,9 +343,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Vilotid(er):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Kommando efter inspelning:</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
     <value>Uppdatera bilden under tiden som musen rör på sig</value>

@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Vaizdo formatas:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Metai</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Mėnuo</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Diena</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Valanda</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minutė</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Sekundė</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Atmintis</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Apie Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Atverti registro aplanką…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Redaguoti</value>
@@ -215,33 +194,6 @@
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>Uždelsimas: įrašo uždelstus kadrus.</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Gautas kadrų dažnis</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Kaitos seka</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Užfiksuoti katalogą</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Užfiksuoti failo pavadinimą</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Data (MMMMMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Laikas (VVMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Konteksto kintamieji</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Kontekstas</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
-  </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Nepaisyti failo (rinkmenos) perrašymo įspėjimo</value>
   </data>
@@ -262,9 +214,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Suveikimo slenkstis:</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Įrašymo įrašo komanda:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Įgalinti koordinačių filtravimą</value>
@@ -305,17 +254,8 @@
   <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
     <value>Apsisukimų per minutę ({0})</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Sekimas</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Ieškos langas:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Procentai</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pikseliai</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorijos</value>
@@ -352,18 +292,6 @@
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Retroaktyvus: įrašo kadrus, kai nustojama fotografuoti.</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Kameros pseudonimas</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Konfigūruotas kadrų dažnis</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Sustabdyti įrašymą pagal trukmę:</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Data ir laikas (MMMMMMDD-VVMMSS)</value>
   </data>
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
     <value>Įgalinti garso paleidiklį</value>
@@ -416,9 +344,6 @@
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Numatytieji sekimo parametrai</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Objekto langas:</value>
-  </data>
   <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
     <value>Komandos</value>
   </data>
@@ -439,9 +364,6 @@
   </data>
   <data name="mnuFullScreen" xml:space="preserve">
     <value>Visas ekranas</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Išsaugoti kaip numatytąją darbo vietą</value>
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Darbinė sritis</value>

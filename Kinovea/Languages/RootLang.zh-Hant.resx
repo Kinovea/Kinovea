@@ -61,20 +61,8 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>小時</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>分鐘</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>目標視窗：</value>
-  </data>
   <data name="mnuTimeFormat" xml:space="preserve">
     <value>時間</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>年</value>
   </data>
   <data name="dlgPreferences_tabPlayback" xml:space="preserve">
     <value>播放</value>
@@ -94,21 +82,6 @@
   <data name="dlgPreferences_tabGeneral" xml:space="preserve">
     <value>一般</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>月</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>日</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>秒</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>相機別名</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>配置幀率</value>
-  </data>
   <data name="Generic_Quit" xml:space="preserve">
     <value>結束</value>
   </data>
@@ -124,20 +97,11 @@
   <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
     <value>鍵盤快鍵 {0}.{1}</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>像素</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>百分比</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>搜尋視窗：</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>預設跟蹤參數</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>跟蹤</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>自訂長度單位:</value>
@@ -175,41 +139,11 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>翻譯</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>接收幀率</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>記憶體</value>
   </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>內容</value>
-  </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
     <value>幀率取代臨界值(fps):</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>離開序列</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>擷取目錄</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>擷取檔名</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>日期（YYYYMMDD）</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>時間（HHMMSS）</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>日期及時間（YYYYMMDD-HHMMSS）</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>內容變數</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>巨集</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
     <value>配置延遲記憶體: {0} MB.</value>
@@ -258,12 +192,6 @@
   </data>
   <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
     <value>角速度：</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>設定長度停止錄影（秒）：</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>完成錄影後指令：</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>當影片播放時顯示繪圖</value>
@@ -415,9 +343,6 @@
   <data name="mnuAbout" xml:space="preserve">
     <value>關於Kinovea…</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>開啟記錄資料夾…</value>
-  </data>
   <data name="mnuPreferences" xml:space="preserve">
     <value>偏好…</value>
   </data>
@@ -444,9 +369,6 @@
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>工作區</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>儲存為預設工作區</value>
   </data>
   <data name="mnuScreens" xml:space="preserve">
     <value>查看</value>

@@ -196,15 +196,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Post recording command:.
-        /// </summary>
-        internal static string dlgPreferences_Capture_lblPostRecordingCommand {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblPostRecordingCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Framerate replacement threshold (fps):.
         /// </summary>
         internal static string dlgPreferences_Capture_lblReplacementThreshold {
@@ -219,15 +210,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Capture_lblReplacementValue {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblReplacementValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stop recording by duration (s):.
-        /// </summary>
-        internal static string dlgPreferences_Capture_lblStopRecordingByDuration {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblStopRecordingByDuration", resourceCulture);
             }
         }
         
@@ -1263,15 +1245,6 @@ namespace Kinovea.Root.Languages {
         internal static string mnuAbout {
             get {
                 return ResourceManager.GetString("mnuAbout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open log folder….
-        /// </summary>
-        internal static string mnuApplicationFolder {
-            get {
-                return ResourceManager.GetString("mnuApplicationFolder", resourceCulture);
             }
         }
         

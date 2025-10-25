@@ -94,9 +94,6 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>開啟</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>瀏覽器</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>捷徑</value>
   </data>

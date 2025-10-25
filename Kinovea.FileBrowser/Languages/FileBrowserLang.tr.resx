@@ -83,9 +83,6 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>İptal Et</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Gezgin</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>Kısayollar</value>
   </data>

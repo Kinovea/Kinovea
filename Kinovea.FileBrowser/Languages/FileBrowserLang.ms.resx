@@ -94,9 +94,6 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Buka</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Peneroka</value>
-  </data>
   <data name="FormCameraWizard_Title" xml:space="preserve">
     <value>Sambungan manual</value>
   </data>

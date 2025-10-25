@@ -338,9 +338,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Gizle</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Dosya Gezgini</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>İmajı dışa aktar…</value>
   </data>
@@ -475,9 +472,6 @@
   </data>
   <data name="ToolTip_trkSelection" xml:space="preserve">
     <value>Çalışma Alanını Ayarla</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Hedef</value>
   </data>
   <data name="dlgTimebase_GroupCapture" xml:space="preserve">
     <value>Yüksek hızlı kamera</value>
@@ -656,9 +650,6 @@
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>Milimetre</value>
   </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Gecikme (s):</value>
-  </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Tüm desteklenen formatlar</value>
   </data>
@@ -676,9 +667,6 @@
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>Boyut</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Yapıştır</value>
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>Kopyala</value>
@@ -740,9 +728,6 @@
   <data name="Generic_LineSizePicker" xml:space="preserve">
     <value>Genişlik:</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Bölümler:</value>
-  </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Kalibrasyon</value>
   </data>
@@ -757,9 +742,6 @@
   </data>
   <data name="Generic_ArrowPicker" xml:space="preserve">
     <value>Oklar:</value>
-  </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>İkonlar</value>
   </data>
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>İkon:</value>
@@ -964,15 +946,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Pozisyon</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Yuvarlak</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Çarpı</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>İşaretleyici:</value>
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Yörünge aracını yapılandır</value>

@@ -118,14 +118,8 @@
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>Tampilkan gambar saat video diputar</value>
   </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Perintah pasca perekaman:</value>
-  </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Waktu diam (d):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Berhenti merekam berdasarkan durasi (d):</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Ambang batas pemicu:</value>
@@ -160,54 +154,6 @@
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Memori</value>
   </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Variabel konteks</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Tanggal dan waktu (TTTTBBHH-JJMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Waktu (JJMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Tanggal (TTTTBBHH)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Nama file tangkapan</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Direktori hasil tangkapan</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Urutan perintah Escape</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Framerate diterima</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Framerate terkonfigurasi</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Nama lain kamera</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Detik</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Menit</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Jam</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Hari</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Bulan</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Tahun</value>
-  </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Retroaktif: rekam bingkai ketika tangkapan berhenti.</value>
   </data>
@@ -216,12 +162,6 @@
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
     <value>Kamera: rekam bingkai real time.</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Konteks</value>
   </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
     <value>Memori cache yang dialokasikan untuk setiap layar putar ulang: {0} MB.</value>
@@ -301,9 +241,6 @@
   <data name="mnuScreens" xml:space="preserve">
     <value>Pandangan</value>
   </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Simpan sebagai ruang kerja bawaan</value>
-  </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Ruang kerja</value>
   </data>
@@ -337,9 +274,6 @@
   <data name="mnuFile" xml:space="preserve">
     <value>File</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Buka folder log…</value>
-  </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Tentang Kinovea…</value>
   </data>
@@ -367,23 +301,11 @@
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategori</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Piksel</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Persentase</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Jendela pencarian:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Jendela objek:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Parameter penelusuran default</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Penelusuran</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Satuan panjang yang diinginkan:</value>

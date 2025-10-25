@@ -338,9 +338,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Ascunde</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Explorator fişiere</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importare imagine…</value>
   </data>
@@ -500,12 +497,6 @@
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Recuperare după blocare</value>
   </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Armare declanșator de captură. Starea curentă: dezarmat.</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Dezarmare declanșator de captură. Starea curentă: armat.</value>
-  </data>
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>Configurare cameră</value>
   </data>
@@ -547,9 +538,6 @@
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>Fading implicit</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Stabilește stilul ca implicit</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Lipește desen</value>
@@ -665,9 +653,6 @@
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>Milimetri</value>
   </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Întârziere (s):</value>
-  </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Toate formatele suportate</value>
   </data>
@@ -685,9 +670,6 @@
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>Dimensiune</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Lipire</value>
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>Copiere</value>
@@ -724,9 +706,6 @@
   </data>
   <data name="Generic_LineSizePicker" xml:space="preserve">
     <value>Lățime:</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Diviziuni:</value>
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Calibrare</value>
@@ -953,18 +932,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Poziție</value>
   </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Țintă</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Cerc</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Cruce</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Marker:</value>
-  </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Configurare utilitar traiectorie</value>
   </data>
@@ -1090,9 +1057,6 @@
   </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>Deschide</value>
-  </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Iconuri</value>
   </data>
   <data name="variable_CameraAlias" xml:space="preserve">
     <value>Alias al camerei</value>

@@ -116,9 +116,6 @@
   <data name="mnuAbout" xml:space="preserve">
     <value>Om Kinovea...</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Åpne logfil</value>
-  </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Edit</value>
   </data>
@@ -179,42 +176,6 @@
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
     <value>Minne tildelt forsinkelsesmellomlager: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Kontekst</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Kontekstvariabler</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Dato og tid (ÅÅÅÅMMDD-TTMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>TID (TTMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Dato (ÅÅÅÅMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>tOpptaksfilnavn</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Opptaksmappe</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Skiftesekvens</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Mottatt bildetakt</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Oppsatt bildetakt</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Kamera-alias</value>
-  </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Retroaktiv: Tar opp bilder når opptaket stopper.</value>
   </data>
@@ -244,9 +205,6 @@
   </data>
   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
     <value>Millisekunder</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Lagre som forvalgt arbeidsområde</value>
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Arbeidsområde</value>
@@ -296,24 +254,6 @@
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Minne</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Sekund</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minutt</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Time</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Dag</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Måned</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>År</value>
-  </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>Opptaksmodus og forsinkelse</value>
   </data>
@@ -350,17 +290,8 @@
   <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
     <value>Omdreininger per minutt ({0})</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Søkevindu:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Objektvindu:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Forvalgte sporingsparameter</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Sporing</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
     <value>Tastatursnarvei for {0}.{1}</value>
@@ -370,8 +301,5 @@
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorier</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Piksler</value>
   </data>
 </root>

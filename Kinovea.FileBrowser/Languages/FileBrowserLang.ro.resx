@@ -83,9 +83,6 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Revocă</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Explorator</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>Scurtături</value>
   </data>

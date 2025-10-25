@@ -230,18 +230,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Configureer het trajectpad gereedschap</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Markeerder:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Kruis</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Cirkel</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Doel</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Positie</value>
   </data>
@@ -488,9 +476,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Icoon:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Iconen</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>Voortgang :</value>
   </data>
@@ -532,9 +517,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Calibratie</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Verdeling:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Lettergrootte:</value>
@@ -590,9 +572,6 @@
   <data name="Generic_Copy" xml:space="preserve">
     <value>Kopieer</value>
   </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Plak</value>
-  </data>
   <data name="Generic_PlayPause" xml:space="preserve">
     <value>Speel | Pauze</value>
   </data>
@@ -622,9 +601,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Kernbeelden niet opgeslagen</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Vertraging (s):</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve">
     <value>Standaard bediening:</value>
@@ -764,9 +740,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Verberg</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Bladeren</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importeer afbeelding…</value>
   </data>
@@ -859,9 +832,6 @@
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Plak tekening</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Set de stijl als standaard</value>
   </data>
   <data name="mnuPasteImage" xml:space="preserve">
     <value>Plak vanaf klembord</value>
@@ -1015,12 +985,6 @@
   </data>
   <data name="Infobar_Player_Observing" xml:space="preserve">
     <value>Bekijkersmap: {0}</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Schakel opname-activering in. Huidige status: uitgeschakeld.</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Schakel opname-activering uit. Huidige status: ingeschakeld.</value>
   </data>
   <data name="Toast_AudioLost" xml:space="preserve">
     <value>Audio apparaat verdwenen</value>

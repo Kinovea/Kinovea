@@ -94,9 +94,6 @@
   <data name="tabShortcuts" xml:space="preserve">
     <value>Pintasan</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Penjelajah</value>
-  </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>Buka</value>
   </data>

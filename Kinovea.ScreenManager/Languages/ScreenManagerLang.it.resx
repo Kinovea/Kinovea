@@ -338,9 +338,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Nascondi</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Esplora File</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importa un'immagine…</value>
   </data>
@@ -569,9 +566,6 @@
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
     <value>Modifica disegno</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Icone</value>
-  </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>Apri</value>
   </data>
@@ -583,18 +577,6 @@
   </data>
   <data name="ExtraData_Diameter" xml:space="preserve">
     <value>Diametro</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Marcatore:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Croce</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Cerchio</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Obiettivo</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Posizione</value>
@@ -730,9 +712,6 @@
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>Copia</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Incolla</value>
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>Dimensione</value>
@@ -893,9 +872,6 @@
   <data name="FormCameraAlias_Alias" xml:space="preserve">
     <value>Alias:</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Divisioni:</value>
-  </data>
   <data name="Generic_Visibility" xml:space="preserve">
     <value>Visibilità</value>
   </data>
@@ -971,9 +947,6 @@
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Incolla il disegno</value>
   </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Imposta lo stile come predefinito</value>
-  </data>
   <data name="mnuVisibilityCustom" xml:space="preserve">
     <value>Dissolvenza personalizzata</value>
   </data>
@@ -1004,9 +977,6 @@
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>Configura la fotocamera</value>
   </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Arma il trigger di cattura. Stato attuale: disarmato.</value>
-  </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Recupero da crash</value>
   </data>
@@ -1030,9 +1000,6 @@
   </data>
   <data name="DrawingName_Polyline" xml:space="preserve">
     <value>Polilinea</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Ritardo (s) :</value>
   </data>
   <data name="DrawingName_DistortionGrid" xml:space="preserve">
     <value>Griglia di distorsione</value>
@@ -1085,9 +1052,6 @@
   <data name="ToolTip_StartCamera" xml:space="preserve">
     <value>Avvia la fotocamera</value>
   </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Disarma il trigger di cattura. Stato attuale: armato.</value>
-  </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve">
     <value>I seguenti progetti non sono stati salvati correttamente ma possono essere recuperati:</value>
   </data>
@@ -1123,9 +1087,6 @@
   </data>
   <data name="mnuProperties" xml:space="preserve">
     <value>Proprietà</value>
-  </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>Miniature</value>
   </data>
   <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
     <value>Sposta fino al tempo attuale</value>

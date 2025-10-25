@@ -106,15 +106,6 @@ namespace Kinovea.Camera.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export device GenICam XML file.
-        /// </summary>
-        public static string FormConfiguration_ExportDeviceGenICamXMLFile {
-            get {
-                return ResourceManager.GetString("FormConfiguration_ExportDeviceGenICamXMLFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import parameters.
         /// </summary>
         public static string FormConfiguration_ImportParameters {
@@ -345,15 +336,6 @@ namespace Kinovea.Camera.Languages {
         public static string FormHandshakeResult_Title {
             get {
                 return ResourceManager.GetString("FormHandshakeResult_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Icons.
-        /// </summary>
-        public static string FormIconPicker_Title {
-            get {
-                return ResourceManager.GetString("FormIconPicker_Title", resourceCulture);
             }
         }
         

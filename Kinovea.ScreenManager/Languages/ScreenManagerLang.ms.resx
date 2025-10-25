@@ -79,9 +79,6 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Batal</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Ikon</value>
-  </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>Buka</value>
   </data>
@@ -261,18 +258,6 @@
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Konfigurasi alat trajektori</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Penanda:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Cross</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Bulat</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Sasaran</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>Tunjukkan bulatan paling sesuai</value>

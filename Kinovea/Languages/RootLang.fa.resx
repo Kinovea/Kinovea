@@ -110,42 +110,6 @@
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>نمایش: آنچه که در نمایشکر نشان داده می‌شود به صورت جاری ضبط می‌شود</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>سال</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>ماه</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>روز</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>ساعت</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>دقیقه</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>ثانیه</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>نام مستعار دوربین</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>نرخ فریم پیکر بندی شده</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>نرخ فریم دریافت شده</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>متغیرهای متن</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>متن</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>ماکرو</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>حافظه</value>
   </data>
@@ -251,23 +215,11 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>واحد طول سفارشی:</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>ردیابی</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>پارامترهای ردیابی پیش فرض</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>پنجره هدف-شی:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>پنجره جستوجو:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>درصد</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>پیکسل</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>دسته بندی‌ها</value>
@@ -298,9 +250,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>درباره کینوویا ...</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>بازکردن پوشه کارنامه ...</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>ویرایش</value>

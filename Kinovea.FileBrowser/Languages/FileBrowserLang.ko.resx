@@ -83,9 +83,6 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>취소</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>파일 탐색기</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>단축키</value>
   </data>

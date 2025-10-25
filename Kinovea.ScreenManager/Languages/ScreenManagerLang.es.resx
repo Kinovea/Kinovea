@@ -230,18 +230,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Configurar herramienta de trayectoria</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Marcadores:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Cruz</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Círculo</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Objetivo</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Posición</value>
   </data>
@@ -488,9 +476,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Icono:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Iconos</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>Progresión :</value>
   </data>
@@ -532,9 +517,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Calibración</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Divisiones:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Tamaño de la fuente:</value>
@@ -590,9 +572,6 @@
   <data name="Generic_Copy" xml:space="preserve">
     <value>Copiar</value>
   </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Pegar</value>
-  </data>
   <data name="Generic_PlayPause" xml:space="preserve">
     <value>Reproducir | Pausa</value>
   </data>
@@ -622,9 +601,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Imágenes clave no guardadas</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Demora (s):</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve">
     <value>Controles conjuntos:</value>
@@ -764,9 +740,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Ocultar</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Explorador de archivos</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importar una imagen…</value>
   </data>
@@ -859,9 +832,6 @@
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Pegar dibujo</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Establecer como estilo por defecto</value>
   </data>
   <data name="mnuPasteImage" xml:space="preserve">
     <value>Pegar imagen del portapapeles</value>
@@ -1081,12 +1051,6 @@
   </data>
   <data name="Infobar_Player_Observing" xml:space="preserve">
     <value>Se observa la carpeta: {0}</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Desactivar el disparador de la captura. Estado actual: Activado.</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Activa el disparador de grabación. Estado actual: deshabilitado.</value>
   </data>
   <data name="Toast_TriggerArmed" xml:space="preserve">
     <value>Activador de la captura armado</value>
@@ -1316,9 +1280,6 @@
   <data name="mnuProperties" xml:space="preserve">
     <value>Propriedades</value>
   </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>Miniaturas</value>
-  </data>
   <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
     <value>Mover hasta el tiempo actual</value>
   </data>
@@ -1426,9 +1387,6 @@
   </data>
   <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
     <value>Ejecutar estimación de movimiento de cámara</value>
-  </data>
-  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
-    <value>Importar máscara</value>
   </data>
   <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
     <value>Eliminar datos de seguimiento</value>

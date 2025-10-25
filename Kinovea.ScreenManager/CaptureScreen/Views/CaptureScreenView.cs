@@ -321,12 +321,12 @@ namespace Kinovea.ScreenManager
             if (this.delayedDisplay && hasDelay)
             {
                 btnDelayedDisplay.Image = Properties.Capture.live_photos_16;
-                toolTips.SetToolTip(btnDelayedDisplay, "The view is delayed");
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Delayed);
             }
             else
             {
                 btnDelayedDisplay.Image = Properties.Capture.live_orange;
-                toolTips.SetToolTip(btnDelayedDisplay, "The view is live");
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Live);
             }
         }
 
@@ -337,12 +337,12 @@ namespace Kinovea.ScreenManager
             if (armed)
             {
                 btnArm.Image = Properties.Capture.quick_mode_on_green_16;
-                toolTips.SetToolTip(btnArm, "The capture trigger is armed");
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Armed);
             }
             else
             {
                 btnArm.Image = Properties.Capture.quick_mode_off_16;
-                toolTips.SetToolTip(btnArm, "The capture trigger is disarmed");
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Disarmed);
             }
         }
 
@@ -557,15 +557,17 @@ namespace Kinovea.ScreenManager
         }
         private void ReloadTooltipsCulture()
         {
-            toolTips.SetToolTip(btnContextInfo, "Capture context");
+            toolTips.SetToolTip(btnContextInfo, Kinovea.ScreenManager.Properties.Capture.tooltip_CaptureContext);
 
-            toolTips.SetToolTip(btnContextToggle, contextEnabled ? "Disable capture context" : "Enable capture context");
+            toolTips.SetToolTip(btnContextToggle, contextEnabled ? 
+                Properties.Capture.tooltip_ContextToggle_Disable : 
+                Properties.Capture.tooltip_ContextToggle_Enable);
             
             toolTips.SetToolTip(btnSettings, ScreenManagerLang.ToolTip_ConfigureCamera);
             toolTips.SetToolTip(btnSnapshot, ScreenManagerLang.Generic_SaveImage);
 
-            toolTips.SetToolTip(btnDelay, "Delay in seconds");
-            toolTips.SetToolTip(btnDuration, "Total length of the recording in seconds");
+            toolTips.SetToolTip(btnDelay, Kinovea.ScreenManager.Properties.Capture.tooltip_DelayInSeconds);
+            toolTips.SetToolTip(btnDuration, Kinovea.ScreenManager.Properties.Capture.tooltip_TotalLengthOfTheRecordingInSeconds);
 
             if (recording)
                 toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StopRecording);
@@ -578,16 +580,16 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
 
             if (armed)
-                toolTips.SetToolTip(btnArm, "The capture trigger is armed");
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Armed);
             else
-                toolTips.SetToolTip(btnArm, "The capture trigger is disarmed");
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Disarmed);
 
             if (delayedDisplay)
-                toolTips.SetToolTip(btnDelayedDisplay, "The view is delayed");
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Delayed);
             else
-                toolTips.SetToolTip(btnDelayedDisplay, "The view is live");
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Live);
 
-            toolTips.SetToolTip(btnCaptureFolders, "Configure capture folders");
+            toolTips.SetToolTip(btnCaptureFolders, Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuConfigureCaptureFolders);
         }
         #endregion
 
@@ -606,7 +608,7 @@ namespace Kinovea.ScreenManager
             cbCaptureFolder.Items.Add(new CaptureFolder() 
             { 
                 Id = Guid.Empty, 
-                ShortName = "Select a capture folder", 
+                ShortName = Kinovea.ScreenManager.Properties.Capture.cmbSelectACaptureFolder, 
                 Path = "" 
             });
 

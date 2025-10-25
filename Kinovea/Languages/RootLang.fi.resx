@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Videoformaatti:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Vuosi</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Kuukausi</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Päivä</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Tunti</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minuutti</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Sekunti</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Muisti</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Tietoa Kinoveasta…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Avaa lokikansio…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Editoi</value>
@@ -209,21 +188,6 @@
   <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
     <value>Automaatio</value>
   </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Makro</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Päivämäärä ja aika (VVVVKKPP-TTMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Aika (TTMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Päivämäärä (VVVVKKPP)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Tallennushakemisto</value>
-  </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Näppäimistö</value>
   </data>
@@ -239,9 +203,6 @@
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>Suurnopeuskamerat</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Koodinvaihtojakso</value>
-  </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>Rakennuspalikat</value>
   </data>
@@ -254,15 +215,6 @@
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>Takautuva: nauhoittaa kun videokaappaus loppuu.</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Vastaanotettu kuvataajuus</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Konteksti muuttujat</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Konteksti</value>
-  </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
     <value>Sitaatit</value>
   </data>
@@ -271,15 +223,6 @@
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>Nauhoita pakkaamaton video</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Kameran nimimerkki</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Konfiguroitu kuvataajuus</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Tallennetun tiedoston nimi</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Ohita varoitus tiedoston ylikirjoituksesta</value>
@@ -308,12 +251,6 @@
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>Oletusmerkintätiedosto:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Pysäytä tallennus ajan (s) kuluttua:</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Seuranta</value>
-  </data>
   <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
     <value>Tyhjää</value>
   </data>
@@ -337,9 +274,6 @@
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
     <value>Kalibroidut mittaukset</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Hakuikkuna:</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
     <value>Lisää</value>
@@ -376,9 +310,6 @@
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
     <value>CSV-tiedostojen desimaalierotin:</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Tallennuksen jälkeinen komento:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
     <value>Pilkku</value>
@@ -418,9 +349,6 @@
   </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
     <value>Vakio</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pikselit</value>
   </data>
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
     <value>Tuo kuvasarjat videoina</value>
@@ -469,11 +397,5 @@
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategoriat</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Objekti-ikkuna:</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Tallenna vakio työtilaksi</value>
   </data>
 </root>

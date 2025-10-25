@@ -70,9 +70,6 @@
   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
     <value>Ralat berlaku semasa ujian sambungan.</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Ikon</value>
-  </data>
   <data name="FormConfiguration_Title" xml:space="preserve">
     <value>Tetapan kamera</value>
   </data>
@@ -150,9 +147,6 @@
   </data>
   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
     <value>Pendedahan (μs):</value>
-  </data>
-  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
-    <value>Eksport peranti GenICam fail XML</value>
   </data>
   <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
     <value>Dayakan pemampatan perkakasan</value>

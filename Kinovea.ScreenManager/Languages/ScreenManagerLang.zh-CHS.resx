@@ -317,9 +317,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>隐藏</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>文件浏览器</value>
-  </data>
   <data name="mnuMagnifierDirect" xml:space="preserve">
     <value>切换到直接放大模式</value>
   </data>
@@ -491,18 +488,6 @@
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>位置</value>
   </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>目标</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>圆</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>十字</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>标志:</value>
-  </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
     <value>视频帧率:</value>
   </data>
@@ -599,9 +584,6 @@
   <data name="Generic_Quit" xml:space="preserve">
     <value>退出</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>图标</value>
-  </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>打开</value>
   </data>
@@ -631,12 +613,6 @@
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>崩溃恢复</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>手臂捕捉触发器。 目前状态：解除武装。</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>撤防捕获触发器。 当前状态：武装。</value>
   </data>
   <data name="ToolTip_SideBySideVideo" xml:space="preserve">
     <value>将两个视频保存为复合视频</value>
@@ -709,9 +685,6 @@
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>默认褪色</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>设置样式为默认</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>粘贴图</value>
@@ -830,9 +803,6 @@
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>毫米</value>
   </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>延迟（秒）：</value>
-  </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>所有支持的格式</value>
   </data>
@@ -850,9 +820,6 @@
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>尺寸</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>粘贴</value>
   </data>
   <data name="Generic_Cut" xml:space="preserve">
     <value>切</value>
@@ -892,9 +859,6 @@
   </data>
   <data name="Generic_LineSizePicker" xml:space="preserve">
     <value>宽度：</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>部分:</value>
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>校准</value>
@@ -1312,9 +1276,6 @@
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>平均像素大小：{0}.</value>
-  </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>索引图</value>
   </data>
   <data name="mnuExport_Images_Sequence" xml:space="preserve">
     <value>图像序列…</value>

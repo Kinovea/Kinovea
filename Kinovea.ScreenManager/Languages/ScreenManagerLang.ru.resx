@@ -227,18 +227,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Конфигурация инструментов траектории</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Маркер:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Крестик</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Круг</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Цель</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Позиция</value>
   </data>
@@ -446,9 +434,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Значок:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Значки</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>Прогресс :</value>
   </data>
@@ -484,9 +469,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Калибровка</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Подразделения:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Размер шрифта:</value>
@@ -562,9 +544,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Данные по ключевым кадрам не сохранены</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Задержка(c) :</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve">
     <value>Общие элементы управления :</value>
@@ -703,9 +682,6 @@
   </data>
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Скрыть</value>
-  </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Проводник</value>
   </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Импорт изображений…</value>
@@ -923,12 +899,6 @@
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Максимальная непрозрачность (%):</value>
   </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Активировать триггер захвата. Текущее состояние: деактивирован.</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Деактивировать триггер захвата. Текущее состояние: активирован.</value>
-  </data>
   <data name="Toast_TriggerDisarmed" xml:space="preserve">
     <value>Триггер захвата не активен</value>
   </data>
@@ -964,9 +934,6 @@
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>Фейдинг по умолчанию</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Установить как стиль по умолчанию</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Вставить рисунок</value>
@@ -1006,9 +973,6 @@
   </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Все поддерживаемые форматы</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Вставить</value>
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>Копировать</value>
@@ -1204,9 +1168,6 @@
   </data>
   <data name="mnuTimeCalibration" xml:space="preserve">
     <value>Калибровка времени…</value>
-  </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>Миниатюры</value>
   </data>
   <data name="mnuAction_Chrono_Start" xml:space="preserve">
     <value>Начать новый отсчет ремени в этом кадре</value>
@@ -1429,9 +1390,6 @@
   </data>
   <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
     <value>Запустить оценку движения камеры</value>
-  </data>
-  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
-    <value>Импорт маски</value>
   </data>
   <data name="DrawingCounter_AddBeat" xml:space="preserve">
     <value>Добавить ритм</value>

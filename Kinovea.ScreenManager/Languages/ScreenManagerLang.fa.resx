@@ -230,18 +230,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>پیکربندی ابزار مسیر پرتابه</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>نشانگر:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>صلیب</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>دایره</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>هدف</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>موقعیت</value>
   </data>
@@ -482,9 +470,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>آیکون:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>آیکون‌ها</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>پیشرفت:</value>
   </data>
@@ -523,9 +508,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>کالیبراسیون</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>بخش ها:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>اندازه قلم:</value>
@@ -580,9 +562,6 @@
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>رونوشت</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>جایگذاری</value>
   </data>
   <data name="Generic_PlayPause" xml:space="preserve">
     <value>اجرا | مکث</value>
@@ -749,9 +728,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>پنهان کردن</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>جستجوگر فایل</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>وارد کردن تصویر …</value>
   </data>
@@ -835,9 +811,6 @@
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>جایگذاری طرح</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>تنظیم سبک به صورت پیش فرض</value>
   </data>
   <data name="mnuPasteImage" xml:space="preserve">
     <value>جایگذاری تصویر از کلیپ برد</value>

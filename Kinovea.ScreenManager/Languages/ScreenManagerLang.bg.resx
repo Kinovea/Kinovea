@@ -227,18 +227,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Конфигурация на траектория</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Маркер:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Кръстче</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Кръг</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Цел</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Позиция</value>
   </data>
@@ -446,9 +434,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Икона:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Икони</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>Прогрес :</value>
   </data>
@@ -484,9 +469,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Калибровка</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Подразделения:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Размер на шрифта:</value>
@@ -562,9 +544,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Данните от ключовите кадри не са съхранени</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Закъснение(c) :</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve">
     <value>Общи елементи при управление :</value>
@@ -703,9 +682,6 @@
   </data>
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Скрии</value>
-  </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Устройство</value>
   </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Импортиране на изображения…</value>
@@ -965,9 +941,6 @@
   <data name="Generic_Copy" xml:space="preserve">
     <value>Копирай</value>
   </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Постави</value>
-  </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Всички поддържани формати</value>
   </data>
@@ -1000,9 +973,6 @@
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Постави рисунката</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Запази стила по подразбиране</value>
   </data>
   <data name="mnuShowCircleCenter" xml:space="preserve">
     <value>Покажи центъра на кръга</value>

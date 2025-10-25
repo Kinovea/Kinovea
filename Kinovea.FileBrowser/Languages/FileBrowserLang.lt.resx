@@ -83,9 +83,6 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Nutraukti</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Naršyklė</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>Nuorodos</value>
   </data>

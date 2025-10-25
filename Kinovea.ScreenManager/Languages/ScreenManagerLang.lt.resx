@@ -338,9 +338,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Paslėpti</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Dokumentų naršyklė</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importuoti vaizdus…</value>
   </data>
@@ -569,15 +566,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Konfigūruoti trajektorijos įrankį</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Žymeklis:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Kryželis</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Apskritimas</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Pozicija</value>
   </data>
@@ -755,9 +743,6 @@
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Visi palaikomi formatai</value>
   </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Delsimas (-ai):</value>
-  </data>
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>Milimetrai</value>
   </data>
@@ -818,9 +803,6 @@
   <data name="mnuCutDrawing" xml:space="preserve">
     <value>Iškirpti piešinį</value>
   </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Nustatykite stilių kaip numatytąjį</value>
-  </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>Numatytasis išblukimas</value>
   </data>
@@ -838,12 +820,6 @@
   </data>
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>Konfigūruoti kamerą</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Išjungimo fiksavimo gaidukas. Dabartinė būklė: aktyvuotas.</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Aktyvinti fiksavimo gaiduką. Dabartinė būsena: neaktyvus.</value>
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Atkūrimas po gedimo</value>
@@ -892,9 +868,6 @@
   </data>
   <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
     <value>Linija apibrėžia horizontalią ašį</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Tikslas</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Kampinis greitis</value>
@@ -956,14 +929,8 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Piktograma:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Piktogramos</value>
-  </data>
   <data name="Generic_ArrowPicker" xml:space="preserve">
     <value>Rodyklės:</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Padaliniai:</value>
   </data>
   <data name="FileProperty_Framerate" xml:space="preserve">
     <value>Dažnis</value>
@@ -982,9 +949,6 @@
   </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>Atidaryti</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Įklijuoti</value>
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>Dydis</value>

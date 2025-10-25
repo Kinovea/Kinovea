@@ -85,18 +85,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Налаштувати інструмент траєкторії</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Маркер:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Хрест</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Коло</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Ціль</value>
-  </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>Показати вписане коло</value>
   </data>
@@ -168,9 +156,6 @@
   </data>
   <data name="dlgCalibratePlane_Title" xml:space="preserve">
     <value>Калібрування площини</value>
-  </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Значки</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
     <value>Тривалість кожного ключового зображення: {0:0,00} секунд.</value>
@@ -442,9 +427,6 @@
   <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
     <value>Режим калібрування об'єктива</value>
   </data>
-  <data name="VideoFilterCameraMotion_ImportMask" xml:space="preserve">
-    <value>Імпорт маски</value>
-  </data>
   <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
     <value>Показати точки</value>
   </data>
@@ -687,9 +669,6 @@
   </data>
   <data name="mnuCopyDrawing" xml:space="preserve">
     <value>Копіювати креслення</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Установити стиль за замовчуванням</value>
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>Згасання за замовчуванням</value>
@@ -988,9 +967,6 @@
   <data name="Generic_Configuration" xml:space="preserve">
     <value>Конфігурація</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Поділ:</value>
-  </data>
   <data name="Generic_ConfigurationElipsis" xml:space="preserve">
     <value>Конфігурація...</value>
   </data>
@@ -1060,9 +1036,6 @@
   <data name="Generic_Copy" xml:space="preserve">
     <value>Копіювати</value>
   </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Вставити</value>
-  </data>
   <data name="Generic_PlayPause" xml:space="preserve">
     <value>Відтворення | Пауза</value>
   </data>
@@ -1092,9 +1065,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Зберегти зміни</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Затримка (s):</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve">
     <value>Спільний контроль:</value>
@@ -1140,9 +1110,6 @@
   </data>
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Приховати</value>
-  </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Панель провідника</value>
   </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Імпорт зображення…</value>
@@ -1317,12 +1284,6 @@
   </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve">
     <value>Наступні проекти не були збережені належним чином, але їх можливо відновити:</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Зняти тригер захоплення. Поточний стан: активований.</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Тригер захоплення рукою. Поточний стан: деактивовано.</value>
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Відновлення після збою</value>
@@ -1566,9 +1527,6 @@
   </data>
   <data name="mnuSortBy_Size" xml:space="preserve">
     <value>Розмір</value>
-  </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>Мініатюри</value>
   </data>
   <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
     <value>Перейти до поточного часу</value>

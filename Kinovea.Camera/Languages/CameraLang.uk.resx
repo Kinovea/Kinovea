@@ -67,9 +67,6 @@
   <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
     <value>Увімкнути демозаїку програмного забезпечення</value>
   </data>
-  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
-    <value>Експортувати XML-файл пристрою GenICam</value>
-  </data>
   <data name="Generic_Apply" xml:space="preserve">
     <value>Застосувати</value>
   </data>
@@ -84,9 +81,6 @@
   </data>
   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
     <value>Під час перевірки з'єднання сталася помилка.</value>
-  </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Значки</value>
   </data>
   <data name="FormConfiguration_Title" xml:space="preserve">
     <value>Налаштування камери</value>

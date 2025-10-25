@@ -80,9 +80,6 @@
   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
     <value>An error occurred during the connection test.</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Icons</value>
-  </data>
   <data name="FormConfiguration_Title" xml:space="preserve">
     <value>Camera configuration</value>
   </data>
@@ -166,8 +163,5 @@
   </data>
   <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
     <value>Resulting framerate:</value>
-  </data>
-  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
-    <value>Export device GenICam XML file</value>
   </data>
 </root>

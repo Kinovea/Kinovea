@@ -338,9 +338,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Piilota</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Tiedostopuu</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Tuo kuva…</value>
   </data>
@@ -554,9 +551,6 @@
   <data name="mnuSortBy" xml:space="preserve">
     <value>Järjestä</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Ikonit</value>
-  </data>
   <data name="mnuCopyDrawing" xml:space="preserve">
     <value>Kopioi piirustus</value>
   </data>
@@ -566,9 +560,6 @@
   <data name="Generic_Restore" xml:space="preserve">
     <value>Palauta oletukset</value>
   </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Risti</value>
-  </data>
   <data name="formConfigureKinogram_CropSize" xml:space="preserve">
     <value>Rajauksen koko:</value>
   </data>
@@ -577,9 +568,6 @@
   </data>
   <data name="mnuPolyline_FinishHere" xml:space="preserve">
     <value>Päätä pisteviiva tähän</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Aseta tyyli vakioksi</value>
   </data>
   <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
     <value>Näytä pystysuora akseli</value>
@@ -628,9 +616,6 @@
   </data>
   <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
     <value>Automaattiset numerot</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Deaktivoi kaappauksen liipaisin. Nykyinen tila: viritetty.</value>
   </data>
   <data name="FormCrashRecovery_Date" xml:space="preserve">
     <value>Päiväys</value>
@@ -715,9 +700,6 @@
   </data>
   <data name="formConfigureExport_ImageSequence" xml:space="preserve">
     <value>Vie kuvasarja</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Viive (s):</value>
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Kaatumisesta palautuminen</value>
@@ -851,9 +833,6 @@
   <data name="FormCrashRecovery_File" xml:space="preserve">
     <value>Tiedosto</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Jaot:</value>
-  </data>
   <data name="FileProperty_Framerate" xml:space="preserve">
     <value>Kuvataajuus</value>
   </data>
@@ -940,9 +919,6 @@
   </data>
   <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
     <value>Liikerata CSV…</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Aktivoi kaappauksen liipaisin. Nykyinen tila: virittämättä.</value>
   </data>
   <data name="DrawingName_ArrowPolyline" xml:space="preserve">
     <value>Nuoli - Murtoviiva</value>
@@ -1118,9 +1094,6 @@
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>Pistekaavio</value>
   </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Ympyrä</value>
-  </data>
   <data name="DrawingName_DistortionGrid" xml:space="preserve">
     <value>Vääristymäverkko</value>
   </data>
@@ -1199,9 +1172,6 @@
   <data name="mnuRotation90" xml:space="preserve">
     <value>90° myötäpäivään</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Merkki:</value>
-  </data>
   <data name="mnuCounterClockwise" xml:space="preserve">
     <value>Vastapäivään</value>
   </data>
@@ -1216,9 +1186,6 @@
   </data>
   <data name="formConfigureKinogram_Title" xml:space="preserve">
     <value>Määritä Kinogrammi</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Liitä</value>
   </data>
   <data name="Generic_Perspective" xml:space="preserve">
     <value>Perspektiivi:</value>
@@ -1264,9 +1231,6 @@
   </data>
   <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
     <value>Viiva määrittää vaaka-akselin</value>
-  </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>Pikkukuvat</value>
   </data>
   <data name="mnuExport_Images_Sequence" xml:space="preserve">
     <value>Kuvasarja…</value>
@@ -1318,9 +1282,6 @@
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
     <value>Kuvataajuuden luku tiedostossa: {0:0.##} fps</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Kohde</value>
   </data>
   <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
     <value>Etäisyys (horisontaalinen)</value>

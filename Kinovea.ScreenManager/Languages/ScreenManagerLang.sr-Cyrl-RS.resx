@@ -194,18 +194,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Подеси алат трајекторије</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Маркер:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Крст</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Круг</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Мета</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Позиција</value>
   </data>
@@ -407,9 +395,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Икона:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Иконе</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>Напредовање :</value>
   </data>
@@ -445,9 +430,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Калибрација</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Подеоци:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Величина фонта:</value>
@@ -523,9 +505,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Подаци кључних слика нису сачувани</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Кашњење (s) :</value>
   </data>
   <data name="lblInfo_Text" xml:space="preserve">
     <value>Заједничке контроле:</value>
@@ -643,9 +622,6 @@
   </data>
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Сакриј</value>
-  </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Истраживач датотеке</value>
   </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Увези слику…</value>

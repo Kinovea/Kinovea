@@ -353,9 +353,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Skjul</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Filoversigt</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importer billede…</value>
   </data>

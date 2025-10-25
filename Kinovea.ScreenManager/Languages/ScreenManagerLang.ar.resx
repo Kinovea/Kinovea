@@ -194,18 +194,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>إعدادات أداة تتبع المسار</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>العلامة:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>متقاطع</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>دائرة</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>علامة التصويب</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>الموضع</value>
   </data>
@@ -407,9 +395,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>الرمز:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>الرموز</value>
-  </data>
   <data name="FormFileSave_Infos" xml:space="preserve">
     <value>التقدم :</value>
   </data>
@@ -445,9 +430,6 @@
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>معايرة</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>أقسام:</value>
   </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>حجم الخط:</value>
@@ -640,9 +622,6 @@
   </data>
   <data name="mnuGridsHide" xml:space="preserve">
     <value>إخفاء</value>
-  </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>متصفح الملفات</value>
   </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>استيراد صورة …</value>
@@ -914,12 +893,6 @@
   <data name="Infobar_Player_Observing" xml:space="preserve">
     <value>مجلد المشاهدة: {0}</value>
   </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>تفعيل مشغل التسجيل. الوضع الحالي: معطل.</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>تعطيل مشغل التسجيل. الوضع الحالي: مفعل.</value>
-  </data>
   <data name="Toast_TriggerArmed" xml:space="preserve">
     <value>مشغل التسجيل مفعل</value>
   </data>
@@ -943,9 +916,6 @@
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>تلاشي افتراضي</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>ضبط النمط على أنه افتراضي</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>لصق الرسم</value>
@@ -1000,12 +970,6 @@
   </data>
   <data name="mnuHideBefore" xml:space="preserve">
     <value>إخفاء قبل هذه النقطة</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>التأخير (ث):</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>لصق</value>
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>نسخ</value>

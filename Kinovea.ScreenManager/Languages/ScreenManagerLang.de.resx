@@ -341,9 +341,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Verbergen</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Explorer-Leiste</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Bild importieren…</value>
   </data>
@@ -485,9 +482,6 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Öffnen</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Symbole</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
     <value>Horizontale Position</value>
   </data>
@@ -517,12 +511,6 @@
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Wiederherstellung nach Absturz</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Aufnahme-Trigger aktivieren. Aktueller Zustand: deaktiviert.</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Aufnahme-Trigger deaktivieren. Aktueller Zustand: aktiviert.</value>
   </data>
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>Kamera konfigurieren</value>
@@ -565,9 +553,6 @@
   </data>
   <data name="mnuVisibilityConfigure" xml:space="preserve">
     <value>Benutzerdefiniertes Ausblenden konfigurieren</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Stil als Standard festlegen</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Zeichnung einfügen</value>
@@ -680,9 +665,6 @@
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>Millimeter</value>
   </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Verzögerung (s):</value>
-  </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Alle unterstützten Formate</value>
   </data>
@@ -700,9 +682,6 @@
   </data>
   <data name="FileProperty_Size" xml:space="preserve">
     <value>Größe</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Einfügen</value>
   </data>
   <data name="Generic_Copy" xml:space="preserve">
     <value>Kopieren</value>
@@ -733,9 +712,6 @@
   </data>
   <data name="Generic_LineSizePicker" xml:space="preserve">
     <value>Breite:</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Gittereinteilung:</value>
   </data>
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Kalibrierung</value>
@@ -964,18 +940,6 @@
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Position</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Zielscheibe</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Kreis</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Kreuz</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Markierung:</value>
   </data>
   <data name="dlgTimebase_InfoUser" xml:space="preserve">
     <value>Diese Option definiert die Referenz-Bildrate, die Kinovea zum Abspielen des Videos verwendet. Verwenden Sie diese Einstellung, wenn das Video eine falsche Bildrate enthält oder Kinovea es nicht lesen kann. </value>

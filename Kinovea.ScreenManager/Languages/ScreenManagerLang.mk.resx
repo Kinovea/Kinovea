@@ -209,9 +209,6 @@
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Калибрација</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Делови:</value>
-  </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Големина на фонтот:</value>
   </data>
@@ -361,9 +358,6 @@
   </data>
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Сокриј</value>
-  </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Истражувач на датотеки</value>
   </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Импорт на сликите…</value>
@@ -623,12 +617,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Подесување на алатките на траекторијата</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Маркер:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Крст</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Позиција</value>
   </data>
@@ -734,9 +722,6 @@
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Вметни го цртежот</value>
   </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Постави го стилот како стандардни поставки</value>
-  </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>Фејдинг во стандардни поставки</value>
   </data>
@@ -764,9 +749,6 @@
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>Конфигурација на камерата</value>
   </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Деактивирај го тригерот на опфатот. Моменталната состојба е активиран.</value>
-  </data>
   <data name="FormCrashRecovery_Info" xml:space="preserve">
     <value>Тековните проекти не биле соодветно зачувани, но можат да бидат обновени:</value>
   </data>
@@ -778,9 +760,6 @@
   </data>
   <data name="mnuRotation180" xml:space="preserve">
     <value>180°</value>
-  </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Икони</value>
   </data>
   <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
     <value>Времетраење на непровидноста (на кадрите):</value>
@@ -803,14 +782,8 @@
   <data name="dlgTimebase_InfoCapture" xml:space="preserve">
     <value>Оваа опција ја поврзува брзината на снимањето и реалното време. Содржи ознаки кои содржат временски и кинематички параметри. Искорегирајте го значењето доколку видеото било снимено со високобрзинската камера. </value>
   </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Мета</value>
-  </data>
   <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
     <value>Вертикално забрзување</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Круг</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>Аголна брзина</value>
@@ -868,9 +841,6 @@
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Експортирај по еден кадар сњекои {0:0.00} мс.</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Вметни</value>
   </data>
   <data name="DrawingName_DistortionGrid" xml:space="preserve">
     <value>Мрежа на искривеност</value>
@@ -977,9 +947,6 @@
   <data name="FileProperty_HasKva" xml:space="preserve">
     <value>KVA фајл</value>
   </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Доцнење (с):</value>
-  </data>
   <data name="mnuShowBefore" xml:space="preserve">
     <value>Прикажувај до оваа точка</value>
   </data>
@@ -1072,9 +1039,6 @@
   </data>
   <data name="mnuShowArrow" xml:space="preserve">
     <value>Прикажи ја стрелката</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Активирај го тригерот на опфатот. Моменталната состојба е деактивиран.</value>
   </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Неуспешно обновување</value>
@@ -1225,9 +1189,6 @@
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>Опаѓачки</value>
-  </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>Сликички</value>
   </data>
   <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
     <value>Премести во тековното време</value>

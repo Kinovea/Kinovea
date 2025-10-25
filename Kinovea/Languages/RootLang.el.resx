@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Μορφή βίντεο:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Έτος</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Μήνας</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Ημέρα</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Ώρα</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Λεπτό</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Δευτερόλεπτο</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Μνήμη</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Περί του Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Άνοιγμα Φακέλου Ημερολογίου…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Σύνταξη</value>
@@ -238,15 +217,6 @@
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>Κάμερες υψηλής ταχύτητας</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Ημερομηνία (YYYMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Ώρα (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Ημερομηνία και ώρα (YYYYMMDD-HHMMSS)</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>Δομικά στοιχεία</value>

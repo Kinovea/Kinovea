@@ -338,9 +338,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Απόκρυψη</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Εξερευνητής Αρχείων</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Εισαγωγή εικόνας…</value>
   </data>
@@ -538,9 +535,6 @@
   </data>
   <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
     <value>Σχετικό</value>
-  </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Εικονίδια</value>
   </data>
   <data name="mnuSortBy_Date" xml:space="preserve">
     <value>Ημερομηνία</value>

@@ -121,6 +121,15 @@ namespace Kinovea.ScreenManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a capture folder.
+        /// </summary>
+        internal static string cmbSelectACaptureFolder {
+            get {
+                return ResourceManager.GetString("cmbSelectACaptureFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap command_line_16 {
@@ -347,6 +356,87 @@ namespace Kinovea.ScreenManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("thumb_close", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture context.
+        /// </summary>
+        internal static string tooltip_CaptureContext {
+            get {
+                return ResourceManager.GetString("tooltip_CaptureContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable capture context.
+        /// </summary>
+        internal static string tooltip_ContextToggle_Disable {
+            get {
+                return ResourceManager.GetString("tooltip_ContextToggle_Disable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable capture context.
+        /// </summary>
+        internal static string tooltip_ContextToggle_Enable {
+            get {
+                return ResourceManager.GetString("tooltip_ContextToggle_Enable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delay in seconds.
+        /// </summary>
+        internal static string tooltip_DelayInSeconds {
+            get {
+                return ResourceManager.GetString("tooltip_DelayInSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total length of the recording in seconds.
+        /// </summary>
+        internal static string tooltip_TotalLengthOfTheRecordingInSeconds {
+            get {
+                return ResourceManager.GetString("tooltip_TotalLengthOfTheRecordingInSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The capture trigger is armed.
+        /// </summary>
+        internal static string tooltipArm_Armed {
+            get {
+                return ResourceManager.GetString("tooltipArm_Armed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The capture trigger is disarmed.
+        /// </summary>
+        internal static string tooltipArm_Disarmed {
+            get {
+                return ResourceManager.GetString("tooltipArm_Disarmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The view is delayed.
+        /// </summary>
+        internal static string tooltipDelayedDisplay_Delayed {
+            get {
+                return ResourceManager.GetString("tooltipDelayedDisplay_Delayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The view is live.
+        /// </summary>
+        internal static string tooltipDelayedDisplay_Live {
+            get {
+                return ResourceManager.GetString("tooltipDelayedDisplay_Live", resourceCulture);
             }
         }
     }

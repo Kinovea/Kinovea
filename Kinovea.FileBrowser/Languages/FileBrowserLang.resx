@@ -153,9 +153,6 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Open</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve">
-    <value>Explorer</value>
-  </data>
   <data name="tabShortcuts" xml:space="preserve">
     <value>Shortcuts</value>
   </data>

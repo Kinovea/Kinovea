@@ -67,9 +67,6 @@
   <data name="dlgAbout_Translation" xml:space="preserve">
     <value>การแปลภาษา</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>หยุดการบันทึกด้วยระยะเวลาของวีดีโอ (s):</value>
-  </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>อัตราทริกเกอร์:</value>
   </data>
@@ -99,60 +96,6 @@
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>หน่วยความจำ</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>มาโคร</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>บริบท</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>ตัวแปร</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>วันที่และเวลา (YYYYMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>เวลา (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>วันที่ (ปี-เดือน-วัน YYYYMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>ชื่อไฟล์ที่แคปเจอร์</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>ไดเรกทอรี่สำหรับเก็บไฟล์ที่แคปเจอร์</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>รูปแบบในการออก</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>เฟรมเรทที่ได้รับ</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>ปรับตั้งค่าเฟรมเรท</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>ชื่อของกล้อง</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>วินาที</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>นาที</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>ชั่วโมง</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>วัน</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>เดือน</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>ปี</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>ย้อนหลัง: บันทึกเฟรมเมื่อการจับภาพหยุดลง</value>
@@ -229,9 +172,6 @@
   <data name="mnuScreens" xml:space="preserve">
     <value>ดู</value>
   </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>บันทึกเป็นพื้นที่ทำงานเริ่มต้น</value>
-  </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>พื้นที่ทำงาน</value>
   </data>
@@ -274,9 +214,6 @@
   <data name="mnuEdit" xml:space="preserve">
     <value>แก้ไข</value>
   </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>เปิดโฟลเดอร์บันทึก…</value>
-  </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>เกี่ยวกับคิโนเวีย…</value>
   </data>
@@ -304,23 +241,11 @@
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>หมวดหมู่</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>พิกเซล</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>เปอร์เซ็นต์</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>หน้าต่างการค้นหา:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>หน้าต่างวัตถุ:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>พารามิเตอร์การติดตามเริ่มต้น</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>การติดตาม</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>หน่วยความยาวที่กำหนดเอง :</value>
@@ -432,9 +357,6 @@
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>แสดงภาพวาดขณะเล่นวิดีโอ</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>คำสั่งบันทึกโพสต์:</value>
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>เวลาว่าง (s):</value>

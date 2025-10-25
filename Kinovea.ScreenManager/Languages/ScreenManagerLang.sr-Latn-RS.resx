@@ -209,9 +209,6 @@
   <data name="Generic_Calibration" xml:space="preserve">
     <value>Kalibracija</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Podeoci:</value>
-  </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>Veličina fonta:</value>
   </data>
@@ -361,9 +358,6 @@
   </data>
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Sakrij</value>
-  </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Istraživač datoteke</value>
   </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Uveži sliku...</value>

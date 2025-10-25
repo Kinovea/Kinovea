@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>비디오 포맷:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>년</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>월</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>일</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>시</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>분</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>초</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>메모리</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>Kinovea에 대해서…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>로그 폴더 열기…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>편집</value>
@@ -236,17 +215,8 @@
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>압축되지 않은 비디오 녹화</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>수신된 프레임속도</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>제어 시퀀스</value>
-  </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
     <value>소급적용: 캡처가 중지될 때 프레임을 기록합니다.</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>구성된 프레임속도</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
     <value>빌딩 블록</value>
@@ -256,18 +226,6 @@
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
     <value>인용</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>날짜 (YYYYMMDD)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>날짜 및 시간 (YYYYMMDD-HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>문맥 변수</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>매크로</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>파일 덮어쓰기 경고 무시하기</value>
@@ -293,14 +251,8 @@
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>트리거 한계:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>지정한 시간만큼 기록 중지 (초):</value>
-  </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>대기 시간 (초):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>녹화 후 명령:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>좌표 필터 활성화</value>
@@ -317,23 +269,8 @@
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
     <value>연속된 이미지를 비디오로 불러오기</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>시간 (HHMMSS)</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>문맥</value>
-  </data>
   <data name="mnuTools" xml:space="preserve">
     <value>도구</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>카메라 별칭</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>캡처 디렉터리</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>캡처된 파일 이름</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
     <value>시간 커서 이동 중 이미지 업데이트</value>
@@ -401,23 +338,11 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>사용자 정의 길이 단위:</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>추적</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>기본 추적 매개변수</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>개체 창:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>검색 창:</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>백분율</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>픽셀</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>카테고리</value>
@@ -439,9 +364,6 @@
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
     <value>작업 공간</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>기본 작업 공간으로 저장</value>
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>총 마이크로초</value>

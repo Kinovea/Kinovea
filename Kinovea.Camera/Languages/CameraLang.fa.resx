@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- 
 		www.kinovea.org
 		
@@ -7,100 +7,143 @@
 		This file follow MS Resx schema.
 	-->
 <root>
-   <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-               xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
-               id="root">
-      <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-      <xsd:element name="root" msdata:IsDataSet="true">
-         <xsd:complexType>
-            <xsd:choice maxOccurs="unbounded">
-               <xsd:element name="metadata">
-                  <xsd:complexType>
-                     <xsd:sequence>
-                        <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-                     </xsd:sequence>
-                     <xsd:attribute name="name" use="required" type="xsd:string"/>
-                     <xsd:attribute name="type" type="xsd:string"/>
-                     <xsd:attribute name="mimetype" type="xsd:string"/>
-                     <xsd:attribute ref="xml:space"/>
-                  </xsd:complexType>
-               </xsd:element>
-               <xsd:element name="assembly">
-                  <xsd:complexType>
-                     <xsd:attribute name="alias" type="xsd:string"/>
-                     <xsd:attribute name="name" type="xsd:string"/>
-                  </xsd:complexType>
-               </xsd:element>
-               <xsd:element name="data">
-                  <xsd:complexType>
-                     <xsd:sequence>
-                        <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                        <xsd:element name="comment"
-                                     type="xsd:string"
-                                     minOccurs="0"
-                                     msdata:Ordinal="2"/>
-                     </xsd:sequence>
-                     <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-                     <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-                     <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-                     <xsd:attribute ref="xml:space"/>
-                  </xsd:complexType>
-               </xsd:element>
-               <xsd:element name="resheader">
-                  <xsd:complexType>
-                     <xsd:sequence>
-                        <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                     </xsd:sequence>
-                     <xsd:attribute name="name" type="xsd:string" use="required"/>
-                  </xsd:complexType>
-               </xsd:element>
-            </xsd:choice>
-         </xsd:complexType>
-      </xsd:element>
-   </xsd:schema>
-   <resheader name="resmimetype">
-      <value>text/microsoft-resx</value>
-   </resheader>
-   <resheader name="version">
-      <value>2.0</value>
-   </resheader>
-   <resheader name="reader">
-      <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-   </resheader>
-   <resheader name="writer">
-      <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-   </resheader>
-   <data name="Generic_Apply" xml:space="preserve"><value>تایید</value></data>
-   <data name="Generic_Cancel" xml:space="preserve"><value>لغو</value></data>
-   <data name="FormHandshakeResult_Title" xml:space="preserve"><value>تآزمایشست اتصال</value></data>
-   <data name="FormHandshakeResult_Failure_Title" xml:space="preserve"><value>عدم موفقیت در آزمایش اتصال</value></data>
-   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve"><value>هنگام آزمایش اتصال خطایی روی داد.</value></data>
-   <data name="FormIconPicker_Title" xml:space="preserve"><value>آیکون‌ها</value></data>
-   <data name="FormConfiguration_Title" xml:space="preserve"><value>پیکربندی دوربین</value></data>
-   <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve"><value>فرمت جریان:</value></data>
-   <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve"><value>اندازه تصویر:</value></data>
-   <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve"><value>عرض:</value></data>
-   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve"><value>ارتفاع:</value></data>
-   <data name="FormConfiguration_Properties_Framerate" xml:space="preserve"><value>میزان فریم:</value></data>
-   <data name="FormConfiguration_Properties_Exposure" xml:space="preserve"><value>آشکاری:</value></data>
-   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>آشکاری (میکروثانیه):</value></data>
-   <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>وضوح:</value></data>
-   <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>فوکوس:</value></data>
-   
-   <data name="FormConfiguration_Auto" xml:space="preserve"><value>اتوماتیک</value></data>
-   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>صفحات ویژگی دستگاه</value></data>
-   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>هنگام تلاش برای نمایش صفحه خاصیت دستگاه خطایی روی داد. {0}</value></data>
-   
-   
-   <data name="FormConfiguration_Test" xml:space="preserve"><value>تست</value></data>
-   <data name="FormConnectionWizard_Network" xml:space="preserve"><value>شبکه</value></data>
-   <data name="FormConnectionWizard_Host" xml:space="preserve"><value>میزبان (آدرس IP)</value></data>
-   <data name="FormConnectionWizard_Port" xml:space="preserve"><value>درگاه</value></data>
-   <data name="FormConnectionWizard_Format" xml:space="preserve"><value>قالب</value></data>
-   <data name="FormConnectionWizard_Authentication" xml:space="preserve"><value>احراز هویت</value></data>
-   <data name="FormConnectionWizard_User" xml:space="preserve"><value>کاربر</value></data>
-   <data name="FormConnectionWizard_Password" xml:space="preserve"><value>رمز</value></data>
-   <data name="FormConnectionWizard_URL" xml:space="preserve"><value>آدرس URL نهایی</value></data>
-   
-   
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>تایید</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>لغو</value>
+  </data>
+  <data name="FormHandshakeResult_Title" xml:space="preserve">
+    <value>تآزمایشست اتصال</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>عدم موفقیت در آزمایش اتصال</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>هنگام آزمایش اتصال خطایی روی داد.</value>
+  </data>
+  <data name="FormConfiguration_Title" xml:space="preserve">
+    <value>پیکربندی دوربین</value>
+  </data>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
+    <value>فرمت جریان:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve">
+    <value>اندازه تصویر:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
+    <value>عرض:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
+    <value>ارتفاع:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
+    <value>میزان فریم:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>آشکاری:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
+    <value>آشکاری (میکروثانیه):</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>وضوح:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>فوکوس:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>اتوماتیک</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>صفحات ویژگی دستگاه</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>هنگام تلاش برای نمایش صفحه خاصیت دستگاه خطایی روی داد. {0}</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>تست</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>شبکه</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>میزبان (آدرس IP)</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>درگاه</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>قالب</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>احراز هویت</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>کاربر</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>رمز</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>آدرس URL نهایی</value>
+  </data>
 </root>

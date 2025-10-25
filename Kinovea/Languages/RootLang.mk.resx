@@ -83,24 +83,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Формат на видеото:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Година</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Месец</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Ден</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Час</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Минута</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Секунда</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Меморија</value>
   </data>
@@ -148,9 +130,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>За Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Отвори го дневникот на евиденција…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Уреди</value>
@@ -224,9 +203,6 @@
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
     <value>Издвоена меморија за снимање во бафер: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Контекст променливи</value>
-  </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
     <value>Праг на замена на фреквенцијата на кадрите (fps):</value>
   </data>
@@ -290,9 +266,6 @@
   <data name="mnuWorkspace" xml:space="preserve">
     <value>Работен простор</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Пиксели</value>
-  </data>
   <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
     <value>Отстрани</value>
   </data>
@@ -320,47 +293,14 @@
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Фреквенција на кадри (fps):</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Датум и време (ГГГMMДД-ЧЧMMСС)</value>
-  </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>Снимање</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
     <value>Дисплеј: директното снимање од екранот.</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Назив на камерата</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Подесување на фреквенцијата на кадрите</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Добиена фреквенција на кадрите</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Излезна последователност</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Директориум на опфатот</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Име на снимен фајл</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Датум (ГГГMMДД)</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Време (ЧЧММСС)</value>
-  </data>
   <data name="mnuTimeFormat" xml:space="preserve">
     <value>Време</value>
-  </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Контекст</value>
-  </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Макро</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Игнорирај предупредување за презапишување на фајлот</value>
@@ -374,14 +314,8 @@
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Праг на активирање:</value>
   </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Запрете го снимањето по времетраењето (с):</value>
-  </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Време на мирување (с):</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Команда за пост-снимање:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Дозволи филтрација на координатите</value>
@@ -416,17 +350,8 @@
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Корисничка единица за должина:</value>
   </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Следење</value>
-  </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Параметри за следење во стандардни поставки</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Прозорец на објектот:</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Прозор за пребарување:</value>
   </data>
   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
     <value>Проценти</value>
@@ -439,9 +364,6 @@
   </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
     <value>Стандардни поставки</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Зачувај како стандарден работен простор</value>
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>Вкупно микросекунди</value>

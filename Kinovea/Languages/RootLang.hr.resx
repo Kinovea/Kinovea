@@ -76,24 +76,6 @@
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
     <value>Video format:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
-    <value>Godina</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
-    <value>Mjesec</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve">
-    <value>Dan</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve">
-    <value>Sat</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve">
-    <value>Minuta</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve">
-    <value>Sekunda</value>
-  </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Memorija</value>
   </data>
@@ -144,9 +126,6 @@
   </data>
   <data name="mnuAbout" xml:space="preserve">
     <value>O Kinovea…</value>
-  </data>
-  <data name="mnuApplicationFolder" xml:space="preserve">
-    <value>Otvori mapu evidencija…</value>
   </data>
   <data name="mnuEdit" xml:space="preserve">
     <value>Uredi</value>
@@ -220,17 +199,11 @@
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Prikaži broj kadrova u sekundi (fps):</value>
   </data>
-  <data name="dlgPreferences_Capture_Macro" xml:space="preserve">
-    <value>Macro</value>
-  </data>
   <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
     <value>Radijani u sekundi ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
     <value>Stupnjevi u sekundi ({0})</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve">
-    <value>Primljen broj kadrova u sekundi</value>
   </data>
   <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
     <value>Stopa u sekundi na kvadrat ({0})</value>
@@ -241,20 +214,11 @@
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
     <value>Dodatna memorija dodijeljena svakom zaslonu za reprodukciju: {0} MB.</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve">
-    <value>Katalog snimki</value>
-  </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>Zadana anotacija datoteke:</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>Snimka</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve">
-    <value>Zaustavi snimanje prema trajanju (s):</value>
-  </data>
-  <data name="dlgPreferences_Player_Tracking" xml:space="preserve">
-    <value>Praćenje</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
     <value>Izbriši</value>
@@ -280,17 +244,11 @@
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Pauza (s):</value>
   </data>
-  <data name="dlgPreferences_Capture_Context" xml:space="preserve">
-    <value>Kontekst</value>
-  </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
     <value>Omogući filtraciju koordinata</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
     <value>Kalibrirane mjere</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve">
-    <value>Prozor za pretraživanje:</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
     <value>Primijeni</value>
@@ -325,17 +283,8 @@
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
     <value>Decimalni razdjelnik za CSV datoteke:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve">
-    <value>Alias kamera</value>
-  </data>
-  <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve">
-    <value>Naredba za naknadno snimanje:</value>
-  </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
     <value>Nekompresirani video format:</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve">
-    <value>Kontrolna sekvenca</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
     <value>Zarez</value>
@@ -351,9 +300,6 @@
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
     <value>Ažuriraj snimku tokom pomicanja pokazivača</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve">
-    <value>Datum (YYYYMMDD)</value>
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>Snimi nekompresirani video</value>
@@ -385,9 +331,6 @@
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
     <value>Zadano</value>
   </data>
-  <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve">
-    <value>Pikseli</value>
-  </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>Način snimanja i kašnjenje</value>
   </data>
@@ -405,9 +348,6 @@
   </data>
   <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
     <value>Stupnjevi ({0})</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve">
-    <value>Konfiguriran broj kadrova u sekundi</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Zanemari upozorenje o zamjeni preko postojeće datoteke</value>
@@ -430,20 +370,11 @@
   <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
     <value>Vrijeme:</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve">
-    <value>Datum i vrijeme (YYYYMMDD-HHMMSS)</value>
-  </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
     <value>Prag zamjene broja kadrova u sekundi (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
     <value>Kamere velike brzine</value>
-  </data>
-  <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve">
-    <value>Kontekstualne varijable</value>
-  </data>
-  <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve">
-    <value>Naziv snimljene datoteke</value>
   </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
     <value>Zadani parametri za praćenje</value>
@@ -457,17 +388,8 @@
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
     <value>Omogući audio okidač</value>
   </data>
-  <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve">
-    <value>Vrijeme (HHMMSS)</value>
-  </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorije</value>
-  </data>
-  <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve">
-    <value>Prozor objekta:</value>
-  </data>
-  <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
-    <value>Spremi kao zadani radni prostor</value>
   </data>
   <data name="mnuBigArrow" xml:space="preserve">
     <value>Velika strelica</value>

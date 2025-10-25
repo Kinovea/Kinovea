@@ -317,9 +317,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Skjul</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>Utforsk fil</value>
-  </data>
   <data name="mnuMagnifierDirect" xml:space="preserve">
     <value>Bytt til direkte zoom</value>
   </data>
@@ -478,9 +475,6 @@
   </data>
   <data name="Generic_Open" xml:space="preserve">
     <value>Åpne</value>
-  </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Ikoner</value>
   </data>
   <data name="variable_CameraAlias" xml:space="preserve">
     <value>Kamera-alias</value>

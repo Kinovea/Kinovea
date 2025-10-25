@@ -350,9 +350,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>Skrýt</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>File Explorer</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>Importovat obrázek…</value>
   </data>
@@ -506,9 +503,6 @@
   <data name="Generic_Import" xml:space="preserve">
     <value>Import</value>
   </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>Vložit</value>
-  </data>
   <data name="mnuRotation0" xml:space="preserve">
     <value>Žádná rotace</value>
   </data>
@@ -526,9 +520,6 @@
   </data>
   <data name="ToolTip_StartCamera" xml:space="preserve">
     <value>Spustit kameru</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>Zajistit spoušť zachycení. Aktuální stav: odjištěno.</value>
   </data>
   <data name="FormCrashRecovery_File" xml:space="preserve">
     <value>Soubor</value>
@@ -652,15 +643,6 @@
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>Nástroj pro konfiguraci trajektorie</value>
-  </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>Značka:</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>Kruh</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>Cíl</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>Pozice</value>
@@ -866,9 +848,6 @@
   <data name="FormCameraAlias_Icon" xml:space="preserve">
     <value>Ikona:</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Ikony:</value>
-  </data>
   <data name="Generic_Curved" xml:space="preserve">
     <value>Křivka:</value>
   </data>
@@ -877,9 +856,6 @@
   </data>
   <data name="Generic_Clock" xml:space="preserve">
     <value>Hodiny:</value>
-  </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>Toto je popisek pro selektor definující velikost mřížky.</value>
   </data>
   <data name="Generic_Visibility" xml:space="preserve">
     <value>Viditelnost</value>
@@ -916,9 +892,6 @@
   </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Všechny podporované formáty</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>Zpoždění (s):</value>
   </data>
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>Milimetry</value>
@@ -1019,9 +992,6 @@
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Vložení kresby</value>
   </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>Nastavení stylu jako výchozího</value>
-  </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>Výchozí blednutí</value>
   </data>
@@ -1058,9 +1028,6 @@
   <data name="ToolTip_ConfigureCamera" xml:space="preserve">
     <value>Konfigurace kamery</value>
   </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>Odjistit spoušť zachycení. Aktuální stav: odjištěno.</value>
-  </data>
   <data name="FormCrashRecovery_Title" xml:space="preserve">
     <value>Obnova po havárii</value>
   </data>
@@ -1087,9 +1054,6 @@
   </data>
   <data name="dlgTimebase_InfoCapture" xml:space="preserve">
     <value>Tato možnost definuje rozdíl mezi rychlostí videa a reálným časem. Ovlivňuje štítky obsahující časy a kinematická měření. Použijte ji, pokud bylo video natočeno v režimu vysoké rychlosti. </value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>Kříž</value>
   </data>
   <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
     <value>Čára vymezuje svislou osu</value>

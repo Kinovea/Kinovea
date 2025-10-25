@@ -58,9 +58,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Generic_Apply" xml:space="preserve"><value>Primijeni</value>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>Primijeni</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Poništi</value>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Poništi</value>
   </data>
   <data name="FormConnectionWizard_Authentication" xml:space="preserve">
     <value>Autentikacija</value>
@@ -146,9 +148,6 @@
   <data name="FormConnectionWizard_Host" xml:space="preserve">
     <value>Host (IP adresa)</value>
   </data>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>Ikone</value>
-  </data>
   <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
     <value>Aktiviraj hardversko komprimiranje</value>
   </data>
@@ -157,8 +156,5 @@
   </data>
   <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
     <value>Rezultirajući broj kadrova u sekundi:</value>
-  </data>
-  <data name="FormConfiguration_ExportDeviceGenICamXMLFile" xml:space="preserve">
-    <value>Izvezi XML datoteku GenICam uređaja</value>
   </data>
 </root>

@@ -295,15 +295,6 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Explorer.
-        /// </summary>
-        internal static string tabExplorer {
-            get {
-                return ResourceManager.GetString("tabExplorer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Shortcuts.
         /// </summary>
         internal static string tabShortcuts {

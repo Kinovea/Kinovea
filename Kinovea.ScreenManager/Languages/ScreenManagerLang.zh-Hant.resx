@@ -58,9 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FormIconPicker_Title" xml:space="preserve">
-    <value>圖示</value>
-  </data>
   <data name="Generic_Apply" xml:space="preserve">
     <value>確認</value>
   </data>
@@ -280,18 +277,6 @@
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
     <value>設定軌跡工具</value>
   </data>
-  <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve">
-    <value>標記點：</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve">
-    <value>交叉</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve">
-    <value>圓</value>
-  </data>
-  <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve">
-    <value>目標</value>
-  </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>顯示最佳擬合圓</value>
   </data>
@@ -372,9 +357,6 @@
   </data>
   <data name="mnuSortBy_Ascending" xml:space="preserve">
     <value>升冪</value>
-  </data>
-  <data name="mnuThumbnails" xml:space="preserve">
-    <value>縮圖</value>
   </data>
   <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
     <value>顯示格線</value>
@@ -739,9 +721,6 @@
   <data name="Generic_Calibration" xml:space="preserve">
     <value>校正</value>
   </data>
-  <data name="Generic_GridDivisionsPicker" xml:space="preserve">
-    <value>網格尺寸：</value>
-  </data>
   <data name="Generic_FontSizePicker" xml:space="preserve">
     <value>字體大小：</value>
   </data>
@@ -807,9 +786,6 @@
   </data>
   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
     <value>註釋已被修改。\n您想儲存它們嗎？</value>
-  </data>
-  <data name="lblDelay_Text" xml:space="preserve">
-    <value>延遲（秒）：</value>
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>儲存變更</value>
@@ -964,9 +940,6 @@
   <data name="mnuGridsHide" xml:space="preserve">
     <value>隱藏</value>
   </data>
-  <data name="mnuHome" xml:space="preserve">
-    <value>瀏覽器面板</value>
-  </data>
   <data name="mnuImportImage" xml:space="preserve">
     <value>輸入影像…</value>
   </data>
@@ -1029,9 +1002,6 @@
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
     <value>預設淡出</value>
-  </data>
-  <data name="mnuSetStyleAsDefault" xml:space="preserve">
-    <value>將目前風格設為預設值</value>
   </data>
   <data name="mnuVisibilityCustom" xml:space="preserve">
     <value>客製淡出</value>
@@ -1134,12 +1104,6 @@
   </data>
   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
     <value>將兩幅圖片儲存為一幅合成影像</value>
-  </data>
-  <data name="ToolTip_DisarmTrigger" xml:space="preserve">
-    <value>解除擷取觸發器。當前狀態：已啟動。</value>
-  </data>
-  <data name="ToolTip_ArmTrigger" xml:space="preserve">
-    <value>啟動擷取觸發器。當前狀態：未啟動。</value>
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>平均像素尺寸：{0}。</value>
@@ -1314,9 +1278,6 @@
   </data>
   <data name="Generic_Restore" xml:space="preserve">
     <value>恢復預設值</value>
-  </data>
-  <data name="Generic_Paste" xml:space="preserve">
-    <value>貼上</value>
   </data>
   <data name="Generic_Cut" xml:space="preserve">
     <value>剪下</value>
