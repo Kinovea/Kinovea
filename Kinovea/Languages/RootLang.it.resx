@@ -218,9 +218,6 @@
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>Totale in microsecondi</value>
   </data>
-  <data name="mnuWorkspaceExport" xml:space="preserve">
-    <value>Esporta spazio di lavoro</value>
-  </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
     <value>Salvare come spazio di lavoro predefinito</value>
   </data>
@@ -395,32 +392,8 @@
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
     <value>Registra video non compresso</value>
   </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Denominazione dei video</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Denominazione delle immagini</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>File:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Sotto directory:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Radice:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Destra</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Sinistra</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Framerate di visualizzazione (fps):</value>
-  </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Permetti istanze multiple di Kinovea</value>
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
     <value>Citazione</value>
@@ -448,9 +421,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
     <value>Tempo di inattività (s):</value>
-  </data>
-  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Le istanze hanno le loro preferenze</value>
   </data>
   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
     <value>Opacità predefinita dei nuovi disegni:</value>
@@ -505,11 +475,5 @@
   </data>
   <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
     <value>Esportazione</value>
-  </data>
-  <data name="dlgWorkspace_Title" xml:space="preserve">
-    <value>Spazio di lavoro</value>
-  </data>
-  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
-    <value>Spazio di lavoro predefinito salvato.</value>
   </data>
 </root>

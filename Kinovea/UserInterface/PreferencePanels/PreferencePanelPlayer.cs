@@ -158,12 +158,12 @@ namespace Kinovea.Root
         
         private void InitPageImage()
         {
-            tabImage.Text = "Image";
+            tabImage.Text = Kinovea.Root.Languages.RootLang.prefPanelPlayer_Image;
 
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
             chkInteractiveTracker.Checked = interactiveFrameTracker;
 
-            chkEnablePixelFiltering.Text = "Enable pixel filtering";
+            chkEnablePixelFiltering.Text = Kinovea.Root.Languages.RootLang.prefPanelPlayer_EnablePixelFiltering;
             chkEnablePixelFiltering.Checked = enablePixelFiltering;
 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)

@@ -19,7 +19,7 @@ namespace Kinovea.FileBrowser.Languages {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class FileBrowserLang {
@@ -192,15 +192,6 @@ namespace Kinovea.FileBrowser.Languages {
         internal static string mnuDeleteShortcut {
             get {
                 return ResourceManager.GetString("mnuDeleteShortcut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open as replay folder observer.
-        /// </summary>
-        internal static string mnuOpenAsReplayWatcher {
-            get {
-                return ResourceManager.GetString("mnuOpenAsReplayWatcher", resourceCulture);
             }
         }
         

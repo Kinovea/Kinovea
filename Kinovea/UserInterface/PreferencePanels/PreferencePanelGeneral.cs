@@ -107,7 +107,7 @@ namespace Kinovea.Root
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
 
-            cbEnableDebugLogs.Text = "Enable debug logs";
+            cbEnableDebugLogs.Text = Kinovea.Root.Languages.RootLang.mnuEnableDebugLogs;
             cbEnableDebugLogs.Checked = enableDebugLogs;
         }
         private void SelectCurrentLanguage()

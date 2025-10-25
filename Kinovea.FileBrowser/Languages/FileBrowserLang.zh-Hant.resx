@@ -88,9 +88,6 @@
   <data name="mnuVideoLocate" xml:space="preserve">
     <value>存至Windows資料夾 </value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>開啟為重播資料夾</value>
-  </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
     <value>放棄自訂選項</value>
   </data>

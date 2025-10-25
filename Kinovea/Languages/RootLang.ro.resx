@@ -209,9 +209,6 @@
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
     <value>Total microsecunde</value>
   </data>
-  <data name="mnuWorkspaceExport" xml:space="preserve">
-    <value>Exportare spațiu de lucru</value>
-  </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
     <value>Salvează ca spațiu de lucru implicit</value>
   </data>
@@ -316,9 +313,6 @@
   </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
     <value>Memorie cache per ecran de redare: {0} MB.</value>
-  </data>
-  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Instanțele au preferințe distincte</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
     <value>Fișier implicit pentru adnotări:</value>
@@ -434,32 +428,8 @@
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
     <value>Format video decomprimat:</value>
   </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Numire video</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Numire imagine</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Fișier:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Subdirector:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Rădăcină:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Dreapta</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Stânga</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Rată de cadre display (fps):</value>
-  </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Permite instanțe multiple ale Kinovea</value>
   </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Tastatură</value>
@@ -496,12 +466,6 @@
   </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
     <value>Separatorul zecimal pentru fișierele CSV:</value>
-  </data>
-  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
-    <value>Spațiul de lucru implicit a fost salvat.</value>
-  </data>
-  <data name="dlgWorkspace_Title" xml:space="preserve">
-    <value>Spațiu de lucru</value>
   </data>
   <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
     <value>Declanșează acțiunea:</value>

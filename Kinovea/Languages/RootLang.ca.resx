@@ -92,32 +92,8 @@
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Teclat</value>
   </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Permetre múltiples instàncies del Kinovea</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Mostrar fotogrames per segon (fps):</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Esquerra</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Dreta</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Arrel:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Subdirectori:</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Arxiu:</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Noms de les imatges</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Noms dels vídeos</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>Format d'imatge:</value>
@@ -262,9 +238,6 @@
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
     <value>Nombre de fitxers a l’historial:</value>
-  </data>
-  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Les instàncies tenen les seves pròpies preferències</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
     <value>Format d'imatge per defecte:</value>
@@ -454,9 +427,6 @@
   </data>
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
     <value>Deumilèssimes d'hora</value>
-  </data>
-  <data name="mnuWorkspaceExport" xml:space="preserve">
-    <value>Exporta l’espai de treball</value>
   </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
     <value>Desa com a espai de treball per defecte</value>

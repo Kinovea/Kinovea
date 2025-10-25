@@ -43,16 +43,16 @@ namespace Kinovea.Root
 
         private void RefreshCulture()
         {
-            this.Text = "Manage workspaces";
-            btnClose.Text = "Close";
-            grpWorkspaces.Text = "Workspace";
-            grpWindowList.Text = "Windows";
-            btnCreateShortcut.Text = "      " + "Create a desktop shortcut";
+            this.Text = Kinovea.Root.Languages.RootLang.formWorkspaceManager_ManageWorkspaces;
+            btnClose.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.Generic_Close;
+            grpWorkspaces.Text = Kinovea.Root.Languages.RootLang.mnuWorkspace;
+            grpWindowList.Text = Kinovea.Root.Languages.RootLang.formWorkspaceManager_Windows;
+            btnCreateShortcut.Text = "      " + Kinovea.Root.Languages.RootLang.formWorkspaceManager_CreateADesktopShortcut;
 
-            toolTip1.SetToolTip(btnAdd, "Create a workspace from the active windows");
-            toolTip1.SetToolTip(btnRename, "Rename the selected workspace");
-            toolTip1.SetToolTip(btnCreateShortcut2, "Create a desktop shortcut");
-            toolTip1.SetToolTip(btnDelete, "Delete the selected workspace");
+            toolTip1.SetToolTip(btnAdd, Kinovea.Root.Languages.RootLang.formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows);
+            toolTip1.SetToolTip(btnRename, Kinovea.Root.Languages.RootLang.formWorkspaceManager_RenameTheSelectedWorkspace);
+            toolTip1.SetToolTip(btnCreateShortcut2, Kinovea.Root.Languages.RootLang.formWorkspaceManager_CreateADesktopShortcut);
+            toolTip1.SetToolTip(btnDelete, Kinovea.Root.Languages.RootLang.formWorkspaceManager_DeleteTheSelectedWorkspace);
         }
 
         /// <summary>

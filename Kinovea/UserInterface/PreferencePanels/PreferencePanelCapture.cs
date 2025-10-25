@@ -276,22 +276,22 @@ namespace Kinovea.Root
 
         private void InitTabFolders()
         {
-            tabPaths.Text = "Folders";
-            grpCaptureFolders.Text = "Capture folders";
-            grpCaptureFolderDetails.Text = "Capture folder details";
-            lblCaptureFolderShortName.Text = "Short name:";
-            lblCaptureFolderPath.Text = "Path:";
-            btnCaptureFolderInsertVariable.Text = "Insert a variable…";
+            tabPaths.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_Folders;
+            grpCaptureFolders.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_CaptureFolders;
+            grpCaptureFolderDetails.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_CaptureFolderDetails;
+            lblCaptureFolderShortName.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_ShortName;
+            lblCaptureFolderPath.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_Path;
+            btnCaptureFolderInsertVariable.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertAVariable;
 
-            toolTip1.SetToolTip(btnCaptureFolderInsertBackslash, "Insert a backslash");
-            toolTip1.SetToolTip(btnCaptureFolderInsertDash, "Insert a hyphen");
-            toolTip1.SetToolTip(btnCaptureFolderInsertUnderscore, "Insert an underscore");
-            toolTip1.SetToolTip(btnCaptureFolderInterpolate, "Preview dynamic path");
-            toolTip1.SetToolTip(btnCaptureFolderBrowse, "Browse for folder");
-            toolTip1.SetToolTip(btnDeleteCaptureFolder, "Remove the capture folder from the list");
-            toolTip1.SetToolTip(btnAddCaptureFolder, "Add a new capture folder");
-            toolTip1.SetToolTip(btnSortFolderUp, "Move up");
-            toolTip1.SetToolTip(btnSortFolderDown, "Move down");
+            toolTip1.SetToolTip(btnCaptureFolderInsertBackslash, Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertABackslash);
+            toolTip1.SetToolTip(btnCaptureFolderInsertDash, Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertAHyphen);
+            toolTip1.SetToolTip(btnCaptureFolderInsertUnderscore, Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertAnUnderscore);
+            toolTip1.SetToolTip(btnCaptureFolderInterpolate, Kinovea.Root.Languages.RootLang.prefPanelCapture_PreviewDynamicPath);
+            toolTip1.SetToolTip(btnCaptureFolderBrowse, Kinovea.Root.Languages.RootLang.prefPanelCapture_BrowseForFolder);
+            toolTip1.SetToolTip(btnDeleteCaptureFolder, Kinovea.Root.Languages.RootLang.prefPanelCapture_RemoveTheCaptureFolderFromTheList);
+            toolTip1.SetToolTip(btnAddCaptureFolder, Kinovea.Root.Languages.RootLang.prefPanelCapture_AddANewCaptureFolder);
+            toolTip1.SetToolTip(btnSortFolderUp, Kinovea.Root.Languages.RootLang.prefPanelCapture_MoveUp);
+            toolTip1.SetToolTip(btnSortFolderDown, Kinovea.Root.Languages.RootLang.prefPanelCapture_MoveDown);
 
             PrepareCaptureFoldersList();
             PopulateCaptureFolderList();
@@ -301,30 +301,30 @@ namespace Kinovea.Root
 
         private void InitTabFiles()
         {
-            tabFiles.Text = "Files";
-            lblDefaultFileName.Text = "Default file name:";
+            tabFiles.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_Files;
+            lblDefaultFileName.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_DefaultFileName;
             
-            btnFilesInsertVariable.Text = "Insert a variable…";
+            btnFilesInsertVariable.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertAVariable;
 
-            toolTip1.SetToolTip(btnFilesInsertBackslash, "Insert a backslash");
-            toolTip1.SetToolTip(btnFilesInsertDash, "Insert a hyphen");
-            toolTip1.SetToolTip(btnFilesInsertUnderscore, "Insert an underscore");
-            toolTip1.SetToolTip(btnFilesInterpolate, "Preview dynamic path");
+            toolTip1.SetToolTip(btnFilesInsertBackslash, Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertABackslash);
+            toolTip1.SetToolTip(btnFilesInsertDash, Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertAHyphen);
+            toolTip1.SetToolTip(btnFilesInsertUnderscore, Kinovea.Root.Languages.RootLang.prefPanelCapture_InsertAnUnderscore);
+            toolTip1.SetToolTip(btnFilesInterpolate, Kinovea.Root.Languages.RootLang.prefPanelCapture_PreviewDynamicPath);
 
             tbDefaultFileName.Text = capturePathConfiguration.DefaultFileName;
             tbDefaultFileName.SelectionStart = tbDefaultFileName.Text.Length;
 
-            chkAutoNumbering.Text = "Enable auto-numbering";
+            chkAutoNumbering.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_EnableAutoNumbering;
             chkAutoNumbering.Checked = enableAutoNumbering;
-            toolTip1.SetToolTip(chkAutoNumbering, "Automatically update the file name after each recording to include a sequential number.\nThis option is ignored if the file name uses dynamic variables.");
+            toolTip1.SetToolTip(chkAutoNumbering, Kinovea.Root.Languages.RootLang.prefPanelCapture_ToolTipAutoNumbering);
             chkIgnoreOverwriteWarning.Text = RootLang.dlgPreferences_Capture_chkIgnoreOverwrite;
             chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
-            toolTip1.SetToolTip(chkIgnoreOverwriteWarning, "Do not show the confirmation dialog when the recording is about to overwrite an existing file.");
+            toolTip1.SetToolTip(chkIgnoreOverwriteWarning, Kinovea.Root.Languages.RootLang.prefPanelCapture_ToolTipIgnoreOverwriteWarning);
         }
 
         private void InitTabTrigger()
         {
-            tabTrigger.Text = "Trigger";
+            tabTrigger.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_Trigger;
 
             // Audio trigger
             chkEnableAudioTrigger.Text = RootLang.dlgPreferences_Capture_chkEnableAudioTrigger;
@@ -362,10 +362,10 @@ namespace Kinovea.Root
             EnableDisableAudioTrigger();
 
             // UDP trigger
-            chkEnableUDPTrigger.Text = "Enable UDP trigger";
+            chkEnableUDPTrigger.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_EnableUDPTrigger;
             chkEnableUDPTrigger.Checked = enableUDPTrigger;
             
-            lblUDPPort.Text = "UDP port:";
+            lblUDPPort.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_UDPPort;
             nudUDPPort.Value = Math.Max(Math.Min(nudUDPPort.Maximum, udpPort), nudUDPPort.Minimum);
             NudHelper.FixNudScroll(nudUDPPort);
 
@@ -381,9 +381,9 @@ namespace Kinovea.Root
             cmbTriggerAction.Items.Add(ScreenManagerLang.Generic_SaveImage);
             cmbTriggerAction.SelectedIndex = ((int)triggerAction < cmbTriggerAction.Items.Count) ? (int)triggerAction : 0;
 
-            lblDefaultTriggerState.Text = "Default trigger state:";
-            cmbDefaultTriggerState.Items.Add("Armed");
-            cmbDefaultTriggerState.Items.Add("Disarmed");
+            lblDefaultTriggerState.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_DefaultTriggerState;
+            cmbDefaultTriggerState.Items.Add(Kinovea.Root.Languages.RootLang.prefPanelCapture_Armed);
+            cmbDefaultTriggerState.Items.Add(Kinovea.Root.Languages.RootLang.prefPanelCapture_Disarmed);
             cmbDefaultTriggerState.SelectedIndex = defaultTriggerArmed ? 0 : 1;
         }
 
@@ -391,8 +391,7 @@ namespace Kinovea.Root
         {
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
             
-            rtbAutomation.Text = "To run external programs after a recording, use the post-recording command dialog in the corresponding capture screen.\n\n" +
-                "Right click the viewport background and select \"Post-recording command…\".";
+            rtbAutomation.Text = string.Format(Kinovea.Root.Languages.RootLang.prefPanelCapture_PostRecordingCommandHelp, Kinovea.Root.Languages.RootLang.mnuPostRecordingCommand);
         }
         #endregion
         

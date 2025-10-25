@@ -997,9 +997,6 @@
   <data name="mnuOpenReplayWatcher" xml:space="preserve">
     <value>打開重播文件夾觀察者…</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>作為重播文件夾觀察者打開…</value>
-  </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>校正...</value>
   </data>

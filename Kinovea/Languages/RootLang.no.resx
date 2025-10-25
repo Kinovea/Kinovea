@@ -227,14 +227,8 @@
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>Opptak</value>
   </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Rot:</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Vis bildetakt (bps):</value>
-  </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Tillat flere kjørende versjoner av Kinovea</value>
   </data>
   <data name="dlgPreferences_tabCapture" xml:space="preserve">
     <value>Opptak</value>
@@ -250,9 +244,6 @@
   </data>
   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
     <value>Millisekunder</value>
-  </data>
-  <data name="mnuWorkspaceExport" xml:space="preserve">
-    <value>Eksporter arbeidsområde</value>
   </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
     <value>Lagre som forvalgt arbeidsområde</value>
@@ -289,9 +280,6 @@
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Enheter</value>
-  </data>
-  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Instanser som har sine egne innstillinger</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
     <value>Utløserterskel:</value>
@@ -340,24 +328,6 @@
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>Bildeformat:</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Videonavngivning</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Bildenavngivning</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Fil:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Undermappe:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Høyre</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Venstre</value>
   </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Tastatur</value>

@@ -94,9 +94,6 @@
   <data name="ForgetCustomSettings" xml:space="preserve">
     <value>ลืมการตั้งค่าแบบกำหนดเอง</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>เปิดเป็นผู้สังเกตการณ์โฟลเดอร์เล่นซ้ำ</value>
-  </data>
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>ลบไฟล์</value>
   </data>

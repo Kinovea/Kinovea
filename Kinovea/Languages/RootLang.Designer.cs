@@ -142,29 +142,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File:.
-        /// </summary>
-        internal static string dlgPreferences_Capture_File {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_File", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to High speed cameras.
         /// </summary>
         internal static string dlgPreferences_Capture_gbHighspeedCameras {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_gbHighspeedCameras", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Image naming.
-        /// </summary>
-        internal static string dlgPreferences_Capture_ImageNaming {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_ImageNaming", resourceCulture);
             }
         }
         
@@ -273,15 +255,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Capture_lblVideoFormat {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblVideoFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Left.
-        /// </summary>
-        internal static string dlgPreferences_Capture_Left {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_Left", resourceCulture);
             }
         }
         
@@ -475,33 +448,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Right.
-        /// </summary>
-        internal static string dlgPreferences_Capture_Right {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_Right", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Root:.
-        /// </summary>
-        internal static string dlgPreferences_Capture_Root {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_Root", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sub directory:.
-        /// </summary>
-        internal static string dlgPreferences_Capture_Subdir {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_Subdir", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Automation.
         /// </summary>
         internal static string dlgPreferences_Capture_tabAutomation {
@@ -525,15 +471,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Capture_TriggerAction {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_TriggerAction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Video naming.
-        /// </summary>
-        internal static string dlgPreferences_Capture_VideoNaming {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_VideoNaming", resourceCulture);
             }
         }
         
@@ -651,24 +588,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Drawings_TabExport {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_TabExport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Allow multiple instances of Kinovea.
-        /// </summary>
-        internal static string dlgPreferences_General_chkAllowMultipleInstances {
-            get {
-                return ResourceManager.GetString("dlgPreferences_General_chkAllowMultipleInstances", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instances have their own preferences.
-        /// </summary>
-        internal static string dlgPreferences_General_InstancesHaveOwnPreferences {
-            get {
-                return ResourceManager.GetString("dlgPreferences_General_InstancesHaveOwnPreferences", resourceCulture);
             }
         }
         
@@ -1123,20 +1042,182 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default workspace saved..
+        ///   Looks up a localized string similar to Manage windows.
         /// </summary>
-        internal static string dlgWorkspace_ConfirmationMessage {
+        internal static string dlgTitle_ManageWindows {
             get {
-                return ResourceManager.GetString("dlgWorkspace_ConfirmationMessage", resourceCulture);
+                return ResourceManager.GetString("dlgTitle_ManageWindows", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Workspace.
+        ///   Looks up a localized string similar to Delete window.
         /// </summary>
-        internal static string dlgWorkspace_Title {
+        internal static string formWindowManager_DeleteWindow {
             get {
-                return ResourceManager.GetString("dlgWorkspace_Title", resourceCulture);
+                return ResourceManager.GetString("formWindowManager_DeleteWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh window list.
+        /// </summary>
+        internal static string formWindowManager_RefreshWindowList {
+            get {
+                return ResourceManager.GetString("formWindowManager_RefreshWindowList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop process.
+        /// </summary>
+        internal static string formWindowManager_StopProcess {
+            get {
+                return ResourceManager.GetString("formWindowManager_StopProcess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active window properties.
+        /// </summary>
+        internal static string formWindowProperties_ActiveWindowProperties {
+            get {
+                return ResourceManager.GetString("formWindowProperties_ActiveWindowProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture: {0}.
+        /// </summary>
+        internal static string formWindowProperties_Capture0 {
+            get {
+                return ResourceManager.GetString("formWindowProperties_Capture0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue where you left off.
+        /// </summary>
+        internal static string formWindowProperties_ContinueWhereYouLeftOff {
+            get {
+                return ResourceManager.GetString("formWindowProperties_ContinueWhereYouLeftOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File browser.
+        /// </summary>
+        internal static string formWindowProperties_FileBrowser {
+            get {
+                return ResourceManager.GetString("formWindowProperties_FileBrowser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open specific content.
+        /// </summary>
+        internal static string formWindowProperties_OpenSpecificContent {
+            get {
+                return ResourceManager.GetString("formWindowProperties_OpenSpecificContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the file browser.
+        /// </summary>
+        internal static string formWindowProperties_OpenTheFileBrowser {
+            get {
+                return ResourceManager.GetString("formWindowProperties_OpenTheFileBrowser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playback: {0}.
+        /// </summary>
+        internal static string formWindowProperties_Playback0 {
+            get {
+                return ResourceManager.GetString("formWindowProperties_Playback0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay: {0}.
+        /// </summary>
+        internal static string formWindowProperties_Replay0 {
+            get {
+                return ResourceManager.GetString("formWindowProperties_Replay0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a desktop shortcut.
+        /// </summary>
+        internal static string formWorkspaceManager_CreateADesktopShortcut {
+            get {
+                return ResourceManager.GetString("formWorkspaceManager_CreateADesktopShortcut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a workspace from the active windows.
+        /// </summary>
+        internal static string formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows {
+            get {
+                return ResourceManager.GetString("formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the selected workspace.
+        /// </summary>
+        internal static string formWorkspaceManager_DeleteTheSelectedWorkspace {
+            get {
+                return ResourceManager.GetString("formWorkspaceManager_DeleteTheSelectedWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage workspaces.
+        /// </summary>
+        internal static string formWorkspaceManager_ManageWorkspaces {
+            get {
+                return ResourceManager.GetString("formWorkspaceManager_ManageWorkspaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename the selected workspace.
+        /// </summary>
+        internal static string formWorkspaceManager_RenameTheSelectedWorkspace {
+            get {
+                return ResourceManager.GetString("formWorkspaceManager_RenameTheSelectedWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows.
+        /// </summary>
+        internal static string formWorkspaceManager_Windows {
+            get {
+                return ResourceManager.GetString("formWorkspaceManager_Windows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name:.
+        /// </summary>
+        internal static string formWorkspaceName_Name {
+            get {
+                return ResourceManager.GetString("formWorkspaceName_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace name.
+        /// </summary>
+        internal static string formWorkspaceName_WorkspaceName {
+            get {
+                return ResourceManager.GetString("formWorkspaceName_WorkspaceName", resourceCulture);
             }
         }
         
@@ -1204,6 +1285,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure capture folders.
+        /// </summary>
+        internal static string mnuConfigureCaptureFolders {
+            get {
+                return ResourceManager.GetString("mnuConfigureCaptureFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
         internal static string mnuDefaultPointer {
@@ -1213,11 +1303,29 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable debug logs.
+        /// </summary>
+        internal static string mnuDisableDebugLogs {
+            get {
+                return ResourceManager.GetString("mnuDisableDebugLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         internal static string mnuEdit {
             get {
                 return ResourceManager.GetString("mnuEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable debug logs.
+        /// </summary>
+        internal static string mnuEnableDebugLogs {
+            get {
+                return ResourceManager.GetString("mnuEnableDebugLogs", resourceCulture);
             }
         }
         
@@ -1294,6 +1402,42 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage windows….
+        /// </summary>
+        internal static string mnuManageWindows {
+            get {
+                return ResourceManager.GetString("mnuManageWindows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage workspaces….
+        /// </summary>
+        internal static string mnuManageWorkspaces {
+            get {
+                return ResourceManager.GetString("mnuManageWorkspaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open application data folder….
+        /// </summary>
+        internal static string mnuOpenApplicationDataFolder {
+            get {
+                return ResourceManager.GetString("mnuOpenApplicationDataFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open new window.
+        /// </summary>
+        internal static string mnuOpenNewWindow {
+            get {
+                return ResourceManager.GetString("mnuOpenNewWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         internal static string mnuOptions {
@@ -1312,6 +1456,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Post-recording command….
+        /// </summary>
+        internal static string mnuPostRecordingCommand {
+            get {
+                return ResourceManager.GetString("mnuPostRecordingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences….
         /// </summary>
         internal static string mnuPreferences {
@@ -1326,6 +1479,24 @@ namespace Kinovea.Root.Languages {
         internal static string mnuRedo {
             get {
                 return ResourceManager.GetString("mnuRedo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        internal static string mnuRefresh {
+            get {
+                return ResourceManager.GetString("mnuRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reopen window.
+        /// </summary>
+        internal static string mnuReopenWindow {
+            get {
+                return ResourceManager.GetString("mnuReopenWindow", resourceCulture);
             }
         }
         
@@ -1384,6 +1555,24 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Window.
+        /// </summary>
+        internal static string mnuWindow {
+            get {
+                return ResourceManager.GetString("mnuWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window properties….
+        /// </summary>
+        internal static string mnuWindowProperties {
+            get {
+                return ResourceManager.GetString("mnuWindowProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Workspace.
         /// </summary>
         internal static string mnuWorkspace {
@@ -1393,20 +1582,29 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export workspace.
-        /// </summary>
-        internal static string mnuWorkspaceExport {
-            get {
-                return ResourceManager.GetString("mnuWorkspaceExport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save as default workspace.
         /// </summary>
         internal static string mnuWorkspaceSaveAsDefault {
             get {
                 return ResourceManager.GetString("mnuWorkspaceSaveAsDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigation pane.
+        /// </summary>
+        internal static string NavigationPane {
+            get {
+                return ResourceManager.GetString("NavigationPane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open folder….
+        /// </summary>
+        internal static string OpenFolder {
+            get {
+                return ResourceManager.GetString("OpenFolder", resourceCulture);
             }
         }
         
@@ -1470,6 +1668,276 @@ namespace Kinovea.Root.Languages {
         internal static string PreferencePanelDrawings_InitTabUnits_StrokesPerSecond {
             get {
                 return ResourceManager.GetString("PreferencePanelDrawings_InitTabUnits_StrokesPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new capture folder.
+        /// </summary>
+        internal static string prefPanelCapture_AddANewCaptureFolder {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_AddANewCaptureFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Armed.
+        /// </summary>
+        internal static string prefPanelCapture_Armed {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_Armed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To run external programs after a recording, use the post-recording command dialog in the corresponding capture screen.\n\n.
+        /// </summary>
+        internal static string prefPanelCapture_AutomationHelp {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_AutomationHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse for folder.
+        /// </summary>
+        internal static string prefPanelCapture_BrowseForFolder {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_BrowseForFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture folder details.
+        /// </summary>
+        internal static string prefPanelCapture_CaptureFolderDetails {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_CaptureFolderDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture folders.
+        /// </summary>
+        internal static string prefPanelCapture_CaptureFolders {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_CaptureFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default file name:.
+        /// </summary>
+        internal static string prefPanelCapture_DefaultFileName {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_DefaultFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default trigger state:.
+        /// </summary>
+        internal static string prefPanelCapture_DefaultTriggerState {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_DefaultTriggerState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disarmed.
+        /// </summary>
+        internal static string prefPanelCapture_Disarmed {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_Disarmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable auto-numbering.
+        /// </summary>
+        internal static string prefPanelCapture_EnableAutoNumbering {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_EnableAutoNumbering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable UDP trigger.
+        /// </summary>
+        internal static string prefPanelCapture_EnableUDPTrigger {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_EnableUDPTrigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files.
+        /// </summary>
+        internal static string prefPanelCapture_Files {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_Files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folders.
+        /// </summary>
+        internal static string prefPanelCapture_Folders {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_Folders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert a backslash.
+        /// </summary>
+        internal static string prefPanelCapture_InsertABackslash {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_InsertABackslash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert a hyphen.
+        /// </summary>
+        internal static string prefPanelCapture_InsertAHyphen {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_InsertAHyphen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert an underscore.
+        /// </summary>
+        internal static string prefPanelCapture_InsertAnUnderscore {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_InsertAnUnderscore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert a variable….
+        /// </summary>
+        internal static string prefPanelCapture_InsertAVariable {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_InsertAVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        internal static string prefPanelCapture_MoveDown {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_MoveDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        internal static string prefPanelCapture_MoveUp {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_MoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path:.
+        /// </summary>
+        internal static string prefPanelCapture_Path {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_Path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To run external programs after a recording, use the post-recording command dialog in the corresponding capture screen.\n\nRight click the viewport background and select {0}..
+        /// </summary>
+        internal static string prefPanelCapture_PostRecordingCommandHelp {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_PostRecordingCommandHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview dynamic path.
+        /// </summary>
+        internal static string prefPanelCapture_PreviewDynamicPath {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_PreviewDynamicPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the capture folder from the list.
+        /// </summary>
+        internal static string prefPanelCapture_RemoveTheCaptureFolderFromTheList {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_RemoveTheCaptureFolderFromTheList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short name:.
+        /// </summary>
+        internal static string prefPanelCapture_ShortName {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_ShortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically update the file name after each recording to include a sequential number.\nThis option is ignored if the file name uses dynamic variables..
+        /// </summary>
+        internal static string prefPanelCapture_ToolTipAutoNumbering {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_ToolTipAutoNumbering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not show the confirmation dialog when the recording is about to overwrite an existing file..
+        /// </summary>
+        internal static string prefPanelCapture_ToolTipIgnoreOverwriteWarning {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_ToolTipIgnoreOverwriteWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trigger.
+        /// </summary>
+        internal static string prefPanelCapture_Trigger {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_Trigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UDP port:.
+        /// </summary>
+        internal static string prefPanelCapture_UDPPort {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_UDPPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable pixel filtering.
+        /// </summary>
+        internal static string prefPanelPlayer_EnablePixelFiltering {
+            get {
+                return ResourceManager.GetString("prefPanelPlayer_EnablePixelFiltering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        internal static string prefPanelPlayer_Image {
+            get {
+                return ResourceManager.GetString("prefPanelPlayer_Image", resourceCulture);
             }
         }
         

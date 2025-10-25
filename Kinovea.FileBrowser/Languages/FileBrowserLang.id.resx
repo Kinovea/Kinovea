@@ -115,9 +115,6 @@
   <data name="mnuVideoLocate" xml:space="preserve">
     <value>Cari di Windows Explorer </value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Buka sebagai pengamat map tayangan ulang</value>
-  </data>
   <data name="mnuSortBy_Size" xml:space="preserve">
     <value>Ukuran</value>
   </data>

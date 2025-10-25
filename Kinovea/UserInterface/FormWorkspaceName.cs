@@ -26,8 +26,8 @@ namespace Kinovea.ScreenManager
         
         private void Initialize()
         {
-            this.Text = "Workspace name";
-            lblAlias.Text = "Name:";
+            this.Text = Kinovea.Root.Languages.RootLang.formWorkspaceName_WorkspaceName;
+            lblAlias.Text = Kinovea.Root.Languages.RootLang.formWorkspaceName_Name;
             tbAlias.Text = WindowManager.GetFriendlyName(descriptor);
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;

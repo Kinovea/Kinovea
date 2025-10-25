@@ -46,7 +46,7 @@ namespace Kinovea.Root
       this.lblVersion.Name = "lblVersion";
       this.lblVersion.Size = new System.Drawing.Size(70, 22);
       this.lblVersion.TabIndex = 1;
-      this.lblVersion.Text = "2023.1";
+      this.lblVersion.Text = "2025.1";
       // 
       // pictureBox1
       // 

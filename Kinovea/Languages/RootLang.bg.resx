@@ -92,30 +92,6 @@
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Клавиатура</value>
   </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Позволи пълно инсталиране на Kinovea</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Ляво</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Дясно</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Директория:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Поддиректория:</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Файл:</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Име на файла с изображението</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Име на видео файла</value>
-  </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>Формат на изображението:</value>
   </data>

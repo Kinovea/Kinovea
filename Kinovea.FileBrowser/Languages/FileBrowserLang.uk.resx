@@ -64,9 +64,6 @@
   <data name="mnuSortBy_Size" xml:space="preserve">
     <value>Розмір</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Відкрити як спостерігача за папкою відтворення</value>
-  </data>
   <data name="lblFolders" xml:space="preserve">
     <value>Папки</value>
   </data>

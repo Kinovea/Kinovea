@@ -92,32 +92,8 @@
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>صفحه کلید</value>
   </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>اجازه چند نمونه از کینوویا</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>نمایش فریم (فریم بر ثانیه):</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>چپ</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>راست</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>بنیاد:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>فهرست فرعی:</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>فایل:</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>نام‌گذاری تصویر:</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>نام‌گذاری ویدئو:</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>فرمت تصویر:</value>

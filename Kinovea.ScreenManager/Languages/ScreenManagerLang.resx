@@ -921,9 +921,6 @@
   <data name="mnuOpenReplayWatcher" xml:space="preserve">
     <value>Open replay folder observer…</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Open as replay folder observer…</value>
-  </data>
   <data name="mnuCalibrate" xml:space="preserve">
     <value>Calibrate...</value>
   </data>

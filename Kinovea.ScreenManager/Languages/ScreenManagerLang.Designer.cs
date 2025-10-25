@@ -1447,7 +1447,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to write file.\nMake sure you have the rights to write in the target folder and that the file not be currently used..
+        ///   Looks up a localized string similar to Unable to write file.\nMake sure you have the rights to write in the target folder and that the file is not currently used..
         /// </summary>
         public static string Error_SaveMovie_FileError {
             get {
@@ -1699,25 +1699,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Camera distance.
-        /// </summary>
-        public static string FormCalibrationValidation_CameraDistance {
-            get {
-                return ResourceManager.GetString("FormCalibrationValidation_CameraDistance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Camera position: unknown.
-        /// </summary>
-        public static string FormCalibrationValidation_CameraPositionUnknown {
-            get {
-                return ResourceManager.GetString("FormCalibrationValidation_CameraPositionUnknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Camera position ({0}): X:{1}, Y:{2}, Z:{3}..
+        ///   Looks up a localized string similar to Camera position ({0}): X:{1}, Y:{2}, Z:{3}.
         /// </summary>
         public static string FormCalibrationValidation_CameraPositionXYZ {
             get {
@@ -1740,15 +1722,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string FormCalibrationValidation_ControlPoints {
             get {
                 return ResourceManager.GetString("FormCalibrationValidation_ControlPoints", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copy to clipboard.
-        /// </summary>
-        public static string FormCalibrationValidation_CopyToClipboard {
-            get {
-                return ResourceManager.GetString("FormCalibrationValidation_CopyToClipboard", resourceCulture);
             }
         }
         
@@ -1812,15 +1785,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string FormCalibrationValidation_PlaneCalibration {
             get {
                 return ResourceManager.GetString("FormCalibrationValidation_PlaneCalibration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string FormCalibrationValidation_Table_Name {
-            get {
-                return ResourceManager.GetString("FormCalibrationValidation_Table_Name", resourceCulture);
             }
         }
         
@@ -2109,15 +2073,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string FormTimeSections_End {
             get {
                 return ResourceManager.GetString("FormTimeSections_End", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string FormTimeSections_Name {
-            get {
-                return ResourceManager.GetString("FormTimeSections_Name", resourceCulture);
             }
         }
         
@@ -3477,15 +3432,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuOnePlayer {
             get {
                 return ResourceManager.GetString("mnuOnePlayer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open as replay folder observer….
-        /// </summary>
-        public static string mnuOpenAsReplayWatcher {
-            get {
-                return ResourceManager.GetString("mnuOpenAsReplayWatcher", resourceCulture);
             }
         }
         

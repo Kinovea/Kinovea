@@ -88,32 +88,8 @@
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Klaviatura</value>
   </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Kinoveanın bir neçə nüsxəsinə icazə verin</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Kadr sürətini göstər (fps):</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Sol</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Sağ</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Kök:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Alt qovluq:</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Fayl:</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Şəkil adlandırma</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Video adlandırma</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>Şəkil formatı:</value>

@@ -310,9 +310,6 @@
   <data name="mnuOpenReplayWatcher" xml:space="preserve">
     <value>Відкрити спостерігач папки відтворення…</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Відкрити як спостерігач за папкою відтворення…</value>
-  </data>
   <data name="mnuSwapScreens" xml:space="preserve">
     <value>Поміняти екрани</value>
   </data>

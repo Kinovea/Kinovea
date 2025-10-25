@@ -85,9 +85,6 @@
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>Faylı sil</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Təkrar oynatma qovluğu müşahidəçisi kimi aç</value>
-  </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
     <value>Fərdi parametrləri unut</value>
   </data>

@@ -58,21 +58,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblFolders" xml:space="preserve"><value>Mape</value>
+  <data name="lblFolders" xml:space="preserve">
+    <value>Mape</value>
   </data>
-  <data name="lblVideoFiles" xml:space="preserve"><value>Video datoteke</value>
+  <data name="lblVideoFiles" xml:space="preserve">
+    <value>Video datoteke</value>
   </data>
-  <data name="mnuAddShortcut" xml:space="preserve"><value>Dodaj prečicu</value>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>Dodaj prečicu</value>
   </data>
-  <data name="mnuAddToShortcuts" xml:space="preserve"><value>Dodaj u prečice</value>
+  <data name="mnuAddToShortcuts" xml:space="preserve">
+    <value>Dodaj u prečice</value>
   </data>
-  <data name="mnuDeleteShortcut" xml:space="preserve"><value>Izbriši prečicu</value>
+  <data name="mnuDeleteShortcut" xml:space="preserve">
+    <value>Izbriši prečicu</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve"><value>Poništi</value>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Poništi</value>
   </data>
-  <data name="tabExplorer" xml:space="preserve"><value>Pretraživač</value>
+  <data name="tabExplorer" xml:space="preserve">
+    <value>Pretraživač</value>
   </data>
-  <data name="tabShortcuts" xml:space="preserve"><value>Prečice</value>
+  <data name="tabShortcuts" xml:space="preserve">
+    <value>Prečice</value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>Obriši datoteku</value>
@@ -97,9 +105,6 @@
   </data>
   <data name="mnuSortBy_Size" xml:space="preserve">
     <value>Veličina</value>
-  </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Otvori kao promatrač mape repriza</value>
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>Silazno</value>

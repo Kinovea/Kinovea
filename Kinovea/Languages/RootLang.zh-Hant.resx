@@ -73,14 +73,8 @@
   <data name="mnuTimeFormat" xml:space="preserve">
     <value>時間</value>
   </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>左</value>
-  </data>
   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve">
     <value>年</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>檔案：</value>
   </data>
   <data name="dlgPreferences_tabPlayback" xml:space="preserve">
     <value>播放</value>
@@ -88,14 +82,8 @@
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>鍵盤</value>
   </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>同時開多個Kinovea</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>顯示擷取幀率:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>右</value>
   </data>
   <data name="dlgPreferences_tabDrawings" xml:space="preserve">
     <value>標示繪圖</value>
@@ -105,9 +93,6 @@
   </data>
   <data name="dlgPreferences_tabGeneral" xml:space="preserve">
     <value>一般</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>子目錄:</value>
   </data>
   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve">
     <value>月</value>
@@ -165,15 +150,6 @@
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
     <value>引用</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>根目錄:</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>圖片名稱</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>影片名稱</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>影像格式：</value>
@@ -370,9 +346,6 @@
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>單位</value>
   </data>
-  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>實例擁有其自身的偏好</value>
-  </data>
   <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
     <value>度({0})</value>
   </data>
@@ -412,9 +385,6 @@
   <data name="mnuHistory" xml:space="preserve">
     <value>最近</value>
   </data>
-  <data name="mnuWorkspaceExport" xml:space="preserve">
-    <value>輸出工作區</value>
-  </data>
   <data name="TimeCodeFormat_Frames" xml:space="preserve">
     <value>影格數</value>
   </data>
@@ -435,9 +405,6 @@
   </data>
   <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
     <value>像素</value>
-  </data>
-  <data name="dlgWorkspace_Title" xml:space="preserve">
-    <value>工作區</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>類別</value>
@@ -501,9 +468,6 @@
   </data>
   <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
     <value>輸出</value>
-  </data>
-  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
-    <value>預設工作區儲存。</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
     <value>包含影像</value>

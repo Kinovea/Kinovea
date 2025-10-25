@@ -562,7 +562,7 @@ namespace Kinovea.Root
 
             BuildReplayWatcherMenus();
             mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
-            mnuOpenReplayWatcherFolder.Text = "Open folder…";
+            mnuOpenReplayWatcherFolder.Text = Kinovea.Root.Languages.RootLang.OpenFolder;
             mnuHistory.Text = RootLang.mnuHistory;
             mnuHistoryReset.Text = RootLang.mnuHistoryReset;
             mnuQuit.Text = RootLang.Generic_Quit;
@@ -572,7 +572,7 @@ namespace Kinovea.Root
             mnuRedo.Text = RootLang.mnuRedo;
             
             mnuView.Text = RootLang.mnuScreens;
-            mnuToggleNavigationPane.Text = "Navigation pane";
+            mnuToggleNavigationPane.Text = Kinovea.Root.Languages.RootLang.NavigationPane;
             mnuFullScreen.Text = RootLang.mnuFullScreen;
             
             mnuImage.Text = RootLang.mnuImage;
@@ -602,20 +602,20 @@ namespace Kinovea.Root
             // Rebuild the whole pointer menu to get the correct text.
             BuildPointerMenus();
 
-            mnuWindow.Text = "Window";
-            mnuWindowProperties.Text = "Window properties…";
-            mnuOpenNewWindow.Text = "Open new window";
-            mnuReopenWindow.Text = "Reopen window";
-            mnuManageWindows.Text = "Manage windows…";
-            mnuManageWorkspaces.Text = "Manage workspaces…";
+            mnuWindow.Text = RootLang.mnuWindow;
+            mnuWindowProperties.Text = RootLang.mnuWindowProperties;
+            mnuOpenNewWindow.Text = RootLang.mnuOpenNewWindow;
+            mnuReopenWindow.Text = RootLang.mnuReopenWindow;
+            mnuManageWindows.Text = RootLang.mnuManageWindows;
+            mnuManageWorkspaces.Text = RootLang.mnuManageWorkspaces;
 
             // Rebuild the reopen window menu to get the correct list.
             BuildReopenWindowsMenus();
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
-            mnuApplicationFolder.Text = "Open application data folder…";
-            mnuEnableDebugLogs.Text = PreferencesManager.GeneralPreferences.EnableDebugLog ? "Disable debug logs" : "Enable debug logs";
+            mnuApplicationFolder.Text = RootLang.mnuOpenApplicationDataFolder;
+            mnuEnableDebugLogs.Text = PreferencesManager.GeneralPreferences.EnableDebugLog ? RootLang.mnuDisableDebugLogs : RootLang.mnuEnableDebugLogs;
             mnuWebsite.Text = "www.kinovea.org";
             mnuAbout.Text = RootLang.mnuAbout;
             mnuHelp.Text = RootLang.mnuHelp;
@@ -710,7 +710,7 @@ namespace Kinovea.Root
             mnuReopenWindow.DropDownItems.Clear();
 
             ToolStripMenuItem mnuRefresh = new ToolStripMenuItem();
-            mnuRefresh.Text = "Refresh";
+            mnuRefresh.Text = RootLang.mnuRefresh;
             mnuRefresh.Image = Properties.Resources.arrow_refresh;
             mnuRefresh.Click += (s, e) =>
             {
@@ -1281,7 +1281,7 @@ namespace Kinovea.Root
         {
             ToolStripMenuItem mnuConfigureCaptureFolders = new ToolStripMenuItem();
             mnuConfigureCaptureFolders.Image = Properties.Resources.explorer_video;
-            mnuConfigureCaptureFolders.Text = "Configure capture folders";
+            mnuConfigureCaptureFolders.Text = RootLang.mnuConfigureCaptureFolders;
 
             mnuConfigureCaptureFolders.Click += (s, e) => {
                 NotificationCenter.RaisePreferenceTabAsked(PreferenceTab.Capture_Paths);

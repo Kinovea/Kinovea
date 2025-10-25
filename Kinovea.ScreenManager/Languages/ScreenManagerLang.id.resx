@@ -1030,9 +1030,6 @@
   <data name="mnuOpenVideo" xml:space="preserve">
     <value>Buka video…</value>
   </data>
-  <data name="mnuOpenAsReplayWatcher" xml:space="preserve">
-    <value>Buka sebagai pengamat map tayangan ulang…</value>
-  </data>
   <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
     <value>Nomor otomatis</value>
   </data>

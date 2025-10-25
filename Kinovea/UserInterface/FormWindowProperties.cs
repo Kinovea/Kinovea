@@ -37,7 +37,7 @@ namespace Kinovea.Root
                 screenList.Add(screen.Clone());
 
             InitializeComponent();
-            this.Text = "Active window properties";
+            this.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ActiveWindowProperties;
 
             Populate();
         }
@@ -47,9 +47,9 @@ namespace Kinovea.Root
             manualUpdate = true;
 
             tbName.Text = name;
-            rbOpenExplorer.Text = "Open the file browser";
-            rbContinue.Text = "Continue where you left off";
-            rbScreenList.Text = "Open specific content";
+            rbOpenExplorer.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_OpenTheFileBrowser;
+            rbContinue.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ContinueWhereYouLeftOff;
+            rbScreenList.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_OpenSpecificContent;
 
             rbOpenExplorer.Checked = (startupMode == WindowStartupMode.Explorer);
             rbContinue.Checked = (startupMode == WindowStartupMode.Continue);
@@ -95,25 +95,25 @@ namespace Kinovea.Root
             if (screen == null)
             {
                 btn.Image = Properties.Resources.file_browser;
-                lbl.Text = "File browser";
+                lbl.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_FileBrowser;
             }
             else if (screen.ScreenType == ScreenType.Playback)
             {
                 if (((ScreenDescriptorPlayback)screen).IsReplayWatcher)
                 {
                     btn.Image = Properties.Resources.user_detective;
-                    lbl.Text = string.Format("Replay: {0}", screen.FriendlyName);
+                    lbl.Text = string.Format(Kinovea.Root.Languages.RootLang.formWindowProperties_Replay0, screen.FriendlyName);
                 }
                 else
                 {
                     btn.Image = Properties.Resources.television;
-                    lbl.Text = string.Format("Playback: {0}", screen.FriendlyName);
+                    lbl.Text = string.Format(Kinovea.Root.Languages.RootLang.formWindowProperties_Playback0, screen.FriendlyName);
                 }
             }
             else if (screen.ScreenType == ScreenType.Capture)
             {
                 btn.Image = Properties.Resources.camera_video;
-                lbl.Text = string.Format("Capture: {0}", screen.FriendlyName);
+                lbl.Text = string.Format(Kinovea.Root.Languages.RootLang.formWindowProperties_Capture0, screen.FriendlyName);
             }
         }
 

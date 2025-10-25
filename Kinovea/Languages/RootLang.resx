@@ -144,32 +144,8 @@
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Keyboard</value>
   </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Allow multiple instances of Kinovea</value>
-  </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Display framerate (fps):</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Left</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Right</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Root:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Sub directory:</value>
-  </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>File:</value>
-  </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Image naming</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Video naming</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>Image format:</value>
@@ -323,9 +299,6 @@
   </data>
   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
     <value>Number of files in history:</value>
-  </data>
-  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Instances have their own preferences</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
     <value>Default aspect ratio:</value>
@@ -501,9 +474,6 @@
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
     <value>Save as default workspace</value>
   </data>
-  <data name="mnuWorkspaceExport" xml:space="preserve">
-    <value>Export workspace</value>
-  </data>
   <data name="mnuScreens" xml:space="preserve">
     <value>View</value>
   </data>
@@ -558,12 +528,6 @@
   <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
     <value>System ({0})</value>
   </data>
-  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
-    <value>Default workspace saved.</value>
-  </data>
-  <data name="dlgWorkspace_Title" xml:space="preserve">
-    <value>Workspace</value>
-  </data>
   <data name="mnuBigArrow" xml:space="preserve">
     <value>Big arrow</value>
   </data>
@@ -602,5 +566,197 @@
   </data>
   <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
     <value>Include images</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Open folder…</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Navigation pane</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Window</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Window properties…</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Open new window</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>Reopen window</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Manage windows…</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Manage workspaces…</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>Open application data folder…</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Disable debug logs</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Enable debug logs</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Configure capture folders</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Manage windows</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>Stop process</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Delete window</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>Refresh window list</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>Active window properties</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>Open the file browser</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>Continue where you left off</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>Open specific content</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>File browser</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>Replay: {0}</value>
+  </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>Playback: {0}</value>
+  </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>Capture: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>Manage workspaces</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>Create a desktop shortcut</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>Create a workspace from the active windows</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>Rename the selected workspace</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>Delete the selected workspace</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>Workspace name</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Folders</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>Capture folders</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>Capture folder details</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>Short name:</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Path:</value>
+  </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>Insert a variable…</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Insert a backslash</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>Insert a hyphen</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>Insert an underscore</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Preview dynamic path</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>Browse for folder</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>Remove the capture folder from the list</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>Add a new capture folder</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="prefPanelCapture_AutomationHelp" xml:space="preserve">
+    <value>To run external programs after a recording, use the post-recording command dialog in the corresponding capture screen.\n\n</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>To run external programs after a recording, use the post-recording command dialog in the corresponding capture screen.\n\nRight click the viewport background and select {0}.</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Post-recording command…</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Default file name:</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Enable auto-numbering</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Automatically update the file name after each recording to include a sequential number.\nThis option is ignored if the file name uses dynamic variables.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Do not show the confirmation dialog when the recording is about to overwrite an existing file.</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>Enable UDP trigger</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>UDP port:</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Default trigger state:</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Armed</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Disarmed</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Enable pixel filtering</value>
   </data>
 </root>

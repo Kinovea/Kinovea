@@ -206,24 +206,6 @@
   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
     <value>tiotusendels timme</value>
   </data>
-  <data name="dlgPreferences_Capture_File" xml:space="preserve">
-    <value>Fil:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Subdir" xml:space="preserve">
-    <value>Undermapp:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Root" xml:space="preserve">
-    <value>Root:</value>
-  </data>
-  <data name="dlgPreferences_Capture_Right" xml:space="preserve">
-    <value>Höger</value>
-  </data>
-  <data name="dlgPreferences_Capture_Left" xml:space="preserve">
-    <value>Vänster</value>
-  </data>
-  <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve">
-    <value>Tillåter flera instanser av Kinovea</value>
-  </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Tangentbord</value>
   </data>
@@ -296,17 +278,11 @@
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
     <value>Bildfrekvens (fps):</value>
   </data>
-  <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve">
-    <value>Namngivning av bilder</value>
-  </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
     <value>Okomprimerat videoformat:</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
     <value>Spelar in</value>
-  </data>
-  <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve">
-    <value>Namngivning av video</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>Inspelningsläge och fördröjning</value>
@@ -383,9 +359,6 @@
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
     <value>Importera bildsekvenser som videor</value>
   </data>
-  <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve">
-    <value>Instanser har sina egna egenskaper</value>
-  </data>
   <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
     <value>Accelerering:</value>
   </data>
@@ -415,9 +388,6 @@
   </data>
   <data name="mnuWorkspaceSaveAsDefault" xml:space="preserve">
     <value>Spara som standard-arbetsyta</value>
-  </data>
-  <data name="mnuWorkspaceExport" xml:space="preserve">
-    <value>Exportera arbetsyta</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
     <value>Ersättande bildfrekvens (fps):</value>
@@ -485,9 +455,6 @@
   <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
     <value>Genväg till pandoc:</value>
   </data>
-  <data name="dlgWorkspace_Title" xml:space="preserve">
-    <value>Arbetsyta</value>
-  </data>
   <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
     <value>Decimal-delare för CSV-filer:</value>
   </data>
@@ -505,8 +472,5 @@
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
     <value>Punkt</value>
-  </data>
-  <data name="dlgWorkspace_ConfirmationMessage" xml:space="preserve">
-    <value>Standardarbetsytan sparades.</value>
   </data>
 </root>
