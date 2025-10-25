@@ -421,7 +421,7 @@ namespace Kinovea.Camera.GenICam
             bool readable = NodeIsReadable(device, symbol);
             if (!readable)
             {
-                log.WarnFormat("Could not read GenICam property {0}: the property is not supported.", symbol);
+                log.WarnFormat("Could not read GenICam INT property {0}: the property is not supported.", symbol);
                 return p;
             }
 
@@ -471,7 +471,7 @@ namespace Kinovea.Camera.GenICam
             bool readable = NodeIsReadable(device, symbol);
             if (!readable)
             {
-                log.WarnFormat("Could not read GenICam property {0}: the property is not supported.", symbol);
+                log.WarnFormat("Could not read GenICam FLOAT property {0}: the property is not supported.", symbol);
                 return p;
             }
 
@@ -632,13 +632,31 @@ namespace Kinovea.Camera.GenICam
 
             bool present = device.RemoteNodeList.GetNodePresent(name);
             if (!present)
+            {
+                log.DebugFormat("Property {0} not found: node is not present.", name);
                 return false;
+            }
 
             Node node = device.RemoteNodeList[name];
-            if (!node.IsImplemented || !node.IsAvailable)
+            if (!node.IsImplemented)
+            {
+                log.DebugFormat("Property {0} not found: node is not implemented.", name);
                 return false;
+            }
 
-            return node.IsReadable;
+            if (!node.IsAvailable)
+            {
+                log.DebugFormat("Property {0} not found: node is not available.", name);
+                return false;
+            }
+
+            if (!node.IsReadable)
+            {
+                log.DebugFormat("Property {0} not found: node is not readable.", name);
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
