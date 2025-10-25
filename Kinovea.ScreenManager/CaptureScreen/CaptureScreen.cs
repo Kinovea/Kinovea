@@ -182,6 +182,8 @@ namespace Kinovea.ScreenManager
         private bool triggerArmed = false;  // This indicates whether we are currently armed or not and is used to discard capture trigger commands.
         private bool manualArmed = false;   // This indicates whether the user manually armed/disarmed the audio/software trigger.
         private bool inQuietPeriod = false;
+        private int initQuietPeriod = 3000;
+        private Stopwatch initStopwatch = new Stopwatch();
 
         private Delayer delayer = new Delayer();
         private int delay; // The current image age in number of frames.
@@ -255,6 +257,8 @@ namespace Kinovea.ScreenManager
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
 
             shortId = this.id.ToString().Substring(0, 4);
+
+            initStopwatch.Start();
         }
 
         private void BindCommands()
@@ -324,8 +328,33 @@ namespace Kinovea.ScreenManager
         public void TriggerCapture()
         {
             log.DebugFormat("Trigger received in capture screen at {0:o}.", DateTime.Now);
-            if (!cameraConnected || !triggerArmed || recording)
+
+            long initEllapsed = initStopwatch.ElapsedMilliseconds;
+            if (initEllapsed < initQuietPeriod)
+            {
+                log.DebugFormat("Trigger ignored: {0} ms after initialization.", initEllapsed);
                 return;
+            }
+            
+            initStopwatch.Stop();
+
+            if (!cameraConnected)
+            {
+                log.DebugFormat("Trigger ignored: the camera is not connected.");
+                return;
+            }
+
+            if (!triggerArmed)
+            {
+                log.DebugFormat("Trigger ignored: disarmed.");
+                return;
+            }
+            
+            if (recording)
+            {
+                log.DebugFormat("Trigger ignored: already recording.");
+                return;
+            }
             
             switch (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction)
             {
