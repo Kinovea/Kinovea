@@ -13,7 +13,7 @@ namespace Kinovea.ScreenManager
     public class UDPMonitor : IDisposable
     {
         #region Events
-        public event EventHandler Triggered;
+        public event EventHandler<EventArgs<float>> Triggered;
         #endregion
 
         #region Properties
@@ -133,7 +133,8 @@ namespace Kinovea.ScreenManager
                 if (Triggered != null)
                 {
                     dummy.BeginInvoke((Action)delegate {
-                        Triggered(this, EventArgs.Empty);
+                        // We assume the trigger is instantaneous and pass 0 as age.
+                        Triggered(this, new EventArgs<float>(0));
                     });
                 }
             }

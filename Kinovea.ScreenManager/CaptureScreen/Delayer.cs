@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         private int reserveCapacity = 8;    // Number of frames kept unreachable to clients.
         private int fullCapacity = 12;      // Total number of frames kept.
         private int currentPosition = -1;   // Freshest absolute position written to and available to consumers.
+        private int triggerPosition = -1;
         private bool allocated;
         private long availableMemory;
         private ImageDescriptor imageDescriptor;
@@ -322,7 +323,44 @@ namespace Kinovea.ScreenManager
             // If not fast enough, the writer could catch up the reserve capacity and start writing this slot.
             return frames[finalPosition % fullCapacity];
         }
-        
+
+        /// <summary>
+        /// Mark the frame at `age` ago as the trigger.
+        /// </summary>
+        public void MarkTrigger(int age)
+        {
+            triggerPosition = currentPosition - age;
+        }
+
+        /// <summary>
+        /// Returns the age of the trigger frame.
+        /// The frame is not guaranteed to still be in the buffer.
+        /// </summary>
+        public int GetTriggerAge()
+        {
+            return currentPosition - triggerPosition;
+        }
+
+        public void LogPosition(int age)
+        {
+            if (!allocated || frames.Count == 0)
+                return;
+
+            int newestAvailablePosition = 0;
+
+            // We only lock on reading to avoid a torn read if the other thread is writing to this variable.
+            // The mechanism to avoid actually reading the frame we want while the other thread is writing to it 
+            // is the reserve capacity.
+            lock (lockerPosition)
+                newestAvailablePosition = currentPosition;
+
+            if (newestAvailablePosition < 0)
+                return;
+
+            int target = newestAvailablePosition - age;
+            log.DebugFormat("Current position: {0}, position at age: {1}", newestAvailablePosition, target);
+        }
+
         /// <summary>
         /// Free the circular buffer and reset state.
         /// </summary>

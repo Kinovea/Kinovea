@@ -184,6 +184,7 @@ namespace Kinovea.ScreenManager
         private bool inQuietPeriod = false;
         private int initQuietPeriod = 3000;
         private Stopwatch initStopwatch = new Stopwatch();
+        private bool wasTriggered = false;
 
         private Delayer delayer = new Delayer();
         private int delay; // The current image age in number of frames.
@@ -325,17 +326,15 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Start capture if armed.
         /// </summary>
-        public void TriggerCapture()
+        public void TriggerCapture(float triggerAgeMilliseconds)
         {
-            log.DebugFormat("Trigger received in capture screen at {0:o}.", DateTime.Now);
-
             long initEllapsed = initStopwatch.ElapsedMilliseconds;
             if (initEllapsed < initQuietPeriod)
             {
                 log.DebugFormat("Trigger ignored: {0} ms after initialization.", initEllapsed);
                 return;
             }
-            
+
             initStopwatch.Stop();
 
             if (!cameraConnected)
@@ -355,7 +354,16 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Trigger ignored: already recording.");
                 return;
             }
-            
+
+            // Valid trigger.
+            wasTriggered = true;
+            if (consumerDelayer != null)
+            {
+                int age = SecondsToAge(triggerAgeMilliseconds / 1000);
+                log.DebugFormat("Marking trigger in delayer, with age {0} frames.", age);
+                consumerDelayer.MarkTrigger(age);
+            }
+
             switch (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.TriggerAction)
             {
                 case CaptureTriggerAction.SaveSnapshot:
@@ -921,6 +929,7 @@ namespace Kinovea.ScreenManager
 
             UpdateTitle();
             cameraConnected = true;
+            wasTriggered = false;
 
             log.DebugFormat("--------------------------------------------------");
             log.DebugFormat("Connected to camera.");
@@ -1758,12 +1767,20 @@ namespace Kinovea.ScreenManager
             }
 
             log.DebugFormat("--------------------------------------------------");
-            log.DebugFormat("Ready to start recording at {0:o}.", DateTime.Now);
+            log.DebugFormat("Ready to start recording.");
             log.DebugFormat("Recording mode: {0}, Compression: {1}. Image size: {2}x{3} px. Rotation: {4}",
-                recordingMode, !PreferencesManager.CapturePreferences.SaveUncompressedVideo, imageDescriptor.Width, imageDescriptor.Height, ImageRotation);
+                recordingMode, 
+                !PreferencesManager.CapturePreferences.SaveUncompressedVideo, 
+                imageDescriptor.Width, 
+                imageDescriptor.Height, 
+                ImageRotation);
+
             log.DebugFormat("Nominal framerate: {0:0.###} fps, Received framerate: {1:0.###} fps, Display framerate: {2:0.###} fps.", 
-                cameraGrabber.Framerate, pipelineManager.Frequency, 1000.0f / displayTimer.Interval);
-            
+                cameraGrabber.Framerate, 
+                pipelineManager.Frequency, 
+                1000.0f / displayTimer.Interval);
+            log.DebugFormat("--------------------------------------------------");
+
             SaveResult result;
             double framerate = cameraGrabber.Framerate;
             if (framerate == 0)
@@ -1795,16 +1812,14 @@ namespace Kinovea.ScreenManager
             
                 if(recording)
                 {
-                    recordingStart = DateTime.Now;
-                    log.DebugFormat("Recording started at time {0:o}.", recordingStart);
+                    log.DebugFormat("Recording started.");
                     stopwatchRecording.Restart();
-                
+
                     view.UpdateRecordingStatus(recording);
                     viewportController.StartingRecording();
                     viewportController.UpdateRecordingIndicator(RecordingStatus.Recording, 1.0f);
 
-                    if (RecordingStarted != null)
-                        RecordingStarted(this, EventArgs.Empty);
+                    RecordingStarted?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
@@ -1822,7 +1837,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || !recording)
                 return;
 
-            log.DebugFormat("Stopping recording. Time:{0:o}.", DateTime.Now);
+            log.DebugFormat("Stopping recording.");
 
             StartQuietPeriod();
 
@@ -1894,9 +1909,9 @@ namespace Kinovea.ScreenManager
 
             view.UpdateRecordingStatus(recording);
             UpdateRecordingIndicator();
+            wasTriggered = false;
 
-            if (RecordingStopped != null)
-                RecordingStopped(this, EventArgs.Empty);
+            RecordingStopped?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -1920,7 +1935,6 @@ namespace Kinovea.ScreenManager
             metadata.TimeOrigin = 0;
             if (cameraConnected && (recordingMode == CaptureRecordingMode.Delay || recordingMode == CaptureRecordingMode.Scheduled) && delay > 0)
                 metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
-
 
             string contextString = null;
             if (PreferencesManager.CapturePreferences.ContextEnabled && VariablesRepository.HasVariables)
@@ -1985,39 +1999,70 @@ namespace Kinovea.ScreenManager
             if (openResult != SaveResult.Success)
                 return;
 
-            // Loop through the delay buffer and save the frames to storage.
+            // Find the section of the buffer we need to save.
             int minAge = 0;
             int maxAge = delayer.SafeCapacity - 1;
             
             log.DebugFormat("Recording delay buffer. Delay:{0:0.000}s, Recording seconds:{1:0.000}s, Max duration allowed:{2:0.000}s, Buffer capacity:{3} frames.",
-                    AgeToSeconds(delay), recordingSeconds, maxRecordingSeconds, delayer.SafeCapacity - 1);
+                AgeToSeconds(delay), 
+                recordingSeconds, 
+                maxRecordingSeconds, 
+                delayer.SafeCapacity - 1);
 
-            // Figure the section of the buffer to save.
             if (forcedStop || recordingSeconds > 0)
             {
-                // Scheduled mode.
-                
+                // Scheduled mode recording.
+
+                // Find the first frame to store (maxAge) based on trigger or recording time.
+                // The KVA was saved with time origin set relatively to the first frame.
+                int triggerAge = -1;
+                if (wasTriggered)
+                {
+                    triggerAge = consumerDelayer.GetTriggerAge();
+                    log.DebugFormat("Trigger age: {0}", triggerAge);
+
+                    maxAge = triggerAge + delay;
+                }
+                else
+                {
+                    // If we don't have a trigger frame we use the time we've been recording.
+                    // Whether this is the entire duration or if the user stopped manually.
+                    int recordingFrames = Math.Max(SecondsToAge(recordingSeconds) - 1, 0);
+                    maxAge = recordingFrames + delay;
+                }
+
+                // Handle the case where the user let the maxAge frame fall off.
+                if (maxAge > delayer.SafeCapacity - 1)
+                {
+                    log.WarnFormat("Trigger + delay is larger than the buffer capacity: {0} > {1}. Ignoring trigger.", triggerAge, delayer.SafeCapacity - 1);
+                    triggerAge = -1;
+                 
+                    // Set the first frame to be the oldest frame in the buffer.
+                    // In this case the time origin will be wrong.
+                    maxAge = delayer.SafeCapacity - 1;
+                }
+
                 if (forcedStop && maxRecordingSeconds > 0)
                 {
                     //----------------------------------------------------------------------------------------------
-                    // We have force stopped recording because the max duration set in preferences is already available as frames in the buffer,
+                    // We have force stopped recording because the max duration is entirely available in the buffer,
                     // starting from the oldest interesting frame. (trigger + delay).
-                    // recordingSeconds is the real duration of pseudo-recording. It may be near 0, in this case the video may not include the trigger event.
+                    // recordingSeconds is the real duration of pseudo-recording.
+                    // It may be near 0, in this case the video may not include the trigger event.
                     //
                     // Exemple 1: 
-                    // Buffer = 10s, Delay set at 8s, max duration = 2s.
-                    // Recording allowed for 0s.
-                    // Result: Duration: 2s, Position: -8s -> -6s. Not containing the trigger event.
+                    // - Buffer capacity = 10s, Delay = 8s, max duration = 2s.
+                    // - Recording allowed for 0s.
+                    // - Result: Duration: 2s, Position: -8s -> -6s. Not containing the trigger event.
                     // 
                     // Exemple 2:
-                    // Buffer = 10s, Delay set at 2s, max duration = 3s.
-                    // Recording allowed for 1s.
-                    // Result: Duration: 3s, Position: -2s -> +1s. Does contain the trigger event (time 0).
+                    // - Buffer capacity = 10s, Delay = 2s, max duration = 3s.
+                    // - Recording allowed for 1s.
+                    // - Result: Duration: 3s, Position: -2s -> +1s. Does contain the trigger event (time 0).
                     //----------------------------------------------------------------------------------------------
-                    int recordingFrames = Math.Max(SecondsToAge(recordingSeconds) - 1, 0);
-                    maxAge = delay + recordingFrames;
-                 
-                    // This case always implies the entire "max configured duration" is available.
+
+                    // We know forcedStop is true, meaning we waited until the whole requested max duration
+                    // be available in the buffer. So everything should be there.
                     minAge = maxAge - SecondsToAge(maxRecordingSeconds);
                 }
                 else
@@ -2035,18 +2080,18 @@ namespace Kinovea.ScreenManager
                     // Recording for 3s.
                     // Result: Duration: 3s, Position: -2s -> +1s. Contains the trigger event.
                     //----------------------------------------------------------------------------------------------
+                    //maxAge = Math.Min(maxAge, delayer.SafeCapacity - 1);
                     int recordingFrames = Math.Max(SecondsToAge(recordingSeconds) - 1, 0);
-                    maxAge = delay + recordingFrames;
-                    
-                    // Special case to handle the case where the user let the oldest interesting frame fall off.
-                    maxAge = Math.Min(maxAge, delayer.SafeCapacity - 1);
-
                     minAge = maxAge - recordingFrames;
                 }
 
-                log.DebugFormat("Scheduled recording of buffer section: Delay:{0}, Min age:{1}, Max age:{2}.", this.delay, minAge, maxAge);
+                log.DebugFormat("Scheduled recording of buffer section: triggerAge:{0}, maxAge:{1}, minAge:{2}, delay:{3}", 
+                    triggerAge, 
+                    maxAge, 
+                    minAge, 
+                    this.delay);
 
-                // Final clamp.
+                // Final clamp to be sure.
                 maxAge = Math.Min(maxAge, delayer.SafeCapacity - 1);
                 minAge = Math.Max(minAge, 0);
             }
@@ -2055,8 +2100,11 @@ namespace Kinovea.ScreenManager
                 // Pause-and-browse recording.
                 // Delay is not considered.
                 // Always take the section between the most recent frame until max allowed recording duration.
+                // Or the whole buffer if no max duration is set.
                 if (maxRecordingSeconds > 0)
+                {
                     maxAge = Math.Min(maxAge, SecondsToAge(maxRecordingSeconds) - 1);
+                }
 
                 log.DebugFormat("Recording delay buffer while the camera is paused. Min age:{0}, Max age:{1}.", minAge, maxAge);
             }

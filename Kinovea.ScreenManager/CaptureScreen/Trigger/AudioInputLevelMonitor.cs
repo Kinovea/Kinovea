@@ -16,7 +16,7 @@ namespace Kinovea.ScreenManager
     public class AudioInputLevelMonitor : IDisposable
     {
         #region Events
-        public event EventHandler Triggered;
+        public event EventHandler<EventArgs<float>> Triggered;
         public event EventHandler<float> LevelChanged;
         public event EventHandler DeviceLost;
         #endregion
@@ -43,6 +43,7 @@ namespace Kinovea.ScreenManager
         private bool changeDeviceAsked;
         private string nextDeviceId;
         private bool stopAsked;
+        private int bufferMilliseconds;
         private Control dummy = new Control();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -154,7 +155,8 @@ namespace Kinovea.ScreenManager
                 waveIn.DeviceNumber = deviceNumber;
                 waveIn.StartRecording();
                 started = true;
-            
+                bufferMilliseconds = waveIn.BufferMilliseconds;
+
                 WaveInCapabilities wic = WaveIn.GetCapabilities(waveIn.DeviceNumber);
                 currentDeviceId = wic.ProductName;
 
@@ -228,7 +230,10 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Measure the peak level over the period and send an event if above threshold.
-            float max = 0;
+            // By the time we get here we are looking at a 100 ms buffer of audio, 
+            // so to get a more precise time of the trigger we must keep track of the first sample above the threshold.
+            float max = 0f;
+            int indexOfFirstAboveThreshold = -1;
             for (int index = 0; index < e.BytesRecorded; index += 2)
             {
                 // This project runs in 'checked' mode for Debug builds.
@@ -242,12 +247,19 @@ namespace Kinovea.ScreenManager
                 
                 float sample32 = Math.Abs(sample / 32768f);
 
+                if (sample32 >= Threshold && indexOfFirstAboveThreshold == -1)
+                {
+                    indexOfFirstAboveThreshold = index;
+                }
+
                 if (sample32 > max)
+                {
                     max = sample32;
+                }
             }
 
-            //log.DebugFormat("Audio input level: {0:0.000}.", max);
-
+            // Report the level.
+            // We do this even if below threshold so that the UI can show the level.
             if (LevelChanged != null)
             {
                 dummy.BeginInvoke((Action)delegate {
@@ -255,6 +267,7 @@ namespace Kinovea.ScreenManager
                 });
             }
 
+            // Bail out if there is no trigger.
             if (max < Threshold)
                 return;
 
@@ -264,12 +277,16 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            log.DebugFormat("Audio input level {0:0.00} above threshold of {1:0.00} at time:{2:o}.", max, Threshold, DateTime.Now);
+            // Get the trigger age based on which sample was first over threshold.
+            int sampleCount = e.BytesRecorded / 2;
+            float sampleDuration = 1000.0f / waveIn.WaveFormat.SampleRate;
+            float ageMilliseconds = (sampleCount - (indexOfFirstAboveThreshold/2) - 0.5f) * sampleDuration;
+            log.DebugFormat("Audio input level {0:0.00} above threshold of {1:0.00}. Age: {2} ms ago.", max, Threshold, ageMilliseconds);
 
             if (Triggered != null)
             {
                 dummy.BeginInvoke((Action)delegate {
-                    Triggered(this, EventArgs.Empty);
+                    Triggered(this, new EventArgs<float>(ageMilliseconds));
                 });
             }
         }

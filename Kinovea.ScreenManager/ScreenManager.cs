@@ -206,12 +206,12 @@ namespace Kinovea.ScreenManager
 
             audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
-            audioInputLevelMonitor.Triggered += (s, e) => TriggerCapture();
+            audioInputLevelMonitor.Triggered += (s, e) => TriggerCapture(e.Value);
             audioInputLevelMonitor.DeviceLost += (s, e) => AudioDeviceLost();
 
             udpMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableUDPTrigger;
             udpMonitor.Port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
-            udpMonitor.Triggered += (s, e) => TriggerCapture();
+            udpMonitor.Triggered += (s, e) => TriggerCapture(e.Value);
 
             InitializeVideoFilters();
 
@@ -3399,10 +3399,10 @@ namespace Kinovea.ScreenManager
 
         }
 
-        private void TriggerCapture()
+        private void TriggerCapture(float triggerAgeMilliseconds)
         {
             foreach (CaptureScreen screen in captureScreens)
-                screen.TriggerCapture();
+                screen.TriggerCapture(triggerAgeMilliseconds);
         }
 
         private void AudioDeviceLost()

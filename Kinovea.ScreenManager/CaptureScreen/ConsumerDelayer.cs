@@ -117,6 +117,23 @@ namespace Kinovea.ScreenManager
             stopRecordAsked = true;
         }
 
+        /// <summary>
+        /// Mark the frame at `age` ago as the trigger.
+        /// </summary>
+        public void MarkTrigger(int age)
+        {
+            delayer.MarkTrigger(age);
+        }
+
+        /// <summary>
+        /// Returns the age of the trigger frame.
+        /// The frame is not guaranteed to still be in the buffer.
+        /// </summary>
+        public int GetTriggerAge()
+        {
+            return delayer.GetTriggerAge();
+        }
+
         protected override void AfterDeactivate()
         {
             if (recording)
