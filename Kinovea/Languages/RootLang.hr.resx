@@ -430,4 +430,109 @@
   <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
     <value>Broj zaveslaja u minuti ({0})</value>
   </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>Umetni varijablu …</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Otvori mapu …</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Ploča navigacije</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Prozor</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Svojstva prozora …</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Otvori novi prozor</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>Ponovo otvori prozor</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Upravljaj prozorima …</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>Otvori mapu s podacima aplikacije …</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Osvježi</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Upravljaj prozorima</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Izbriši prozor</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>Osvježi popis prozora</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>Svojstva aktivnog prozora</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>Otvori preglednik datoteka</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>Preglednik datoteka</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Prozori</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>Stvori prečac za radnu površinu</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>Ime:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Mape</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>Kratko ime:</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Staza:</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Umetni obrnutu kosu crtu</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>Umetni crticu</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>Umetni podvlaku</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Pregledaj dinamičku stazu</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>Traži mape</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>Pomakni gore</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>Pomakni dolje</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Datoteke</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Standardno ime datoteke:</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Aktiviraj automatsko numeriranje</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Slika</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Post-produkcijska naredba …</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Konfiguriraj mape za snimanje</value>
+  </data>
 </root>
