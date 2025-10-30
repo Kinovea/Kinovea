@@ -58,85 +58,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblFolders" xml:space="preserve">
-    <value>Mape</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve">
+    <value>Kontrolli uuendusi…</value>
   </data>
-  <data name="lblVideoFiles" xml:space="preserve">
-    <value>Video datoteke</value>
+  <data name="Updater_Behind" xml:space="preserve">
+    <value>Uus versioon on saadaval!</value>
   </data>
-  <data name="mnuAddShortcut" xml:space="preserve">
-    <value>Dodaj prečicu</value>
+  <data name="Updater_CurrentVersion" xml:space="preserve">
+    <value>Praegune versioon :</value>
   </data>
-  <data name="mnuAddToShortcuts" xml:space="preserve">
-    <value>Dodaj u prečice</value>
+  <data name="Updater_NewVersion" xml:space="preserve">
+    <value>Uus versioon</value>
   </data>
-  <data name="mnuDeleteShortcut" xml:space="preserve">
-    <value>Izbriši prečicu</value>
+  <data name="Updater_Quit" xml:space="preserve">
+    <value>Lahku</value>
   </data>
-  <data name="Generic_Cancel" xml:space="preserve">
-    <value>Poništi</value>
-  </data>
-  <data name="tabShortcuts" xml:space="preserve">
-    <value>Prečice</value>
-  </data>
-  <data name="mnuVideoDelete" xml:space="preserve">
-    <value>Obriši datoteku</value>
-  </data>
-  <data name="Generic_Open" xml:space="preserve">
-    <value>Otvori</value>
-  </data>
-  <data name="FormCameraWizard_Parameters" xml:space="preserve">
-    <value>Parametri</value>
-  </data>
-  <data name="lblCameras" xml:space="preserve">
-    <value>Kamere</value>
-  </data>
-  <data name="FormCameraWizard_Test" xml:space="preserve">
-    <value>Test</value>
-  </data>
-  <data name="lblCaptureHistory" xml:space="preserve">
-    <value>Povijest snimanja</value>
-  </data>
-  <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Lociraj u Windows Exploreru </value>
-  </data>
-  <data name="mnuSortBy_Size" xml:space="preserve">
-    <value>Veličina</value>
-  </data>
-  <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>Silazno</value>
-  </data>
-  <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>Uzlazno</value>
-  </data>
-  <data name="mnuSortBy_Name" xml:space="preserve">
-    <value>Ime</value>
-  </data>
-  <data name="FormCameraWizard_CameraType" xml:space="preserve">
-    <value>Tip kamere</value>
-  </data>
-  <data name="mnuSortBy_Date" xml:space="preserve">
-    <value>Datum</value>
-  </data>
-  <data name="FormCameraWizard_Title" xml:space="preserve">
-    <value>Ručno povezivanje</value>
-  </data>
-  <data name="mnuSortBy" xml:space="preserve">
-    <value>Sortiraj po</value>
-  </data>
-  <data name="ForgetCustomSettings" xml:space="preserve">
-    <value>Zaboravi prilagođene postavke</value>
-  </data>
-  <data name="FormCameraWizard_Create" xml:space="preserve">
-    <value>Kreiraj kameru</value>
-  </data>
-  <data name="mnuRemoveFromShortcuts" xml:space="preserve">
-    <value>Ukloni iz prečaca</value>
-  </data>
-  <data name="navPane_FileSystem" xml:space="preserve">
-    <value>Datotečni sustav</value>
-  </data>
-  <data name="tabCameras" xml:space="preserve">
-    <value>Kamere</value>
+  <data name="Updater_UpToDate" xml:space="preserve">
+    <value>Sinu versioon on ajakohane!</value>
   </data>
 </root>
