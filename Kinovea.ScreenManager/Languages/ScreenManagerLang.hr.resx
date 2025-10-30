@@ -395,7 +395,7 @@
     <value>Koordinatni sustav</value>
   </data>
   <data name="mnuCoordinateSystemHide" xml:space="preserve">
-    <value>Sakriti</value>
+    <value>Sakrij</value>
   </data>
   <data name="RecentlyUsedColors" xml:space="preserve">
     <value>Nedavno korišctene boje:</value>
@@ -740,7 +740,7 @@
     <value>Veličina izrezanog dijela:</value>
   </data>
   <data name="mnuPolyline_FinishHere" xml:space="preserve">
-    <value>Završi višedijelnu liniju ovdje</value>
+    <value>Završi poliliniju ovdje</value>
   </data>
   <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
     <value>Prikaži vertikalnu os</value>
@@ -971,7 +971,7 @@
     <value>Spremi bilješke</value>
   </data>
   <data name="mnuVisibilityDefault" xml:space="preserve">
-    <value>Zadani fading</value>
+    <value>Zadani prijelaz</value>
   </data>
   <data name="FileFilter_AllSupported" xml:space="preserve">
     <value>Svi podržani formati</value>
@@ -1097,7 +1097,7 @@
     <value>Zaboravi podešavanja korisnika</value>
   </data>
   <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
-    <value>Završi višedijelnu na prethodnoj točki</value>
+    <value>Završi poliliniju pri prethodnoj točci</value>
   </data>
   <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
     <value>CSV Kronometar…</value>
@@ -1109,7 +1109,7 @@
     <value>Strelica - Zakrivljena</value>
   </data>
   <data name="mnuVisibilityConfigure" xml:space="preserve">
-    <value>Konfiguriraj prilagođeni fading</value>
+    <value>Konfiguriraj prilagođeni prijelaz</value>
   </data>
   <data name="mnuCopyToClipboard" xml:space="preserve">
     <value>Kopiraj u Clipboard</value>
@@ -1190,7 +1190,7 @@
     <value>Akcija</value>
   </data>
   <data name="mnuVisibilityCustom" xml:space="preserve">
-    <value>Prilagođeni fading</value>
+    <value>Prilagođeni prijelaz</value>
   </data>
   <data name="mnuExitFilter" xml:space="preserve">
     <value>Izlaz {0}</value>
@@ -1217,7 +1217,7 @@
     <value>Izvezi jednu sliku svake {0:0.00}s.</value>
   </data>
   <data name="mnuPolyline_CloseMenu" xml:space="preserve">
-    <value>Zatvori ovaj menu</value>
+    <value>Zatvori ovaj izbornik</value>
   </data>
   <data name="formConfigureKinogram_Title" xml:space="preserve">
     <value>Konfiguriraj Kinogram</value>
@@ -1557,5 +1557,125 @@
   </data>
   <data name="variable_Minutes" xml:space="preserve">
     <value>Minuta</value>
+  </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>Konfiguriraj kameru …</value>
+  </data>
+  <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
+    <value>Ponovo učitaj povezane napomene</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Ponovo učitaj standardne napomene snimke</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>Umetni varijablu …</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>Spremi i nastavi</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>Otvori mapu …</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
+    <value>Prikaži unutarnje točke</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>Prikaži vanjske točke</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Post-produkcijska naredba …</value>
+  </data>
+  <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Spremi kao zadane oznake za player</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Spremi kao zadane oznake za snimanje</value>
+  </data>
+  <data name="mnuUnloadAnnotations" xml:space="preserve">
+    <value>Ukloni oznake</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>Post-produkcijska naredba</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>Aktiviraj post-produkcijsku naredbu</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>Prikaži krug</value>
+  </data>
+  <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Ponovo učitaj zadane oznake za player</value>
+  </data>
+  <data name="mnuDeleteTracksAfterThisPoint" xml:space="preserve">
+    <value>Izbriši snimke nakon ove točke</value>
+  </data>
+  <data name="mnuDeleteTracks" xml:space="preserve">
+    <value>Izbriši snimke</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Konfiguriraj mape za snimanje</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>Stabilizacija</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>Kontekst</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>Umetni varijablu konteksta</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>Umetni</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>Opis</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>Primjer</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>Ključna riječ</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>Brzina kadrova kamere</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>Staza do video datoteke</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>Staza do mape za snimanje</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>Ime datoteke sa sufiksom</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>Ime datoteke bez sufiksa</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>Sufiks datoteke</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>Ime datoteke s anotacijama</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>Datum (ISO 8601)</value>
+  </data>
+  <data name="variable_TimeISO8601" xml:space="preserve">
+    <value>Vrijeme (ISO 8601)</value>
+  </data>
+  <data name="variable_Hours" xml:space="preserve">
+    <value>Sati</value>
+  </data>
+  <data name="variable_Milliseconds" xml:space="preserve">
+    <value>Milisekunde</value>
+  </data>
+  <data name="mnuNext" xml:space="preserve">
+    <value>Sljedeće</value>
+  </data>
+  <data name="mnuPrevious" xml:space="preserve">
+    <value>Prethodno</value>
+  </data>
+  <data name="mnuVerticalLayout" xml:space="preserve">
+    <value>Okomiti raspored</value>
   </data>
 </root>
