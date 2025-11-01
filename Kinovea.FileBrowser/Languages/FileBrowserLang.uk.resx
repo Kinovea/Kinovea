@@ -130,4 +130,13 @@
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>Низхідний</value>
   </data>
+  <data name="mnuRemoveFromShortcuts" xml:space="preserve">
+    <value>Вилучити з ярликів</value>
+  </data>
+  <data name="navPane_FileSystem" xml:space="preserve">
+    <value>Файлова система</value>
+  </data>
+  <data name="tabCameras" xml:space="preserve">
+    <value>Камери</value>
+  </data>
 </root>
