@@ -1564,4 +1564,118 @@
   <data name="variable_Minutes" xml:space="preserve">
     <value>Хвилина</value>
   </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Налаштування папок захоплення</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Команда після запису…</value>
+  </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>Налаштувати камеру…</value>
+  </data>
+  <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Зберегти як анотації гравця за замовчуванням</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Зберегти як анотації захоплення за замовчуванням</value>
+  </data>
+  <data name="mnuUnloadAnnotations" xml:space="preserve">
+    <value>Вивантажити анотації</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Перезавантажити анотації захоплення за замовчуванням</value>
+  </data>
+  <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
+    <value>Перезавантажити пов'язані анотації</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>Команда після запису</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>Увімкнути команду після запису</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>Вставити змінну…</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>Зберегти та продовжити</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>Показати коло</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>Відкрити папку…</value>
+  </data>
+  <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Перезавантажити стандартні анотації гравців</value>
+  </data>
+  <data name="mnuDeleteTracksAfterThisPoint" xml:space="preserve">
+    <value>Видалити треки після цієї точки</value>
+  </data>
+  <data name="mnuDeleteTracks" xml:space="preserve">
+    <value>Видалити треки</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>Стабілізація</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>Контекст</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>Вставити змінну контексту</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>Вставка</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>Опис</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>Приклад</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>Ключове слово</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>Частота кадрів камери</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>Шлях до відеофайлу</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>Шлях до папки захоплення</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>Ім'я файлу з розширенням</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>Ім'я файлу без розширення</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>Розширення файлу</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>Ім'я файлу анотацій</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>Дата (ISO 8601)</value>
+  </data>
+  <data name="variable_TimeISO8601" xml:space="preserve">
+    <value>Час (ISO 8601)</value>
+  </data>
+  <data name="variable_Hours" xml:space="preserve">
+    <value>Години</value>
+  </data>
+  <data name="variable_Milliseconds" xml:space="preserve">
+    <value>Мілісекунди</value>
+  </data>
+  <data name="mnuNext" xml:space="preserve">
+    <value>Далі</value>
+  </data>
+  <data name="mnuPrevious" xml:space="preserve">
+    <value>Попередній</value>
+  </data>
+  <data name="mnuVerticalLayout" xml:space="preserve">
+    <value>Вертикальне розташування</value>
+  </data>
 </root>
