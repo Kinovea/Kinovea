@@ -470,7 +470,7 @@
     <value>Налаштування папок захоплення</value>
   </data>
   <data name="dlgTitle_ManageWindows" xml:space="preserve">
-    <value>Керування вікнами</value>
+    <value>Керування Вікнами</value>
   </data>
   <data name="formWindowManager_StopProcess" xml:space="preserve">
     <value>Зупинити процес</value>
@@ -479,7 +479,7 @@
     <value>Видалити вікно</value>
   </data>
   <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
-    <value>Оновити список вікон</value>
+    <value>Оновити Список Вікон</value>
   </data>
   <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
     <value>Властивості активного вікна</value>
@@ -491,7 +491,7 @@
     <value>Продовжуйте з того місця, де зупинилися</value>
   </data>
   <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
-    <value>Відкрити певний контент</value>
+    <value>Відкрити Певний Контент</value>
   </data>
   <data name="formWindowProperties_FileBrowser" xml:space="preserve">
     <value>Браузер файлів</value>
@@ -621,5 +621,35 @@
   </data>
   <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
     <value>Попередньо налаштований {0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Під час запуску</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Список екранів</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Імпортувати поточні екрани</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Збережені вікна</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Експортовані анотації</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Експорт креслень</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Експорт калібрування</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Увімкнути згладжування похідних для високошвидкісного відео</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>Розпочати процес</value>
   </data>
 </root>
