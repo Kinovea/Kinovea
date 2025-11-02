@@ -1086,6 +1086,7 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.da.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.el.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.et.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.fa.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.fi.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.hr.resx" />

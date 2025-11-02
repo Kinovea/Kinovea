@@ -63,6 +63,7 @@ namespace Kinovea.Services
             languages.Add("el", "Ελληνικά");
             languages.Add("en", "English");
             languages.Add("es", "Español");
+            languages.Add("et", "Eesti");
             languages.Add("fr", "Français");
             languages.Add("hr", "Hrvatski");
             languages.Add("id", "Bahasa Indonesia");

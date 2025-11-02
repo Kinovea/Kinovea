@@ -235,6 +235,7 @@
     <EmbeddedResource Include="Languages\FileBrowserLang.cs.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.da.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.el.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.et.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.fa.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.fi.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.hr.resx" />
