@@ -330,7 +330,9 @@ namespace Kinovea.ScreenManager
             if (track != null)
             {
                 btnStartStop.Image = track.Status == TrackStatus.Interactive ? Properties.Drawings.tracking_start : Properties.Drawings.tracking_stop;
-                btnStartStop.Text = track.Status == TrackStatus.Interactive ? "Start tracking" : "Stop tracking";
+                btnStartStop.Text = track.Status == TrackStatus.Interactive ? 
+                    Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_Start : 
+                    Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_Stop;
             }
         }
 

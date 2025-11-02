@@ -934,7 +934,10 @@ namespace Kinovea.Root
             bool enabled = !PreferencesManager.GeneralPreferences.EnableDebugLog;
             Software.UpdateLogLevel(enabled);
             PreferencesManager.GeneralPreferences.EnableDebugLog = enabled;
-            mnuEnableDebugLogs.Text = enabled ? "Disable debug logs" : "Enable debug logs";
+            mnuEnableDebugLogs.Text = enabled ? 
+                Kinovea.Root.Languages.RootLang.mnuDisableDebugLogs : 
+                Kinovea.Root.Languages.RootLang.mnuEnableDebugLogs;
+
             if (enabled)
             {
                 log.Debug("Debug logs enabled.");
