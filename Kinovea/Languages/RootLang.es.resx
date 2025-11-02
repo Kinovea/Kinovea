@@ -658,4 +658,7 @@
   <data name="formWindowProperties_StartProcess" xml:space="preserve">
     <value>Iniciar el proceso</value>
   </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Mostrar todos los idiomas</value>
+  </data>
 </root>
