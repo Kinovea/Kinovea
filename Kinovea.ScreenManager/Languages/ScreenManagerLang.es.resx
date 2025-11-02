@@ -1705,4 +1705,46 @@
   <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
     <value>Mostrar todas las imágenes clave</value>
   </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>Cámara retrasada</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>Cámara en vivo</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>Contexto de captura</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>Desactivar el contexto de captura</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>Activar el contexto de captura</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>Retraso en segundos</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>Duración total de la grabación en segundos</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>El activador de la captura está armado</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>El activador de captura está desarmado</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>Buscar una carpeta de captura</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>Señal:{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>Rendimiento:{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>Carga:{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>Pérdidas:{0}</value>
+  </data>
 </root>
