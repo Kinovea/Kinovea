@@ -588,9 +588,9 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheCaptureTriggerIsDisarmed);
 
             if (delayedDisplay)
-                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheViewIsDelayed);
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_ViewIsDelayed);
             else
-                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheViewIsLive);
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_ViewIsLive);
 
             toolTips.SetToolTip(btnCaptureFolders, Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuConfigureCaptureFolders);
         }

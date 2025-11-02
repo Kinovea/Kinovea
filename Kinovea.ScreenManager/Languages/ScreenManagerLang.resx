@@ -1785,12 +1785,6 @@
   <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
     <value>The capture trigger is disarmed</value>
   </data>
-  <data name="tooltip_TheViewIsDelayed" xml:space="preserve">
-    <value>The view is delayed</value>
-  </data>
-  <data name="tooltip_TheViewIsLive" xml:space="preserve">
-    <value>The view is live</value>
-  </data>
   <data name="cbSelectCaptureFolder" xml:space="preserve">
     <value>Select a capture folder</value>
   </data>

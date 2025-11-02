@@ -4642,24 +4642,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The view is delayed.
-        /// </summary>
-        public static string tooltip_TheViewIsDelayed {
-            get {
-                return ResourceManager.GetString("tooltip_TheViewIsDelayed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The view is live.
-        /// </summary>
-        public static string tooltip_TheViewIsLive {
-            get {
-                return ResourceManager.GetString("tooltip_TheViewIsLive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Total length of the recording in seconds.
         /// </summary>
         public static string tooltip_TotalLengthOfTheRecordingInSeconds {
