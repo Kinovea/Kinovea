@@ -503,7 +503,7 @@
     <value>Navigateur de fichiers</value>
   </data>
   <data name="formWindowProperties_Replay0" xml:space="preserve">
-    <value>Relecture : {0}</value>
+    <value>Relecture :{0}</value>
   </data>
   <data name="formWindowProperties_Playback0" xml:space="preserve">
     <value>Lecture :{0}</value>
