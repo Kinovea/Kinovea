@@ -61,6 +61,7 @@ namespace Kinovea.Root
         private string uiCultureName;
         private int maxRecentFiles;
         private bool enableDebugLogs;
+        private bool enableAllLanguages;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -90,29 +91,37 @@ namespace Kinovea.Root
             uiCultureName = LanguageManager.GetCurrentCultureName();
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             enableDebugLogs = PreferencesManager.GeneralPreferences.EnableDebugLog;
+            enableAllLanguages = PreferencesManager.GeneralPreferences.EnableAllLanguages;
         }
         private void InitPage()
         {
             // Localize and fill possible values
             
             lblLanguage.Text = RootLang.dlgPreferences_Player_lblLanguages;
-            cmbLanguage.Items.Clear();
-            foreach(KeyValuePair<string, string> lang in LanguageManager.Languages)
-            {
-                cmbLanguage.Items.Add(new LanguageIdentifier(lang.Key, lang.Value));
-            }
+            RebuildLanguageList();
+            SelectCurrentLanguage();
             
             lblHistoryCount.Text = RootLang.dlgPreferences_General_lblHistoryCount;
-
-            SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
 
             cbEnableDebugLogs.Text = Kinovea.Root.Languages.RootLang.mnuEnableDebugLogs;
             cbEnableDebugLogs.Checked = enableDebugLogs;
+            cbEnableAllLanguages.Text = "Enable all languages";
+            cbEnableAllLanguages.Checked = enableAllLanguages;
+        }
+        private void RebuildLanguageList()
+        {
+            cmbLanguage.Items.Clear();
+            var enabledLanguages = LanguageManager.GetEnabledLanguages(enableAllLanguages);
+            foreach (KeyValuePair<string, string> lang in enabledLanguages)
+            {
+                cmbLanguage.Items.Add(new LanguageIdentifier(lang.Key, lang.Value));
+            }
         }
         private void SelectCurrentLanguage()
         {
             bool found = false;
+            int englishIndex = -1;
             for(int i=0;i<cmbLanguage.Items.Count;i++)
             {
                 LanguageIdentifier li = (LanguageIdentifier)cmbLanguage.Items[i];
@@ -123,10 +132,17 @@ namespace Kinovea.Root
                     cmbLanguage.SelectedIndex = i;            
                     found = true;
                 }
+                else if (li.Culture.Equals("en"))
+                {
+                    englishIndex = i;
+                }
             }
 
-            if(!found)
-                cmbLanguage.SelectedIndex = 0;   
+            // If not found fallback to English.
+            if(!found && englishIndex != -1)
+            {
+                cmbLanguage.SelectedIndex = englishIndex;
+            }
         }
         #endregion
         
@@ -146,6 +162,12 @@ namespace Kinovea.Root
             // Immediately change the log level.
             Software.UpdateLogLevel(enableDebugLogs);
         }
+        private void cbEnableAllLanguages_CheckedChanged(object sender, EventArgs e)
+        {
+            enableAllLanguages = cbEnableAllLanguages.Checked;
+            RebuildLanguageList();
+            SelectCurrentLanguage();
+        }
         #endregion
 
         public void CommitChanges()
@@ -153,6 +175,7 @@ namespace Kinovea.Root
             PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
             PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
             PreferencesManager.GeneralPreferences.EnableDebugLog = enableDebugLogs;
+            PreferencesManager.GeneralPreferences.EnableAllLanguages = enableAllLanguages;
         }
     }
 }

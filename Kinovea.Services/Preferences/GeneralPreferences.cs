@@ -42,6 +42,16 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// If true all languages are enabled in the language selection list,
+        /// even those that with less than 50% coverage.
+        /// </summary>
+        public bool EnableAllLanguages
+        {
+            get { BeforeRead(); return enableAllLanguages; }
+            set { enableAllLanguages = value; Save(); }
+        }
+
+        /// <summary>
         /// Last preference page visited.
         /// </summary>
         public int PreferencePage
@@ -63,6 +73,7 @@ namespace Kinovea.Services
         #region Members
         private string uiCultureName;
         private bool enableDebugLog = false;
+        private bool enableAllLanguages = false;
         private int preferencePage;
         private string pointerKey = "::default";
         #endregion
@@ -109,6 +120,7 @@ namespace Kinovea.Services
         {
             writer.WriteElementString("Culture", uiCultureName);
             writer.WriteElementString("EnableDebugLog", XmlHelper.WriteBoolean(enableDebugLog));
+            writer.WriteElementString("EnableAllLanguages", XmlHelper.WriteBoolean(enableAllLanguages));
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
             writer.WriteElementString("Pointer", pointerKey);
         }
@@ -126,6 +138,9 @@ namespace Kinovea.Services
                         break;
                     case "EnableDebugLog":
                         enableDebugLog = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "EnableAllLanguages":
+                        enableAllLanguages = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "PreferencesPage":
                         preferencePage = reader.ReadElementContentAsInt();

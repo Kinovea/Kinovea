@@ -37,11 +37,12 @@ namespace Kinovea.Services
         }
         
         private static Dictionary<string, string> languages = null;
+        private static List<string> lowCoverage = new List<string>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         static LanguageManager()
         {
-            // Alphabetical order by native name. (Check Wikipedia order if in doubt).
+            // Alphabetical order by native name, using Wikipedia as reference.
             // ISO 639-1: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 
             languages = new Dictionary<string, string>();
@@ -85,52 +86,31 @@ namespace Kinovea.Services
             languages.Add("tr", "Türkçe");
             languages.Add("uk", "Українська");
             
+            // Low coverage languages.
 
-            if (Debugger.IsAttached)
-                return;
+            // In debug, show everything.
+            //if (Debugger.IsAttached)
+            //    return;
 
-            // For release, remove languages that don't match the inclusion heuristic below.
-            //
-            // Rationale:
-            // It is frustrating and look unprofessional for users to select their language only to realize
-            // that many parts of the interface are not actually translated.
-            // 
-            // Criteria:
-            // 1. > 85% translated in total -> kept.
-            // 2. < 50% translated in total -> removed.
-            // 3. For the remaining languages, we look at
-            // - the Root component (top level menu and preferences), 
-            // - how the front UI looks like, File, View and Image, and the UI of the player.
-            // If there are too many untranslated strings directly visible in the menu and the player UI
-            // we do not include the language.
-
+            // In release, add the low coverage to a list.
+            // The user can then enable all languages from the preferences.
+            // Low coverage is defined as less than 50% coverage in either 
+            // the whole project, the Root component or the ScreenManager component.
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
-            // Last check: 2024-08-25.
-
-            // Languages with less than 50% translation coverage.
-            languages.Remove("az");         // Azerbaijani.
-            languages.Remove("da");         // Danish.
-            languages.Remove("el");         // Greek.
-            languages.Remove("ms");         // Malay.
-            languages.Remove("no");         // Norwegian.
-            languages.Remove("sr-Latn-RS"); // Serbian (latin)
-            languages.Remove("sl");         // Slovenian.
-            languages.Remove("th");         // Thai.
-
-            // Languages between 50% and 85%.
-            //languages.Remove("ca");       // Catalan.
-            //languages.Remove("ar");       // Arabic.
-            //languages.Remove("bg");       // Bulgarian.
-            //languages.Remove("cs");       // Czech
-            //languages.Remove("de");       // German
-            //languages.Remove("ko");       // Korean
-            //languages.Remove("lt");       // Lithuanian
-            languages.Remove("fa");       // Farsi.
-            //languages.Remove("pl");       // Polish
-            //languages.Remove("ro");       // Romanian
-            languages.Remove("sr-Cyrl-RS"); // Serbian (cyrillic).
-            languages.Remove("sv");         // Swedish.
-            //languages.Remove("tr");       // Turkish.
+            // Last check: 2025-11-01.
+            lowCoverage.Add("az");         // Azerbaijani.
+            lowCoverage.Add("bg");         // Bulgarian.
+            lowCoverage.Add("da");         // Danish.
+            lowCoverage.Add("el");         // Greek.
+            lowCoverage.Add("et");         // Estonian.
+            lowCoverage.Add("fa");         // Persian.
+            lowCoverage.Add("ms");         // Malay.
+            lowCoverage.Add("no");         // Norwegian.
+            lowCoverage.Add("sr-Latn-RS"); // Serbian (latin)
+            lowCoverage.Add("sr-Cyrl-RS"); // Serbian (cyrillic).
+            lowCoverage.Add("sl");         // Slovenian.
+            lowCoverage.Add("sv");         // Swedish.
+            lowCoverage.Add("th");         // Thai.
         }
 
         /// <summary>
@@ -156,6 +136,20 @@ namespace Kinovea.Services
                 return ci.Parent.Name;
             else
                 return "en";
+        }
+
+        public static Dictionary<string, string> GetEnabledLanguages(bool enableAllLanguages)
+        {
+            Dictionary<string, string> availableLanguages = new Dictionary<string, string>();
+            foreach (var kvp in languages)
+            {
+                if (enableAllLanguages || !lowCoverage.Contains(kvp.Key))
+                {
+                    availableLanguages.Add(kvp.Key, kvp.Value);
+                }
+            }
+
+            return availableLanguages;
         }
     }
 }

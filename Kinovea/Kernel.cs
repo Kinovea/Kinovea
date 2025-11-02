@@ -445,7 +445,9 @@ namespace Kinovea.Root
 
             #region Options
             mnuLanguages.Image = Properties.Resources.international;
-            foreach(KeyValuePair<string, string> lang in LanguageManager.Languages)
+            bool enableAllLanguages = PreferencesManager.GeneralPreferences.EnableAllLanguages;
+            var enabledLanguages = LanguageManager.GetEnabledLanguages(enableAllLanguages);
+            foreach (KeyValuePair<string, string> lang in enabledLanguages)
             {
                 ToolStripMenuItem mnuLang = new ToolStripMenuItem(lang.Value);
                 mnuLang.Tag = lang.Key;
