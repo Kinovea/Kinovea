@@ -1388,7 +1388,7 @@
     <value>Changer un axe et vérifier les deux autres axes</value>
   </data>
   <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
-    <value>Position de la caméra ({0}): X:{1}, Y:{2}, Z:{3}</value>
+    <value>Position de la caméra ({0}) : X :{1}, Y :{2}, Z :{3}</value>
   </data>
   <data name="FormTimeSections_Start" xml:space="preserve">
     <value>Début</value>
@@ -1704,5 +1704,47 @@
   </data>
   <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
     <value>Montrer toutes les images clés</value>
+  </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>La vue de la caméra est en retard</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>La vue de la caméra est en live</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>Contexte de capture</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>Désactiver le contexte de capture</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>Activer le contexte de capture</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>Délai en secondes</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>Durée totale de l'enregistrement en secondes</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>Le déclencheur est armé</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>Le déclencheur est désarmé</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>Sélectionner un dossier de capture</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>Signal :{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>Débit :{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>Charge :{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>Pertes :{0}</value>
   </data>
 </root>
