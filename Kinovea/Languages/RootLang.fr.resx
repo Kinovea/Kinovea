@@ -659,6 +659,6 @@
     <value>Fenêtres sauvegardées</value>
   </data>
   <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
-    <value>Activer toutes les langues</value>
+    <value>Montrer toutes les langues</value>
   </data>
 </root>
