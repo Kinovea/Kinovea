@@ -1690,4 +1690,19 @@
   <data name="tracking_MatchThreshold" xml:space="preserve">
     <value>Seuil de correspondance :</value>
   </data>
+  <data name="track_UpdateThreshold" xml:space="preserve">
+    <value>Seuil de mise à jour :</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>Supprimer la fin de la trajectoire</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>Image clé précédente</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>Image clé suivante</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>Montrer toutes les images clés</value>
+  </data>
 </root>
