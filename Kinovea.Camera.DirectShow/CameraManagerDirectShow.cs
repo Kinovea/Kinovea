@@ -66,6 +66,7 @@ namespace Kinovea.Camera.DirectShow
         private Regex idsPeakPattern = new Regex(@"^peak");
         private Regex dahengPattern = new Regex(@"^Daheng Imaging");
         private Regex metaQuestPattern = new Regex(@"^Meta Quest");
+        private Regex theImagingSourcePattern = new Regex(@"^D[FM]K [A-Za-z0-9]+");
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -325,6 +326,7 @@ namespace Kinovea.Camera.DirectShow
             Match matchBasler = baslerPattern.Match(name);
             if (matchBasler.Success)
             {
+                log.DebugFormat("Blacklisting Basler camera: {0}.", name);
                 blacklist.Add(name);
                 return true;
             }
@@ -333,6 +335,7 @@ namespace Kinovea.Camera.DirectShow
             Match matchIDS = idsPattern.Match(name);
             if (matchIDS.Success)
             {
+                log.DebugFormat("Blacklisting IDS uEye camera: {0}.", name);
                 blacklist.Add(name);
                 return true;
             }
@@ -341,6 +344,7 @@ namespace Kinovea.Camera.DirectShow
             Match matchIDSPeak = idsPeakPattern.Match(name);
             if (matchIDSPeak.Success)
             {
+                log.DebugFormat("Blacklisting IDS peak camera: {0}.", name);
                 blacklist.Add(name);
                 return true;
             }
@@ -349,6 +353,7 @@ namespace Kinovea.Camera.DirectShow
             Match matchDaheng = dahengPattern.Match(name);
             if (matchDaheng.Success)
             {
+                log.DebugFormat("Blacklisting Daheng Imaging camera: {0}.", name);
                 blacklist.Add(name);
                 return true;
             }
@@ -358,6 +363,17 @@ namespace Kinovea.Camera.DirectShow
             Match matchMetaQuest = metaQuestPattern.Match(name);
             if (matchMetaQuest.Success)
             {
+                log.DebugFormat("Blacklisting Meta Quest camera: {0}.", name);
+                blacklist.Add(name);
+                return true;
+            }
+
+            // The Imaging Source
+            // Ex: "DMK 33UX273".
+            Match matchTheImagingSource = theImagingSourcePattern.Match(name);
+            if (matchTheImagingSource.Success)
+            {
+                log.DebugFormat("Blacklisting The Imaging Source camera: {0}.", name);
                 blacklist.Add(name);
                 return true;
             }
