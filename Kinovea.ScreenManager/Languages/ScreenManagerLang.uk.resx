@@ -1678,4 +1678,25 @@
   <data name="mnuVerticalLayout" xml:space="preserve">
     <value>Вертикальне розташування</value>
   </data>
+  <data name="tracking_TrackingAlgorithm" xml:space="preserve">
+    <value>Алгоритм відстеження:</value>
+  </data>
+  <data name="tracking_MatchThreshold" xml:space="preserve">
+    <value>Поріг збігу:</value>
+  </data>
+  <data name="track_UpdateThreshold" xml:space="preserve">
+    <value>Поріг оновлення:</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>Видалити кінець треку</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>Попереднє ключове зображення</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>Наступне ключове зображення</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>Показати всі ключові зображення</value>
+  </data>
 </root>
