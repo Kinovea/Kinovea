@@ -197,7 +197,7 @@
   <data name="dlgConfigureDrawing_Title" xml:space="preserve">
     <value>پیکربندی طرح</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>نام</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
@@ -290,13 +290,13 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>محیط</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>ردیابی</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>پنجره شیئی:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>پنجره جستجو:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
@@ -680,10 +680,10 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>مسیر را بعد از این نقطه حذف کنید</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>شروع ردیابی</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>توقف ردیابی</value>
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve">

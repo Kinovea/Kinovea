@@ -124,24 +124,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Context.
-        /// </summary>
-        internal static string dlgPreferences_Capture_Context {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_Context", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Context variables.
-        /// </summary>
-        internal static string dlgPreferences_Capture_ContextVariables {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_ContextVariables", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to High speed cameras.
         /// </summary>
         internal static string dlgPreferences_Capture_gbHighspeedCameras {
@@ -237,150 +219,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Capture_lblVideoFormat {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblVideoFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Macro.
-        /// </summary>
-        internal static string dlgPreferences_Capture_Macro {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_Macro", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Camera alias.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternCameraAlias {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternCameraAlias", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Capture directory.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternCaptureDirectory {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternCaptureDirectory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Captured file name.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternCaptureFilename {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternCaptureFilename", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configured framerate.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternConfiguredFramerate {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternConfiguredFramerate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Date (YYYYMMDD).
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternDate {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Date and time (YYYYMMDD-HHMMSS).
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternDateTime {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternDateTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Day.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternDay {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternDay", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Escape sequence.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternEscape {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternEscape", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hour.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternHour {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternHour", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minute.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternMinute {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternMinute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Month.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternMonth {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternMonth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Received framerate.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternReceivedFramerate {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternReceivedFramerate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Second.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternSecond {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternSecond", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time (HHMMSS).
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternTime {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Year.
-        /// </summary>
-        internal static string dlgPreferences_Capture_PatternYear {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternYear", resourceCulture);
             }
         }
         
@@ -727,15 +565,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tracking.
-        /// </summary>
-        internal static string dlgPreferences_Player_Tracking {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_Tracking", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Default tracking parameters.
         /// </summary>
         internal static string dlgPreferences_Player_TrackingDescription {
@@ -745,38 +574,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object window:.
-        /// </summary>
-        internal static string dlgPreferences_Player_TrackingObjectWindow {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_TrackingObjectWindow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Percentage.
         /// </summary>
         internal static string dlgPreferences_Player_TrackingPercentage {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_TrackingPercentage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pixels.
-        /// </summary>
-        internal static string dlgPreferences_Player_TrackingPixels {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_TrackingPixels", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search window:.
-        /// </summary>
-        internal static string dlgPreferences_Player_TrackingSearchWindow {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_TrackingSearchWindow", resourceCulture);
             }
         }
         
@@ -1051,6 +853,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saved windows.
+        /// </summary>
+        internal static string formWindowManager_SavedWindows {
+            get {
+                return ResourceManager.GetString("formWindowManager_SavedWindows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stop process.
         /// </summary>
         internal static string formWindowManager_StopProcess {
@@ -1096,6 +907,24 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import current screens.
+        /// </summary>
+        internal static string formWindowProperties_ImportCurrentScreens {
+            get {
+                return ResourceManager.GetString("formWindowProperties_ImportCurrentScreens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On startup.
+        /// </summary>
+        internal static string formWindowProperties_OnStartup {
+            get {
+                return ResourceManager.GetString("formWindowProperties_OnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open specific content.
         /// </summary>
         internal static string formWindowProperties_OpenSpecificContent {
@@ -1128,6 +957,24 @@ namespace Kinovea.Root.Languages {
         internal static string formWindowProperties_Replay0 {
             get {
                 return ResourceManager.GetString("formWindowProperties_Replay0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Screen list.
+        /// </summary>
+        internal static string formWindowProperties_ScreenList {
+            get {
+                return ResourceManager.GetString("formWindowProperties_ScreenList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start process.
+        /// </summary>
+        internal static string formWindowProperties_StartProcess {
+            get {
+                return ResourceManager.GetString("formWindowProperties_StartProcess", resourceCulture);
             }
         }
         
@@ -1227,15 +1074,6 @@ namespace Kinovea.Root.Languages {
         internal static string Generic_Save {
             get {
                 return ResourceManager.GetString("Generic_Save", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preset {0}:.
-        /// </summary>
-        internal static string lblPreset {
-            get {
-                return ResourceManager.GetString("lblPreset", resourceCulture);
             }
         }
         
@@ -1564,11 +1402,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as default workspace.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string mnuWorkspaceSaveAsDefault {
+        internal static string Name {
             get {
-                return ResourceManager.GetString("mnuWorkspaceSaveAsDefault", resourceCulture);
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -1672,15 +1510,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To run external programs after a recording, use the post-recording command dialog in the corresponding capture screen.\n\n.
-        /// </summary>
-        internal static string prefPanelCapture_AutomationHelp {
-            get {
-                return ResourceManager.GetString("prefPanelCapture_AutomationHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Browse for folder.
         /// </summary>
         internal static string prefPanelCapture_BrowseForFolder {
@@ -1749,6 +1578,33 @@ namespace Kinovea.Root.Languages {
         internal static string prefPanelCapture_EnableUDPTrigger {
             get {
                 return ResourceManager.GetString("prefPanelCapture_EnableUDPTrigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export calibration.
+        /// </summary>
+        internal static string prefPanelCapture_ExportCalibration {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_ExportCalibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export drawings.
+        /// </summary>
+        internal static string prefPanelCapture_ExportDrawings {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_ExportDrawings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exported annotations.
+        /// </summary>
+        internal static string prefPanelCapture_ExportedAnnotations {
+            get {
+                return ResourceManager.GetString("prefPanelCapture_ExportedAnnotations", resourceCulture);
             }
         }
         
@@ -1902,6 +1758,24 @@ namespace Kinovea.Root.Languages {
         internal static string prefPanelCapture_UDPPort {
             get {
                 return ResourceManager.GetString("prefPanelCapture_UDPPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable smoothing of derivatives for high speed footage.
+        /// </summary>
+        internal static string prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage {
+            get {
+                return ResourceManager.GetString("prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preset {0}:.
+        /// </summary>
+        internal static string prefPanelDrawings_lblPreset {
+            get {
+                return ResourceManager.GetString("prefPanelDrawings_lblPreset", resourceCulture);
             }
         }
         

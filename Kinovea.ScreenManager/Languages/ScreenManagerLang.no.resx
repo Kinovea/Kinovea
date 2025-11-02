@@ -428,7 +428,7 @@
   <data name="ExtraData_Length" xml:space="preserve">
     <value>Lengde</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Navn</value>
   </data>
   <data name="DataAnalysis_TimeModel" xml:space="preserve">

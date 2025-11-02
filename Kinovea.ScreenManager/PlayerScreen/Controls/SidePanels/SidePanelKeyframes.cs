@@ -46,9 +46,9 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
 
             toolTip1.SetToolTip(btnAddKeyframe, ScreenManagerLang.ToolTip_AddKeyframe);
-            toolTip1.SetToolTip(btnPrev, "Previous key image");
-            toolTip1.SetToolTip(btnNext, "Next key image");
-            toolTip1.SetToolTip(btnShowAll, "Show all key images");
+            toolTip1.SetToolTip(btnPrev, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_PreviousKeyImage);
+            toolTip1.SetToolTip(btnNext, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_NextKeyImage);
+            toolTip1.SetToolTip(btnShowAll, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_ShowAllKeyImages);
         }
 
         #region Public methods

@@ -161,7 +161,7 @@
   <data name="dlgConfigureDrawing_Title" xml:space="preserve">
     <value>Подешавање цртежа</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Назив</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
@@ -233,13 +233,13 @@
   <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
     <value>Центрипетално убрзање</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Праћење</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Прозор објекта:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Прозор за претраживање:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">

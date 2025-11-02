@@ -37,24 +37,30 @@ namespace Kinovea.Root
                 screenList.Add(screen.Clone());
 
             InitializeComponent();
-            this.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ActiveWindowProperties;
+            InitCulture();
 
             Populate();
         }
 
+        private void InitCulture()
+        {
+            this.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ActiveWindowProperties;
+            grpIdentifier.Text = Kinovea.Root.Languages.RootLang.Name;
+            grpStartup.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_OnStartup;
+            rbOpenExplorer.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_OpenTheFileBrowser;
+            rbContinue.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ContinueWhereYouLeftOff;
+            rbScreenList.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_OpenSpecificContent;
+            grpScreenList.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ScreenList;
+            btnUseCurrent.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ImportCurrentScreens;
+        }
         private void Populate()
         {
             manualUpdate = true;
 
             tbName.Text = name;
-            rbOpenExplorer.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_OpenTheFileBrowser;
-            rbContinue.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_ContinueWhereYouLeftOff;
-            rbScreenList.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_OpenSpecificContent;
-
             rbOpenExplorer.Checked = (startupMode == WindowStartupMode.Explorer);
             rbContinue.Checked = (startupMode == WindowStartupMode.Continue);
             rbScreenList.Checked = (startupMode == WindowStartupMode.ScreenList);
-
             grpScreenList.Enabled = rbScreenList.Checked;
 
             manualUpdate = false;

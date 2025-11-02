@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
       this.nudObjWindowHeight = new System.Windows.Forms.NumericUpDown();
       this.nudSearchWindowWidth = new System.Windows.Forms.NumericUpDown();
       this.nudObjWindowWidth = new System.Windows.Forms.NumericUpDown();
-      this.label3 = new System.Windows.Forms.Label();
+      this.lblTrackingAlgorithm = new System.Windows.Forms.Label();
       this.cbTrackingAlgorithm = new System.Windows.Forms.ComboBox();
       this.lblSearchWindowPixels = new System.Windows.Forms.Label();
       this.lblObjectWindowPixels = new System.Windows.Forms.Label();
@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
       this.grpTracking.Controls.Add(this.nudObjWindowHeight);
       this.grpTracking.Controls.Add(this.nudSearchWindowWidth);
       this.grpTracking.Controls.Add(this.nudObjWindowWidth);
-      this.grpTracking.Controls.Add(this.label3);
+      this.grpTracking.Controls.Add(this.lblTrackingAlgorithm);
       this.grpTracking.Controls.Add(this.cbTrackingAlgorithm);
       this.grpTracking.Controls.Add(this.lblSearchWindowPixels);
       this.grpTracking.Controls.Add(this.lblObjectWindowPixels);
@@ -276,15 +276,15 @@ namespace Kinovea.ScreenManager
             0});
       this.nudObjWindowWidth.ValueChanged += new System.EventHandler(this.nudObjWindow_ValueChanged);
       // 
-      // label3
+      // lblTrackingAlgorithm
       // 
-      this.label3.AutoSize = true;
-      this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-      this.label3.Location = new System.Drawing.Point(25, 29);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(97, 13);
-      this.label3.TabIndex = 55;
-      this.label3.Text = "Tracking algorithm:";
+      this.lblTrackingAlgorithm.AutoSize = true;
+      this.lblTrackingAlgorithm.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.lblTrackingAlgorithm.Location = new System.Drawing.Point(25, 29);
+      this.lblTrackingAlgorithm.Name = "lblTrackingAlgorithm";
+      this.lblTrackingAlgorithm.Size = new System.Drawing.Size(97, 13);
+      this.lblTrackingAlgorithm.TabIndex = 55;
+      this.lblTrackingAlgorithm.Text = "Tracking algorithm:";
       // 
       // cbTrackingAlgorithm
       // 
@@ -392,7 +392,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblSearchWindow;
         private System.Windows.Forms.Label lblObjectWindowX;
         private System.Windows.Forms.Label lblObjectWindow;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblTrackingAlgorithm;
         private System.Windows.Forms.ComboBox cbTrackingAlgorithm;
         private System.Windows.Forms.NumericUpDown nudObjWindowHeight;
         private System.Windows.Forms.NumericUpDown nudSearchWindowWidth;

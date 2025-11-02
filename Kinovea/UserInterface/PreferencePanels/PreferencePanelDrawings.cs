@@ -148,7 +148,7 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
             chkEnableFiltering.Text = RootLang.dlgPreferences_Drawings_chkEnableFiltering;
-            //chkEnableHSDS.Text = ""
+            chkEnableHSDS.Text = Kinovea.Root.Languages.RootLang.prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage;
             chkCustomToolsDebug.Text = RootLang.dlgPreferences_Drawings_chkCustomToolsDebugMode;
 
             chkDrawOnPlay.Checked = drawOnPlay;
@@ -291,7 +291,7 @@ namespace Kinovea.Root
                 lblPresetId.Left = 26;
                 lblPresetId.Top = top;
                 lblPresetId.AutoSize = true;
-                lblPresetId.Text = string.Format(Kinovea.Root.Languages.RootLang.lblPreset, i + 1);
+                lblPresetId.Text = string.Format(Kinovea.Root.Languages.RootLang.prefPanelDrawings_lblPreset, i + 1);
 
                 TextBox tbPresetName = new TextBox();
                 tbPresetName.Left = 120;

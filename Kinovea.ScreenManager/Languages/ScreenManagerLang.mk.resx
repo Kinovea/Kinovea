@@ -590,7 +590,7 @@
   <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
     <value>Целосно поместување</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Име</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
@@ -635,7 +635,7 @@
   <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
     <value>Вертикална брзина</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Прозорец за пребарување:</value>
   </data>
   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
@@ -800,7 +800,7 @@
   <data name="ExtraData_Radius" xml:space="preserve">
     <value>Радиус</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Прозорец на објектот:</value>
   </data>
   <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
@@ -830,7 +830,7 @@
   <data name="ExtraData_Diameter" xml:space="preserve">
     <value>Дијаметар</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Следење</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
@@ -854,7 +854,7 @@
   <data name="Generic_ExportVideo" xml:space="preserve">
     <value>Експортирај го видеото…</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Престани да следиш</value>
   </data>
   <data name="Generic_SaveKVAAs" xml:space="preserve">
@@ -983,7 +983,7 @@
   <data name="mnuCopyToClipboard" xml:space="preserve">
     <value>Копирај во клипбордот</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Почни со следење</value>
   </data>
   <data name="mnuRotation0" xml:space="preserve">

@@ -620,10 +620,10 @@
   <data name="mnuRotation" xml:space="preserve">
     <value>Rotire imagine</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Stop urmărire</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Start urmărire</value>
   </data>
   <data name="mnuCopyToClipboard" xml:space="preserve">
@@ -863,13 +863,13 @@
   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
     <value>Aliniere sistem de coordonate:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Fereastră de căutare:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Fereastră obiect:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Urmărire</value>
   </data>
   <data name="ExtraData_Circumference" xml:space="preserve">
@@ -965,7 +965,7 @@
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Opacitate maximă (%):</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Nume</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">

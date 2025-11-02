@@ -172,7 +172,7 @@
   <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
     <value>儲存顏色資料</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>名稱'</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
@@ -424,13 +424,13 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>圓周</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>追蹤</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>物件視窗：</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>搜尋視窗：</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
@@ -892,10 +892,10 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>刪除此點之後的路徑</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>開始追蹤</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>停止追蹤</value>
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve">

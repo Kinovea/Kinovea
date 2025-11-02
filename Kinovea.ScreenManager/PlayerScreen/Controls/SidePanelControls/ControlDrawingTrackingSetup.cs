@@ -73,6 +73,8 @@ namespace Kinovea.ScreenManager
         public ControlDrawingTrackingSetup()
         {
             InitializeComponent();
+            RefreshCulture();
+
             this.Paint += Control_Paint;
             cbTrackingAlgorithm.DrawItem += cbTrackingAlgorithm_DrawItem;
 
@@ -93,6 +95,18 @@ namespace Kinovea.ScreenManager
             btnStartStop.ImageAlign = ContentAlignment.MiddleLeft;
 
             btnTrimTrack.Image = Properties.Drawings.tracking_trim;
+        }
+
+        public void RefreshCulture()
+        {
+            grpTracking.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_Tracking;
+            lblTrackingAlgorithm.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_TrackingAlgorithm;
+            lblSearchWindow.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_SearchWindow;
+            lblObjectWindow.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_ObjectWindow;
+            lblMatchThreshold.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_MatchThreshold;
+            lblUpdateThreshold.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.track_UpdateThreshold;
+            btnStartStop.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_Start;
+            btnTrimTrack.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_DeleteEndOfTrack;
         }
         #endregion
 

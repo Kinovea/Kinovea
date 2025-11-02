@@ -574,7 +574,7 @@
   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
     <value>Relativni horizontalni pomak</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Prozor za pretraživanje:</value>
   </data>
   <data name="ExtraData_Diameter" xml:space="preserve">
@@ -610,13 +610,13 @@
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
     <value>Os y:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Praćenje</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
     <value>Centripetalno ubrzanje</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Prozor objekta:</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
@@ -673,7 +673,7 @@
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Maksimalna neprozirnost (%):</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Ime</value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
@@ -760,7 +760,7 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Kopiraj sliku u Clipboard</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Prekini praćenje</value>
   </data>
   <data name="mnuMeasure_Name" xml:space="preserve">
@@ -1027,7 +1027,7 @@
   <data name="DrawingName_Posture" xml:space="preserve">
     <value>Poza</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Započni praćenje</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">
@@ -1606,10 +1606,10 @@
   <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
     <value>Ponovo učitaj zadane oznake za player</value>
   </data>
-  <data name="mnuDeleteTracksAfterThisPoint" xml:space="preserve">
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
     <value>Izbriši snimke nakon ove točke</value>
   </data>
-  <data name="mnuDeleteTracks" xml:space="preserve">
+  <data name="tracking_DeleteTracks" xml:space="preserve">
     <value>Izbriši snimke</value>
   </data>
   <data name="mnuConfigureCaptureFolders" xml:space="preserve">

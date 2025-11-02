@@ -506,7 +506,7 @@
   <data name="DataAnalysis_DataSource" xml:space="preserve">
     <value>Datakälla</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Namn</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
@@ -527,7 +527,7 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Öppna</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Spårning</value>
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
@@ -629,10 +629,10 @@
   <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
     <value>Vinkelaccelerering</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Objektfönster:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Sökfönster:</value>
   </data>
   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">

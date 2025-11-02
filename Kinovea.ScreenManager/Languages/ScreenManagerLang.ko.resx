@@ -749,7 +749,7 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>클립보드에 이미지 복사</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>추적 중지</value>
   </data>
   <data name="DataAnalysis_DataLabel" xml:space="preserve">
@@ -794,7 +794,7 @@
   <data name="LengthUnit_Millimeters" xml:space="preserve">
     <value>밀리미터</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>추적 시작</value>
   </data>
   <data name="mnuCopyDrawing" xml:space="preserve">
@@ -878,10 +878,10 @@
   <data name="ToolTip_PauseCamera" xml:space="preserve">
     <value>카메라 일시 중지</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>객체창:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>검색창:</value>
   </data>
   <data name="mnuRotation90" xml:space="preserve">
@@ -947,7 +947,7 @@
   <data name="ExtraData_Diameter" xml:space="preserve">
     <value>지름</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>추적</value>
   </data>
   <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
@@ -962,7 +962,7 @@
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
     <value>수평 위치</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>이름</value>
   </data>
   <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">

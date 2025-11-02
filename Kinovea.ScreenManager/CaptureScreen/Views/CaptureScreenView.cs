@@ -202,7 +202,7 @@ namespace Kinovea.ScreenManager
 
             pnlContext.Controls.Clear();
             pnlContext.Controls.Add(btnContextInfo);
-            toolTips.SetToolTip(btnContextToggle, contextEnabled ? "Disable capture context" : "Enable capture context");
+            toolTips.SetToolTip(btnContextToggle, contextEnabled ? Kinovea.ScreenManager.Properties.Capture.tooltip_ContextToggle_Disable : Kinovea.ScreenManager.Properties.Capture.tooltip_ContextToggle_Enable);
             btnContextToggle.Visible = VariablesRepository.HasVariables;
 
             if (contextEnabled && VariablesRepository.HasVariables)
@@ -666,7 +666,7 @@ namespace Kinovea.ScreenManager
                 string path = buildRecordingPath(true);
                 if (string.IsNullOrEmpty(path))
                 {
-                    toolTips.SetToolTip(cbCaptureFolder, "Select a capture folder");
+                    toolTips.SetToolTip(cbCaptureFolder, Kinovea.ScreenManager.Properties.Capture.cmbSelectACaptureFolder);
                 }
                 else
                 {

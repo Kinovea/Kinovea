@@ -270,6 +270,10 @@ namespace Kinovea.Root
             NudHelper.FixNudScroll(nudReplacementFramerate);
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
 
+            grpAnnotations.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_ExportedAnnotations;
+            chkExportDrawings.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_ExportDrawings;
+            chkExportCalibration.Text = Kinovea.Root.Languages.RootLang.prefPanelCapture_ExportCalibration;
+
             chkExportCalibration.Checked = (exportFlags & KVAExportFlags.Calibration) != 0;
             chkExportDrawings.Checked = (exportFlags & KVAExportFlags.Drawings) != 0;
         }

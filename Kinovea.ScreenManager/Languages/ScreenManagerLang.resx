@@ -249,7 +249,7 @@
   <data name="dlgConfigureDrawing_Title" xml:space="preserve">
     <value>Configure drawing</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Name</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
@@ -357,13 +357,13 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>Circumference</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Tracking</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Object window:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Search window:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
@@ -798,10 +798,10 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Delete the path after this point</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Start tracking</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Stop tracking</value>
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve">
@@ -1644,10 +1644,10 @@
   <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
     <value>Reload default player annotations</value>
   </data>
-  <data name="mnuDeleteTracksAfterThisPoint" xml:space="preserve">
-    <value>Delete tracks after this point</value>
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
+    <value>Delete end of tracks</value>
   </data>
-  <data name="mnuDeleteTracks" xml:space="preserve">
+  <data name="tracking_DeleteTracks" xml:space="preserve">
     <value>Delete tracks</value>
   </data>
   <data name="mnuConfigureCaptureFolders" xml:space="preserve">
@@ -1736,5 +1736,26 @@
   </data>
   <data name="mnuVerticalLayout" xml:space="preserve">
     <value>Vertical layout</value>
+  </data>
+  <data name="tracking_TrackingAlgorithm" xml:space="preserve">
+    <value>Tracking algorithm:</value>
+  </data>
+  <data name="tracking_MatchThreshold" xml:space="preserve">
+    <value>Match threshold:</value>
+  </data>
+  <data name="track_UpdateThreshold" xml:space="preserve">
+    <value>Update threshold:</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>Delete end of track</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>Previous key image</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>Next key image</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>Show all key images</value>
   </data>
 </root>

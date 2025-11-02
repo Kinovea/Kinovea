@@ -560,7 +560,7 @@
   <data name="Generic_Open" xml:space="preserve">
     <value>Άνοιγμα</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Όνομα</value>
   </data>
   <data name="DataAnalysis_PagePlot" xml:space="preserve">

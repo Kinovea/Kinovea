@@ -619,7 +619,7 @@
   <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
     <value>Увімкнути фільтрацію пікселів</value>
   </data>
-  <data name="lblPreset" xml:space="preserve">
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
     <value>Попередньо налаштований {0}:</value>
   </data>
 </root>

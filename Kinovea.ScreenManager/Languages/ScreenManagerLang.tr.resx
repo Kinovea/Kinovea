@@ -482,7 +482,7 @@
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Maksimum opaklık (%):</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>İsim</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
@@ -617,10 +617,10 @@
   <data name="mnuRotation" xml:space="preserve">
     <value>Rotasyon</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Takibi durdur</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Takibi başlat</value>
   </data>
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
@@ -878,13 +878,13 @@
   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
     <value>Koordinat sistemi hizalaması:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Arama penceresi:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Obje penceresi:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>İzleme</value>
   </data>
   <data name="ExtraData_Circumference" xml:space="preserve">

@@ -601,15 +601,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string dlgConfigureDrawing_Name {
-            get {
-                return ResourceManager.GetString("dlgConfigureDrawing_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Configure drawing.
         /// </summary>
         public static string dlgConfigureDrawing_Title {
@@ -813,33 +804,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string dlgConfigureTrajectory_Title {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tracking.
-        /// </summary>
-        public static string dlgConfigureTrajectory_Tracking {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_Tracking", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Object window:.
-        /// </summary>
-        public static string dlgConfigureTrajectory_Tracking_ObjectWindow {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_Tracking_ObjectWindow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search window:.
-        /// </summary>
-        public static string dlgConfigureTrajectory_Tracking_SearchWindow {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_Tracking_SearchWindow", resourceCulture);
             }
         }
         
@@ -1092,6 +1056,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string DrawingCrossMark_Dot {
             get {
                 return ResourceManager.GetString("DrawingCrossMark_Dot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string drawingName {
+            get {
+                return ResourceManager.GetString("drawingName", resourceCulture);
             }
         }
         
@@ -3004,24 +2977,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete tracks.
-        /// </summary>
-        public static string mnuDeleteTracks {
-            get {
-                return ResourceManager.GetString("mnuDeleteTracks", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delete tracks after this point.
-        /// </summary>
-        public static string mnuDeleteTracksAfterThisPoint {
-            get {
-                return ResourceManager.GetString("mnuDeleteTracksAfterThisPoint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Demosaicing.
         /// </summary>
         public static string mnuDemosaic {
@@ -3036,24 +2991,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuDemosaicNone {
             get {
                 return ResourceManager.GetString("mnuDemosaicNone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start tracking.
-        /// </summary>
-        public static string mnuDrawingTrackingStart {
-            get {
-                return ResourceManager.GetString("mnuDrawingTrackingStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stop tracking.
-        /// </summary>
-        public static string mnuDrawingTrackingStop {
-            get {
-                return ResourceManager.GetString("mnuDrawingTrackingStop", resourceCulture);
             }
         }
         
@@ -4453,11 +4390,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next key image.
+        /// </summary>
+        public static string tooltip_NextKeyImage {
+            get {
+                return ResourceManager.GetString("tooltip_NextKeyImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pause camera.
         /// </summary>
         public static string ToolTip_PauseCamera {
             get {
                 return ResourceManager.GetString("ToolTip_PauseCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous key image.
+        /// </summary>
+        public static string tooltip_PreviousKeyImage {
+            get {
+                return ResourceManager.GetString("tooltip_PreviousKeyImage", resourceCulture);
             }
         }
         
@@ -4512,6 +4467,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_SetHandlerRight {
             get {
                 return ResourceManager.GetString("ToolTip_SetHandlerRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all key images.
+        /// </summary>
+        public static string tooltip_ShowAllKeyImages {
+            get {
+                return ResourceManager.GetString("tooltip_ShowAllKeyImages", resourceCulture);
             }
         }
         
@@ -4584,6 +4548,105 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_trkSelection {
             get {
                 return ResourceManager.GetString("ToolTip_trkSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update threshold:.
+        /// </summary>
+        public static string track_UpdateThreshold {
+            get {
+                return ResourceManager.GetString("track_UpdateThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete end of track.
+        /// </summary>
+        public static string tracking_DeleteEndOfTrack {
+            get {
+                return ResourceManager.GetString("tracking_DeleteEndOfTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete end of tracks.
+        /// </summary>
+        public static string tracking_DeleteEndOfTracks {
+            get {
+                return ResourceManager.GetString("tracking_DeleteEndOfTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete tracks.
+        /// </summary>
+        public static string tracking_DeleteTracks {
+            get {
+                return ResourceManager.GetString("tracking_DeleteTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Match threshold:.
+        /// </summary>
+        public static string tracking_MatchThreshold {
+            get {
+                return ResourceManager.GetString("tracking_MatchThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object window:.
+        /// </summary>
+        public static string tracking_ObjectWindow {
+            get {
+                return ResourceManager.GetString("tracking_ObjectWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search window:.
+        /// </summary>
+        public static string tracking_SearchWindow {
+            get {
+                return ResourceManager.GetString("tracking_SearchWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start tracking.
+        /// </summary>
+        public static string tracking_Start {
+            get {
+                return ResourceManager.GetString("tracking_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop tracking.
+        /// </summary>
+        public static string tracking_Stop {
+            get {
+                return ResourceManager.GetString("tracking_Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracking.
+        /// </summary>
+        public static string tracking_Tracking {
+            get {
+                return ResourceManager.GetString("tracking_Tracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracking algorithm:.
+        /// </summary>
+        public static string tracking_TrackingAlgorithm {
+            get {
+                return ResourceManager.GetString("tracking_TrackingAlgorithm", resourceCulture);
             }
         }
         

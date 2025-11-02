@@ -2255,9 +2255,9 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
 
             // Tracking
-            mnuTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
-            mnuTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
-            mnuTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
+            mnuTracking.Text = ScreenManagerLang.tracking_Tracking;
+            mnuTrackingStart.Text = ScreenManagerLang.tracking_Start;
+            mnuTrackingStop.Text = ScreenManagerLang.tracking_Stop;
             mnuTrackingTrim.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
 
             // Measurement

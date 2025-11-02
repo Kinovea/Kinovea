@@ -155,12 +155,12 @@ namespace Kinovea.ScreenManager
         {
             this.Text = "   " + ScreenManagerLang.dlgConfigureTrajectory_Title;
 
-            grpIdentification.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
+            grpIdentification.Text = ScreenManagerLang.drawingName;
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
-            grpTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
-            lblObjectWindow.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking_ObjectWindow;
-            lblSearchWindow.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking_SearchWindow;
+            grpTracking.Text = ScreenManagerLang.tracking_Tracking;
+            lblObjectWindow.Text = ScreenManagerLang.tracking_ObjectWindow;
+            lblSearchWindow.Text = ScreenManagerLang.tracking_SearchWindow;
 
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;

@@ -194,7 +194,7 @@
   <data name="dlgConfigureDrawing_Title" xml:space="preserve">
     <value>Конфигурация инструментов рисования</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Имя</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
@@ -272,13 +272,13 @@
   <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
     <value>Центростремительное ускороение</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Отслеживание</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Окно объекта:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Окно поиска:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
@@ -635,10 +635,10 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Удалить путь после этой точки</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Начать отслеживание</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Остановить отслеживание</value>
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve">

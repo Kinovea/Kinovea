@@ -548,13 +548,13 @@
   <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
     <value>角加速度</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>トラッキング</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>オブジェクトウィンドウ:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>検索窓:</value>
   </data>
   <data name="Generic_Open" xml:space="preserve">
@@ -617,7 +617,7 @@
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
     <value>合成加速度</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>名前</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
@@ -947,7 +947,7 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>画像をクリップボードにコピー</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>追跡を止める</value>
   </data>
   <data name="mnuMeasure_Name" xml:space="preserve">
@@ -1121,7 +1121,7 @@
   <data name="mnuThumbnailLocate" xml:space="preserve">
     <value>Windowsエクスプローラでファイルを検索</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>追跡を開始する</value>
   </data>
   <data name="mnuPasteDrawing" xml:space="preserve">

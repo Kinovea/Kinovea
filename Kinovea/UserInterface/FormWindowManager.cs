@@ -55,8 +55,10 @@ namespace Kinovea.Root
         private void RefreshCulture()
         {
             this.Text = Kinovea.Root.Languages.RootLang.dlgTitle_ManageWindows;
-            btnClose.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.Generic_Close;
+            grpIdentifier.Text = Kinovea.Root.Languages.RootLang.formWindowManager_SavedWindows;
 
+            btnClose.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.Generic_Close;
+            
             toolTip1.SetToolTip(btnStartStop, Kinovea.Root.Languages.RootLang.formWindowManager_StopProcess);
             toolTip1.SetToolTip(btnDelete, Kinovea.Root.Languages.RootLang.formWindowManager_DeleteWindow);
             toolTip1.SetToolTip(btnRefresh, Kinovea.Root.Languages.RootLang.formWindowManager_RefreshWindowList);
@@ -277,7 +279,7 @@ namespace Kinovea.Root
             if (screen == null)
             {
                 btn.Image = Properties.Resources.file_browser;
-                lbl.Text = "File browser";
+                lbl.Text = Kinovea.Root.Languages.RootLang.formWindowProperties_FileBrowser;
             }
             else if (screen.ScreenType == ScreenType.Playback)
             {
@@ -318,13 +320,13 @@ namespace Kinovea.Root
             else if (lvwd.InstanceStatus == InstanceStatus.Running)
             {
                 btnStartStop.Image = Properties.Resources.stop2_16;
-                toolTip1.SetToolTip(btnStartStop, "Stop process");
+                toolTip1.SetToolTip(btnStartStop, Kinovea.Root.Languages.RootLang.formWindowManager_StopProcess);
                 btnDelete.Enabled = false;
             }
             else
             {
                 btnStartStop.Image = Properties.Resources.circled_play_green2_16;
-                toolTip1.SetToolTip(btnStartStop, "Start process");
+                toolTip1.SetToolTip(btnStartStop, Kinovea.Root.Languages.RootLang.formWindowProperties_StartProcess);
                 btnDelete.Enabled = true;
             }
         }

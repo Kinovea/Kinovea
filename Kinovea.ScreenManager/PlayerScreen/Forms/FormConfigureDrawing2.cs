@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
         private void LocalizeForm()
         {
             this.Text = "   " + ScreenManagerLang.dlgConfigureDrawing_Title;
-            grpIdentifier.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
+            grpIdentifier.Text = ScreenManagerLang.drawingName;
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             btnOK.Text = ScreenManagerLang.Generic_Apply;

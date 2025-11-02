@@ -184,7 +184,7 @@
   <data name="dlgConfigureDrawing_Title" xml:space="preserve">
     <value>Konfigurasi lukisan</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Nama</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
@@ -319,13 +319,13 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>Ukur lilit</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Penjejakan</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Tetingkap objek:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Tetingkap carian:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">

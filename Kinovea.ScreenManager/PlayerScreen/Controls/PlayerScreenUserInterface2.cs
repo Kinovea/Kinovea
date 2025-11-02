@@ -3080,11 +3080,11 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
             mnuDeleteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
 
-            mnuDrawingTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
-            mnuDrawingTrackingTrimTracks.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuDeleteTracksAfterThisPoint;
-            mnuDrawingTrackingDeleteTracks.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuDeleteTracks;
-            mnuDrawingTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
-            mnuDrawingTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
+            mnuDrawingTracking.Text = ScreenManagerLang.tracking_Tracking;
+            mnuDrawingTrackingTrimTracks.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_DeleteEndOfTracks;
+            mnuDrawingTrackingDeleteTracks.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.tracking_DeleteTracks;
+            mnuDrawingTrackingStart.Text = ScreenManagerLang.tracking_Start;
+            mnuDrawingTrackingStop.Text = ScreenManagerLang.tracking_Stop;
 
             // Tracking pop menu (Restart, Stop tracking)
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;

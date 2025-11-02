@@ -133,13 +133,13 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>Окружність</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Відстеження</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Вікно об'єкта:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Вікно пошуку:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
@@ -277,10 +277,10 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Видалити шлях після цієї точки</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Почати відстеження</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Зупинити відстеження</value>
   </data>
   <data name="mnuTwoPlayers" xml:space="preserve">
@@ -520,7 +520,7 @@
   <data name="Generic_Apply" xml:space="preserve">
     <value>Застосувати</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Ім'я</value>
   </data>
   <data name="mnuSortBy_Date" xml:space="preserve">
@@ -1609,10 +1609,10 @@
   <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
     <value>Перезавантажити стандартні анотації гравців</value>
   </data>
-  <data name="mnuDeleteTracksAfterThisPoint" xml:space="preserve">
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
     <value>Видалити треки після цієї точки</value>
   </data>
-  <data name="mnuDeleteTracks" xml:space="preserve">
+  <data name="tracking_DeleteTracks" xml:space="preserve">
     <value>Видалити треки</value>
   </data>
   <data name="mnuStabilization" xml:space="preserve">

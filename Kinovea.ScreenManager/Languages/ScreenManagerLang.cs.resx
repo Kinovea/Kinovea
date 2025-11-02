@@ -611,7 +611,7 @@
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
     <value>Výsledné zrychlení</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Název</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
@@ -707,13 +707,13 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>Obvod</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Sledování</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Okno objektu:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Okno pro vyhledávání:</value>
   </data>
   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
@@ -914,10 +914,10 @@
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
     <value>Kopírovat obrázek do schránky</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Zahájení sledování</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Zastavení sledování</value>
   </data>
   <data name="mnuRotation90" xml:space="preserve">

@@ -197,7 +197,7 @@
   <data name="dlgConfigureDrawing_Title" xml:space="preserve">
     <value>Configureer tekening</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Naam</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
@@ -293,13 +293,13 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>Omtrek</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Volgen</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Voorwerpscherm:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Zoekscherm:</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
@@ -692,10 +692,10 @@
   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
     <value>Verwijder Trajectpad vanaf dit punt</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Start volgen</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Stop volgen</value>
   </data>
   <data name="mnuTwoCaptures" xml:space="preserve">

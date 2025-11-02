@@ -539,7 +539,7 @@
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
     <value>Rezultuojantis pagreitis</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Pavadinimas</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
@@ -614,7 +614,7 @@
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>Apskritimas</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Sekimas</value>
   </data>
   <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
@@ -626,10 +626,10 @@
   <data name="dlgCalibratePlane_Title" xml:space="preserve">
     <value>Plokštumos kalibravimas</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Objekto langas:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Ieškos langas:</value>
   </data>
   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
@@ -977,10 +977,10 @@
   <data name="mnuThumbnailForget" xml:space="preserve">
     <value>Pamirškite pasirinktinius nustatymus</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Pradėti sekimą</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Stabdyti sekimą</value>
   </data>
   <data name="mnuFlipHorizontally" xml:space="preserve">

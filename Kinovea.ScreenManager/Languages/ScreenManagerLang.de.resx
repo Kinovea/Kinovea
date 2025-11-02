@@ -632,10 +632,10 @@
   <data name="mnuRotation" xml:space="preserve">
     <value>Drehung</value>
   </data>
-  <data name="mnuDrawingTrackingStop" xml:space="preserve">
+  <data name="tracking_Stop" xml:space="preserve">
     <value>Tracking anhalten</value>
   </data>
-  <data name="mnuDrawingTrackingStart" xml:space="preserve">
+  <data name="tracking_Start" xml:space="preserve">
     <value>Tracking starten</value>
   </data>
   <data name="mnuCopyImageToClipboard" xml:space="preserve">
@@ -875,13 +875,13 @@
   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
     <value>Ausrichtung des Koordinatensystems:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve">
+  <data name="tracking_SearchWindow" xml:space="preserve">
     <value>Suchfenster:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve">
+  <data name="tracking_ObjectWindow" xml:space="preserve">
     <value>Objektfenster:</value>
   </data>
-  <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve">
+  <data name="tracking_Tracking" xml:space="preserve">
     <value>Tracking</value>
   </data>
   <data name="ExtraData_Circumference" xml:space="preserve">
@@ -971,7 +971,7 @@
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>Maximale Opazität (%):</value>
   </data>
-  <data name="dlgConfigureDrawing_Name" xml:space="preserve">
+  <data name="drawingName" xml:space="preserve">
     <value>Name</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">

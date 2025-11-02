@@ -15,7 +15,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Panel containing the name and style configuration for the active drawing.
+    /// Panel containing tracking configuration for the active track.
     /// </summary>
     public partial class SidePanelTracking : UserControl
     {
