@@ -711,4 +711,7 @@
   <data name="formWindowProperties_StartProcess" xml:space="preserve">
     <value>Start process</value>
   </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Enable all languages</value>
+  </data>
 </root>

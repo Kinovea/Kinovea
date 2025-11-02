@@ -1780,6 +1780,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable all languages.
+        /// </summary>
+        internal static string prefPanelGeneral_EnableAllLanguages {
+            get {
+                return ResourceManager.GetString("prefPanelGeneral_EnableAllLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable pixel filtering.
         /// </summary>
         internal static string prefPanelPlayer_EnablePixelFiltering {

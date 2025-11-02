@@ -106,7 +106,7 @@ namespace Kinovea.Root
 
             cbEnableDebugLogs.Text = Kinovea.Root.Languages.RootLang.mnuEnableDebugLogs;
             cbEnableDebugLogs.Checked = enableDebugLogs;
-            cbEnableAllLanguages.Text = "Enable all languages";
+            cbEnableAllLanguages.Text = Kinovea.Root.Languages.RootLang.prefPanelGeneral_EnableAllLanguages;
             cbEnableAllLanguages.Checked = enableAllLanguages;
         }
         private void RebuildLanguageList()
