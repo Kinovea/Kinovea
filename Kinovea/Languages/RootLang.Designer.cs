@@ -1780,7 +1780,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable all languages.
+        ///   Looks up a localized string similar to Show all languages.
         /// </summary>
         internal static string prefPanelGeneral_EnableAllLanguages {
             get {

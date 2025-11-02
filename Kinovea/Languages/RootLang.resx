@@ -712,6 +712,6 @@
     <value>Start process</value>
   </data>
   <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
-    <value>Enable all languages</value>
+    <value>Show all languages</value>
   </data>
 </root>
