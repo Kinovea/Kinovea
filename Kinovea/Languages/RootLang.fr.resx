@@ -658,4 +658,7 @@
   <data name="formWindowManager_SavedWindows" xml:space="preserve">
     <value>Fenêtres sauvegardées</value>
   </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Montrer toutes les langues</value>
+  </data>
 </root>
