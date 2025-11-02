@@ -133,6 +133,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a capture folder.
+        /// </summary>
+        public static string cbSelectCaptureFolder {
+            get {
+                return ResourceManager.GetString("cbSelectCaptureFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add drawing.
         /// </summary>
         public static string CommandAddDrawing_FriendlyName {
@@ -2428,6 +2437,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Drops:{0}.
+        /// </summary>
+        public static string infobar_Drops0 {
+            get {
+                return ResourceManager.GetString("infobar_Drops0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load:{0}.
+        /// </summary>
+        public static string infobar_Load0 {
+            get {
+                return ResourceManager.GetString("infobar_Load0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Observing folder: {0}.
         /// </summary>
         public static string Infobar_Player_Observing {
@@ -2451,6 +2478,24 @@ namespace Kinovea.ScreenManager.Languages {
         public static string Infobar_Player_StopWatcher {
             get {
                 return ResourceManager.GetString("Infobar_Player_StopWatcher", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signal:{0}.
+        /// </summary>
+        public static string infobar_Signal0 {
+            get {
+                return ResourceManager.GetString("infobar_Signal0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Throughput:{0}.
+        /// </summary>
+        public static string infobar_Throughput0 {
+            get {
+                return ResourceManager.GetString("infobar_Throughput0", resourceCulture);
             }
         }
         
@@ -4228,6 +4273,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Capture context.
+        /// </summary>
+        public static string tooltip_CaptureContext {
+            get {
+                return ResourceManager.GetString("tooltip_CaptureContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color profile.
         /// </summary>
         public static string ToolTip_ColorProfile {
@@ -4260,6 +4314,24 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_ConfigureCamera {
             get {
                 return ResourceManager.GetString("ToolTip_ConfigureCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delay in seconds.
+        /// </summary>
+        public static string tooltip_DelayInSeconds {
+            get {
+                return ResourceManager.GetString("tooltip_DelayInSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable capture context.
+        /// </summary>
+        public static string tooltip_DisableCaptureContext {
+            get {
+                return ResourceManager.GetString("tooltip_DisableCaptureContext", resourceCulture);
             }
         }
         
@@ -4350,6 +4422,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_DrawingToolText {
             get {
                 return ResourceManager.GetString("ToolTip_DrawingToolText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable capture context.
+        /// </summary>
+        public static string tooltip_EnableCaptureContext {
+            get {
+                return ResourceManager.GetString("tooltip_EnableCaptureContext", resourceCulture);
             }
         }
         
@@ -4543,11 +4624,74 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The capture trigger is armed.
+        /// </summary>
+        public static string tooltip_TheCaptureTriggerIsArmed {
+            get {
+                return ResourceManager.GetString("tooltip_TheCaptureTriggerIsArmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The capture trigger is disarmed.
+        /// </summary>
+        public static string tooltip_TheCaptureTriggerIsDisarmed {
+            get {
+                return ResourceManager.GetString("tooltip_TheCaptureTriggerIsDisarmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The view is delayed.
+        /// </summary>
+        public static string tooltip_TheViewIsDelayed {
+            get {
+                return ResourceManager.GetString("tooltip_TheViewIsDelayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The view is live.
+        /// </summary>
+        public static string tooltip_TheViewIsLive {
+            get {
+                return ResourceManager.GetString("tooltip_TheViewIsLive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total length of the recording in seconds.
+        /// </summary>
+        public static string tooltip_TotalLengthOfTheRecordingInSeconds {
+            get {
+                return ResourceManager.GetString("tooltip_TotalLengthOfTheRecordingInSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set the Working Zone.
         /// </summary>
         public static string ToolTip_trkSelection {
             get {
                 return ResourceManager.GetString("ToolTip_trkSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The view is delayed.
+        /// </summary>
+        public static string tooltip_ViewIsDelayed {
+            get {
+                return ResourceManager.GetString("tooltip_ViewIsDelayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The view is live.
+        /// </summary>
+        public static string tooltip_ViewIsLive {
+            get {
+                return ResourceManager.GetString("tooltip_ViewIsLive", resourceCulture);
             }
         }
         

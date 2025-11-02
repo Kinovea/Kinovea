@@ -1758,4 +1758,52 @@
   <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
     <value>Show all key images</value>
   </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>The view is delayed</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>The view is live</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>Capture context</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>Disable capture context</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>Enable capture context</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>Delay in seconds</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>Total length of the recording in seconds</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>The capture trigger is armed</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>The capture trigger is disarmed</value>
+  </data>
+  <data name="tooltip_TheViewIsDelayed" xml:space="preserve">
+    <value>The view is delayed</value>
+  </data>
+  <data name="tooltip_TheViewIsLive" xml:space="preserve">
+    <value>The view is live</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>Select a capture folder</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>Signal:{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>Throughput:{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>Load:{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>Drops:{0}</value>
+  </data>
 </root>

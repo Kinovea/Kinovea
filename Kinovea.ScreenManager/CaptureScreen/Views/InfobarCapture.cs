@@ -20,10 +20,10 @@ namespace Kinovea.ScreenManager
 
         public void UpdateValues(string signal, string bandwidth, string load, string drops)
         {
-            lblSignal.Text = "Signal:" + signal;
-            lblBandwidth.Text = "Throughput:" + bandwidth;
-            lblLoad.Text = "Load:" + load;
-            lblDrops.Text = "Drops:" + drops;
+            lblSignal.Text = string.Format(Kinovea.ScreenManager.Languages.ScreenManagerLang.infobar_Signal0, signal);
+            lblBandwidth.Text = string.Format(Kinovea.ScreenManager.Languages.ScreenManagerLang.infobar_Throughput0, bandwidth);
+            lblLoad.Text = string.Format(Kinovea.ScreenManager.Languages.ScreenManagerLang.infobar_Load0, load);
+            lblDrops.Text = string.Format(Kinovea.ScreenManager.Languages.ScreenManagerLang.infobar_Drops0, drops);
         }
 
         public void UpdateLoadStatus(LoadStatus status)

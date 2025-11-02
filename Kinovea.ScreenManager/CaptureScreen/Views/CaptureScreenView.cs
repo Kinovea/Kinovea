@@ -202,7 +202,10 @@ namespace Kinovea.ScreenManager
 
             pnlContext.Controls.Clear();
             pnlContext.Controls.Add(btnContextInfo);
-            toolTips.SetToolTip(btnContextToggle, contextEnabled ? Kinovea.ScreenManager.Properties.Capture.tooltip_ContextToggle_Disable : Kinovea.ScreenManager.Properties.Capture.tooltip_ContextToggle_Enable);
+            toolTips.SetToolTip(btnContextToggle, contextEnabled ?
+                Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_DisableCaptureContext :
+                Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_EnableCaptureContext);
+
             btnContextToggle.Visible = VariablesRepository.HasVariables;
 
             if (contextEnabled && VariablesRepository.HasVariables)
@@ -321,12 +324,12 @@ namespace Kinovea.ScreenManager
             if (this.delayedDisplay && hasDelay)
             {
                 btnDelayedDisplay.Image = Properties.Capture.live_photos_16;
-                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Delayed);
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_ViewIsDelayed);
             }
             else
             {
                 btnDelayedDisplay.Image = Properties.Capture.live_orange;
-                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Live);
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_ViewIsLive);
             }
         }
 
@@ -337,12 +340,12 @@ namespace Kinovea.ScreenManager
             if (armed)
             {
                 btnArm.Image = Properties.Capture.quick_mode_on_green_16;
-                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Armed);
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheCaptureTriggerIsArmed);
             }
             else
             {
                 btnArm.Image = Properties.Capture.quick_mode_off_16;
-                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Disarmed);
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheCaptureTriggerIsDisarmed);
             }
         }
 
@@ -557,17 +560,17 @@ namespace Kinovea.ScreenManager
         }
         private void ReloadTooltipsCulture()
         {
-            toolTips.SetToolTip(btnContextInfo, Kinovea.ScreenManager.Properties.Capture.tooltip_CaptureContext);
+            toolTips.SetToolTip(btnContextInfo, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_CaptureContext);
 
-            toolTips.SetToolTip(btnContextToggle, contextEnabled ? 
-                Properties.Capture.tooltip_ContextToggle_Disable : 
-                Properties.Capture.tooltip_ContextToggle_Enable);
+            toolTips.SetToolTip(btnContextToggle, contextEnabled ?
+                Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_DisableCaptureContext :
+                Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_EnableCaptureContext);
             
             toolTips.SetToolTip(btnSettings, ScreenManagerLang.ToolTip_ConfigureCamera);
             toolTips.SetToolTip(btnSnapshot, ScreenManagerLang.Generic_SaveImage);
 
-            toolTips.SetToolTip(btnDelay, Kinovea.ScreenManager.Properties.Capture.tooltip_DelayInSeconds);
-            toolTips.SetToolTip(btnDuration, Kinovea.ScreenManager.Properties.Capture.tooltip_TotalLengthOfTheRecordingInSeconds);
+            toolTips.SetToolTip(btnDelay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_DelayInSeconds);
+            toolTips.SetToolTip(btnDuration, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TotalLengthOfTheRecordingInSeconds);
 
             if (recording)
                 toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StopRecording);
@@ -580,14 +583,14 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
 
             if (armed)
-                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Armed);
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheCaptureTriggerIsArmed);
             else
-                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Properties.Capture.tooltipArm_Disarmed);
+                toolTips.SetToolTip(btnArm, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheCaptureTriggerIsDisarmed);
 
             if (delayedDisplay)
-                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Delayed);
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheViewIsDelayed);
             else
-                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Properties.Capture.tooltipDelayedDisplay_Live);
+                toolTips.SetToolTip(btnDelayedDisplay, Kinovea.ScreenManager.Languages.ScreenManagerLang.tooltip_TheViewIsLive);
 
             toolTips.SetToolTip(btnCaptureFolders, Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuConfigureCaptureFolders);
         }
@@ -608,7 +611,7 @@ namespace Kinovea.ScreenManager
             cbCaptureFolder.Items.Add(new CaptureFolder() 
             { 
                 Id = Guid.Empty, 
-                ShortName = Kinovea.ScreenManager.Properties.Capture.cmbSelectACaptureFolder, 
+                ShortName = Kinovea.ScreenManager.Languages.ScreenManagerLang.cbSelectCaptureFolder, 
                 Path = "" 
             });
 

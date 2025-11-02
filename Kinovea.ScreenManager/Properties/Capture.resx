@@ -381,34 +381,4 @@
   <data name="id3_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\id3-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="tooltipDelayedDisplay_Delayed" xml:space="preserve">
-    <value>The view is delayed</value>
-  </data>
-  <data name="tooltipDelayedDisplay_Live" xml:space="preserve">
-    <value>The view is live</value>
-  </data>
-  <data name="tooltipArm_Armed" xml:space="preserve">
-    <value>The capture trigger is armed</value>
-  </data>
-  <data name="tooltipArm_Disarmed" xml:space="preserve">
-    <value>The capture trigger is disarmed</value>
-  </data>
-  <data name="tooltip_CaptureContext" xml:space="preserve">
-    <value>Capture context</value>
-  </data>
-  <data name="tooltip_ContextToggle_Disable" xml:space="preserve">
-    <value>Disable capture context</value>
-  </data>
-  <data name="tooltip_ContextToggle_Enable" xml:space="preserve">
-    <value>Enable capture context</value>
-  </data>
-  <data name="tooltip_DelayInSeconds" xml:space="preserve">
-    <value>Delay in seconds</value>
-  </data>
-  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
-    <value>Total length of the recording in seconds</value>
-  </data>
-  <data name="cmbSelectACaptureFolder" xml:space="preserve">
-    <value>Select a capture folder</value>
-  </data>
 </root>

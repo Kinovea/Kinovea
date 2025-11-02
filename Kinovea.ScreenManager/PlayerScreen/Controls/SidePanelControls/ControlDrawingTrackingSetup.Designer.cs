@@ -107,7 +107,7 @@ namespace Kinovea.ScreenManager
       this.btnTrimTrack.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnTrimTrack.Location = new System.Drawing.Point(28, 213);
       this.btnTrimTrack.Name = "btnTrimTrack";
-      this.btnTrimTrack.Size = new System.Drawing.Size(157, 27);
+      this.btnTrimTrack.Size = new System.Drawing.Size(222, 27);
       this.btnTrimTrack.TabIndex = 68;
       this.btnTrimTrack.Text = "Delete end of track";
       this.btnTrimTrack.UseVisualStyleBackColor = true;
@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
       this.btnStartStop.ForeColor = System.Drawing.Color.Black;
       this.btnStartStop.Location = new System.Drawing.Point(28, 180);
       this.btnStartStop.Name = "btnStartStop";
-      this.btnStartStop.Size = new System.Drawing.Size(157, 27);
+      this.btnStartStop.Size = new System.Drawing.Size(222, 27);
       this.btnStartStop.TabIndex = 67;
       this.btnStartStop.Text = "Start tracking";
       this.btnStartStop.UseVisualStyleBackColor = true;
