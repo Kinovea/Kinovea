@@ -1679,7 +1679,7 @@
     <value>Вертикальне розташування</value>
   </data>
   <data name="tracking_TrackingAlgorithm" xml:space="preserve">
-    <value>Алгоритм відстеження:</value>
+    <value>Алгоритм Відстеження:</value>
   </data>
   <data name="tracking_MatchThreshold" xml:space="preserve">
     <value>Поріг збігу:</value>
@@ -1698,5 +1698,47 @@
   </data>
   <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
     <value>Показати всі ключові зображення</value>
+  </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>Вид затримується</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>Перегляд у прямому ефірі</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>Зафіксувати контекст</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>Вимкнути контекст захоплення</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>Увімкнути контекст запису</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>Затримка в секундах</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>Загальна тривалість запису в секундах</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>Тригер захоплення увімкнено</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>Тригер із захоплення вимкнено</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>Виберіть папку для запису</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>Сигнал:{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>Пропускна здатність:{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>Завантаження:{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>Краплі:{0}</value>
   </data>
 </root>
