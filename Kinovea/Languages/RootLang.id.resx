@@ -430,4 +430,229 @@
   <data name="mnuTranslate" xml:space="preserve">
     <value>Terjemahkan Kinovea…</value>
   </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Buka folder…</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Panel navigasi</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Jendela</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Properti jendela…</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Buka jendela baru</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>Buka kembali jendela</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Kelola jendela…</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Kelola ruang kerja…</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>Buka folder data aplikasi…</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Nonaktifkan log debug</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Aktifkan log debug</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Segarkan</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Konfigurasikan folder penangkapan</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Kelola jendela</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>Hentikan proses</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Hapus jendela</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>Segarkan daftar jendela</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>Properti jendela aktif</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>Buka penjelajah berkas</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>Lanjutkan dari tempat Anda berhenti</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>Buka konten tertentu</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>Penjelajah berkas</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>Ulangi: {0}</value>
+  </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>Pemutaran: {0}</value>
+  </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>Tangkap: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>Kelola ruang kerja</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Jendela</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>Buat pintasan desktop</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>Buat ruang kerja dari jendela yang aktif</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>Ubah nama ruang kerja yang dipilih</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>Hapus ruang kerja yang dipilih</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>Nama ruang kerja</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>Nama:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>Folder penangkapan</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>Ambil detail folder</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>Nama singkat:</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Jalur:</value>
+  </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>Masukkan variabel…</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Masukkan tanda garis miring terbalik</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>Masukkan tanda hubung</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>Masukkan garis bawah</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Pratinjau jalur dinamis</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>Cari folder</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>Hapus folder capture dari daftar</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>Tambahkan folder penangkapan baru</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>Naik</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>Turun</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>Untuk menjalankan program eksternal setelah perekaman, gunakan dialog perintah pasca-perekaman di layar tangkapan yang sesuai.\n\nKlik kanan latar belakang jendela tampilan dan pilih {0}.</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Perintah setelah perekaman…</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Berkas</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Nama berkas default:</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Aktifkan penomoran otomatis</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Secara otomatis memperbarui nama berkas setelah setiap perekaman untuk menyertakan nomor urut.\nOpsi ini diabaikan jika nama berkas menggunakan variabel dinamis.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Jangan menampilkan kotak dialog konfirmasi saat perekaman akan menimpa berkas yang sudah ada.</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Pemicu</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>Aktifkan pemicu UDP</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>Port UDP:</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Status pemicu default:</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Siaga</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Non-siaga</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Gambar</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Aktifkan penyaringan piksel</value>
+  </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>Preset {0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Saat memulai</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Daftar layar</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Impor layar saat ini</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Jendela yang disimpan</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Anotasi yang diekspor</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Ekspor gambar</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Kalibrasi ekspor</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Aktifkan pemulusan turunan untuk rekaman berkecepatan tinggi</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>Mulai proses</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Tampilkan semua bahasa</value>
+  </data>
 </root>

@@ -1357,4 +1357,10 @@
   <data name="variable_Minutes" xml:space="preserve">
     <value>Menit</value>
   </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Konfigurasikan folder penangkapan</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Perintah setelah perekaman…</value>
+  </data>
 </root>
