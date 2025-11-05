@@ -80,7 +80,7 @@
     <value>รูปแบบ</value>
   </data>
   <data name="FormConnectionWizard_Port" xml:space="preserve">
-    <value>ท่าเรือ</value>
+    <value>พอร์ต</value>
   </data>
   <data name="FormConnectionWizard_Host" xml:space="preserve">
     <value>โฮสต์ (ที่อยู่ IP)</value>
@@ -98,34 +98,34 @@
     <value>เชื่อมต่อใหม่</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
-    <value>เกิดข้อผิดพลาดขณะพยายามแสดงหน้าคุณสมบัติของอุปกรณ์สำหรับ {0}</value>
+    <value>เกิดข้อผิดพลาดขณะพยายามแสดงหน้าคุณสมบัติของอุปกรณ์ของ {0}</value>
   </data>
   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
-    <value>หน้าคุณสมบัติของอุปกรณ์</value>
+    <value>คุณสมบัติของอุปกรณ์</value>
   </data>
   <data name="FormConfiguration_Auto" xml:space="preserve">
-    <value>รถยนต์</value>
+    <value>อัตโนมัติ</value>
   </data>
   <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
-    <value>การแปลงรูปแบบไบเออร์:</value>
+    <value>การแปลงรูปแบบ Bayer:</value>
   </data>
   <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
-    <value>จุดสนใจ:</value>
+    <value>โฟกัส:</value>
   </data>
   <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
-    <value>ได้รับ:</value>
+    <value>ระดับ Gain:</value>
   </data>
   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
     <value>การเปิดรับแสง (µs):</value>
   </data>
   <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
-    <value>การรับสัมผัสเชื้อ:</value>
+    <value>การเปิดรับแสง:</value>
   </data>
   <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
-    <value>อัตราเฟรม:</value>
+    <value>เฟรมเรต:</value>
   </data>
   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
-    <value>ส่วนสูง:</value>
+    <value>ความสูง:</value>
   </data>
   <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
     <value>ความกว้าง:</value>
@@ -137,15 +137,24 @@
     <value>รูปแบบการสตรีม:</value>
   </data>
   <data name="FormConfiguration_Title" xml:space="preserve">
-    <value>การกำหนดค่ากล้อง</value>
+    <value>ตั้งค่ากล้อง</value>
   </data>
   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
-    <value>เกิดข้อผิดพลาดระหว่างการทดสอบการเชื่อมต่อ</value>
+    <value>เกิดข้อผิดพลาดระหว่างทดสอบการเชื่อมต่อ</value>
   </data>
   <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
-    <value>ความล้มเหลวในการทดสอบการเชื่อมต่อ</value>
+    <value>การทดสอบการเชื่อมต่อล้มเหลว</value>
   </data>
   <data name="FormHandshakeResult_Title" xml:space="preserve">
-    <value>การทดสอบการเชื่อมต่อ</value>
+    <value>ทดสอบการเชื่อมต่อ</value>
+  </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>เปิดระบบการบีบอัดระดับฮาร์ดแวร์</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>เปิดระบบซอฟต์แวร์การลดโมเสก</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>ผลลัพธ์เฟรมเรต:</value>
   </data>
 </root>
