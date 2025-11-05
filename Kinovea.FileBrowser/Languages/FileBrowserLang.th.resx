@@ -89,7 +89,7 @@
     <value>เปิด</value>
   </data>
   <data name="ForgetCustomSettings" xml:space="preserve">
-    <value>ลืมการตั้งค่าแบบกำหนดเอง</value>
+    <value>แจ้งลืมการตั้งค่าแบบกำหนดเอง</value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
     <value>ลบไฟล์</value>
@@ -122,12 +122,21 @@
     <value>วันที่</value>
   </data>
   <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>เพิ่มขึ้น</value>
+    <value>เรียงจากน้อยไปมาก</value>
   </data>
   <data name="mnuSortBy" xml:space="preserve">
     <value>เรียงลำดับตาม</value>
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>ลดลง</value>
+    <value>เรียงจากมากไปน้อย</value>
+  </data>
+  <data name="mnuRemoveFromShortcuts" xml:space="preserve">
+    <value>ลบออกจากทางลัด</value>
+  </data>
+  <data name="navPane_FileSystem" xml:space="preserve">
+    <value>ระบบไฟล์</value>
+  </data>
+  <data name="tabCameras" xml:space="preserve">
+    <value>กล้อง</value>
   </data>
 </root>
