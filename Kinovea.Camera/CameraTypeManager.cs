@@ -224,7 +224,12 @@ namespace Kinovea.Camera
             // If the change involves the camera alias or icon we need to trigger 
             // a discovery step so the navigation pane can consolidate its camera list.
             if (!modifiedAlias)
+            {
+                // Even if we didn't modify the alias/icon we still updated the camera summary in
+                // the global preferences. We need to alert the other instances to consolidate.
+                WindowManager.SendMessage("Kinovea:Window.PreferencesUpdated");
                 return;
+            }
 
             DiscoveryStep();
 

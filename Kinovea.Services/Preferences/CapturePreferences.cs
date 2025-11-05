@@ -156,7 +156,10 @@ namespace Kinovea.Services
         public bool AddCamera(CameraBlurb blurb)
         {
             bool modifiedAlias = false;
-            
+
+            // Make sure we are up to date before any save op.
+            BeforeRead();
+
             if (cameraBlurbs.ContainsKey(blurb.Identifier))
             {
                 string oldAlias = cameraBlurbs[blurb.Identifier].Alias;
@@ -179,7 +182,10 @@ namespace Kinovea.Services
         {
             if(cameraBlurbs.ContainsKey(identifier))
                cameraBlurbs.Remove(identifier);
-            
+
+            // Make sure we are up to date before any save op.
+            BeforeRead();
+
             Save();
         }
 
@@ -193,6 +199,7 @@ namespace Kinovea.Services
         /// </summary>
         public CaptureFolder AddCaptureFolder(string path)
         {
+            // Make sure we are up to date before any save op.
             BeforeRead();
 
             var ccff = CapturePathConfiguration.CaptureFolders;
