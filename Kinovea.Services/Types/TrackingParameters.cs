@@ -264,11 +264,8 @@ namespace Kinovea.Services
             if (trackingAlgorithm != TrackingAlgorithm.Correlation)
                 return;
 
-            bool fit = blockWindow.Width <= searchWindow.Width && blockWindow.Height <= searchWindow.Height;
-            if (!fit)
-            {
-                searchWindow = blockWindow;
-            }
+            searchWindow.Width = Math.Max(searchWindow.Width, blockWindow.Width);
+            searchWindow.Height = Math.Max(searchWindow.Height, blockWindow.Height);
         }
     }
 }
