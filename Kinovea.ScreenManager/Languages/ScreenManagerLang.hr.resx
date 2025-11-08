@@ -137,10 +137,10 @@
     <value>Uvezi sliku kao referencu</value>
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
-    <value>Učitaj podatke ključne slike</value>
+    <value>Učitaj bilješke</value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
-    <value>Spremi podatke ključne slike</value>
+    <value>Spremi bilješke</value>
   </data>
   <data name="DrawingName_Grid" xml:space="preserve">
     <value>Koordinatna mreža</value>
@@ -239,7 +239,7 @@
     <value>Sve datoteke</value>
   </data>
   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
-    <value>Ključni kadrovi su izmijenjeni.\nŽelite li sačuvati podatke ključnih kadrova prije zatvaranja?</value>
+    <value>Bilješke su promijenjene.\nŽeliš li ih spremiti?</value>
   </data>
   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
     <value>Podaci ključnih slika nisu sačuvani</value>
@@ -878,7 +878,7 @@
     <value>Svojstva</value>
   </data>
   <data name="mnuLoadAnalysis" xml:space="preserve">
-    <value>Učitaj anotacije…</value>
+    <value>Učitaj bilješke …</value>
   </data>
   <data name="mnuMagnifierFreeze" xml:space="preserve">
     <value>Zamrznuti</value>
@@ -1052,7 +1052,7 @@
     <value>Sat:</value>
   </data>
   <data name="Generic_SaveKVAAs" xml:space="preserve">
-    <value>Spremi anotacije kao…</value>
+    <value>Spremi bilješke kao …</value>
   </data>
   <data name="Infobar_Player_StartWatcher" xml:space="preserve">
     <value>Započni promatranje mape: {0}</value>
@@ -1544,28 +1544,28 @@
     <value>Godina</value>
   </data>
   <data name="variable_Seconds" xml:space="preserve">
-    <value>Sekunda</value>
+    <value>Sekunde</value>
   </data>
   <data name="variable_ReceivedFrameRate" xml:space="preserve">
     <value>Primljen broj kadrova u sekundi</value>
   </data>
   <data name="variable_Month" xml:space="preserve">
-    <value>Mjesec</value>
+    <value>Mjeseci</value>
   </data>
   <data name="variable_Day" xml:space="preserve">
     <value>Dan</value>
   </data>
   <data name="variable_Minutes" xml:space="preserve">
-    <value>Minuta</value>
+    <value>Minute</value>
   </data>
   <data name="mnuConfigureCamera" xml:space="preserve">
     <value>Konfiguriraj kameru …</value>
   </data>
   <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
-    <value>Ponovo učitaj povezane napomene</value>
+    <value>Ponovo učitaj povezane bilješke</value>
   </data>
   <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
-    <value>Ponovo učitaj standardne napomene snimke</value>
+    <value>Ponovo učitaj zadane bilješke za snimanje</value>
   </data>
   <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
     <value>Umetni varijablu …</value>
@@ -1586,13 +1586,13 @@
     <value>Post-produkcijska naredba …</value>
   </data>
   <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
-    <value>Spremi kao zadane oznake za player</value>
+    <value>Spremi kao zadane bilješke za player</value>
   </data>
   <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
-    <value>Spremi kao zadane oznake za snimanje</value>
+    <value>Spremi kao zadane bilješke za snimanje</value>
   </data>
   <data name="mnuUnloadAnnotations" xml:space="preserve">
-    <value>Ukloni oznake</value>
+    <value>Ukloni bilješke</value>
   </data>
   <data name="formPostRecordingCommand_Title" xml:space="preserve">
     <value>Post-produkcijska naredba</value>
@@ -1604,7 +1604,7 @@
     <value>Prikaži krug</value>
   </data>
   <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
-    <value>Ponovo učitaj zadane oznake za player</value>
+    <value>Ponovo učitaj zadane bilješke za player</value>
   </data>
   <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
     <value>Izbriši snimke nakon ove točke</value>
@@ -1655,7 +1655,7 @@
     <value>Sufiks datoteke</value>
   </data>
   <data name="variable_AnnotationFileName" xml:space="preserve">
-    <value>Ime datoteke s anotacijama</value>
+    <value>Ime datoteke za bilješke</value>
   </data>
   <data name="variable_DateISO8601" xml:space="preserve">
     <value>Datum (ISO 8601)</value>
@@ -1677,5 +1677,17 @@
   </data>
   <data name="mnuVerticalLayout" xml:space="preserve">
     <value>Okomiti raspored</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>Kašnjenje u sekundama</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>Ukupna duljina snimke u sekundama</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>Signal:{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>Protok:{0}</value>
   </data>
 </root>
