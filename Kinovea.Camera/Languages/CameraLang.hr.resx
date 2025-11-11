@@ -62,7 +62,7 @@
     <value>Primijeni</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve">
-    <value>Poništi</value>
+    <value>Odustani</value>
   </data>
   <data name="FormConnectionWizard_Authentication" xml:space="preserve">
     <value>Autentikacija</value>
