@@ -64,4 +64,10 @@
   <data name="Updater_Behind" xml:space="preserve">
     <value>Nova verzija na voljo!</value>
   </data>
+  <data name="Updater_CurrentVersion" xml:space="preserve">
+    <value>Trenutna verzija:</value>
+  </data>
+  <data name="Updater_Download" xml:space="preserve">
+    <value>Prenesi</value>
+  </data>
 </root>
