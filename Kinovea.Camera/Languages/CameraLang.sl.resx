@@ -67,4 +67,7 @@
   <data name="FormHandshakeResult_Title" xml:space="preserve">
     <value>Test povezave</value>
   </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>Napaka pri preizkusu povezave</value>
+  </data>
 </root>
