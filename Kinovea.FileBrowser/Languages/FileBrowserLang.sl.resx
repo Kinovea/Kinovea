@@ -70,4 +70,7 @@
   <data name="lblCaptureHistory" xml:space="preserve">
     <value>Zgodovina posnetkov</value>
   </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>Kamere</value>
+  </data>
 </root>
