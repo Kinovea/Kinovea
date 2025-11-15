@@ -67,4 +67,10 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Prekliči</value>
   </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Gradniki</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Navedba</value>
+  </data>
 </root>
