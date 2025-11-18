@@ -184,4 +184,25 @@
   <data name="dlgColorProfile_Title" xml:space="preserve">
     <value>Barvni profil ...</value>
   </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Odpri</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Naraščajoče</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Razvrsti po</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Velikost</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Padajoče</value>
+  </data>
 </root>
