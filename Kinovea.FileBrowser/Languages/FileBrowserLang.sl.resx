@@ -73,4 +73,70 @@
   <data name="lblCameras" xml:space="preserve">
     <value>Kamere</value>
   </data>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>Dodaj bližnjico</value>
+  </data>
+  <data name="mnuAddToShortcuts" xml:space="preserve">
+    <value>Dodaj med bližnjice</value>
+  </data>
+  <data name="mnuDeleteShortcut" xml:space="preserve">
+    <value>Izbriši bližnjico</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Pokaži v Windows Raziskovalcu </value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Izbriši datoteko</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Pozabi prilagojene nastavitve</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Odpri</value>
+  </data>
+  <data name="tabShortcuts" xml:space="preserve">
+    <value>Bližnjice</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Ročna povezava</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Tip kamere</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Parametri</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Ustvari kamero</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Naraščajoče</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Razvrsti po</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Velikost</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Padajoče</value>
+  </data>
+  <data name="mnuRemoveFromShortcuts" xml:space="preserve">
+    <value>Odstrani iz bližnjic</value>
+  </data>
+  <data name="navPane_FileSystem" xml:space="preserve">
+    <value>Datotečni sistem</value>
+  </data>
+  <data name="tabCameras" xml:space="preserve">
+    <value>Kamere</value>
+  </data>
 </root>
