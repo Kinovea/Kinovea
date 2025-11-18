@@ -62,13 +62,13 @@
     <value>ยกเลิก</value>
   </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
-    <value>ไปยังตำแหน่งเริ่มต้นทั้งสองวิดีโอ</value>
+    <value>กลับไปยังตำแหน่งเริ่มต้นทั้งสองวิดีโอ</value>
   </data>
   <data name="Generic_Apply" xml:space="preserve">
     <value>ใช้ค่าที่ตั้งไว้</value>
   </data>
   <data name="btnSync_ToolTip" xml:space="preserve">
-    <value>ซิงโครไนซ์วิดีโอกับเฟรมปัจจุบัน</value>
+    <value>ซิงก์วิดีโอกับเฟรมปัจจุบัน</value>
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>โหดข้อมูลอัตโนมัติ</value>
@@ -86,22 +86,22 @@
     <value>ระยะเวลาของภาพคีย : {0:0.00} วินาที</value>
   </data>
   <data name="dlgCalibratePlane_Title" xml:space="preserve">
-    <value>การสอบเทียบค่าระนาบ</value>
+    <value>การเทียบปรับแบบระนาบ</value>
   </data>
   <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
     <value>จัดวางแกนตามแนวของภาพ</value>
   </data>
   <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
-    <value>เส้นแกนตั้ง</value>
+    <value>เส้นกำหนดแกนแนวตั้ง</value>
   </data>
   <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
-    <value>เส้นแกนนอน</value>
+    <value>เส้นกำหนดแกนแนวนอน</value>
   </data>
   <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
-    <value>การจัดตำแหน่งพิกัด:</value>
+    <value>การจัดตำแหน่งระบบพิกัด:</value>
   </data>
   <data name="dlgCalibrateLine_Title" xml:space="preserve">
-    <value>เส้นปรับความเที่ยงตรง</value>
+    <value>เส้นการเทียบปรับ</value>
   </data>
   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
     <value>ระยะจริงของเซกเมนต์:</value>
@@ -113,7 +113,7 @@
     <value>หน้าต่างแสดงวัตถุ:</value>
   </data>
   <data name="tracking_Tracking" xml:space="preserve">
-    <value>ติดตาม</value>
+    <value>การติดตาม</value>
   </data>
   <data name="ExtraData_Circumference" xml:space="preserve">
     <value>เส้นรอบวง</value>
@@ -122,16 +122,16 @@
     <value>เส้นผ่านศูนย์กลาง</value>
   </data>
   <data name="ExtraData_Radius" xml:space="preserve">
-    <value>จุดศูนย์กลาง</value>
+    <value>รัศมี</value>
   </data>
   <data name="ExtraData_Length" xml:space="preserve">
-    <value>ระยะ</value>
+    <value>ความยาว</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
-    <value>ความเร่งสู่ศูนย์กลาง</value>
+    <value>ความเร่งเข้าสู่ศูนย์กลาง</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
-    <value>อัตราเร่งเชิงมุม</value>
+    <value>การเร่งเชิงมุม</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
     <value>ความเร็วเชิงมุม</value>
@@ -143,7 +143,7 @@
     <value>อัตราเร่งตามแนวตั้ง</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
-    <value>อัตราเร่ง</value>
+    <value>การเร่ง</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
     <value>ความเร็วตามแนวนอน</value>
@@ -155,10 +155,10 @@
     <value>ความเร็ว</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
-    <value>ระยะทางตามแนวตั้งสัมพัทธ์</value>
+    <value>การเคลื่อนตัวในแนวดิ่ง</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
-    <value>ระยะทางตามแนวนอนสัมพัทธ์</value>
+    <value>การเคลื่อนตัวในแนวราบ</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
     <value>ระยะทางถึงจุดเริ่มต้น</value>
@@ -167,34 +167,34 @@
     <value>ระยะทางรวม</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
-    <value>ตำแหน่งในแนวนอน</value>
+    <value>ตำแหน่งแนวนอน</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
-    <value>ตำแหน่งในแนวตั้ง</value>
+    <value>ตำแหน่งแนวตั้ง</value>
   </data>
   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
     <value>ตำแหน่ง</value>
   </data>
   <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
-    <value>ปรับตั้งค่าเครื่องมือที่เกี่ยวข้องกับทิศทาง</value>
+    <value>ตั้งค่าเครื่องมือวิถีโคจร</value>
   </data>
   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
     <value>รีเซ็ต</value>
   </data>
   <data name="dlgTimebase_InfoUser" xml:space="preserve">
-    <value>ตัวเลือกนี้สำหรับเฟรมเรทอ้างอิงที่ใช้ในโปรแกรมคิโนเวีย ในการเล่นวีดีโอ ให้ใช้เมื่อวีดีโอนั้นมีค่าเฟรมเรทไม่ถูกต้องหรือโปรแกรมคิโนเวียไม่สามารถอ่านค่าได้ </value>
+    <value>ตัวเลือกนี้สำหรับเฟรมเรตอ้างอิงที่ใช้เล่นวิดีโอใน Kinovea ใช้เมื่อเฟรมเรตวีดีโอไม่ถูกต้องหรือ Kinovea ไม่สามารถเปิดได้ </value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
-    <value>วีดีโอเฟรมเรท:</value>
+    <value>เฟรมเรตวิดีโอ:</value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
-    <value>เฟรมเรทที่อ่านจากไฟลล์ได้จำนวน {0:0.##} เฟรมต่อวินาที fps</value>
+    <value>เฟรมเรตที่อ่านจากไฟล์: {0:0.##} fps</value>
   </data>
   <data name="dlgTimebase_InfoCapture" xml:space="preserve">
-    <value>ตัวเลือกนี้เป็นการกำหนดค่าความแตกต่างระหว่างความเร็วของวีดีโอและแบบเรียลไทม์ ซึ่งจะมีผลต่อเวลา และคิเนเมติคสืที่วัดได้ ใช้เมื่อวีดีโอนั้นถูกถ่ายด้วยโหมดความเร็วสูง </value>
+    <value>ตัวเลือกนี้เป็นการกำหนดค่าความแตกต่างระหว่างความเร็วของวีดีโอและแบบเรียลไทม์ ซึ่งจะมีผลต่อเวลา และคิเนเมติคส์ที่วัดได้ ใช้เมื่อวีดีโอนั้นถูกบันทึกด้วยโหมดความเร็วสูง </value>
   </data>
   <data name="dlgTimebase_lblCapture" xml:space="preserve">
-    <value>จำนวนเฟรมเรทในการบันทึก:</value>
+    <value>เฟรมเรตการจับภาพ:</value>
   </data>
   <data name="dlgTimebase_GroupCapture" xml:space="preserve">
     <value>กล้องวีดีโอความเร็วสูง</value>
@@ -203,43 +203,43 @@
     <value>ตั้งค่าเวลาของวีดีโอ</value>
   </data>
   <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
-    <value>ระยะเวลาในการ Fade (เฟรม):</value>
+    <value>ระยะเวลาการซีดจาง (เฟรม):</value>
   </data>
   <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
-    <value>ระยะเวลาของความทึบแสง (เฟรม):</value>
+    <value>ระยะเวลาความทึบแสง (เฟรม):</value>
   </data>
   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
     <value>ความทึบแสงสูงสุด (%):</value>
   </data>
   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
-    <value>แสดงให้เห็นตลอดเวลา</value>
+    <value>แสดงให้เห็นเสมอ</value>
   </data>
   <data name="drawingName" xml:space="preserve">
     <value>ชื่อ</value>
   </data>
   <data name="dlgConfigureDrawing_Title" xml:space="preserve">
-    <value>แก้ไขค่าการวาดรูป</value>
+    <value>ตั้งค่าการวาดรูป</value>
   </data>
   <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
-    <value>บันทึกรูปแบบสี</value>
+    <value>บันทึกโปรไฟล์สี</value>
   </data>
   <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve">
-    <value>โหลดรูปแบบสี</value>
+    <value>โหลดโปรไฟล์สี</value>
   </data>
   <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve">
-    <value>รีเซ็ตรูปแบบสี Default</value>
+    <value>รีเซ็ตโปรไฟล์เป็นค่าเริ่มต้น</value>
   </data>
   <data name="dlgColorProfile_Title" xml:space="preserve">
-    <value>รูปแบบสี</value>
+    <value>โปรไฟล์สี...</value>
   </data>
   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
-    <value>ผลรวมของความเร่ง</value>
+    <value>ความเร่งลัพธ์</value>
   </data>
   <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
-    <value>การเร่งความเร็วสัมผัส</value>
+    <value>ความเร่งในแนวสัมผัส</value>
   </data>
   <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
-    <value>ความเร็ว Tangent</value>
+    <value>ความเร็วเชิงเส้นสัมผัส</value>
   </data>
   <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
     <value>ระยะการกระจัดรวม</value>
@@ -260,7 +260,7 @@
     <value>เวลา :</value>
   </data>
   <data name="DataAnalysis_DataLabel" xml:space="preserve">
-    <value>ข้อมูล:</value>
+    <value>ข้อมูล :</value>
   </data>
   <data name="DataAnalysis_DataSource" xml:space="preserve">
     <value>แหล่งข้อมูล</value>
@@ -269,31 +269,31 @@
     <value>ส่งออกข้อมูล</value>
   </data>
   <data name="DataAnalysis_SaveToFile" xml:space="preserve">
-    <value>บันทึกในไฟลล์</value>
+    <value>บันทึกในไฟล์</value>
   </data>
   <data name="DataAnalysis_Pixels" xml:space="preserve">
     <value>พิกเซล</value>
   </data>
   <data name="DataAnalysis_ExportGraph" xml:space="preserve">
-    <value>ส่งออกกราฟ</value>
+    <value>ส่งออกแผนภูมิ</value>
   </data>
   <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
-    <value>แคลิเบรตระนาบ</value>
+    <value>ระนาบการเทียบปรับ</value>
   </data>
   <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
-    <value>เวลา (มิลลิวินาที)</value>
+    <value>เวลา (ms)</value>
   </data>
   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
     <value>แกน Y</value>
   </data>
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
-    <value>แกน Y:</value>
+    <value>แกน Y :</value>
   </data>
   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
     <value>แกน X</value>
   </data>
   <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
-    <value>แกน X:</value>
+    <value>แกน X :</value>
   </data>
   <data name="DataAnalysis_Title" xml:space="preserve">
     <value>ชื่อเรื่อง:</value>
@@ -305,34 +305,34 @@
     <value>พลอต</value>
   </data>
   <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
-    <value>คิเนเมติคส์เชิงมุม</value>
+    <value>คิเนเมติกส์เชิงมุม</value>
   </data>
   <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
-    <value>คิเนเมติคส์เชิเส้น</value>
+    <value>คิเนเมติกส์เชิงเส้น</value>
   </data>
   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
     <value>แผนภาพแสดงการกระจาย</value>
   </data>
   <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
-    <value>ส่งวีดีโอออก</value>
+    <value>ส่งออกวีดีโอ</value>
   </data>
   <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve">
-    <value>ลบคีย์ของภาพ</value>
+    <value>ลบคีย์รูปภาพ</value>
   </data>
   <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
     <value>ลบรูปวาด</value>
   </data>
   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
-    <value>แก้ไขการวาดรูป</value>
+    <value>แก้ไขรูปวาด</value>
   </data>
   <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
     <value>เพิ่มการวาดรูป</value>
   </data>
   <data name="buttonPlay_ToolTip" xml:space="preserve">
-    <value>เล่นหรือหยุดวีดีโอ</value>
+    <value>เล่นหรือหยุดวีดีโอทั้งสอง</value>
   </data>
   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
-    <value>ไปยังเฟรมก่อนหน้านี้ของวีดีโอทั้งสอง</value>
+    <value>ไปยังเฟรมก่อนหน้าของวีดีโอทั้งสอง</value>
   </data>
   <data name="buttonGotoNext_ToolTip" xml:space="preserve">
     <value>ไปยังเฟรมถัดไปของวีดีโอทั้งสอง</value>
@@ -341,13 +341,13 @@
     <value>ไปยังตำแหน่งสิ้นสุดของวีดีโอทั้งสอง</value>
   </data>
   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
-    <value>ข้อมูลของกล้อง</value>
+    <value>ส่วนประกอบภายในกล้อง</value>
   </data>
   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
     <value>ค่าสัมประสิทธิ์การบิดเบือนภาพ</value>
   </data>
   <data name="dlgCameraCalibration_Title" xml:space="preserve">
-    <value>ทำการสอบเทียบกล้อง</value>
+    <value>การเทียบปรับกล้อง</value>
   </data>
   <data name="dlgSaveAnalysisTitle" xml:space="preserve">
     <value>บันทึกคำอธิบายประกอบ</value>
@@ -395,13 +395,13 @@
     <value>ความกว้างเซนเซอร์ (มม.):</value>
   </data>
   <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
-    <value>บันทึกโปรไฟล์การปรับเทียบกล้อง</value>
+    <value>บันทึกโปรไฟล์การเทียบปรับกล้อง</value>
   </data>
   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
-    <value>โหลดโปรไฟล์การปรับเทียบกล้อง</value>
+    <value>โหลดโปรไฟล์การเทียบปรับกล้อง</value>
   </data>
   <data name="ExtraData_Center" xml:space="preserve">
-    <value>ศูนย์กลาง</value>
+    <value>จุดศูนย์กลาง</value>
   </data>
   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
     <value>แผนภาพมุม-มุม</value>
@@ -410,7 +410,7 @@
     <value>บันทึก</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
-    <value>ล้มเลิก</value>
+    <value>ออก</value>
   </data>
   <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
     <value>ลูกศร-Polyline squiggly</value>
@@ -476,19 +476,19 @@
     <value>ชื่อไฟล์ไม่ถูกต้อง</value>
   </data>
   <data name="mnuSortBy_Ascending" xml:space="preserve">
-    <value>เพิ่มขึ้น</value>
+    <value>เรียงจากน้อยไปมาก</value>
   </data>
   <data name="mnuSortBy" xml:space="preserve">
     <value>เรียงลำดับตาม</value>
   </data>
   <data name="mnuSortBy_Descending" xml:space="preserve">
-    <value>ลดลง</value>
+    <value>เรียงจากมากไปน้อย</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
-    <value>แสดงวงกลมที่เหมาะสมที่สุด</value>
+    <value>แสดงวงกลมที่พอดีที่สุด</value>
   </data>
   <data name="variable_CameraAlias" xml:space="preserve">
-    <value>ชื่อของกล้อง</value>
+    <value>ชื่อแฝงกล้อง</value>
   </data>
   <data name="variable_Year" xml:space="preserve">
     <value>ปี</value>
@@ -497,7 +497,7 @@
     <value>วินาที</value>
   </data>
   <data name="variable_ReceivedFrameRate" xml:space="preserve">
-    <value>เฟรมเรทที่ได้รับ</value>
+    <value>เฟรมเรทที่รับ</value>
   </data>
   <data name="variable_Month" xml:space="preserve">
     <value>เดือน</value>
@@ -507,5 +507,1238 @@
   </data>
   <data name="variable_Minutes" xml:space="preserve">
     <value>นาที</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>ตั้งค่าแฟ้มจับภาพ</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>คำสั่งหลังการบันทึก…</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Genu (จีนู)</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>มุมต่อแนวตั้ง</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>มุมต่อแนวนอน</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>แบบจำลองมนุษย์</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>แบบจำลองมนุษย์ (2)</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>ตารางทดสอบกล้อง</value>
+  </data>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve">
+    <value>ตารางมุมมอง</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>สี่เหลี่ยม</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>ไฟล์ {0} มีอยู่แล้ว\nต้องการเขียนทับหรือไม่?</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>ไดเรกทอรียังไม่ได้สร้าง</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>ไม่สามารถสร้างไดเรกทอรีการจับภาพได้\nตรวจสอบว่าไดเรกทอรีชี้ไปยังตำแหน่งจัดเก็บข้อมูลที่ถูกต้องหรือไม่</value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>ไม่สามารถเขียนไฟล์ได้\nให้แน่ใจว่าคุณมีสิทธิ์ใช้งานแฟ้มที่กำหนดและไฟล์ไม่ได้ถูกใช้งานอยู่</value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>ไม่สามารถบันทึกวิดีโอได้\nลองอีกครั้งด้วยรูปแบบอื่น</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>แก้ไขชื่อกล้อง</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>นามแฝง:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>ไอคอน:</value>
+  </data>
+  <data name="FormFileSave_Infos" xml:space="preserve">
+    <value>ความคืบหน้า:</value>
+  </data>
+  <data name="FormProgressBar_Title" xml:space="preserve">
+    <value>ความคืบหน้า</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>ลักษณะ</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>ลูกศร:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>เส้นโค้ง:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>มุมมอง:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>นาฬิกา:</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>ปิด</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>สี:</value>
+  </data>
+  <data name="Generic_Configuration" xml:space="preserve">
+    <value>การกำหนดค่า</value>
+  </data>
+  <data name="Generic_ConfigurationElipsis" xml:space="preserve">
+    <value>กำหนดค่า...</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>การเทียบปรับ</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>ขนาดตัวอักษร:</value>
+  </data>
+  <data name="Generic_LineSizePicker" xml:space="preserve">
+    <value>ความกว้าง:</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>ความทึบแสง</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>การมองเห็น</value>
+  </data>
+  <data name="Generic_Options" xml:space="preserve">
+    <value>ตัวเลือก</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>ขนาด:</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>บันทึกคำอธิบาย</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>บันทึกคำอธิบายเป็น…</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>นำออกวิดีโอ…</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>รูปร่างเส้น:</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>รูปภาพ</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>วิดีโอ</value>
+  </data>
+  <data name="Generic_SaveImage" xml:space="preserve">
+    <value>บันทึกรูปภาพ</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>ไฟล์</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>นำเข้า…</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>คืนค่าเริ่มต้น</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>ตัด</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>คัดลอก</value>
+  </data>
+  <data name="Generic_PlayPause" xml:space="preserve">
+    <value>เล่น | หยุด</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>ขนาด</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>เฟรมเรต</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>ระยะเวลา</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>เวลาสร้าง</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>ไฟล์ Kva</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>ทุกรูปแบบที่รองรับ</value>
+  </data>
+  <data name="FileFilter_All" xml:space="preserve">
+    <value>ทุกไฟล์</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
+    <value>มีการแก้ไขคำอธิบาย\nคุณต้องการบันทึกหรือไม่?</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
+    <value>บันทึกการเปลี่ยนแปลง</value>
+  </data>
+  <data name="lblInfo_Text" xml:space="preserve">
+    <value>การควบคุมร่วม:</value>
+  </data>
+  <data name="lblSelDuration_Text" xml:space="preserve">
+    <value>ระยะเวลา</value>
+  </data>
+  <data name="lblSelStartSelection_Text" xml:space="preserve">
+    <value>เริ่ม</value>
+  </data>
+  <data name="lblTimeCode_Text" xml:space="preserve">
+    <value>ตำแหน่ง</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>มิลลิเมตร</value>
+  </data>
+  <data name="LengthUnit_Centimeters" xml:space="preserve">
+    <value>เซนติเมตร</value>
+  </data>
+  <data name="LengthUnit_Meters" xml:space="preserve">
+    <value>เมตร</value>
+  </data>
+  <data name="LengthUnit_Inches" xml:space="preserve">
+    <value>นิ้ว</value>
+  </data>
+  <data name="LengthUnit_Feet" xml:space="preserve">
+    <value>ฟุต</value>
+  </data>
+  <data name="LengthUnit_Yards" xml:space="preserve">
+    <value>หลา</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>เปอร์เซนต์</value>
+  </data>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve">
+    <value>ล้มเหลว: ไม่สามารถเปิดไฟล์ได้ ไม่รองรับสตรีมมิ่งวิดีโอ</value>
+  </data>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve">
+    <value>การเปิดไฟล์ล้มเหลว: เกิดปัญหาขณะเริ่มใช้งานตัวแปลงสัญญาณ</value>
+  </data>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve">
+    <value>การเปิดไฟล์ล้มเหลว: ไม่รองรับรูปแบบไฟล์</value>
+  </data>
+  <data name="LoadMovie_Error" xml:space="preserve">
+    <value>Kinovea – การโหลดผิดพลาด</value>
+  </data>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve">
+    <value>การเปิดไฟล์ล้มเหลว: ไม่พบไฟล์หรือว่างเปล่า</value>
+  </data>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve">
+    <value>การเปิดไฟล์ล้มเหลว: พบความไม่สอดคล้องกัน โปรดตรวจสอบกระบวนการเข้ารหัส</value>
+  </data>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve">
+    <value>การเปิดไฟล์ล้มเหลว: ไม่พบข้อมูลสตรีมมิ่ง</value>
+  </data>
+  <data name="LoadMovie_UnkownError" xml:space="preserve">
+    <value>การเปิดไฟล์ล้มเหลว: ไม่ทราบสาเหตุ</value>
+  </data>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve">
+    <value>การเปิดไฟล์ล้มเหลว: ไม่พบวิดีโอสตรีมมิ่ง</value>
+  </data>
+  <data name="LockSelectionLock" xml:space="preserve">
+    <value>ล็อคขอบเขต Working Zone</value>
+  </data>
+  <data name="LockSelectionUnlock" xml:space="preserve">
+    <value>ปลดล็อคขอบเขต Working Zone</value>
+  </data>
+  <data name="mnuChronoStart" xml:space="preserve">
+    <value>เริ่มจับเวลา</value>
+  </data>
+  <data name="mnuChronoStop" xml:space="preserve">
+    <value>หยุดจับเวลา</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>ซ่อนก่อนถึงจุดนี้</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>แสดงก่อนถึงจุดนี้</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>ซ่อนหลังจากจุดนี้</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>แสดงหลังจากจุดนี้</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>แสดงฉลาก</value>
+  </data>
+  <data name="mnuCloseScreen" xml:space="preserve">
+    <value>ปิดหน้าจอนี้</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>คัดลอกไปคลิปบอร์ด</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>คัดลอกรูปภาพไปคลิปบอร์ด</value>
+  </data>
+  <data name="mnuDeinterlace" xml:space="preserve">
+    <value>ดีอินเตอร์เลซ</value>
+  </data>
+  <data name="mnuDeleteDrawing" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
+    <value>ลบเส้นทางหลังจากจุดนี้</value>
+  </data>
+  <data name="tracking_Start" xml:space="preserve">
+    <value>เริ่มการติดตาม</value>
+  </data>
+  <data name="tracking_Stop" xml:space="preserve">
+    <value>หยุดการติดตาม</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>บันทึกวิดีโอคู่ลงในคอมโพสิตวิดีโอ</value>
+  </data>
+  <data name="ToolTip_trkSelection" xml:space="preserve">
+    <value>ตั้งค่า Working Zone</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>แทรก</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>รายละเอียด</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>ตัวอย่าง</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>คีย์เวิร์ด</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>เฟรมเรตกล้อง</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>เส้นทางไปไฟล์วิดีโอ</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>เส้นทางไปแฟ้มจับภาพ</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>ชื่อไฟล์พร้อมนามสกุล</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>ชื่อไฟล์ไม่ระบุนามสกุล</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>ประเภทไฟล์</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>ชื่อไฟล์คำอธิบาย</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>วันที่ (ISO 8601)</value>
+  </data>
+  <data name="variable_TimeISO8601" xml:space="preserve">
+    <value>เวลา (ISO 8601)</value>
+  </data>
+  <data name="variable_Hours" xml:space="preserve">
+    <value>ชั่วโมง</value>
+  </data>
+  <data name="variable_Milliseconds" xml:space="preserve">
+    <value>มิลลิวินาที</value>
+  </data>
+  <data name="mnuNext" xml:space="preserve">
+    <value>ถัดไป</value>
+  </data>
+  <data name="mnuPrevious" xml:space="preserve">
+    <value>ก่อนหน้า</value>
+  </data>
+  <data name="mnuVerticalLayout" xml:space="preserve">
+    <value>รูปแบบแนวตั้ง</value>
+  </data>
+  <data name="tracking_TrackingAlgorithm" xml:space="preserve">
+    <value>อัลกอริทึมการติดตาม:</value>
+  </data>
+  <data name="tracking_MatchThreshold" xml:space="preserve">
+    <value>การจับคู่ขั้นต่ำ:</value>
+  </data>
+  <data name="track_UpdateThreshold" xml:space="preserve">
+    <value>อัปเดตขั้นต่ำ:</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>ลบสุดแทร็ก</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>คีย์รูปภาพก่อนหน้า</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>คีย์รูปภาพถัดไป</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>แสดงคีย์รูปภาพทั้งหมด</value>
+  </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>การแสดงแบบหน่วงเวลา</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>การแสดงแบบสด</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>จับภาพโดยรวม</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>ยกเลิกจับภาพโดยรวม</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>เปิดการจับภาพโดยรวม</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>หน่วงเป็นวินาที</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>ความยาวรวมในการบันทึกเป็นวินาที</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>ตัวเริ่มการจับภาพพร้อมแล้ว</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>ตัวเริ่มการจับภาพปลดแล้ว</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>เลือกแฟ้มการจับภาพ</value>
+  </data>
+  <data name="mnuTwoCaptures" xml:space="preserve">
+    <value>จับภาพ 2 หน้าจอ</value>
+  </data>
+  <data name="mnuTwoMixed" xml:space="preserve">
+    <value>จับภาพ 1 หน้าจอ และอีกหน้าจอเล่นวิดีโอ</value>
+  </data>
+  <data name="mnuTwoPlayers" xml:space="preserve">
+    <value>เล่นวิดีโอ 2 หน้าจอ</value>
+  </data>
+  <data name="mnuFormat" xml:space="preserve">
+    <value>อัตราส่วนภาพ</value>
+  </data>
+  <data name="mnuFormatAuto" xml:space="preserve">
+    <value>การตรวจจับอัตโนมัติ</value>
+  </data>
+  <data name="mnuFormatForce43" xml:space="preserve">
+    <value>บังคับ 4:3</value>
+  </data>
+  <data name="mnuFormatForce169" xml:space="preserve">
+    <value>บังคับ 16:9</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>การหมุน</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>ไม่ต้องหมุน</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>90° ตามเข็มนาฬิกา</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>90° ทวนเข็มนาฬิกา</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>ไปยังคีย์รูปภาพ</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>ซ่อน</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>นำเข้ารูปภาพ…</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>มุมที่กำหนด</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>ทวนเข็มนาฬิกา</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>มุมชดเชย</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>พลิกแนวนอน</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>พลิกแนวตั้ง</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>โหลดคำอธิบาย…</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>สลับเป็นการซูมโดยตรง</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>ปิดแว่นขยาย</value>
+  </data>
+  <data name="mnuMirror" xml:space="preserve">
+    <value>สะท้อนกระจก</value>
+  </data>
+  <data name="mnuOneCapture" xml:space="preserve">
+    <value>1 หน้าจอจับภาพ</value>
+  </data>
+  <data name="mnuOnePlayer" xml:space="preserve">
+    <value>1 หน้าจอเล่นวิดีโอ</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>ทำเครื่องหมายเวลาปัจจุบันเป็นเวลาเริ่มต้น</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>ทำเครื่องหมายเวลาปัจจุบันเป็นเวลาเริ่มต้นสำหรับนาฬิกานี้</value>
+  </data>
+  <data name="mnuOpenVideo" xml:space="preserve">
+    <value>เปิดวิดีโอ…</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>เปิดแฟ้ม…</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>คุณสมบัติ</value>
+  </data>
+  <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
+    <value>โหลดคำอธิบายที่ลิงก์ซ้ำอีกครั้ง</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>คำสั่งหลังการบันทึก</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>เปิดระบบคำสั่งหลังการบันทึก</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>แทรกตัวแปร…</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>บันทึกและดำเนินการต่อ</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>แสดงวงกลม</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>นาฬิกา</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>การปรับเทียบเลนส์</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>นิ่งภาพ</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>หยุดนิ่งภาพ</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>ลำดับเฟรม</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>ป้ายกำกับ</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>ชื่อ</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>นาฬิกาจับเวลา</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>ป้ายกำกับ</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>ไม่มี</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>ล็อกแล้ว</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>ขวาไปซ้าย</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>แสดงเส้นขอบ</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>ปิดเมนูนี้</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>รีเซ็ตตำแหน่งป้ายกำกับ</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>การลดโมเสก</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>ไม่มี</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>ออก {0}</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>ส่งออกเอกสาร</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>ส่งออกรูปภาพ</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>รูปภาพ…</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>ซ่อน</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>แสดงเฟรม</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>แสดงแกนแนวนอน</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>แสดงเส้นแบ่ง 3x3</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>แสดงเส้นแบ่ง</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>แสดงป้ายกำกับแทร็ก</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>ใช้สีจากคีย์รูปภาพ</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>แสดงลูกศร</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>แสดงจุดศูนย์กลางวงกลม</value>
+  </data>
+  <data name="RecentlyUsedColors" xml:space="preserve">
+    <value>สีที่ใช้ล่าสุด...</value>
+  </data>
+  <data name="statusEmptyScreen" xml:space="preserve">
+    <value>หน้าจอว่างเปล่า</value>
+  </data>
+  <data name="Toast_Pause" xml:space="preserve">
+    <value>หยุด</value>
+  </data>
+  <data name="Toast_StartRecord" xml:space="preserve">
+    <value>การบันทึกเริ่มแล้ว</value>
+  </data>
+  <data name="Toast_StopRecord" xml:space="preserve">
+    <value>การบันทึกสิ้นสุดแล้ว</value>
+  </data>
+  <data name="Toast_ImageSaved" xml:space="preserve">
+    <value>บันทึกรูปภาพแล้ว</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>ไม่พบอุปกรณ์เสียง</value>
+  </data>
+  <data name="ToolTip_AddKeyframe" xml:space="preserve">
+    <value>เพิ่มคีย์รูปภาพ</value>
+  </data>
+  <data name="ToolTip_Back" xml:space="preserve">
+    <value>ไปยังเฟรมก่อนหน้า</value>
+  </data>
+  <data name="ToolTip_ColorProfile" xml:space="preserve">
+    <value>โปรไฟล์สี</value>
+  </data>
+  <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve">
+    <value>มุม</value>
+  </data>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve">
+    <value>นาฬิกาจับเวลา</value>
+  </data>
+  <data name="ToolTip_DrawingToolCircle" xml:space="preserve">
+    <value>วงกลม</value>
+  </data>
+  <data name="ToolTip_DrawingToolCross2D" xml:space="preserve">
+    <value>ตัวทำเครื่องหมาย</value>
+  </data>
+  <data name="ToolTip_DrawingToolLine2D" xml:space="preserve">
+    <value>เส้น</value>
+  </data>
+  <data name="ToolTip_DrawingToolPencil" xml:space="preserve">
+    <value>ดินสอ</value>
+  </data>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve">
+    <value>ย้าย</value>
+  </data>
+  <data name="ToolTip_DrawingToolText" xml:space="preserve">
+    <value>ข้อความ</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>สปอตไลท์</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>ระบุตัวเลขอัตโนมัติ</value>
+  </data>
+  <data name="ToolTip_First" xml:space="preserve">
+    <value>ไปที่จุดเริ่มต้น</value>
+  </data>
+  <data name="ToolTip_Last" xml:space="preserve">
+    <value>ไปยังจุดสิ้นสุด</value>
+  </data>
+  <data name="ToolTip_Magnifier" xml:space="preserve">
+    <value>แว่นขยาย</value>
+  </data>
+  <data name="ToolTip_Next" xml:space="preserve">
+    <value>ไปยังเฟรมถัดไป</value>
+  </data>
+  <data name="ToolTip_Rafale" xml:space="preserve">
+    <value>บันทึกลำดับของรูปภาพ</value>
+  </data>
+  <data name="ToolTip_StartRecording" xml:space="preserve">
+    <value>เริ่มการบันทึกวิดีโอ</value>
+  </data>
+  <data name="ToolTip_StopRecording" xml:space="preserve">
+    <value>หยุดการบันทึกวิดีโอ</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>หยุดกล้อง</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>เริ่มใช้กล้อง</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>ตั้งค่ากล้อง</value>
+  </data>
+  <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
+    <value>รีเซ็ต Working Zone</value>
+  </data>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve">
+    <value>ส่งออกเป็นสไลด์โชว์จากคีย์รูปภาพ</value>
+  </data>
+  <data name="ToolTip_ShowComments" xml:space="preserve">
+    <value>แสดงความคิดเห็น</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>ความเร็ว</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>ย้ายไปเวลาปัจจุบัน</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>การปรับเทียบเวลา…</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>ส่วนเวลา</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>เพิ่มจังหวะ</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>ลบจังหวะ</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>ลบจังหวะทั้งหมด</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>การใส่ตัวเลขแบบมีศูนย์นำหน้า</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>ครึ่ง</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>สองเท่า</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>เติมสีแล้ว</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>จุด</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>แสดงเส้นแนวตั้ง</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>แสดงเส้นแนวนอน</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>พื้นหลัง</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>พื้นหลัง…</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>พลิกตามแกน X</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>พลิกตามแกน Y</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>หมุน 90°</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>ตำแหน่งทศนิยม</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>กล้อง</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>พบแล้ว</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>ไม่พบ</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>การปรับเทียบเลนส์: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>การปรับเทียบระนาบ: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>จุดควบคุม</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>โหมดการตรวจสอบ</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>เปลี่ยนทุกแกนและตรวจสอบตำแหน่งของเครื่องหมายในรูปภาพ</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>เปลี่ยน 1 แกนและตรวจสอบ 2 แกนที่เหลือ</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>คำนวณตำแหน่ง 3D จาก 2 ภาพ</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>ตำแหน่งกล้อง ({0}): X:{1}, Y:{2}, Z:{3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>ระยะห่างจากจุดเริ่มต้น ({0}): {1}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>เริ่ม</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>จบ</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>ระยะเวลา</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>ค่าสะสม</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>แท็ก</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>โหมดการปรับเทียบเลนส์</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>การประมาณค่าด้วยตนเอง…</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>ไม่มี</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>การตรวจสอบการปรับเทียบ…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>คุณสมบัติพื้นหลัง</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>สี</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>ตั้งค่าการประมาณการเคลื่อนไหวของกล้อง</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>ประเภทคุณสมบัติ:</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>คุณสมบัติต่อเฟรม:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>รันการประมาณการเคลื่อนไหวของกล้อง</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>ค้นหาคุณสมบัติ</value>
+  </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>จับคู่คุณสมบัติ</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>สร้างแทร็ก</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>ลบข้อมูลการติดตาม</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>แสดงจุด</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>แสดงแทร็ก</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>ตั้งค่าการปรับเทียบเลนส์</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>รูปภาพสูงสุด:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>ขนาดลาย:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>วนซ้ำสูงสุด:</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>รันการปรับเทียบเลนส์</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>ลบข้อมูลการปรับเทียบ</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>แสดงมุมที่ตรวจจับได้</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>คัดลอกข้อมูลการปรับเทียบ</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>บันทึกข้อมูลการปรับเทียบ…</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>ขนาดป้ายกำกับ</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>สีเส้นขอบ</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>สีป้ายกำกับ</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>รหัสพิกัด</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>ใช้ความเร็วในการเล่นปัจจุบัน: {0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>การประมาณการเคลื่อนไหวของกล้อง</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>การปรับเทียบเลนส์</value>
+  </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>ตั้งค่ากล้อง…</value>
+  </data>
+  <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
+    <value>บันทึกเป็นคำอธิบายตัวเล่นเริ่มต้น</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>บันทึกเป็นคำอธิบายการจับภาพเริ่มต้น</value>
+  </data>
+  <data name="mnuUnloadAnnotations" xml:space="preserve">
+    <value>ถอดคำอธิบาย</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>โหลดคำอธิบายการจับภาพเริ่มต้นซ้ำอีกครั้ง</value>
+  </data>
+  <data name="tracking_DeleteTracks" xml:space="preserve">
+    <value>ลบแทร็ก</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>การปรับภาพให้คงที่</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>บริบท</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>แทรกตัวแปรบริบท</value>
+  </data>
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
+    <value>ลบแทร็กสุดท้าย</value>
+  </data>
+  <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
+    <value>โหลดคำอธิบายตัวเล่นเริ่มต้นซ้ำอีกครั้ง</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>ขนาดรูปภาพ:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>การปฏิบัติ</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>ลบส่วนเวลาปัจจุบัน</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>ลบเวลาทั้งหมด</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>ย้ายส่วนเวลาสิ้นสุดปัจจุบันมาที่เฟรมนี้</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>ย้ายส่วนเวลาเริ่มต้นปัจจุบันมาที่เฟรมนี้</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>ย้ายจุดแยกถัดไปมาที่เฟรมนี้</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>ย้ายการเริ่มต้นของส่วนถัดไปมาที่เฟรมนี้</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>ย้ายการสิ้นสุดของส่วนก่อนหน้ามาที่เฟรมนี้</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>ย้ายจุดแยกก่อนหน้ามาที่เฟรมนี้</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>แยก: สิ้นสุดของส่วนเวลาปัจจุบันที่เฟรมนี้ และเริ่มใหม่</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>เริ่มส่วนเวลาใหม่บนเฟรมนี้</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>หยุด: สิ้นสุดของส่วนเวลาปัจจุบันบนเฟรมนี้</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>ปรับเทียบ...</value>
+  </data>
+  <data name="mnuSwapScreens" xml:space="preserve">
+    <value>สลับหน้าจอ</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>ลืมการตั้งค่าแบบกำหนดเอง</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>แก้ไขชื่อ</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>ระบุตำแหน่งไฟล์ใน Windows Explorer</value>
+  </data>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve">
+    <value>แสดง/ซ่อน คำสั่งทั่วไป</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>เส้นทางการติดตาม</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>ระบบพิกัด</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>คัดลอกรูปวาด</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>วางรูปวาด</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>ค่าซีดจางเริ่มต้น</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>การซีดจางแบบกำหนดเอง</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>ตั้งค่าการซีดจางแบบกำหนดเอง</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>วางรูปภาพจากคลิปบอร์ด</value>
+  </data>
+  <data name="ToolTip_SetHandlerLeft" xml:space="preserve">
+    <value>ตั้งเฟรมแรกของ Working Zone ไปยังเฟรมปัจจุบัน</value>
+  </data>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve">
+    <value>ตั้งเฟรมสุดท้ายของ Working Zone ไปยังเฟรมปัจจุบัน</value>
+  </data>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve">
+    <value>ส่งออกวิดีโอพร้อมการหยุดในแต่ละคีย์รูปภาพ</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>ขนาดพิกเซลเฉลี่ย: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>ระบุความยาวของแต่ละด้าน</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>วิเคราะห์</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Kinogram (คีโนแกรม)</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>ส่งออกลำดับรูปภาพ</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>ส่งออกด้านต่อด้าน</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>แนวนอน</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>แนวตั้ง</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>ขนาดครอปภาพ:</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>ช่วงเฟรม: {0:0.000} ms</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>เฟรม: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>ตาราง:</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>ตั้งค่า Kinogram</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>ตกลง</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>คีย์รูปภาพ…</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>ลำดับภาพ…</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>ด้านต่อด้าน…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>ส่งออกสเปรดชีต</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>โครโนมิเตอร์ CSV…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>วิถีโคจร CSV…</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>ส่งออกวิดีโอ</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>ด้านต่อด้าน…</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>สไลด์โชว์วิดีโอ…</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>วิดีโอ…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>วิดีโอพร้อมการหยุด…</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>แท็ก</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>เวลาสะสม</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>คอลัมภ์</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>แสดงป้ายกำกับคีย์รูปภาพ</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>จัดตำแหน่งไปที่วัตถุปรับเทียบ</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>จบโพลีไลน์ที่ตรงนี้</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>จบโพลีไลน์ที่จุดก่อนหน้า</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>เปิดแฟ้มเล่นซ้ำสังเกตการณ์…</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>ตัดรูปวาด</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>รอรับคำสั่งการกระตุ้นการจับภาพ</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>ปลดการรอรับคำสั่งการกระตุ้นการจับภาพ</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve">
+    <value>ปิดใช้งานการทับซ้อนรูปภาพ</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve">
+    <value>เปิดใช้งานการทับซ้อนรูปภาพ</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>บันทึกทั้งสองภาพเป็นภาพรวม</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>การกู้คืนเสียหาย</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>กู้คืน</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>ไฟล์</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>วันที่</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>โปรเจคต่อไปนี้ไม่สามารถบันทึกได้อย่างสมบูรณ์แต่สามารถกู้คืนได้:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>แฟ้มสังเกตการณ์: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>หยุดแฟ้มสังเกตการณ์: {0}</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>เริ่มแฟ้มสังเกตการณ์: {0}</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>แทรกป้าย</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>รีเซ็ตป้ายทั้งหมด</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>รีเซ็ตป้ายนี้</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>สอดแทรกอัตโนมัติ</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>แทร็กโต้ตอบ</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>ดูภาพอนาคต</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>แสดงความสำเร็จ</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>จังหวะ Cadence</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>การตรวจสอบการปรับเทียบ</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>ค้นหาความคล้ายคลึงกัน</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>การแก้ไขรวม</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
+    <value>แสดง inliers</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>แสดง outliers</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>แสดงพื้นที่การเคลื่อนไหว</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>แสดงการแปลงเฟรม</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>แสดงมุมที่ถูกฉายซ้ำ</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>ออฟเซ็ตที่ใช้กับพิกัด ({0})</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>สัญญาณ:{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>ปริมาณงาน:{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>โหลด:{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>หยด:{0}</value>
   </data>
 </root>

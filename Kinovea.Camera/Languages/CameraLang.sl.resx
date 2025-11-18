@@ -67,4 +67,94 @@
   <data name="FormHandshakeResult_Title" xml:space="preserve">
     <value>Test povezave</value>
   </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>Napaka pri preizkusu povezave</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>Med preizkusom povezave je prišlo do napake.</value>
+  </data>
+  <data name="FormConfiguration_Title" xml:space="preserve">
+    <value>Nastavitve kamere</value>
+  </data>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
+    <value>Format pretoka:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve">
+    <value>Velikost slike:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
+    <value>Širina:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
+    <value>Višina:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
+    <value>Hitrost sličic:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>Osvetlitev:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
+    <value>Osvetlitev (µs):</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>Ojačitev:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>Ostrina:</value>
+  </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Pretvorba Bayer formata:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>Avtomatsko</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Strani lastnosti naprave</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>Pri poskusu prikaza strani lastnosti naprave za {0} je prišlo do napake.</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Ponovno poveži</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Uvozi parametre</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>Omrežje</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Gostitelj (IP naslov)</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Vrata</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>Oblika</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>Avtentikacija</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>Uporabnik</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>Geslo</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>Končni URL</value>
+  </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Omogoči strojno stiskanje</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Omogoči programsko barvno rekonstrukcijo</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Končna hitrost sličic:</value>
+  </data>
 </root>

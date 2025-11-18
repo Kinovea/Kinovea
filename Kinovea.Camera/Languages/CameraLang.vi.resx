@@ -58,34 +58,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve">
-    <value>Preverjam posodobitve…</value>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>Áp dụng</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve">
-    <value>Nova verzija na voljo!</value>
-  </data>
-  <data name="Updater_CurrentVersion" xml:space="preserve">
-    <value>Trenutna verzija:</value>
-  </data>
-  <data name="Updater_Download" xml:space="preserve">
-    <value>Prenesi</value>
-  </data>
-  <data name="Updater_InternetError" xml:space="preserve">
-    <value>Pri preverjanju posodobitev je prišlo do napake. Preveri, ali je na voljo internetna povezava.</value>
-  </data>
-  <data name="Updater_LblChangeLog" xml:space="preserve">
-    <value>Seznam sprememb:</value>
-  </data>
-  <data name="Updater_NewVersion" xml:space="preserve">
-    <value>Nova verzija</value>
-  </data>
-  <data name="Updater_Quit" xml:space="preserve">
-    <value>Zapri</value>
-  </data>
-  <data name="Updater_Title" xml:space="preserve">
-    <value>Kinovea – Preverjanje nove različice.</value>
-  </data>
-  <data name="Updater_UpToDate" xml:space="preserve">
-    <value>Tvoja različica je posodobljena!</value>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Hũy</value>
   </data>
 </root>

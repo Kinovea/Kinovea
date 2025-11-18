@@ -68,6 +68,141 @@
     <value>Prekliči</value>
   </data>
   <data name="buttonGotoFirst_ToolTip" xml:space="preserve">
-    <value>Pojdi nazaj na začetek obeh posnetkov</value>
+    <value>Vrni se na začetek obeh videoposnetkov</value>
+  </data>
+  <data name="buttonGotoLast_ToolTip" xml:space="preserve">
+    <value>Pojdi na konec obeh videoposnetkov</value>
+  </data>
+  <data name="buttonGotoNext_ToolTip" xml:space="preserve">
+    <value>Pojdi na naslednji okvir za oba videoposnetka</value>
+  </data>
+  <data name="buttonGotoPrevious_ToolTip" xml:space="preserve">
+    <value>Pojdi na prejšnji okvir za oba videoposnetka</value>
+  </data>
+  <data name="buttonPlay_ToolTip" xml:space="preserve">
+    <value>Predvajaj ali začasno ustavi oba videoposnetka</value>
+  </data>
+  <data name="CommandAddDrawing_FriendlyName" xml:space="preserve">
+    <value>Dodaj risbo</value>
+  </data>
+  <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve">
+    <value>Uredi risbo</value>
+  </data>
+  <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve">
+    <value>Izbriši risbo</value>
+  </data>
+  <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve">
+    <value>Odstranite ključno sliko</value>
+  </data>
+  <data name="CommandExportVideo_FriendlyName" xml:space="preserve">
+    <value>Izvozi videoposnetek</value>
+  </data>
+  <data name="DataAnalysis_ScatterDiagram" xml:space="preserve">
+    <value>Graf raztrosa</value>
+  </data>
+  <data name="DataAnalysis_LinearKinematics" xml:space="preserve">
+    <value>Linearna kinematika</value>
+  </data>
+  <data name="DataAnalysis_AngularKinematics" xml:space="preserve">
+    <value>Kotna kinematika</value>
+  </data>
+  <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve">
+    <value>Diagram kotov</value>
+  </data>
+  <data name="DataAnalysis_PagePlot" xml:space="preserve">
+    <value>Ploskev</value>
+  </data>
+  <data name="DataAnalysis_Labels" xml:space="preserve">
+    <value>Oznake</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Naslov:</value>
+  </data>
+  <data name="DataAnalysis_XaxisLabel" xml:space="preserve">
+    <value>X osi:</value>
+  </data>
+  <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve">
+    <value>X osi</value>
+  </data>
+  <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
+    <value>Y osi:</value>
+  </data>
+  <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
+    <value>Y osi</value>
+  </data>
+  <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve">
+    <value>Čas (ms)</value>
+  </data>
+  <data name="DataAnalysis_CalibrationPlane" xml:space="preserve">
+    <value>Kalibracijska ravnina</value>
+  </data>
+  <data name="DataAnalysis_ExportGraph" xml:space="preserve">
+    <value>Izvozi graf</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>pik</value>
+  </data>
+  <data name="DataAnalysis_SaveToFile" xml:space="preserve">
+    <value>Shrani v datoteko</value>
+  </data>
+  <data name="DataAnalysis_ExportData" xml:space="preserve">
+    <value>Izvozi podatke</value>
+  </data>
+  <data name="DataAnalysis_DataSource" xml:space="preserve">
+    <value>Vir podatkov</value>
+  </data>
+  <data name="DataAnalysis_DataLabel" xml:space="preserve">
+    <value>Podatki :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel" xml:space="preserve">
+    <value>Čas :</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
+    <value>Absolutno</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve">
+    <value>Relativno</value>
+  </data>
+  <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
+    <value>Normalizirano</value>
+  </data>
+  <data name="DataAnalysis_AngularPosition" xml:space="preserve">
+    <value>Kot</value>
+  </data>
+  <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
+    <value>Skupni premik</value>
+  </data>
+  <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
+    <value>Tangencialna hitrost</value>
+  </data>
+  <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve">
+    <value>Tangencialni pospešek</value>
+  </data>
+  <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve">
+    <value>Rezultantni pospešek</value>
+  </data>
+  <data name="dlgColorProfile_Title" xml:space="preserve">
+    <value>Barvni profil ...</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Odpri</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Naraščajoče</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Razvrsti po</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Velikost</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Padajoče</value>
   </data>
 </root>

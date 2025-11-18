@@ -58,24 +58,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Ažuriraj softver…</value>
+  <data name="mnuCheckForUpdates" xml:space="preserve"><value>Traži nove verzije …</value>
   </data>
-  <data name="Updater_Behind" xml:space="preserve"><value>Nova verzija je dostupna!</value>
+  <data name="Updater_Behind" xml:space="preserve"><value>Dostupna je nova verzija!</value>
   </data>
-  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Trenutna verzija:</value>
+  <data name="Updater_CurrentVersion" xml:space="preserve"><value>Trenutačna verzija:</value>
   </data>
-  <data name="Updater_Download" xml:space="preserve"><value>Preuzeti</value>
+  <data name="Updater_Download" xml:space="preserve"><value>Preuzmi</value>
   </data>
-  <data name="Updater_InternetError" xml:space="preserve"><value>Došlo je do greške prilikom provjere ažuriranja. Molimo vas da osigurate dostupnost Internet veze.</value>
+  <data name="Updater_InternetError" xml:space="preserve"><value>Došlo je do greške prilikom traženja novih verzija. Osiguraj internetsku vezu.</value>
   </data>
-  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Evidencija promjena:</value>
+  <data name="Updater_LblChangeLog" xml:space="preserve"><value>Zapisnik promjena:</value>
   </data>
   <data name="Updater_NewVersion" xml:space="preserve"><value>Nova verzija</value>
   </data>
-  <data name="Updater_Quit" xml:space="preserve"><value>Odustani</value>
+  <data name="Updater_Quit" xml:space="preserve"><value>Zatvori</value>
   </data>
-  <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Provjera za novu verziju.</value>
+  <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Traženje nove verzije.</value>
   </data>
-  <data name="Updater_UpToDate" xml:space="preserve"><value>Vaša verzija je ažurirana!</value>
+  <data name="Updater_UpToDate" xml:space="preserve"><value>Tvoja verzija je aktualna!</value>
   </data>
 </root>

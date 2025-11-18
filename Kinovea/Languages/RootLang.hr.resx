@@ -71,16 +71,16 @@
     <value>Reprodukcija</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
-    <value>Grafički format:</value>
+    <value>Format slika:</value>
   </data>
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
-    <value>Video format:</value>
+    <value>Format videa:</value>
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Memorija</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
-    <value>Memorija rezervirana za hvatanje buffera: {0} MB.</value>
+    <value>Rezervirana memorija za međuspremnike kašnjenja: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
     <value>Prikaži crteže tokom video reprodukcije</value>
@@ -116,10 +116,10 @@
     <value>Željene opcije</value>
   </data>
   <data name="Generic_Cancel" xml:space="preserve">
-    <value>Poništi</value>
+    <value>Odustani</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
-    <value>Odustani</value>
+    <value>Zatvori</value>
   </data>
   <data name="Generic_Save" xml:space="preserve">
     <value>Spremi</value>
@@ -134,7 +134,7 @@
     <value>Datoteka</value>
   </data>
   <data name="mnuFullScreen" xml:space="preserve">
-    <value>Puni zaslon</value>
+    <value>Cjeloekranski prikaz</value>
   </data>
   <data name="mnuHelp" xml:space="preserve">
     <value>Pomoć</value>
@@ -170,10 +170,10 @@
     <value>Poništi</value>
   </data>
   <data name="mnuRedo" xml:space="preserve">
-    <value>Ponoviti</value>
+    <value>Ponovi</value>
   </data>
   <data name="TimeCodeFormat_Frames" xml:space="preserve">
-    <value>Broj kadrova u sekundi</value>
+    <value>Broj kadra</value>
   </data>
   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
     <value>Ukupno milisekundi</value>
@@ -200,10 +200,10 @@
     <value>Prikaži broj kadrova u sekundi (fps):</value>
   </data>
   <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
-    <value>Radijani u sekundi ({0})</value>
+    <value>Radijana u sekundi ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
-    <value>Stupnjevi u sekundi ({0})</value>
+    <value>Stupnjeva u sekundi ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
     <value>Stopa u sekundi na kvadrat ({0})</value>
@@ -212,13 +212,13 @@
     <value>Radijani ({0})</value>
   </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
-    <value>Dodatna memorija dodijeljena svakom zaslonu za reprodukciju: {0} MB.</value>
+    <value>Predmemorija koja je dodijeljena svakom ekranu za reprodukciju: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
-    <value>Zadana anotacija datoteke:</value>
+    <value>Zadana datoteka za bilješke:</value>
   </data>
   <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
-    <value>Snimka</value>
+    <value>Snimanje</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
     <value>Izbriši</value>
@@ -227,10 +227,10 @@
     <value>Zamjenski broj kadrova u sekundi (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>Retroaktivnost: snima kadrove kada se snimanje zaustavi.</value>
+    <value>Retroaktivno: snima kadrove kada se snimanje prekine.</value>
   </data>
   <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
-    <value>Stupnjevi u sekundi na kvadrat ({0})</value>
+    <value>Stupnjeva u sekundi na kvadrat ({0})</value>
   </data>
   <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
     <value>Export</value>
@@ -269,7 +269,7 @@
     <value>Kutna brzina:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
-    <value>Ugao:</value>
+    <value>Kut:</value>
   </data>
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
     <value>Vidljivo tokom cijele video snimke</value>
@@ -284,7 +284,7 @@
     <value>Decimalni razdjelnik za CSV datoteke:</value>
   </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
-    <value>Nekompresirani video format:</value>
+    <value>Format nekomprimiranih videa:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
     <value>Zarez</value>
@@ -293,16 +293,16 @@
     <value>Sistem ({0})</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
-    <value>Komande</value>
+    <value>Naredbe</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
     <value>Pikseli</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
-    <value>Ažuriraj snimku tokom pomicanja pokazivača</value>
+    <value>Aktualiziraj snimku tijekom pomicanja pokazivača vremena</value>
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
-    <value>Snimi nekompresirani video</value>
+    <value>Snimi nekomprimiran video</value>
   </data>
   <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
     <value>Aktiviranje:</value>
@@ -344,7 +344,7 @@
     <value>Ulazni sklop:</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
-    <value>Kamera: snimanje kadrova u realnom vremenu.</value>
+    <value>Kamera: snima kadrove u realnom vremenu.</value>
   </data>
   <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
     <value>Stupnjevi ({0})</value>
@@ -353,7 +353,7 @@
     <value>Zanemari upozorenje o zamjeni preko postojeće datoteke</value>
   </data>
   <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
-    <value>Radijani u sekundi na kvadrat ({0})</value>
+    <value>Radijana u sekundi na kvadrat ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
     <value>Prilagođena jedinica dužine:</value>
@@ -377,7 +377,7 @@
     <value>Kamere velike brzine</value>
   </data>
   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
-    <value>Zadani parametri za praćenje</value>
+    <value>Zadani parametri praćenja</value>
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Jedinice</value>
@@ -521,7 +521,7 @@
     <value>Datoteke</value>
   </data>
   <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
-    <value>Standardno ime datoteke:</value>
+    <value>Zadano ime datoteke:</value>
   </data>
   <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
     <value>Aktiviraj automatsko numeriranje</value>
@@ -534,5 +534,92 @@
   </data>
   <data name="mnuConfigureCaptureFolders" xml:space="preserve">
     <value>Konfiguriraj mape za snimanje</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Upravljaj radnim prostorima …</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Isključi zapise o otklanjanju grešaka</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Uključi zapise o otklanjanju grešaka</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>Upravljaj radnim prostorima</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>Stvori radni prostor iz aktivnih prozora</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>Preimenuj odabrani radni prostor</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>Izbriši odabrani radni prostor</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>Ime radnog prostora</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>Prekini proces</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>Pokerni proces</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>Nastavi tamo gdje si stao/la</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>Otvori određeni sadržaj</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>Ponovna reprodukcija: {0}</value>
+  </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>Reprodukcija: {0}</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>Za pokretanje eksternih programa nakon snimanja, koristi dijalog za naredbe radnji nakon snimanja na odgovarajućem ekranu za snimanje.\n\nDesnom tipkom miša klikni pozadinu prikaza i odaberi {0}.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Automatski aktualiziraj ime datoteke nakon svakog snimanja kako bi uključivalo uzastopni broj.\nOva se opcija zanemaruje ako ime datoteke koristi dinamičke varijable.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Ne prikazuj dijalog za potvrdu kada će snimka prepisati postojeću datoteku.</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>UDP priključak:</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Uključi filtriranje piksela</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Prilikom pokretanja</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Popis ekrana</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Uvezi trenutačne ekrane</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Spremljeni prozori</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Izvezi crteže</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Izvezi kalibraciju</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Prikaži sve jezike</value>
+  </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>Unaprijed postavljena postavka {0}:</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Izvezene bilješke</value>
   </data>
 </root>
