@@ -370,13 +370,15 @@ namespace Kinovea.Camera.DirectShow
 
             // The Imaging Source
             // Ex: "DMK 33UX273".
-            Match matchTheImagingSource = theImagingSourcePattern.Match(name);
-            if (matchTheImagingSource.Success)
-            {
-                log.DebugFormat("Blacklisting The Imaging Source camera: {0}.", name);
-                blacklist.Add(name);
-                return true;
-            }
+            // This filter is disabled for now because the GenICam version doesn't work correctly, 
+            // so we need to have this fallback.
+            //Match matchTheImagingSource = theImagingSourcePattern.Match(name);
+            //if (matchTheImagingSource.Success)
+            //{
+            //    log.DebugFormat("Blacklisting The Imaging Source camera: {0}.", name);
+            //    blacklist.Add(name);
+            //    return true;
+            //}
 
             return false;
         }
