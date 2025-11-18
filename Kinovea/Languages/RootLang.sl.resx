@@ -73,4 +73,52 @@
   <data name="dlgAbout_Citation" xml:space="preserve">
     <value>Navedba</value>
   </data>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>Zajemi</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>Risbe</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>Splošno</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>Predvajanje</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Tipkovnica</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Prikaži hitrost sličic (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>Format slike:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>Format videa:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Ne stisnjen video format:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Posnemi ne stisnjen video</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Snemanje</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>Način snemanja in zamik</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Kamera: snema sličice v realnem času.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Z zamikom: snema zamaknjene sličice.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Za nazaj: posname sličice, ko se zajem ustavi.</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>Spomin</value>
+  </data>
 </root>
