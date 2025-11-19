@@ -436,4 +436,16 @@
   <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
     <value>Görüntüleri dahil et</value>
   </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Dosyayı Aç…</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Navigasyon Paneli</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Pencere</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Pencere özellikleri…</value>
+  </data>
 </root>
