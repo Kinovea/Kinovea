@@ -61,4 +61,10 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Hũy</value>
   </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Lưu lại</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Thoát</value>
+  </data>
 </root>
