@@ -461,7 +461,7 @@
     <value>Thông số nội tại cái máy ảnh</value>
   </data>
   <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
     <value>Ngậm vậy (mm):</value>

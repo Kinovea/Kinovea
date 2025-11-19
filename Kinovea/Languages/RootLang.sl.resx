@@ -121,4 +121,58 @@
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Spomin</value>
   </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>Dodeljeni pomnilnik za medpomnilnike zamika: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Prezri opozorilo o prepisu datoteke</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Hitrokamerne naprave</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Prag zamenjave hitrosti sličic (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Nadomestna hitrost sličic (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Avtomatizacija</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Omogoči zvočni sprožilec</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Vhodna naprava:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Prag sprožilca:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Čas nedejavnosti (s):</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>Pokaži risbe med predvajanjem videa</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Omogoči filtriranje koordinat</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Omogoči možnost "debug" za prilagojena orodja</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Privzeta motnost novih risb:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Vidno za celoten video</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Uvozi zaporedja slik kot videoposnetke</value>
+  </data>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>Pri odpiranju novega videa vedno uporabi razpletanje</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Posodobi sliko med premikanjem časovnega kazalca</value>
+  </data>
 </root>
