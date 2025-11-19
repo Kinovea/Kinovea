@@ -61,4 +61,7 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Hũy</value>
   </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Mở</value>
+  </data>
 </root>
