@@ -271,4 +271,118 @@
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorije</value>
   </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Ukazi</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Hitra tipka za {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Uveljavi</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Počisti</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Privzeto</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Zapri</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Shrani</value>
+  </data>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>O Kinovea …</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>Uredi</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>Datoteka</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Celi zaslon</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>Pomoč</value>
+  </data>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>Kinovea pomoč ...</value>
+  </data>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>Nedavne</value>
+  </data>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>Posodobi zgodovino</value>
+  </data>
+  <data name="mnuImage" xml:space="preserve">
+    <value>Slika</value>
+  </data>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>Jezik</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Orodje</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>Nastavitve …</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Delovno okolje</value>
+  </data>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>Pogled</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>Razveljavi</value>
+  </data>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>Ponovi</value>
+  </data>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>Številka sličice</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>Skupne milisekunde</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Skupne mikrosekunde</value>
+  </data>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>Stotinka minute</value>
+  </data>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
+    <value>Desettisočinka ure</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Sproži dejanje:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Pot do pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Vejica</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Decimalno ločilo za CSV datoteke:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Točka</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Kalibrirane meritve</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Točke</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Način izvoza:</value>
+  </data>
 </root>
