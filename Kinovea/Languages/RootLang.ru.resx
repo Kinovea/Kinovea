@@ -445,4 +445,10 @@
   <data name="mnuWindow" xml:space="preserve">
     <value>Окно</value>
   </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Свойства окна…</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Открыть новое окно</value>
+  </data>
 </root>
