@@ -428,7 +428,7 @@
     <value>Wiederholungen pro Minute ({0})</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
-    <value>Tastenanschläge pro Sekunde({0})</value>
+    <value>Schläge pro Sekunde ({0})</value>
   </data>
   <data name="OpenFolder" xml:space="preserve">
     <value>Ordner öffnen…</value>
@@ -651,5 +651,8 @@
   </data>
   <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
     <value>Importire den aktuellen Bildschirm</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Schläge pro Minute ({0})</value>
   </data>
 </root>
