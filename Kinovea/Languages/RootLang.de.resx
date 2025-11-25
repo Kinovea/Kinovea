@@ -482,7 +482,7 @@
     <value>Öffne Dateibrowser</value>
   </data>
   <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
-    <value>Bearbeitung hier Fortsetzen</value>
+    <value>Bearbeitung hier fortsetzen</value>
   </data>
   <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
     <value>Öffne spezifische Inhalte</value>
@@ -491,7 +491,7 @@
     <value>Dateibrowser</value>
   </data>
   <data name="formWindowProperties_Replay0" xml:space="preserve">
-    <value>Nocheinmal Abspielen: {0}</value>
+    <value>Noch einmal Abspielen: {0}</value>
   </data>
   <data name="formWindowProperties_Playback0" xml:space="preserve">
     <value>Abspielen: {0}</value>
@@ -558,5 +558,98 @@
   </data>
   <data name="prefPanelCapture_MoveDown" xml:space="preserve">
     <value>Nach unten Verschieben</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Deaktiviere Debugger-Protokolle</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Aktiviere Debugger-Protokolle</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Rückstrich einfügen</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Vorschau des dynamische Pfades</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Standart Datei Name:</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Aktiviere auto-numerierung</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Der Dateiname wird nach jeder Aufnahme automatisch aktualisiert und mit einer fortlaufenden Nummer versehen.\nDiese Option wird ignoriert, wenn der Dateiname dynamische Variablen verwendet.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Zeigen Sie den Bestätigungsdialog nicht an, wenn die Aufnahme eine bestehende Datei überschreiben soll.</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Auslöser</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>Aktiviere UDP Auslöser</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>UDP Port:</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Standart Auslöser Status:</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Bild</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Aktiviere Pixel Filterung</value>
+  </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>Voreinstellung{0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Beim Hochfahren</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Exportierte Anmerkungen</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Exportiere Zeichnungen</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Fenster</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Gespeicherte Fenster</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Exportiere die Kalibrierung</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Aktiviere die Glättung der Ableitungen für Hochgeschwindigkeitsaufnahmen</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>Starte den Prozess</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Zeige alle Sprachen</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Große Zeigehand</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>Um nach einer Aufnahme externe Programme auszuführen, verwenden Sie den Befehl-Dialog nach der Aufnahme im entsprechenden Aufnahmebildschirm.\n\nklicken Sie mit der rechten Maustaste auf den Hintergrund des Ansichtsfensters und wählen Sie {0}.</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Postaufnahmebefehl…</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Bildschirmliste</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Importire den aktuellen Bildschirm</value>
   </data>
 </root>
