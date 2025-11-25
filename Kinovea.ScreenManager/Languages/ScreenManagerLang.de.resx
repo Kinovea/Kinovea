@@ -1147,4 +1147,550 @@
   <data name="mnuConfigureCaptureFolders" xml:space="preserve">
     <value>Konfiguriere Ordner für Aufnahmen</value>
   </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Größe beschneiden:</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Bild Intervall: {0:0.000} ms</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Bewege das Ende der aktuellen Zeit Sektion zu diesem Bild</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Trennpunkt/Trennung: den aktuellen Zeitabschnitt auf diesem Frame beenden und den nächsten starten</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Startet einen neuen Zeitabschnitt ab diesem Bild</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Stop: Beendet den Zeitabschnitt mit diesem Bild</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Kacheln interpolieren</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Position des Label zurücksetzen</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Diese Kachel zurücksetzen</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Bilder…</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Schlüsselbilder…</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Bildsequenz…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>Stopuhr CSV…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>Flugbahn CSV…</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Video…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Video mit Pausen…</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Einfrieren</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Auftauen</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Spalten</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Uhr</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Bildnummer</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Etiketten</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Stopuhr</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Etikett</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Gesperrt</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Automatische Interpolation</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>Rechts nach links</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Vorschau</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Wichtige Bildbeschriftungen anzeigen</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Titelbezeichnung anzeigen</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Verwende Schlüsselbild-Farben</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Eigenschaften</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Zur aktuellen Zeit springen</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Zeitkalibrierung…</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Zeitabschnitte</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Geschwindigkeit</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Raster anzeigen</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Horizontalachse anzeigen</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>3x3 Raster anzeigen</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Vertikalachse anzeigen</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>An Kalibrierungsobjekt ausrichten</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>Gefüllt</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>Punkt</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Vertikale Linie anzeigen</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Horizontale Linie anzeigen</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>Hintergrund</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>Hintergrund…</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Spiegle die X Achse</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Spiegle die Y Achse</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Rotieren um 90°</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>Dezimalstellen</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>Kalibrierungsvalidierung</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>gefunden</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>fehlt</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>Objektivkalibrierung: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>Ebenenkalibrierung: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Kontrollpunkt</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Validierungsmodus</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>Ändern Sie alle Achsen und überprüfen Sie die Position des Markers im Bild</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>Ändern Sie eine Achse und überprüfen Sie die anderen beiden Achsen</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>3D-Positionen, die aus den beiden Ansichten berechnet wurden</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Kameraposition ({0}): X:{1}, Y:{2}, Z:{3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Distanz zum Ursprung ({0}): {1}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Ende</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Dauer</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Objektiv-Kalibrierungsmodus</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Kalibrierungsüberprüfung…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Hintergrundeigenschaften</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Farbe</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>Kamerabewegungsschätzung konfigurieren</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>Funktion Type:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Kamerabewegungsschätzung durchführen</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>Bündelanpassung</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>Lösche die Verfolgungs daten</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>Zeige punkte</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>Zeige Ausreißer</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>Bewegungsfeld anzeigen</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>Zeige die Bild Transformationen</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>Zeige die Verfolgungen</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>Objektivkalibrierung konfigurieren</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>Maximale Bilder:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>Mustergröße:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>Maximale Iterationen:</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>Objektivkalibrierung durchführen</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>Lösche die Kalibrierungs Daten</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>Zeige erkannte Ecken</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>Projizierte Ecken anzeigen</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>Kalibrierungs Daten kopieren</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>Kalibrierungs Daten sichern…</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>Versatz auf Koordinaten angewendet ({0})</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>Etikettgröße</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>Randfarbe</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>Etikettenfarbe</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>Koordinaten</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>Nutze die aktuelle Wiedergabegeschwindigkeit: {0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>Kamerabewegungsschätzung</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>Objektivekalibrierung</value>
+  </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>Konfiguriere die Kamere…</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Als Standardaufnahmeanmerkungen speichern</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Standard Aufzeichnungensanmerkungen laden</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>Postaufnahme Befehl</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>Aktiviere Postaufnahme Kommando</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>Setze eine Variable ein…</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>Speichern und fortfahren</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>Zeige den Kreis</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>Öffne den Ordner…</value>
+  </data>
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
+    <value>Lösche und beende die Verfolgung</value>
+  </data>
+  <data name="tracking_DeleteTracks" xml:space="preserve">
+    <value>Beende die Verfolgung</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>Stabilisierung</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>Kontext</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>Füge eine Kontextvariable ein</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>Einfügen</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>Beispiel</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>Schlüsselwort</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>Kamera Bilder-Rate</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>Pfad zur Video Datei</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>Pfad zum Aufnahme Ordner</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>Dateiname mit Erweiterung</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>Dateiname ohne Erweiterung</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>Dateierweiterung</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>Anmerkungsdateiname</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>Datum (ISO 8601)</value>
+  </data>
+  <data name="variable_TimeISO8601" xml:space="preserve">
+    <value>Zeit (ISO 8601)</value>
+  </data>
+  <data name="variable_Hours" xml:space="preserve">
+    <value>Stunden</value>
+  </data>
+  <data name="variable_Milliseconds" xml:space="preserve">
+    <value>Millisekunden</value>
+  </data>
+  <data name="mnuNext" xml:space="preserve">
+    <value>Nächste</value>
+  </data>
+  <data name="mnuPrevious" xml:space="preserve">
+    <value>Vorherige</value>
+  </data>
+  <data name="mnuVerticalLayout" xml:space="preserve">
+    <value>Vertikales Layout</value>
+  </data>
+  <data name="tracking_TrackingAlgorithm" xml:space="preserve">
+    <value>Verfolgungsalgorithmus:</value>
+  </data>
+  <data name="tracking_MatchThreshold" xml:space="preserve">
+    <value>Verbinde Schwelle:</value>
+  </data>
+  <data name="track_UpdateThreshold" xml:space="preserve">
+    <value>Aktualisiere die Schwelle:</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>Lösche das Ende der Verfolgung</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>Vorheriges Schlüsselbild</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>Nächstes Schlüsselbild</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>Zeige alle Schlüsselbilder</value>
+  </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>The Anzeige ist verzögert</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>Die Ansicht ist live</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>Zeichen den Kontext auf</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>Deaktiviere den Aufzeichnungskontext</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>Aktiviere den Aufzeichnungskontext</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>Verzögerung in Sekunden</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>Komplette Länge der Aufzeichnung in Sekunden</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>Wähle einen Aufzeichnungsordner aus</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>Signal:{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>Durchsatz:{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>Lade:{0}</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Postaufnahmebefehl…</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Demosaicing</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Nichts</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Beendet {0}</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Dokument exportieren</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Bilder exportieren</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>Nebeneinander…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Tabellenkalkulation exportieren</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Video exportieren</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>Nebeneinander…</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Diashow…</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Objektivkalibrierug</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Gesamtzeit</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Nichts</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Ränder zeigen</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Interaktive Verfolgung</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Bild anzeigen</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Kadenz</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>Beat hinzufügen</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>Nullbasierte Nummerierung</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>Halb</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>Doppel</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Gesamt</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Nichts</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>Merkmale pro Bild:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>Finde Merkmale</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>Finde Homographien</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>Erstelle Verfolgungen</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>Die Aufnahme Schwelle ist geladen</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>Die Aufnahme Schwelle ist entladen</value>
+  </data>
 </root>
