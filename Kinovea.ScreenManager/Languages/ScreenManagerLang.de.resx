@@ -1693,4 +1693,7 @@
   <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
     <value>Die Aufnahme Schwelle ist entladen</value>
   </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Bildreihe konfigurieren</value>
+  </data>
 </root>
