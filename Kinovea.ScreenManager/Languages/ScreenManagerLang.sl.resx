@@ -205,4 +205,40 @@
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>Padajoče</value>
   </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Zapri</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Shrani</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve">
+    <value>Ponastavi na privzeti barvni profil</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve">
+    <value>Naloži barvni profil</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
+    <value>Shrani barvni profil</value>
+  </data>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve">
+    <value>Nastavi risanje</value>
+  </data>
+  <data name="drawingName" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
+    <value>Vedno vidno</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Največja prekrivnost (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Čas neprosojnosti (sličice):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Čas bledenja (sličice):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Nastavi časovni potek videa</value>
+  </data>
 </root>
