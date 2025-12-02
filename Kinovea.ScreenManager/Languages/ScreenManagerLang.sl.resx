@@ -241,4 +241,34 @@
   <data name="dlgTimebase_Title" xml:space="preserve">
     <value>Nastavi časovni potek videa</value>
   </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Nastavi mape zajema</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>Visoko hitrostna kamera</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>Hitrost zajema:</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Ta možnost določa razliko med hitrostjo videa in dejanskim časom. Vpliva na oznake, ki prikazujejo čas in kinematične meritve. Uporabi jo, kadar je bil video posnet v hitrostnem načinu. </value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>Hitrost sličic, prebrana iz datoteke: {0:0.##} fps</value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>Hitrost videa:</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>Ta možnost določa referenčno hitrost sličic, ki jo Kinovea uporablja za predvajanje videa. Uporabi jo, kadar video vsebuje napačno hitrost sličic ali je Kinovea ne more prebrati. </value>
+  </data>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
+    <value>Ponastavi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>Nastavi orodje za pot</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Pokaži krožnico najboljšega ujemanja</value>
+  </data>
 </root>
