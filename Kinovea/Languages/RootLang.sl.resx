@@ -385,4 +385,94 @@
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
     <value>Način izvoza:</value>
   </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Izvozi</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistem ({0})</value>
+  </data>
+  <data name="mnuBigArrow" xml:space="preserve">
+    <value>Velika puščica</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Velika kazalna roka</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>Privzeto</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Kazalnik</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Prevedi Kinovea …</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>Hertz ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
+    <value>Cikli na sekundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
+    <value>Cikli na minuto ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerSecond" xml:space="preserve">
+    <value>Korakov na sekundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
+    <value>Korakov na minuto ({0})</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Onemogoči debug zapise</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Omogoči debug zapise</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Osveži</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Nastavi mape zajema</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Upravljaj okna</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>Ustavi proces</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Izbriši okno</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>Udarci na sekundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Udarci na minuto ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Vključi slike</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Odpri mapo …</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Navigacijska plošča</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Okno</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Lastnosti okna …</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Odpri novo okno</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>Znova odpri okno</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Upravljaj okna …</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Upravljaj delovne prostore …</value>
+  </data>
 </root>
