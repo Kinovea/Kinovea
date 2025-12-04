@@ -271,4 +271,124 @@
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
     <value>Pokaži krožnico najboljšega ujemanja</value>
   </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Položaj</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Navpični položaj</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Vodoravni položaj</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Skupna razdalja</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Razdalja do izvora</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Relativni vodoravni premik</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Relativni navpični premik</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>Hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Navpična hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Vodoravna hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Navpični pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Vodoravni pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Kotna hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Kotni pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Centripetalni pospešek</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Dolžina</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Sredina</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Polmer</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Premer</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Obseg</value>
+  </data>
+  <data name="tracking_Tracking" xml:space="preserve">
+    <value>Sledenje</value>
+  </data>
+  <data name="tracking_ObjectWindow" xml:space="preserve">
+    <value>Okno objekta:</value>
+  </data>
+  <data name="tracking_SearchWindow" xml:space="preserve">
+    <value>Iskalno okno:</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>Dejanska velikost segmenta:</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>Kalibracija črte</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Poravnava koordinatnega sistema:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>Črta določa vodoravno os</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Črta določa navpično os</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Poravnano z osmi slike</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Ukaz po snemanju …</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>Kalibracija ravnine</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
+    <value>Trajanje na vsaki ključni sliki: {0} stotink sekunde.</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
+    <value>Trajanje vsake ključne slike: {0:0.00} sekunde.</value>
+  </data>
+  <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
+    <value>Shrani podatke kot dokument preglednice</value>
+  </data>
+  <data name="dlgImportReference_Title" xml:space="preserve">
+    <value>Uvozi sliko kot referenco</value>
+  </data>
+  <data name="dlgLoadAnalysis_Title" xml:space="preserve">
+    <value>Naloži oznake</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>Skupaj: {0:0} slik.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Izvozi vse slike.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>Izvozi eno sliko vsakih {0} slik.</value>
+  </data>
 </root>
