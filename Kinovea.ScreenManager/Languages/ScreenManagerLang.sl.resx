@@ -391,4 +391,94 @@
   <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
     <value>Izvozi eno sliko vsakih {0} slik.</value>
   </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>Izvozi eno sliko vsakih {0:0.00}s.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>Izvozi eno sliko vsakih {0:0}ms.</value>
+  </data>
+  <data name="dlgSaveAnalysisTitle" xml:space="preserve">
+    <value>Shrani oznake</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>Kalibracija kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>Koeficienti popačenja</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>Notranji parametri kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>Naloži profil kalibracije kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Shrani profil kalibracije kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Širina senzorja (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Goriščna razdalja (mm):</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>Puščica</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>Puščica – Črtkano</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>Puščica – Valovito</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>Puščica – Ukrivljeno</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>Puščica – Lomljena črta</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>Puščica – Črtkana lomljena črta</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>Puščica – Valovita lomljena črta</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>Sredinska sakralna navpična črta</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>Lomljena črta</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>Mreža popačenja</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Goniometra</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Drža</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>Prilagoditev kolesa</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Koleno</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>Lokostrelstvo</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>Kot glede na navpičnico</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>Kot glede na vodoravnico</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>Razdalja (vodoravna)</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>Človeški model</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>Človeški model (2)</value>
+  </data>
 </root>
