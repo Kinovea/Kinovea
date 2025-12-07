@@ -206,7 +206,7 @@
     <value>Padajoče</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
-    <value>Zapri</value>
+    <value>Izhod</value>
   </data>
   <data name="Generic_Save" xml:space="preserve">
     <value>Shrani</value>
@@ -480,5 +480,95 @@
   </data>
   <data name="DrawingName_HumanModel2" xml:space="preserve">
     <value>Človeški model (2)</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>Preizkusna mreža kamere</value>
+  </data>
+  <data name="DrawingName_Grid" xml:space="preserve">
+    <value>Mreža</value>
+  </data>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve">
+    <value>Perspektivna mreža</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Pravokotnik</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Pot</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Krivulja</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Ura</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>Prepis datoteke</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>Datoteka {0} že obstaja.\nJo želiš zamenjati?</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>Neveljavno ime datoteke</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>Ime datoteke vsebuje neveljavne znake.\n Ime datoteke ne sme vsebovati naslednjih znakov:\n \ / : * ? " &lt; &gt;</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Mapa ni bila ustvarjena</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Mape za zajem ni bilo mogoče ustvariti.\nPreveri, ali kaže na veljavno lokacijo shranjevanja.</value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>Datoteke ni mogoče zapisati.\nPreveri, ali imaš dovoljenja za pisanje v ciljno mapo in ali datoteka ni trenutno v uporabi.</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea – Videoposnetka ni mogoče shraniti. </value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>Videoposnetka ni mogoče shraniti.\nPoskusi znova z drugačnim formatom.</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>Preimenuj kamero</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>Vzdevek:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>Ikona:</value>
+  </data>
+  <data name="FormFileSave_Infos" xml:space="preserve">
+    <value>Napredek:</value>
+  </data>
+  <data name="FormProgressBar_Title" xml:space="preserve">
+    <value>Napredek</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>Izgled</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>Puščice:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Krivulja:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Perspektiva:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Ura:</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>Zapri</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>Barva:</value>
+  </data>
+  <data name="Generic_Configuration" xml:space="preserve">
+    <value>Konfiguracija</value>
+  </data>
+  <data name="Generic_ConfigurationElipsis" xml:space="preserve">
+    <value>Konfiguracija ...</value>
   </data>
 </root>
