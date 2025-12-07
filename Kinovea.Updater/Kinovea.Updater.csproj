@@ -235,6 +235,7 @@
     <EmbeddedResource Include="Languages\UpdaterLang.th.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.tr.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.uk.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.vi.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.Zh-CHS.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.zh-Hant.resx" />
     <EmbeddedResource Include="UserInterface\UpdateDialog2.resx">

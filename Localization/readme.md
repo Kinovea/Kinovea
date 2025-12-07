@@ -3,7 +3,11 @@
 
 - In Weblate: Kinovea > Components > Root > Add translation. 
 - This will add the language to all other components.
-- Check that the other components are translatable and have strings. Sometimes they show up as 0 strings and in the language list have a little ghost saying "X strings are not being translated here". In that case: Manage > Repository maintenance > Danger Zone > Rescan all translation files in the Weblate repository.
+- Check that the other components are translatable and have strings. 
+    Sometimes they show up as 0 strings and in the language list have a little ghost saying "X strings are not being translated here".
+    This seems to happen when people add strings to the glossary. This automatically adds them to the English glossary.
+    Normally there shouldn't be any string in the glossary, we don't use this feature. They can be removed from the English glossary.
+    Otherwise: Manage > Repository maintenance > Danger Zone > Rescan all translation files in the Weblate repository.
 - In Github: Merge Weblate PR into main project.
 - In Kinovea: Under each project, Languages > Add existing item > pick the language .resx.
 - In Kinovea: Add entry in Kinovea.Services > Language > LanguageManager.cs.

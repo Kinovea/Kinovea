@@ -1107,6 +1107,7 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.th.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.uk.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.vi.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-Hant.resx" />
     <EmbeddedResource Include="Measurement\Plotting\FormAngleAngleAnalysis.resx">

@@ -85,19 +85,17 @@ namespace Kinovea.Services
             languages.Add("sv", "Svenska");
             languages.Add("tr", "Türkçe");
             languages.Add("uk", "Українська");
-            
-            // Low coverage languages.
+            languages.Add("vi", "Tiếng Việt");
 
-            // In debug, show everything.
-            //if (Debugger.IsAttached)
-            //    return;
-
-            // In release, add the low coverage to a list.
-            // The user can then enable all languages from the preferences.
+            //------------------------------------------
+            // Add low-coverage languages to a list.
+            // The user can enable all languages in the preferences.
             // Low coverage is defined as less than 50% coverage in either 
             // the whole project, the Root component or the ScreenManager component.
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
-            // Last check: 2025-11-01.
+            //
+            // Last check: 2025-12-07.
+            //------------------------------------------
             lowCoverage.Add("az");         // Azerbaijani.
             lowCoverage.Add("bg");         // Bulgarian.
             lowCoverage.Add("da");         // Danish.

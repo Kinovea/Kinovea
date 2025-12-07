@@ -255,6 +255,7 @@
     <EmbeddedResource Include="Languages\FileBrowserLang.th.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.tr.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.uk.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.vi.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.zh-CHS.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.zh-Hant.resx" />
     <EmbeddedResource Include="UserInterface\FormCameraWizard.resx">
