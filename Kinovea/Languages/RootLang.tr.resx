@@ -436,4 +436,169 @@
   <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
     <value>Görüntüleri dahil et</value>
   </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Dosyayı Aç…</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Navigasyon Paneli</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Pencere</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Pencere özellikleri…</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Yeni pencere aç</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>Pencereyi yeniden aç</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Pencereleri yönet…</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Çalışma alanlarını yönet…</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>Uygulama veri klasörü aç…</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Hata ayıklama günlüklerini devre dışı bırak</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Hata ayıklama günlüklerini etkinleştir</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Yakalama klasörlerini yapılandır</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Pencereleri yönet</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>İşlemi durdur</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Pencereyi sil</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>Pencere listesini yenile</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>Aktif pencere özellikleri</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>Dosya gezginini aç</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>Kaldığın yerden devam et</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>Spesifik içeriği aç</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>Dosya gezgini</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>Tekrar: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>Çalışma alanlarını yönet</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>Masaüstü kısayolu oluştur</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>Aktif pencerelerden bir çalışma alanı oluştur</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>Seçilmiş çalışma alanını yeninden adlandır</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>Seçilen çalışma alanını sil</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>Çalışma alanı adı</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>İsim:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Klasörler</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>Yakalama klasörleri</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>Yakalama klasörü detayları</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>Kısa isim:</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Konum:</value>
+  </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>Bir değişken ekle…</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Ters eğik çizgi ekle</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>Tire ekle</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>Alt çizgi ekle</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Dinamik yolu önizle</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>Klasör için ara</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>Yakalama klasörünü listeden sil</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>Yeni bir yakalama klasörü ekle</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>Yukarı çık</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>Aşağı in</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Kaydetme sonrası komut…</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Dosyalar</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Varsayılan dosya adı:</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Otomatik numaralandırmayı etkinleştir</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Her kayıttan sonra dosya adını otomatik olarak güncelleştirerek sıralı bir numara ekle.\nDosya adı dinamik değişkenler kullanıyorsa bu seçenek yok sayılır.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Kayıt mevcut bir dosyayının üzerine yazmak üzereyken onaylama diyaloğunu gösterme.</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Tetik</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>UDP tetiğini etkinleştir</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>UDP portu:</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Varsayılan tetik durumu:</value>
+  </data>
 </root>

@@ -205,4 +205,280 @@
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>Padajoče</value>
   </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Zapri</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Shrani</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve">
+    <value>Ponastavi na privzeti barvni profil</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve">
+    <value>Naloži barvni profil</value>
+  </data>
+  <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve">
+    <value>Shrani barvni profil</value>
+  </data>
+  <data name="dlgConfigureDrawing_Title" xml:space="preserve">
+    <value>Nastavi risanje</value>
+  </data>
+  <data name="drawingName" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve">
+    <value>Vedno vidno</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblMax" xml:space="preserve">
+    <value>Največja prekrivnost (%):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve">
+    <value>Čas neprosojnosti (sličice):</value>
+  </data>
+  <data name="dlgConfigureOpacity_lblFading" xml:space="preserve">
+    <value>Čas bledenja (sličice):</value>
+  </data>
+  <data name="dlgTimebase_Title" xml:space="preserve">
+    <value>Nastavi časovni potek videa</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Nastavi mape zajema</value>
+  </data>
+  <data name="dlgTimebase_GroupCapture" xml:space="preserve">
+    <value>Visoko hitrostna kamera</value>
+  </data>
+  <data name="dlgTimebase_lblCapture" xml:space="preserve">
+    <value>Hitrost zajema:</value>
+  </data>
+  <data name="dlgTimebase_InfoCapture" xml:space="preserve">
+    <value>Ta možnost določa razliko med hitrostjo videa in dejanskim časom. Vpliva na oznake, ki prikazujejo čas in kinematične meritve. Uporabi jo, kadar je bil video posnet v hitrostnem načinu. </value>
+  </data>
+  <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
+    <value>Hitrost sličic, prebrana iz datoteke: {0:0.##} fps</value>
+  </data>
+  <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
+    <value>Hitrost videa:</value>
+  </data>
+  <data name="dlgTimebase_InfoUser" xml:space="preserve">
+    <value>Ta možnost določa referenčno hitrost sličic, ki jo Kinovea uporablja za predvajanje videa. Uporabi jo, kadar video vsebuje napačno hitrost sličic ali je Kinovea ne more prebrati. </value>
+  </data>
+  <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve">
+    <value>Ponastavi</value>
+  </data>
+  <data name="dlgConfigureTrajectory_Title" xml:space="preserve">
+    <value>Nastavi orodje za pot</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>Pokaži krožnico najboljšega ujemanja</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Položaj</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve">
+    <value>Navpični položaj</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve">
+    <value>Vodoravni položaj</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve">
+    <value>Skupna razdalja</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve">
+    <value>Razdalja do izvora</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve">
+    <value>Relativni vodoravni premik</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve">
+    <value>Relativni navpični premik</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>Hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve">
+    <value>Navpična hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve">
+    <value>Vodoravna hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve">
+    <value>Navpični pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve">
+    <value>Vodoravni pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve">
+    <value>Kotna hitrost</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve">
+    <value>Kotni pospešek</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve">
+    <value>Centripetalni pospešek</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Dolžina</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Sredina</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Polmer</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Premer</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Obseg</value>
+  </data>
+  <data name="tracking_Tracking" xml:space="preserve">
+    <value>Sledenje</value>
+  </data>
+  <data name="tracking_ObjectWindow" xml:space="preserve">
+    <value>Okno objekta:</value>
+  </data>
+  <data name="tracking_SearchWindow" xml:space="preserve">
+    <value>Iskalno okno:</value>
+  </data>
+  <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve">
+    <value>Dejanska velikost segmenta:</value>
+  </data>
+  <data name="dlgCalibrateLine_Title" xml:space="preserve">
+    <value>Kalibracija črte</value>
+  </data>
+  <data name="dlgCalibrateLine_CoordinateSystemAlignment" xml:space="preserve">
+    <value>Poravnava koordinatnega sistema:</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisHorizontal" xml:space="preserve">
+    <value>Črta določa vodoravno os</value>
+  </data>
+  <data name="dlgCalibrateLine_AxisVertical" xml:space="preserve">
+    <value>Črta določa navpično os</value>
+  </data>
+  <data name="dlgCalibrateLine_AxesImage" xml:space="preserve">
+    <value>Poravnano z osmi slike</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Ukaz po snemanju …</value>
+  </data>
+  <data name="dlgCalibratePlane_Title" xml:space="preserve">
+    <value>Kalibracija ravnine</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve">
+    <value>Trajanje na vsaki ključni sliki: {0} stotink sekunde.</value>
+  </data>
+  <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
+    <value>Trajanje vsake ključne slike: {0:0.00} sekunde.</value>
+  </data>
+  <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
+    <value>Shrani podatke kot dokument preglednice</value>
+  </data>
+  <data name="dlgImportReference_Title" xml:space="preserve">
+    <value>Uvozi sliko kot referenco</value>
+  </data>
+  <data name="dlgLoadAnalysis_Title" xml:space="preserve">
+    <value>Naloži oznake</value>
+  </data>
+  <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve">
+    <value>Skupaj: {0:0} slik.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportAll" xml:space="preserve">
+    <value>Izvozi vse slike.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve">
+    <value>Izvozi eno sliko vsakih {0} slik.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
+    <value>Izvozi eno sliko vsakih {0:0.00}s.</value>
+  </data>
+  <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
+    <value>Izvozi eno sliko vsakih {0:0}ms.</value>
+  </data>
+  <data name="dlgSaveAnalysisTitle" xml:space="preserve">
+    <value>Shrani oznake</value>
+  </data>
+  <data name="dlgCameraCalibration_Title" xml:space="preserve">
+    <value>Kalibracija kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve">
+    <value>Koeficienti popačenja</value>
+  </data>
+  <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve">
+    <value>Notranji parametri kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve">
+    <value>Naloži profil kalibracije kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Shrani profil kalibracije kamere</value>
+  </data>
+  <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
+    <value>Širina senzorja (mm):</value>
+  </data>
+  <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
+    <value>Goriščna razdalja (mm):</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>Puščica</value>
+  </data>
+  <data name="DrawingName_ArrowDash" xml:space="preserve">
+    <value>Puščica – Črtkano</value>
+  </data>
+  <data name="DrawingName_ArrowSquiggly" xml:space="preserve">
+    <value>Puščica – Valovito</value>
+  </data>
+  <data name="DrawingName_ArrowCurve" xml:space="preserve">
+    <value>Puščica – Ukrivljeno</value>
+  </data>
+  <data name="DrawingName_ArrowPolyline" xml:space="preserve">
+    <value>Puščica – Lomljena črta</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineDash" xml:space="preserve">
+    <value>Puščica – Črtkana lomljena črta</value>
+  </data>
+  <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve">
+    <value>Puščica – Valovita lomljena črta</value>
+  </data>
+  <data name="DrawingName_CSVL" xml:space="preserve">
+    <value>Sredinska sakralna navpična črta</value>
+  </data>
+  <data name="DrawingName_Polyline" xml:space="preserve">
+    <value>Lomljena črta</value>
+  </data>
+  <data name="DrawingName_DistortionGrid" xml:space="preserve">
+    <value>Mreža popačenja</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Goniometra</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Drža</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>Prilagoditev kolesa</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Koleno</value>
+  </data>
+  <data name="DrawingName_Archery" xml:space="preserve">
+    <value>Lokostrelstvo</value>
+  </data>
+  <data name="DrawingName_AngleToVertical" xml:space="preserve">
+    <value>Kot glede na navpičnico</value>
+  </data>
+  <data name="DrawingName_AngleToHorizontal" xml:space="preserve">
+    <value>Kot glede na vodoravnico</value>
+  </data>
+  <data name="DrawingName_DistanceHorizontal" xml:space="preserve">
+    <value>Razdalja (vodoravna)</value>
+  </data>
+  <data name="DrawingName_HumanModel" xml:space="preserve">
+    <value>Človeški model</value>
+  </data>
+  <data name="DrawingName_HumanModel2" xml:space="preserve">
+    <value>Človeški model (2)</value>
+  </data>
 </root>

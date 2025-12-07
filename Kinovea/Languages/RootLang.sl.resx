@@ -121,4 +121,538 @@
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Spomin</value>
   </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>Dodeljeni pomnilnik za medpomnilnike zamika: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Prezri opozorilo o prepisu datoteke</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Hitrokamerne naprave</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Prag zamenjave hitrosti sličic (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Nadomestna hitrost sličic (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Avtomatizacija</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Omogoči zvočni sprožilec</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Vhodna naprava:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Prag sprožilca:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Čas nedejavnosti (s):</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>Pokaži risbe med predvajanjem videa</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Omogoči filtriranje koordinat</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Omogoči možnost "debug" za prilagojena orodja</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Privzeta motnost novih risb:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Vidno za celoten video</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Uvozi zaporedja slik kot videoposnetke</value>
+  </data>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>Pri odpiranju novega videa vedno uporabi razpletanje</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Posodobi sliko med premikanjem časovnega kazalca</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Poveži drsnike hitrosti pri primerjavi videov</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Privzeta datoteka z notacijami:</value>
+  </data>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>Število datotek v zgodovini:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>Privzeto razmerje stranic:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>Jezik:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Predpomnilniški pomnilnik, dodeljen vsakemu predvajalnemu zaslonu: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Enote</value>
+  </data>
+  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
+    <value>Metrov na sekundo ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
+    <value>Kilometrov na uro ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
+    <value>Čevljev na sekundo ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
+    <value>Milj na uro ({0})</value>
+  </data>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>Nastavitve</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Čas</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Čas:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Hitrost:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Pospešek:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Kot:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Kotna hitrost:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Kotni pospešek:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Metrov na sekundo na kvadrat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Čevljev na sekundo na kvadrat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Stopinj ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radianov ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Stopinj na sekundo ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radianov na sekundo ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Obratov na minuto ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Stopinj na sekundo na kvadrat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Radianov na sekundo na kvadrat ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Enota dolžine po meri:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Privzeti parametri sledenja</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Odstotek</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategorije</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Ukazi</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Hitra tipka za {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Uveljavi</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Počisti</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Privzeto</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Zapri</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Shrani</value>
+  </data>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>O Kinovea …</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>Uredi</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>Datoteka</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Celi zaslon</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>Pomoč</value>
+  </data>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>Kinovea pomoč ...</value>
+  </data>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>Nedavne</value>
+  </data>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>Posodobi zgodovino</value>
+  </data>
+  <data name="mnuImage" xml:space="preserve">
+    <value>Slika</value>
+  </data>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>Jezik</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Orodje</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>Nastavitve …</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Delovno okolje</value>
+  </data>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>Pogled</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>Razveljavi</value>
+  </data>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>Ponovi</value>
+  </data>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>Številka sličice</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>Skupne milisekunde</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Skupne mikrosekunde</value>
+  </data>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>Stotinka minute</value>
+  </data>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
+    <value>Desettisočinka ure</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Sproži dejanje:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Pot do pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Vejica</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Decimalno ločilo za CSV datoteke:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Točka</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Kalibrirane meritve</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Točke</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Način izvoza:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Izvozi</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Sistem ({0})</value>
+  </data>
+  <data name="mnuBigArrow" xml:space="preserve">
+    <value>Velika puščica</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Velika kazalna roka</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>Privzeto</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Kazalnik</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Prevedi Kinovea …</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>Herc ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
+    <value>Cikli na sekundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
+    <value>Cikli na minuto ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerSecond" xml:space="preserve">
+    <value>Korakov na sekundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
+    <value>Korakov na minuto ({0})</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Onemogoči debug zapise</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Omogoči debug zapise</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Osveži</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Nastavi mape zajema</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Upravljaj okna</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>Ustavi proces</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Izbriši okno</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>Udarci na sekundo ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Udarci na minuto ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Vključi slike</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Odpri mapo …</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Navigacijska plošča</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Okno</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Lastnosti okna …</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Odpri novo okno</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>Znova odpri okno</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Upravljaj okna …</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Upravljaj delovne prostore …</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>Odpri mapo podatkov aplikacije …</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>Osveži seznam oken</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>Lastnosti aktivnega okna</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>Odpri brskalnik datotek</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>Nadaljuj tam, kjer si končal</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>Odpri določeno vsebino</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>Brskalnik datotek</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>Ponovi: {0}</value>
+  </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>Predvajanje: {0}</value>
+  </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>Zajemi: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>Upravljaj delovne prostore</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Okna</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>Ustvari bližnjico na namizju</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>Ustvari delovni prostor iz aktivnih oken</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>Preimenuj izbrani delovni prostor</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>Izbriši izbrani delovni prostor</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>Ime delovnega prostora</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>Ime:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Mape</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>Mape zajema</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>Podrobnosti mape zajema</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>Kratko ime:</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Pot:</value>
+  </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>Vstavi spremenljivko …</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Vstavi obrnjeno poševnico</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>Vstavi vezaj</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>Vstavi podčrtaj</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Pregled dinamične poti</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>Poišči mapo</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>Odstrani mapo zajema s seznama</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>Dodaj novo mapo zajema</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>Premakni navzgor</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>Premakni navzdol</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>Za zagon zunanjih programov po snemanju, uporabi pogovorno okno za ukaz po snemanju, na ustreznem zaslonu zajema.\n\nZ desno klikni ozadje pogleda in izberi {0}.</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Ukaz po snemanju …</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Datoteke</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Privzeto ime datoteke:</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Omogoči avtomatsko številčenje</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Samodejno posodobi ime datoteke po vsakem snemanju, da vključuje zaporedno številko.\nTa možnost je prezrta, če ime datoteke uporablja dinamične spremenljivke.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Ne prikaži potrditvenega okna, ko se bo snemanje prepisalo čez obstoječo datoteko.</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Sproži</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>Omogoči UDP sprožilec</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>UDP vrata:</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Privzeto stanje sprožilca:</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Pripravljen</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Neaktiven</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Slika</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Omogoči točkovno filtriranje</value>
+  </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>Prednastavitev {0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Ob zagonu</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Seznam zaslonov</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Uvozi trenutne zaslone</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Shranjena okna</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Izvožene oznake</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Izvozi risbe</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Izvozi kalibracijo</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Omogoči glajenje izpeljank za visoko hitrostne posnetke</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>Zaženi proces</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Pokaži vse jezike</value>
+  </data>
 </root>

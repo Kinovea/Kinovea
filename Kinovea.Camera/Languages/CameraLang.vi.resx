@@ -64,4 +64,97 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Hũy</value>
   </data>
+  <data name="FormHandshakeResult_Title" xml:space="preserve">
+    <value>Kiểm tra kết nối</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>Kiểm tra kết nối thất bại</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>Đã xảy ra lỗi trong quá trình kiểm tra kết nối.</value>
+  </data>
+  <data name="FormConfiguration_Title" xml:space="preserve">
+    <value>Cấu hình camera</value>
+  </data>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
+    <value>Định dạng luồng:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve">
+    <value>Kích thước hình ảnh:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
+    <value>Chiều rộng:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
+    <value>Chiều cao:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
+    <value>Tốc độ khung hình:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>Độ phơi sáng:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
+    <value>Độ phơi sáng (µs):</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>Độ lợi:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>Tiêu cự:</value>
+  </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Chuyển đổi định dạng Bayer:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>Tự động</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Các trang thuộc tính thiết bị</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>Đã xảy ra lỗi khi cố gắng hiển thị trang thuộc tính thiết bị cho {0}.</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Kết nối lại</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Nhập các tham số</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>Kiểm tra</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>Mạng</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Chủ nhà (Địa chỉ IP)</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Cổng</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>Định dạng</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>Xác thực</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>Người dùng</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>Mật khẩu</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>URL cuối cùng</value>
+  </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Bật nén phần cứng</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Bật giải tính toán phần mềm</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Tốc độ khung hình kết quả:</value>
+  </data>
 </root>

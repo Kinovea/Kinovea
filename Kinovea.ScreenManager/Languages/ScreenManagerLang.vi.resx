@@ -134,16 +134,16 @@
     <value>Chọn một thư mục chụp ảnh</value>
   </data>
   <data name="infobar_Signal0" xml:space="preserve">
-    <value>Tín hiệu:[0]</value>
+    <value>Tín hiệu:{0}</value>
   </data>
   <data name="infobar_Throughput0" xml:space="preserve">
-    <value>Thông lượng:[0]</value>
+    <value>Thông lượng:{0}</value>
   </data>
   <data name="infobar_Load0" xml:space="preserve">
-    <value>Tải:[0]</value>
+    <value>Tải:{0}</value>
   </data>
   <data name="infobar_Drops0" xml:space="preserve">
-    <value>Mất mát:[0]</value>
+    <value>Mất mát:{0}</value>
   </data>
   <data name="tooltip_ViewIsLive" xml:space="preserve">
     <value>Xem sống</value>
@@ -209,7 +209,7 @@
     <value>Xoá cuối đuờng theo dõi</value>
   </data>
   <data name="DataAnalysis_YaxisLabel" xml:space="preserve">
-    <value>Trục Y:</value>
+    <value>Trục Y :</value>
   </data>
   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve">
     <value>Trục Y</value>
@@ -221,13 +221,13 @@
     <value>Mặt phẳng hiệu chỉnh</value>
   </data>
   <data name="DataAnalysis_ExportGraph" xml:space="preserve">
-    <value>Xuất biểu đồ</value>
+    <value>Xuất đồ thị</value>
   </data>
   <data name="DataAnalysis_Pixels" xml:space="preserve">
-    <value>Pixel</value>
+    <value>Điểm ảnh</value>
   </data>
   <data name="DataAnalysis_SaveToFile" xml:space="preserve">
-    <value>Lưu vào tập tin</value>
+    <value>Lưu vào tệp</value>
   </data>
   <data name="DataAnalysis_ExportData" xml:space="preserve">
     <value>Xuất dữ liệu</value>
@@ -236,10 +236,10 @@
     <value>Nguồn dữ liệu</value>
   </data>
   <data name="DataAnalysis_DataLabel" xml:space="preserve">
-    <value>Dữ liệu:</value>
+    <value>Dữ liệu :</value>
   </data>
   <data name="DataAnalysis_TimeModel" xml:space="preserve">
-    <value>Thời gian:</value>
+    <value>Thời gian :</value>
   </data>
   <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve">
     <value>Tuyệt đối</value>
@@ -248,13 +248,13 @@
     <value>Tương đối</value>
   </data>
   <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve">
-    <value>Chuẩn hoá</value>
+    <value>Chuẩn hóa</value>
   </data>
   <data name="DataAnalysis_AngularPosition" xml:space="preserve">
     <value>Góc</value>
   </data>
   <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve">
-    <value>Tổng góc di chuyển</value>
+    <value>Tổng độ chuyển động</value>
   </data>
   <data name="DataAnalysis_TangentialVelocity" xml:space="preserve">
     <value>Vận tốc tiếp tuyến</value>
@@ -308,7 +308,7 @@
     <value>Tùy chọn này xác định sự khác biệt giữa tốc độ video và thời gian thực. Nó ảnh hưởng đến nhãn chứa các giá trị thời gian và các đo lường chuyển động. Sử dụng khi video được quảy ở chế độ máy ảnh tốc độ cao. </value>
   </data>
   <data name="dlgTimebase_lblFileFPS" xml:space="preserve">
-    <value>Tốc độ khung hình đọc từ tập tin: {0D.##} fps</value>
+    <value>Tốc độ khung hình đọc từ tập tin: {0:0.##} fps</value>
   </data>
   <data name="dlgTimebase_lblUserFPS" xml:space="preserve">
     <value>Tốc độ khung hình video:</value>
@@ -422,7 +422,7 @@
     <value>Thời lượng của mỗi hình: {0} phần trăm giây.</value>
   </data>
   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve">
-    <value>Thời lượng của mỗi hình: {0:00} giây.</value>
+    <value>Thời lượng của mỗi hình: {0:0.00} giây.</value>
   </data>
   <data name="dlgExportSpreadsheet_Title" xml:space="preserve">
     <value>Lưu dữ liệu dưới dạng tài liệu bảng tính</value>
@@ -443,7 +443,7 @@
     <value>Xuất một hình cứ mỗi {0} hình.</value>
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve">
-    <value>Xuất một hình cứ mỗi {0:00}s.</value>
+    <value>Xuất một hình cứ mỗi {0:0.00}s.</value>
   </data>
   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve">
     <value>Xuất một hình cứ mỗi {0:0}ms.</value>
@@ -461,7 +461,7 @@
     <value>Thông số nội tại cái máy ảnh</value>
   </data>
   <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve">
-    <value></value>
+    <value>Chiều rộng cảm biến (mm):</value>
   </data>
   <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve">
     <value>Ngậm vậy (mm):</value>
@@ -664,5 +664,1082 @@ Bạn có muốn lưu chúng không?</value>
   </data>
   <data name="Generic_ConfigurationElipsis" xml:space="preserve">
     <value>Cấu hình...</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Kích thước</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>Tốc độ khung hình</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Thời lượng</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Tệp Kva</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Tất cả các định dạng được hỗ trợ</value>
+  </data>
+  <data name="FileFilter_All" xml:space="preserve">
+    <value>Tất cả các tệp</value>
+  </data>
+  <data name="lblSelDuration_Text" xml:space="preserve">
+    <value>Thời lượng</value>
+  </data>
+  <data name="lblSelStartSelection_Text" xml:space="preserve">
+    <value>Bắt đầu</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>Milimét</value>
+  </data>
+  <data name="LengthUnit_Feet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="LengthUnit_Yards" xml:space="preserve">
+    <value>Yards</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Phần trăm</value>
+  </data>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve">
+    <value>Lỗi: Không thẻ mở tệp, luồng video không được hỗ trợ.</value>
+  </data>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve">
+    <value>Lỗi mở tệp: vấn đề khi khởi tạo bộ giải mã.</value>
+  </data>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve">
+    <value>Lỗi mở tệp: loại tệp không được hỗ trợ.</value>
+  </data>
+  <data name="LoadMovie_Error" xml:space="preserve">
+    <value>Kinovea – Lỗi khi tải.</value>
+  </data>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve">
+    <value>Lỗi mở tệp: tệp không tất cả hoặc trống.</value>
+  </data>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve">
+    <value>Lỗi mở tệp: tìm thấy các không nhất quán. Vui lòng kiểm tra quá trình mã hóa.</value>
+  </data>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve">
+    <value>Lỗi mở tệp: không tìm thấy thông tin luồng.</value>
+  </data>
+  <data name="LoadMovie_UnkownError" xml:space="preserve">
+    <value>Lỗi mở tệp: lỗi không xác định.</value>
+  </data>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve">
+    <value>Lỗi mở tệp: không tìm thấy luồng video.</value>
+  </data>
+  <data name="LockSelectionLock" xml:space="preserve">
+    <value>Khóa các đường biên của Vùng Làm Việc</value>
+  </data>
+  <data name="LockSelectionUnlock" xml:space="preserve">
+    <value>Mở khóa các đường biên của Vùng Làm Việc</value>
+  </data>
+  <data name="mnuChronoStart" xml:space="preserve">
+    <value>Bắt đầu đồng hồ</value>
+  </data>
+  <data name="mnuChronoStop" xml:space="preserve">
+    <value>Dừng đồng hồ</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Ẩn trước điểm này</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Hiển thị trước điểm này</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Ẩn sau điểm này</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Hiển thị sau điểm này</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Hiển thị nhãn</value>
+  </data>
+  <data name="mnuCloseScreen" xml:space="preserve">
+    <value>Đó ng màn hình này</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>Sao chép vào Clipboard</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>Sao chép hình ảnh vào Clipboard</value>
+  </data>
+  <data name="mnuDeinterlace" xml:space="preserve">
+    <value>Khử tình tràng rối loạn</value>
+  </data>
+  <data name="mnuDeleteDrawing" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
+    <value>Xóa đường đi sau điểm này</value>
+  </data>
+  <data name="tracking_Start" xml:space="preserve">
+    <value>Bắt đầu theo dõi</value>
+  </data>
+  <data name="tracking_Stop" xml:space="preserve">
+    <value>Dừng theo dõi</value>
+  </data>
+  <data name="mnuTwoCaptures" xml:space="preserve">
+    <value>Hai màn hình góp</value>
+  </data>
+  <data name="mnuTwoMixed" xml:space="preserve">
+    <value>Một màn hình góp và một màn hình phát lại</value>
+  </data>
+  <data name="mnuTwoPlayers" xml:space="preserve">
+    <value>Hai màn hình phát lại</value>
+  </data>
+  <data name="mnuFormat" xml:space="preserve">
+    <value>Tỷ lệ khoảng hình</value>
+  </data>
+  <data name="mnuFormatAuto" xml:space="preserve">
+    <value>Tự động phát hiện</value>
+  </data>
+  <data name="mnuFormatForce43" xml:space="preserve">
+    <value>Bắt buộc 4:3</value>
+  </data>
+  <data name="mnuFormatForce169" xml:space="preserve">
+    <value>Bắt buộc 16:9</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>Xoay</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>Không xoay</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>Xoay 90° theo chiều kim đồng hồ</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>Xoay 90° ngược chiều kim đồng hồ</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>Đi đến hình khóa</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>Ẩn</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>Nhập hình ảnh…</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>Góc có dấu</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>Ngược chiều kim đồng hồ</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>Góc bổ sung</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>Lật ngang</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>Lật dọc</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Tải chú thích…</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>Chuyển sang các phóng đẳng</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>Đóng kính phóng đẳng</value>
+  </data>
+  <data name="mnuMirror" xml:space="preserve">
+    <value>Gương</value>
+  </data>
+  <data name="mnuOneCapture" xml:space="preserve">
+    <value>Một màn hình góp</value>
+  </data>
+  <data name="mnuOnePlayer" xml:space="preserve">
+    <value>Một màn hình phát lại</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Đánh dấu thời gian hiện tại làm gốc thời gian</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Đánh dấu thời gian hiện tại làm gốc thời gian cho đồng hồ này</value>
+  </data>
+  <data name="mnuOpenVideo" xml:space="preserve">
+    <value>Mở video…</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Mở thư mục người quan sát lại…</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Câu chỉnh ...</value>
+  </data>
+  <data name="mnuSwapScreens" xml:space="preserve">
+    <value>Hoán đổi màn hình</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Quên cài đặt tùy chọn</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Đổi tên</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Xác định tập tin trong trình quản lý tập tin</value>
+  </data>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve">
+    <value>Hiển thị/Ẩn các các điều khiển chung</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>Đường đi</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Hệ tọa độ</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Ẩn</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Kết thúc đa giác ở đây</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Kết thúc đa giác tại điểm trước</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Đóng menu này</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Cắt vẽ</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Sao chép vẽ</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Dán vẽ</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Mỏt cửa sổ mắc định</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Thúc mật đặc biệt</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Cấu hình mật tùy chọn</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Dán hình ảnh từ clipboard</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Thể mũi tên</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Thể tâm hình tròn</value>
+  </data>
+  <data name="RecentlyUsedColors" xml:space="preserve">
+    <value>Màu sắc gần đây sử dụng:</value>
+  </data>
+  <data name="statusEmptyScreen" xml:space="preserve">
+    <value>Trống</value>
+  </data>
+  <data name="Toast_Pause" xml:space="preserve">
+    <value>Tạm dừng</value>
+  </data>
+  <data name="Toast_StartRecord" xml:space="preserve">
+    <value>Bắt đầu ghi hình</value>
+  </data>
+  <data name="Toast_StopRecord" xml:space="preserve">
+    <value>Đã dừng ghi hình</value>
+  </data>
+  <data name="Toast_ImageSaved" xml:space="preserve">
+    <value>Đã lưu hình ảnh</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Thiết bị chụp hình được nạp</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Thiết bị chụp hình được vô hiệu hóa</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Mất thiết bị âm thanh</value>
+  </data>
+  <data name="ToolTip_AddKeyframe" xml:space="preserve">
+    <value>Thêm hình đặc biệt</value>
+  </data>
+  <data name="ToolTip_Back" xml:space="preserve">
+    <value>Quay lại hình trước</value>
+  </data>
+  <data name="ToolTip_ColorProfile" xml:space="preserve">
+    <value>Hàng màu</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve">
+    <value>Vô hiệu hóa chồng chèp hình ảnh</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve">
+    <value>Bật đầu chồng chèp hình ảnh</value>
+  </data>
+  <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve">
+    <value>Góc</value>
+  </data>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve">
+    <value>Đồng hồ</value>
+  </data>
+  <data name="ToolTip_DrawingToolCircle" xml:space="preserve">
+    <value>Hình tròn</value>
+  </data>
+  <data name="ToolTip_DrawingToolCross2D" xml:space="preserve">
+    <value>Dấu cộng</value>
+  </data>
+  <data name="ToolTip_DrawingToolLine2D" xml:space="preserve">
+    <value>Đường thẳng</value>
+  </data>
+  <data name="ToolTip_DrawingToolPencil" xml:space="preserve">
+    <value>Bút chọ</value>
+  </data>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve">
+    <value>Di chuyển</value>
+  </data>
+  <data name="ToolTip_DrawingToolText" xml:space="preserve">
+    <value>Văn bản</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>Đèn kĩu</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>Tự đốc số</value>
+  </data>
+  <data name="ToolTip_First" xml:space="preserve">
+    <value>Đi đến đầu tiên</value>
+  </data>
+  <data name="ToolTip_Last" xml:space="preserve">
+    <value>Đi đến cuối cùng</value>
+  </data>
+  <data name="ToolTip_Magnifier" xml:space="preserve">
+    <value>Kính phóng đẳng</value>
+  </data>
+  <data name="ToolTip_Next" xml:space="preserve">
+    <value>Đi đến hình tiếp theo</value>
+  </data>
+  <data name="ToolTip_Rafale" xml:space="preserve">
+    <value>Lưu một dãy hình ảnh</value>
+  </data>
+  <data name="ToolTip_StartRecording" xml:space="preserve">
+    <value>Bắt đầu ghi video</value>
+  </data>
+  <data name="ToolTip_StopRecording" xml:space="preserve">
+    <value>Dừng ghi video</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>Tạm dừng camera</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>Bắt đầu camera</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>Cấu hình camera</value>
+  </data>
+  <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
+    <value>Đặt lại Vùng hoạt động</value>
+  </data>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve">
+    <value>Xuất một cuời hình ẻ từ hình khoá</value>
+  </data>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve">
+    <value>Xuất video với lẳng dừng trên mỗi hình khoá</value>
+  </data>
+  <data name="ToolTip_SetHandlerLeft" xml:space="preserve">
+    <value>Đặt hình đầu tiên của Vùng hoạt động vào hình hiện tại</value>
+  </data>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve">
+    <value>Đặt hình cuối cùng của Vùng hoạt động vào hình hiện tại</value>
+  </data>
+  <data name="ToolTip_ShowComments" xml:space="preserve">
+    <value>Hiển thị nhận xét</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>Lưu cả hai hình ảnh vào hình ảnh gộp</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>Lưu cả hai video vào một video gộp</value>
+  </data>
+  <data name="ToolTip_trkSelection" xml:space="preserve">
+    <value>Đặt Vùng hoạt động</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Khôi phục sự cố</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Khôi phục</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>Tập tin</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Ngày</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Các dự án sau đây không được lưu đúng cách nhưng có thể khôi phục:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Quan sát thư mục: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Dừng quan sát thư mục: {0}</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Bắt đầu quan sát thư mục: {0}</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Kích thước pixel trung bình: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Nhập độ dài của mỗi cạnh.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Phân tích</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Kinogram</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Xuất cảp hình ảnh</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Xuất xuống</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Ngang</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Dọc</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Kích thước cắt:</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Khoảng thời gian hình: {0:0.000} ms</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Hình ảnh: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Bảng:</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Cấu hình Kinogram</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Kích thước hình ảnh:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Hành động</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Xóa phần đặc biệt của đồng hồ hiện tại</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Xóa tất cả thời gian</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Di chuyển kết thúc của phần đặc biệt hiện tại đến hình này</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Di chuyển bắt đầu của phần đặc biệt hiện tại đến hình này</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Di chuyển điểm chia tiếp theo đến hình này</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Di chuyển bắt đầu của phần tiếp theo đến hình này</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Di chuyển kết thúc của phần trước đến hình này</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Di chuyển điểm chia trước đến hình này</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Chia: kết thúc phần đặc biệt hiện tại ở hình này và bắt đầu cái mới</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Bắt đầu một phần đặc biệt thời gian mới ở hình này</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Dừng: kết thúc phần thời gian đặc biệt ở hình này</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Nội suy các ngưỡng hình</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Đặt lại tất cả các ngưỡng</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Đặt lại vị trí nhãn</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Đặt lại ngưỡng này</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Khử hốa tác mẻ</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Không</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Thoát [{0}]</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Xuất tài liệu</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Xuất hình ảnh</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Hình ảnh…</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Hình khoá…</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Dãy hình ảnh…</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>Cảnh đến cảnh…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Xuất bảng tính</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>Đồng hồ CSV…</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>Đường đi CSV…</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Xuất video</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>Cảnh đến cảnh…</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Trình chiếu video…</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Video…</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Video với lẳng dừng…</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Câu chỉnh Ông kính</value>
+  </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Đông bằng</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Mở bằng</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Thời gian tích lũy</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Cột</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Nhãn</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Đồng hồ</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Số hình</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Nhãn</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Đồng hồ bận</value>
+  </data>
+  <data name="DrawingName_Arrow" xml:space="preserve">
+    <value>Mũi tên</value>
+  </data>
+  <data name="DrawingName_Goniometer" xml:space="preserve">
+    <value>Thước đo góc</value>
+  </data>
+  <data name="DrawingName_Posture" xml:space="preserve">
+    <value>Tư thế</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Phối cảnh:</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>Kích cỡ chữ:</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>Độ mờ</value>
+  </data>
+  <data name="Generic_Options" xml:space="preserve">
+    <value>Tuỳ chọn</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Lưu chú thích dưới dạng…</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Xuất video…</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>Hình ảnh</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Tệp</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Mở</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Nhập…</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Thoát</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Cắt</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Sao chép</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Nhãn</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Không</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Khóa</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Tự động nội suy</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>Phải sang trái</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Hiện thị đường viền</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Đường đi tương tác</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Xem tương lai</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Nhịp độ</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>Thêm nhịp</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>Xoá nhịp</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>Xoá tất cả nhịp</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>Đánh số bắt đầu từ 0</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>Nửa</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>Gấp đôi</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>Căn chỉnh theo đối tượng hiệu chuẩn</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>Tô đầy</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>Chấm</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Hiển thị đường thẳng đứng</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Hiển thị đường thẳng ngang</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>Nền</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>Nền…</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Lật trục X</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Lật trục Y</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Xoay 90°</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>Số chữ số thập phân</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>Xác thực hiệu chuẩn</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>Máy ảnh</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>tìm thấy</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>thiếu</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>Hiệu chuẩn ống kính: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>Hiệu chuẩn mặt phẳng: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Điểm kiểm soát</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Chế độ xác thực</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>Thay đổi tất cả các trục và xác minh vị trí của dấu trong hình ảnh</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>Thay đổi một trục và xác minh hai trục còn lại</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>Vị trí 3D được tính toán từ hai chế độ xem</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Vị trí máy ảnh ({0}): X: {1}, Y:{2}, Z: {3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Khoảng cách từ gốc ({0}): {1}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Bắt đầu</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Kết thúc</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Thời lượng</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Tích lũy</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Nhãn</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Chế độ hiệu chuẩn ống kính</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>Ước tính thủ công…</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Không</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Xác thực hiệu chuẩn…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Thuộc tính nền</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Màu</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>Cấu hình ước tính chuyển động máy ảnh</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>Loại tính năng:</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>Tính năng mỗi khung hình:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Chạy ước tính chuyển động máy ảnh</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>Tìm tính năng</value>
+  </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>Khớp tính năng</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>Tìm đồng lạc</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>Điều chỉnh bó</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>Xây dựng các track</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>Xoá dữ liệu theo dõi</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>Hiển thị các điểm</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
+    <value>Hiển thị các ngoằn</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>Hiển thị các vòng ngoài</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>Hiển thị trường chuyển động</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>Hiển thị biến đổi khung hình</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>Hiển thị các track</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>Cấu hình hiệu chuẩn ống kính</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>Số hình ảnh tối đa:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>Kích thước mẫu:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>Số lần lặp tối đa:</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>Chạy hiệu chuẩn ống kính</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>Xoá dữ liệu hiệu chuẩn</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>Hiển thị các góc được phát hiện</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>Hiển thị các góc chiếu lại</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>Sao chép dữ liệu hiệu chuẩn</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>Lưu dữ liệu hiệu chuẩn…</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>Offset được áp dụng cho toạ độ ({0})</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>Kích thước nhãn</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>Màu đường viền</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>Màu nhãn</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>Toạ độ</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>Sử dụng tốc độ phát hiện tức thời: {0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>Ươc lượng chuyển động cáy</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>Hiệu chuẩn ống kính</value>
+  </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>Cấu hình cáy…</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Lệnh sau ghi hình…</value>
+  </data>
+  <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Lưu như chú thích người chơi mặc định</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Lưu như chú thích ghi hình mặc định</value>
+  </data>
+  <data name="mnuUnloadAnnotations" xml:space="preserve">
+    <value>Gỡ chú thích</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Tải lại chú thích ghi hình mặc định</value>
+  </data>
+  <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
+    <value>Tải lại chú thích liên kết</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>Lệnh sau ghi hình</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>Bật lệnh sau ghi hình</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>Chèn một biến…</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>Lưu và tiếp tục</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>Hiển thị đường tròn</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>Mở thư mục…</value>
+  </data>
+  <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Tải lại chú thích người chơi mặc định</value>
+  </data>
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
+    <value>Xoá cuối các track</value>
+  </data>
+  <data name="tracking_DeleteTracks" xml:space="preserve">
+    <value>Xoá các track</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Cấu hình các thư mục ghi hình</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>Ươc đĩnh video</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>Ngữ cảnh</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>Chèn biến ngữ cảnh</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>Chèn</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>Mô tả</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>Ví dụ</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>Từ khóa</value>
+  </data>
+  <data name="variable_CameraAlias" xml:space="preserve">
+    <value>Bích danh cáy</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>Tốc độ khung hình cáy</value>
+  </data>
+  <data name="variable_ReceivedFrameRate" xml:space="preserve">
+    <value>Tốc độ khung hình nhận</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>Đường dẫn tới tệp video</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>Đường dẫn tới thư mục ghi hình</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>Tên tệp còn phần mở rộng</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>Tên tệp không có phần mở rộng</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>Phần mở rộng tệp</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>Tên tệp chú thích</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>Ngày (ISO 8601)</value>
+  </data>
+  <data name="variable_Year" xml:space="preserve">
+    <value>Năm</value>
+  </data>
+  <data name="variable_Month" xml:space="preserve">
+    <value>Tháng</value>
+  </data>
+  <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve">
+    <value>Lưu hồ sơ hiệu chuẩn ống kính</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Hiển thị nhãn hình đắc biệt</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Hiển thị nhãn track</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Sử dụng màu hình đắc biệt</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Thông tin chi tiết</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Sắp xếp theo</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Tăng dần</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Ngày</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Giảm dần</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Kích thước</value>
+  </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Di chuyển đến thờ diểm hiện tại</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Hiệu chuẩn thờ…</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Các phần thờ</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Tốc độ</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Hiển thị các văn thăng</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Hiển thị lưới</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Hiển thị khung hình</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Hiển thị trục ngang</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Hiển thị lưới 3x3</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Hiển thị trục dọc</value>
   </data>
 </root>
