@@ -691,4 +691,127 @@
   <data name="LengthUnit_Percentage" xml:space="preserve">
     <value>Odstotek</value>
   </data>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve">
+    <value>Napaka: datoteke ni mogoče odpreti, nepodprt video tok.</value>
+  </data>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: težava pri inicializaciji dekoderja.</value>
+  </data>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: vrsta datoteke ni podprta.</value>
+  </data>
+  <data name="LoadMovie_Error" xml:space="preserve">
+    <value>Kinovea – Napaka pri nalaganju.</value>
+  </data>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: datoteka ni bila najdena ali je prazna.</value>
+  </data>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: zaznane so bile nedoslednosti. Preveri postopek kodiranja.</value>
+  </data>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: podatkov o toku ni bilo mogoče najti.</value>
+  </data>
+  <data name="LoadMovie_UnkownError" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: neznana napaka.</value>
+  </data>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: video toka ni bilo mogoče najti.</value>
+  </data>
+  <data name="LockSelectionLock" xml:space="preserve">
+    <value>Zakleni meje delovnega območja</value>
+  </data>
+  <data name="LockSelectionUnlock" xml:space="preserve">
+    <value>Odkleni meje delovnega območja</value>
+  </data>
+  <data name="mnuChronoStart" xml:space="preserve">
+    <value>Zaženi štoparico</value>
+  </data>
+  <data name="mnuChronoStop" xml:space="preserve">
+    <value>Ustavi štoparico</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Skrij pred to točko</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Pokaži pred to točko</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Skrij po tej točki</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Pokaži po tej točki</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Pokaži oznake</value>
+  </data>
+  <data name="mnuCloseScreen" xml:space="preserve">
+    <value>Zapri ta zaslon</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>Kopiraj v odložišče</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>Kopiraj sliko v odložišče</value>
+  </data>
+  <data name="mnuDeinterlace" xml:space="preserve">
+    <value>Razpletanje</value>
+  </data>
+  <data name="mnuDeleteDrawing" xml:space="preserve">
+    <value>Izbriši</value>
+  </data>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
+    <value>Izbriši pot po tej točki</value>
+  </data>
+  <data name="tracking_Start" xml:space="preserve">
+    <value>Zaženi sledenje</value>
+  </data>
+  <data name="tracking_Stop" xml:space="preserve">
+    <value>Ustavi sledenje</value>
+  </data>
+  <data name="mnuTwoCaptures" xml:space="preserve">
+    <value>Dva zaslona zajema</value>
+  </data>
+  <data name="mnuTwoMixed" xml:space="preserve">
+    <value>En zaslon zajema in en zaslon predvajanja</value>
+  </data>
+  <data name="mnuTwoPlayers" xml:space="preserve">
+    <value>Dva zaslona predvajanja</value>
+  </data>
+  <data name="mnuFormat" xml:space="preserve">
+    <value>Razmerje</value>
+  </data>
+  <data name="mnuFormatAuto" xml:space="preserve">
+    <value>Avtomatsko zaznavanje</value>
+  </data>
+  <data name="mnuFormatForce43" xml:space="preserve">
+    <value>Prisili 4:3</value>
+  </data>
+  <data name="mnuFormatForce169" xml:space="preserve">
+    <value>Prisili 16:9</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>Vrtenje</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>Brez vrtenja</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>90° v smeri urinega kazalca</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>90° v nasprotni smeri urinega kazalca</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>Pojdi na ključno sliko</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>Skrij</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>Uvozi sliko …</value>
+  </data>
 </root>
