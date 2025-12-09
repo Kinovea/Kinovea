@@ -206,7 +206,7 @@
     <value>Padajoče</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
-    <value>Zapri</value>
+    <value>Izhod</value>
   </data>
   <data name="Generic_Save" xml:space="preserve">
     <value>Shrani</value>
@@ -480,5 +480,215 @@
   </data>
   <data name="DrawingName_HumanModel2" xml:space="preserve">
     <value>Človeški model (2)</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>Preizkusna mreža kamere</value>
+  </data>
+  <data name="DrawingName_Grid" xml:space="preserve">
+    <value>Mreža</value>
+  </data>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve">
+    <value>Perspektivna mreža</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Pravokotnik</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Pot</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Krivulja</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Ura</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>Prepis datoteke</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>Datoteka {0} že obstaja.\nJo želiš zamenjati?</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>Neveljavno ime datoteke</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>Ime datoteke vsebuje neveljavne znake.\n Ime datoteke ne sme vsebovati naslednjih znakov:\n \ / : * ? " &lt; &gt;</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Mapa ni bila ustvarjena</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Mape za zajem ni bilo mogoče ustvariti.\nPreveri, ali kaže na veljavno lokacijo shranjevanja.</value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>Datoteke ni mogoče zapisati.\nPreveri, ali imaš dovoljenja za pisanje v ciljno mapo in ali datoteka ni trenutno v uporabi.</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea – Videoposnetka ni mogoče shraniti. </value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>Videoposnetka ni mogoče shraniti.\nPoskusi znova z drugačnim formatom.</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>Preimenuj kamero</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>Vzdevek:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>Ikona:</value>
+  </data>
+  <data name="FormFileSave_Infos" xml:space="preserve">
+    <value>Napredek:</value>
+  </data>
+  <data name="FormProgressBar_Title" xml:space="preserve">
+    <value>Napredek</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>Izgled</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>Puščice:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Krivulja:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Perspektiva:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Ura:</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>Zapri</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>Barva:</value>
+  </data>
+  <data name="Generic_Configuration" xml:space="preserve">
+    <value>Konfiguracija</value>
+  </data>
+  <data name="Generic_ConfigurationElipsis" xml:space="preserve">
+    <value>Konfiguracija ...</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>Kalibracija</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>Velikost pisave:</value>
+  </data>
+  <data name="Generic_LineSizePicker" xml:space="preserve">
+    <value>Širina:</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>Prekrivnost</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>Vidnost</value>
+  </data>
+  <data name="Generic_Options" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>Velikost:</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Shrani oznake</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Shrani oznake kot …</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Izvozi video …</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>Oblika črte:</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>Slika</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Generic_SaveImage" xml:space="preserve">
+    <value>Shrani sliko</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Datoteka</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Uvozi …</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>Obnovi privzeto</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Izreži</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Kopiraj</value>
+  </data>
+  <data name="Generic_PlayPause" xml:space="preserve">
+    <value>Predvajaj | Premor</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Velikost</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>Hitrost sličic</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Trajanje</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>Čas nastanka</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Kva datoteka</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Vsi podprti zapisi</value>
+  </data>
+  <data name="FileFilter_All" xml:space="preserve">
+    <value>Vse datoteke</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
+    <value>Oznake so bile spremenjene.\nJih želiš shraniti?</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
+    <value>Shrani spremembe</value>
+  </data>
+  <data name="lblInfo_Text" xml:space="preserve">
+    <value>Nadzor sklepov :</value>
+  </data>
+  <data name="lblSelDuration_Text" xml:space="preserve">
+    <value>Trajanje</value>
+  </data>
+  <data name="lblSelStartSelection_Text" xml:space="preserve">
+    <value>Začni</value>
+  </data>
+  <data name="lblTimeCode_Text" xml:space="preserve">
+    <value>Položaj</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>Milimetri</value>
+  </data>
+  <data name="LengthUnit_Centimeters" xml:space="preserve">
+    <value>Centimetri</value>
+  </data>
+  <data name="LengthUnit_Meters" xml:space="preserve">
+    <value>Metri</value>
+  </data>
+  <data name="LengthUnit_Inches" xml:space="preserve">
+    <value>Inči</value>
+  </data>
+  <data name="LengthUnit_Feet" xml:space="preserve">
+    <value>Čevlji</value>
+  </data>
+  <data name="LengthUnit_Yards" xml:space="preserve">
+    <value>Jardi</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Odstotek</value>
   </data>
 </root>
