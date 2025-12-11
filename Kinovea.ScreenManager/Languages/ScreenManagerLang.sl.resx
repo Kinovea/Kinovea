@@ -814,4 +814,46 @@
   <data name="mnuImportImage" xml:space="preserve">
     <value>Uvozi sliko …</value>
   </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>Predznačen kot</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>V nasprotni smeri urinega kazalca</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>Dopolnilni kot</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>Zrcali vodoravno</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>Zrcali vertikalno</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Naloži oznake …</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>Preklopi na neposredno povečavo</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>Zapri povečevalnik</value>
+  </data>
+  <data name="mnuMirror" xml:space="preserve">
+    <value>Zrcali</value>
+  </data>
+  <data name="mnuOneCapture" xml:space="preserve">
+    <value>En zaslon zajema</value>
+  </data>
+  <data name="mnuOnePlayer" xml:space="preserve">
+    <value>En zaslon predvajanja</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Označi trenutni čas kot začetni čas</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Označi trenutni čas kot začetni čas za to uro</value>
+  </data>
+  <data name="mnuOpenVideo" xml:space="preserve">
+    <value>Odpri video …</value>
+  </data>
 </root>
