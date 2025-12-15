@@ -856,4 +856,55 @@
   <data name="mnuOpenVideo" xml:space="preserve">
     <value>Odpri video …</value>
   </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Odpri opazovalnik mape ponovnega predvajanja …</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Kalibriraj ...</value>
+  </data>
+  <data name="mnuSwapScreens" xml:space="preserve">
+    <value>Zamenjaj zaslona</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Izbriši</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Pozabi nastavitve po meri</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Preimenuj</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Poišči datoteko v Windows Raziskovalcu</value>
+  </data>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve">
+    <value>Pokaži/Skrij skupne kontrolnike</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>Sledi poti</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Koordinatni sistem</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Skrij</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Tukaj zaključi lomljeno črto</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Zaključi lomljeno črto pri prejšnji točki</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Zapri ta meni</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Izreži risbo</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Kopiraj risbo</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Prilepi risbo</value>
+  </data>
 </root>
