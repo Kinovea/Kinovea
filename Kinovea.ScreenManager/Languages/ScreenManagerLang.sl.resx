@@ -206,7 +206,7 @@
     <value>Padajoče</value>
   </data>
   <data name="Generic_Quit" xml:space="preserve">
-    <value>Zapri</value>
+    <value>Izhod</value>
   </data>
   <data name="Generic_Save" xml:space="preserve">
     <value>Shrani</value>
@@ -480,5 +480,431 @@
   </data>
   <data name="DrawingName_HumanModel2" xml:space="preserve">
     <value>Človeški model (2)</value>
+  </data>
+  <data name="DrawingName_TestGrid" xml:space="preserve">
+    <value>Preizkusna mreža kamere</value>
+  </data>
+  <data name="DrawingName_Grid" xml:space="preserve">
+    <value>Mreža</value>
+  </data>
+  <data name="DrawingName_PerspectiveGrid" xml:space="preserve">
+    <value>Perspektivna mreža</value>
+  </data>
+  <data name="DrawingName_Rectangle" xml:space="preserve">
+    <value>Pravokotnik</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Pot</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Krivulja</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Ura</value>
+  </data>
+  <data name="Error_Capture_FileExists_Title" xml:space="preserve">
+    <value>Prepis datoteke</value>
+  </data>
+  <data name="Error_Capture_FileExists_Text" xml:space="preserve">
+    <value>Datoteka {0} že obstaja.\nJo želiš zamenjati?</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Title" xml:space="preserve">
+    <value>Neveljavno ime datoteke</value>
+  </data>
+  <data name="Error_Capture_InvalidFile_Text" xml:space="preserve">
+    <value>Ime datoteke vsebuje neveljavne znake.\n Ime datoteke ne sme vsebovati naslednjih znakov:\n \ / : * ? " &lt; &gt;</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve">
+    <value>Mapa ni bila ustvarjena</value>
+  </data>
+  <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve">
+    <value>Mape za zajem ni bilo mogoče ustvariti.\nPreveri, ali kaže na veljavno lokacijo shranjevanja.</value>
+  </data>
+  <data name="Error_SaveMovie_FileError" xml:space="preserve">
+    <value>Datoteke ni mogoče zapisati.\nPreveri, ali imaš dovoljenja za pisanje v ciljno mapo in ali datoteka ni trenutno v uporabi.</value>
+  </data>
+  <data name="Error_SaveMovie_Title" xml:space="preserve">
+    <value>Kinovea – Videoposnetka ni mogoče shraniti. </value>
+  </data>
+  <data name="Error_SaveMovie_LowLevelError" xml:space="preserve">
+    <value>Videoposnetka ni mogoče shraniti.\nPoskusi znova z drugačnim formatom.</value>
+  </data>
+  <data name="FormCameraAlias_Title" xml:space="preserve">
+    <value>Preimenuj kamero</value>
+  </data>
+  <data name="FormCameraAlias_Alias" xml:space="preserve">
+    <value>Vzdevek:</value>
+  </data>
+  <data name="FormCameraAlias_Icon" xml:space="preserve">
+    <value>Ikona:</value>
+  </data>
+  <data name="FormFileSave_Infos" xml:space="preserve">
+    <value>Napredek:</value>
+  </data>
+  <data name="FormProgressBar_Title" xml:space="preserve">
+    <value>Napredek</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>Izgled</value>
+  </data>
+  <data name="Generic_ArrowPicker" xml:space="preserve">
+    <value>Puščice:</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Krivulja:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Perspektiva:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Ura:</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>Zapri</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>Barva:</value>
+  </data>
+  <data name="Generic_Configuration" xml:space="preserve">
+    <value>Konfiguracija</value>
+  </data>
+  <data name="Generic_ConfigurationElipsis" xml:space="preserve">
+    <value>Konfiguracija ...</value>
+  </data>
+  <data name="Generic_Calibration" xml:space="preserve">
+    <value>Kalibracija</value>
+  </data>
+  <data name="Generic_FontSizePicker" xml:space="preserve">
+    <value>Velikost pisave:</value>
+  </data>
+  <data name="Generic_LineSizePicker" xml:space="preserve">
+    <value>Širina:</value>
+  </data>
+  <data name="Generic_Opacity" xml:space="preserve">
+    <value>Prekrivnost</value>
+  </data>
+  <data name="Generic_Visibility" xml:space="preserve">
+    <value>Vidnost</value>
+  </data>
+  <data name="Generic_Options" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>Velikost:</value>
+  </data>
+  <data name="Generic_SaveKVA" xml:space="preserve">
+    <value>Shrani oznake</value>
+  </data>
+  <data name="Generic_SaveKVAAs" xml:space="preserve">
+    <value>Shrani oznake kot …</value>
+  </data>
+  <data name="Generic_ExportVideo" xml:space="preserve">
+    <value>Izvozi video …</value>
+  </data>
+  <data name="Generic_TrackShapePicker" xml:space="preserve">
+    <value>Oblika črte:</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>Slika</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Generic_SaveImage" xml:space="preserve">
+    <value>Shrani sliko</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Datoteka</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Uvozi …</value>
+  </data>
+  <data name="Generic_Restore" xml:space="preserve">
+    <value>Obnovi privzeto</value>
+  </data>
+  <data name="Generic_Cut" xml:space="preserve">
+    <value>Izreži</value>
+  </data>
+  <data name="Generic_Copy" xml:space="preserve">
+    <value>Kopiraj</value>
+  </data>
+  <data name="Generic_PlayPause" xml:space="preserve">
+    <value>Predvajaj | Premor</value>
+  </data>
+  <data name="FileProperty_Size" xml:space="preserve">
+    <value>Velikost</value>
+  </data>
+  <data name="FileProperty_Framerate" xml:space="preserve">
+    <value>Hitrost sličic</value>
+  </data>
+  <data name="FileProperty_Duration" xml:space="preserve">
+    <value>Trajanje</value>
+  </data>
+  <data name="FileProperty_CreationTime" xml:space="preserve">
+    <value>Čas nastanka</value>
+  </data>
+  <data name="FileProperty_HasKva" xml:space="preserve">
+    <value>Kva datoteka</value>
+  </data>
+  <data name="FileFilter_AllSupported" xml:space="preserve">
+    <value>Vsi podprti zapisi</value>
+  </data>
+  <data name="FileFilter_All" xml:space="preserve">
+    <value>Vse datoteke</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve">
+    <value>Oznake so bile spremenjene.\nJih želiš shraniti?</value>
+  </data>
+  <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve">
+    <value>Shrani spremembe</value>
+  </data>
+  <data name="lblInfo_Text" xml:space="preserve">
+    <value>Nadzor sklepov :</value>
+  </data>
+  <data name="lblSelDuration_Text" xml:space="preserve">
+    <value>Trajanje</value>
+  </data>
+  <data name="lblSelStartSelection_Text" xml:space="preserve">
+    <value>Začni</value>
+  </data>
+  <data name="lblTimeCode_Text" xml:space="preserve">
+    <value>Položaj</value>
+  </data>
+  <data name="LengthUnit_Millimeters" xml:space="preserve">
+    <value>Milimetri</value>
+  </data>
+  <data name="LengthUnit_Centimeters" xml:space="preserve">
+    <value>Centimetri</value>
+  </data>
+  <data name="LengthUnit_Meters" xml:space="preserve">
+    <value>Metri</value>
+  </data>
+  <data name="LengthUnit_Inches" xml:space="preserve">
+    <value>Inči</value>
+  </data>
+  <data name="LengthUnit_Feet" xml:space="preserve">
+    <value>Čevlji</value>
+  </data>
+  <data name="LengthUnit_Yards" xml:space="preserve">
+    <value>Jardi</value>
+  </data>
+  <data name="LengthUnit_Percentage" xml:space="preserve">
+    <value>Odstotek</value>
+  </data>
+  <data name="LoadMovie_CodecNotFound" xml:space="preserve">
+    <value>Napaka: datoteke ni mogoče odpreti, nepodprt video tok.</value>
+  </data>
+  <data name="LoadMovie_CodecNotOpened" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: težava pri inicializaciji dekoderja.</value>
+  </data>
+  <data name="LoadMovie_CodecNotSupported" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: vrsta datoteke ni podprta.</value>
+  </data>
+  <data name="LoadMovie_Error" xml:space="preserve">
+    <value>Kinovea – Napaka pri nalaganju.</value>
+  </data>
+  <data name="LoadMovie_FileNotOpened" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: datoteka ni bila najdena ali je prazna.</value>
+  </data>
+  <data name="LoadMovie_InconsistantMovieError" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: zaznane so bile nedoslednosti. Preveri postopek kodiranja.</value>
+  </data>
+  <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: podatkov o toku ni bilo mogoče najti.</value>
+  </data>
+  <data name="LoadMovie_UnkownError" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: neznana napaka.</value>
+  </data>
+  <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve">
+    <value>Napaka pri odpiranju datoteke: video toka ni bilo mogoče najti.</value>
+  </data>
+  <data name="LockSelectionLock" xml:space="preserve">
+    <value>Zakleni meje delovnega območja</value>
+  </data>
+  <data name="LockSelectionUnlock" xml:space="preserve">
+    <value>Odkleni meje delovnega območja</value>
+  </data>
+  <data name="mnuChronoStart" xml:space="preserve">
+    <value>Zaženi štoparico</value>
+  </data>
+  <data name="mnuChronoStop" xml:space="preserve">
+    <value>Ustavi štoparico</value>
+  </data>
+  <data name="mnuHideBefore" xml:space="preserve">
+    <value>Skrij pred to točko</value>
+  </data>
+  <data name="mnuShowBefore" xml:space="preserve">
+    <value>Pokaži pred to točko</value>
+  </data>
+  <data name="mnuHideAfter" xml:space="preserve">
+    <value>Skrij po tej točki</value>
+  </data>
+  <data name="mnuShowAfter" xml:space="preserve">
+    <value>Pokaži po tej točki</value>
+  </data>
+  <data name="mnuShowLabel" xml:space="preserve">
+    <value>Pokaži oznake</value>
+  </data>
+  <data name="mnuCloseScreen" xml:space="preserve">
+    <value>Zapri ta zaslon</value>
+  </data>
+  <data name="mnuCopyToClipboard" xml:space="preserve">
+    <value>Kopiraj v odložišče</value>
+  </data>
+  <data name="mnuCopyImageToClipboard" xml:space="preserve">
+    <value>Kopiraj sliko v odložišče</value>
+  </data>
+  <data name="mnuDeinterlace" xml:space="preserve">
+    <value>Razpletanje</value>
+  </data>
+  <data name="mnuDeleteDrawing" xml:space="preserve">
+    <value>Izbriši</value>
+  </data>
+  <data name="mnuDeleteEndOfTrajectory" xml:space="preserve">
+    <value>Izbriši pot po tej točki</value>
+  </data>
+  <data name="tracking_Start" xml:space="preserve">
+    <value>Zaženi sledenje</value>
+  </data>
+  <data name="tracking_Stop" xml:space="preserve">
+    <value>Ustavi sledenje</value>
+  </data>
+  <data name="mnuTwoCaptures" xml:space="preserve">
+    <value>Dva zaslona zajema</value>
+  </data>
+  <data name="mnuTwoMixed" xml:space="preserve">
+    <value>En zaslon zajema in en zaslon predvajanja</value>
+  </data>
+  <data name="mnuTwoPlayers" xml:space="preserve">
+    <value>Dva zaslona predvajanja</value>
+  </data>
+  <data name="mnuFormat" xml:space="preserve">
+    <value>Razmerje</value>
+  </data>
+  <data name="mnuFormatAuto" xml:space="preserve">
+    <value>Avtomatsko zaznavanje</value>
+  </data>
+  <data name="mnuFormatForce43" xml:space="preserve">
+    <value>Prisili 4:3</value>
+  </data>
+  <data name="mnuFormatForce169" xml:space="preserve">
+    <value>Prisili 16:9</value>
+  </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>Vrtenje</value>
+  </data>
+  <data name="mnuRotation0" xml:space="preserve">
+    <value>Brez vrtenja</value>
+  </data>
+  <data name="mnuRotation90" xml:space="preserve">
+    <value>90° v smeri urinega kazalca</value>
+  </data>
+  <data name="mnuRotation180" xml:space="preserve">
+    <value>180°</value>
+  </data>
+  <data name="mnuRotation270" xml:space="preserve">
+    <value>90° v nasprotni smeri urinega kazalca</value>
+  </data>
+  <data name="mnuGotoKeyframe" xml:space="preserve">
+    <value>Pojdi na ključno sliko</value>
+  </data>
+  <data name="mnuGridsHide" xml:space="preserve">
+    <value>Skrij</value>
+  </data>
+  <data name="mnuImportImage" xml:space="preserve">
+    <value>Uvozi sliko …</value>
+  </data>
+  <data name="mnuSignedAngle" xml:space="preserve">
+    <value>Predznačen kot</value>
+  </data>
+  <data name="mnuCounterClockwise" xml:space="preserve">
+    <value>V nasprotni smeri urinega kazalca</value>
+  </data>
+  <data name="mnuSupplementaryAngle" xml:space="preserve">
+    <value>Dopolnilni kot</value>
+  </data>
+  <data name="mnuFlipHorizontally" xml:space="preserve">
+    <value>Zrcali vodoravno</value>
+  </data>
+  <data name="mnuFlipVertically" xml:space="preserve">
+    <value>Zrcali vertikalno</value>
+  </data>
+  <data name="mnuLoadAnalysis" xml:space="preserve">
+    <value>Naloži oznake …</value>
+  </data>
+  <data name="mnuMagnifierDirect" xml:space="preserve">
+    <value>Preklopi na neposredno povečavo</value>
+  </data>
+  <data name="mnuMagnifierQuit" xml:space="preserve">
+    <value>Zapri povečevalnik</value>
+  </data>
+  <data name="mnuMirror" xml:space="preserve">
+    <value>Zrcali</value>
+  </data>
+  <data name="mnuOneCapture" xml:space="preserve">
+    <value>En zaslon zajema</value>
+  </data>
+  <data name="mnuOnePlayer" xml:space="preserve">
+    <value>En zaslon predvajanja</value>
+  </data>
+  <data name="mnuMarkTimeAsOrigin" xml:space="preserve">
+    <value>Označi trenutni čas kot začetni čas</value>
+  </data>
+  <data name="mnuMarkTimeAsOriginClock" xml:space="preserve">
+    <value>Označi trenutni čas kot začetni čas za to uro</value>
+  </data>
+  <data name="mnuOpenVideo" xml:space="preserve">
+    <value>Odpri video …</value>
+  </data>
+  <data name="mnuOpenReplayWatcher" xml:space="preserve">
+    <value>Odpri opazovalnik mape ponovnega predvajanja …</value>
+  </data>
+  <data name="mnuCalibrate" xml:space="preserve">
+    <value>Kalibriraj ...</value>
+  </data>
+  <data name="mnuSwapScreens" xml:space="preserve">
+    <value>Zamenjaj zaslona</value>
+  </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Izbriši</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Pozabi nastavitve po meri</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Preimenuj</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Poišči datoteko v Windows Raziskovalcu</value>
+  </data>
+  <data name="mnuToggleCommonCtrls" xml:space="preserve">
+    <value>Pokaži/Skrij skupne kontrolnike</value>
+  </data>
+  <data name="mnuTrackTrajectory" xml:space="preserve">
+    <value>Sledi poti</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Koordinatni sistem</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Skrij</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Tukaj zaključi lomljeno črto</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Zaključi lomljeno črto pri prejšnji točki</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Zapri ta meni</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Izreži risbo</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Kopiraj risbo</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Prilepi risbo</value>
   </data>
 </root>
