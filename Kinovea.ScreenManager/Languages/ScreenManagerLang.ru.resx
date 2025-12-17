@@ -1616,10 +1616,10 @@
     <value>Перезагрузить аннотации проигрывателя по-умолчанию</value>
   </data>
   <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
-    <value>Удалить конец дорожек</value>
+    <value>Удалить окончания отслеживаний</value>
   </data>
   <data name="tracking_DeleteTracks" xml:space="preserve">
-    <value>Удалить дорожки</value>
+    <value>Удалить отслеживания</value>
   </data>
   <data name="mnuStabilization" xml:space="preserve">
     <value>Стабилизация</value>
@@ -1694,7 +1694,7 @@
     <value>Порог обновления:</value>
   </data>
   <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
-    <value>Удалить конец дорожки</value>
+    <value>Удалить окончание отслеживания</value>
   </data>
   <data name="tooltip_PreviousKeyImage" xml:space="preserve">
     <value>Предыдущее ключевое изображение</value>
