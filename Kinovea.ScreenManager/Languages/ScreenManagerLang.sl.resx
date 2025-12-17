@@ -907,4 +907,88 @@
   <data name="mnuPasteDrawing" xml:space="preserve">
     <value>Prilepi risbo</value>
   </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Privzeto bledenje</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Bledenje po meri</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Nastavi bledenje po meri</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Prilepi sliko iz odložišča</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Prikaži puščico</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Prikaži središče kroga</value>
+  </data>
+  <data name="RecentlyUsedColors" xml:space="preserve">
+    <value>Nedavno uporabljene barve:</value>
+  </data>
+  <data name="statusEmptyScreen" xml:space="preserve">
+    <value>Prazno</value>
+  </data>
+  <data name="Toast_Pause" xml:space="preserve">
+    <value>Pavza</value>
+  </data>
+  <data name="Toast_StartRecord" xml:space="preserve">
+    <value>Snemanje se je začelo</value>
+  </data>
+  <data name="Toast_StopRecord" xml:space="preserve">
+    <value>Snemanje ustavljeno</value>
+  </data>
+  <data name="Toast_ImageSaved" xml:space="preserve">
+    <value>Slika shranjena</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Sprožilec zajema pripravljen</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Sprožilec zajema neaktiven</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Zvočna naprava izgubljena</value>
+  </data>
+  <data name="ToolTip_AddKeyframe" xml:space="preserve">
+    <value>Dodaj glavno sliko</value>
+  </data>
+  <data name="ToolTip_Back" xml:space="preserve">
+    <value>Pojdi na prejšnjo sličico</value>
+  </data>
+  <data name="ToolTip_ColorProfile" xml:space="preserve">
+    <value>Barvni profil</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve">
+    <value>Onemogoči prekrivanje slik</value>
+  </data>
+  <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve">
+    <value>Omogoči prekrivanje slik</value>
+  </data>
+  <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve">
+    <value>Kot</value>
+  </data>
+  <data name="ToolTip_DrawingToolChrono" xml:space="preserve">
+    <value>Štoparica</value>
+  </data>
+  <data name="ToolTip_DrawingToolCircle" xml:space="preserve">
+    <value>Krog</value>
+  </data>
+  <data name="ToolTip_DrawingToolCross2D" xml:space="preserve">
+    <value>Označevalnik</value>
+  </data>
+  <data name="ToolTip_DrawingToolLine2D" xml:space="preserve">
+    <value>Črta</value>
+  </data>
+  <data name="ToolTip_DrawingToolPencil" xml:space="preserve">
+    <value>Svinčnik</value>
+  </data>
+  <data name="ToolTip_DrawingToolPointer" xml:space="preserve">
+    <value>Premakni</value>
+  </data>
+  <data name="ToolTip_DrawingToolText" xml:space="preserve">
+    <value>Besedilo</value>
+  </data>
 </root>
