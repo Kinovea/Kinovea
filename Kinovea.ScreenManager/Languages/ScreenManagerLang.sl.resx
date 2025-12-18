@@ -800,7 +800,7 @@
     <value>90° v smeri urinega kazalca</value>
   </data>
   <data name="mnuRotation180" xml:space="preserve">
-    <value>180°</value>
+    <value>180 °</value>
   </data>
   <data name="mnuRotation270" xml:space="preserve">
     <value>90° v nasprotni smeri urinega kazalca</value>
@@ -990,5 +990,80 @@
   </data>
   <data name="ToolTip_DrawingToolText" xml:space="preserve">
     <value>Besedilo</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>Reflektor</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>Samodejno številčenje</value>
+  </data>
+  <data name="ToolTip_First" xml:space="preserve">
+    <value>Pojdi na začetek</value>
+  </data>
+  <data name="ToolTip_Last" xml:space="preserve">
+    <value>Pojdi na konec</value>
+  </data>
+  <data name="ToolTip_Magnifier" xml:space="preserve">
+    <value>Povečevalnik</value>
+  </data>
+  <data name="ToolTip_Next" xml:space="preserve">
+    <value>Pojdi na naslednjo sličico</value>
+  </data>
+  <data name="ToolTip_Rafale" xml:space="preserve">
+    <value>Shrani zaporedje slik</value>
+  </data>
+  <data name="ToolTip_StartRecording" xml:space="preserve">
+    <value>Začni snemanje videa</value>
+  </data>
+  <data name="ToolTip_StopRecording" xml:space="preserve">
+    <value>Prekini snemanje videa</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>Ustavi kamero</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>Zaženi kamero</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>Nastavi kamero</value>
+  </data>
+  <data name="ToolTip_ResetWorkingZone" xml:space="preserve">
+    <value>Po nastavi delovno območje</value>
+  </data>
+  <data name="ToolTip_SaveDiaporama" xml:space="preserve">
+    <value>Izvozi predstavitev iz glavnih slik</value>
+  </data>
+  <data name="ToolTip_SavePausedVideo" xml:space="preserve">
+    <value>Izvozi video s premorom na vsaki ključni sliki</value>
+  </data>
+  <data name="ToolTip_SetHandlerLeft" xml:space="preserve">
+    <value>Nastavi prvo sličico delovnega območja na trenutno sličico</value>
+  </data>
+  <data name="ToolTip_SetHandlerRight" xml:space="preserve">
+    <value>Nastavi zadnjo sličico delovnega območja na trenutno sličico</value>
+  </data>
+  <data name="ToolTip_ShowComments" xml:space="preserve">
+    <value>Prikaži komentarje</value>
+  </data>
+  <data name="ToolTip_SideBySideSnapshot" xml:space="preserve">
+    <value>Shrani obe sliki v sestavljeno sliko</value>
+  </data>
+  <data name="ToolTip_SideBySideVideo" xml:space="preserve">
+    <value>Shrani oba videa v sestavljen video</value>
+  </data>
+  <data name="ToolTip_trkSelection" xml:space="preserve">
+    <value>Določi delovno območje</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Obnovitev po sesutju</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Obnovi</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>Datoteka</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Datum</value>
   </data>
 </root>
