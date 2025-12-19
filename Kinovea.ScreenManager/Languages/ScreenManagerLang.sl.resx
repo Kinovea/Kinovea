@@ -1066,4 +1066,163 @@
   <data name="FormCrashRecovery_Date" xml:space="preserve">
     <value>Datum</value>
   </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Naslednji projekti niso bili pravilno shranjeni, vendar jih je mogoče obnoviti:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Opazovanje mape: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Prekini opazovanje mape: {0}</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Začni opazovati mapo: {0}</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Povprečna velikost pike: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Vnesi dolžino vsake strani.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Analize</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>kinogram</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Izvozi zaporedje slik</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Izvozi drugo ob drugem</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Vodoravno</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Navpično</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Izreži velikost:</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Interval sličic: {0:0.000} ms</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Sličic: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Tabela:</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Nastavi Kinogram</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>V redu</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Velikost slike:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Akcija</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Izbriši trenutni časovni odsek</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Izbriši vse čase</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Premakni konec trenutnega časovnega odseka na to sličico</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Premakni začetek trenutnega časovnega odseka na to sličico</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Premakni naslednjo točko razdelitve na to sličico</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Premakni začetek naslednjega odseka na to sličico</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Premakni konec prejšnjega odseka na to sličico</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Premakni prejšnjo točko razdelitve na to sličico</value>
+  </data>
+  <data name="mnuAction_Chrono_Split" xml:space="preserve">
+    <value>Razdeli: zaključi trenutni časovni odsek na tej sličici in začni novega</value>
+  </data>
+  <data name="mnuAction_Chrono_Start" xml:space="preserve">
+    <value>Začni novi časovni odsek na tej sličici</value>
+  </data>
+  <data name="mnuAction_Chrono_Stop" xml:space="preserve">
+    <value>Ustavi: zaključi trenutni časovni odsek na tej sličici</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>Interpoliraj ploščice</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Ponastavi vse ploščice</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetLabelPositions" xml:space="preserve">
+    <value>Ponastavi postavitve oznak</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>Ponastavi to ploščico</value>
+  </data>
+  <data name="mnuDemosaic" xml:space="preserve">
+    <value>Demozaičenje</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>Brez</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Izhod {0}</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Izvozi dokument</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Izvozi slike</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Slike …</value>
+  </data>
+  <data name="mnuExport_Images_Keys" xml:space="preserve">
+    <value>Ključne slike …</value>
+  </data>
+  <data name="mnuExport_Images_Sequence" xml:space="preserve">
+    <value>Zaporedje slik …</value>
+  </data>
+  <data name="mnuExport_Images_SideBySide" xml:space="preserve">
+    <value>Drugo ob drugem …</value>
+  </data>
+  <data name="mnuExport_Spreadsheet" xml:space="preserve">
+    <value>Izvozi preglednico</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_ChronoCSV" xml:space="preserve">
+    <value>CSV kronometra …</value>
+  </data>
+  <data name="mnuExport_Spreadsheet_TrajectoryCSV" xml:space="preserve">
+    <value>CSV poti …</value>
+  </data>
+  <data name="mnuExport_Video" xml:space="preserve">
+    <value>Izvozi video</value>
+  </data>
+  <data name="mnuExport_Video_SideBySide" xml:space="preserve">
+    <value>Drugo ob drugem …</value>
+  </data>
+  <data name="mnuExport_Video_Slideshow" xml:space="preserve">
+    <value>Video predstavitev …</value>
+  </data>
+  <data name="mnuExport_Video_Video" xml:space="preserve">
+    <value>Video …</value>
+  </data>
+  <data name="mnuExport_Video_WithPauses" xml:space="preserve">
+    <value>Video s pavzami …</value>
+  </data>
+  <data name="mnuLensCalibration" xml:space="preserve">
+    <value>Kalibracija leč</value>
+  </data>
 </root>
