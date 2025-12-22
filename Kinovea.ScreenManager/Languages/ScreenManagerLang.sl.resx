@@ -1225,4 +1225,70 @@
   <data name="mnuLensCalibration" xml:space="preserve">
     <value>Kalibracija leč</value>
   </data>
+  <data name="mnuMagnifierFreeze" xml:space="preserve">
+    <value>Zamrzni</value>
+  </data>
+  <data name="mnuMagnifierUnfreeze" xml:space="preserve">
+    <value>Odmrzni</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Cumul" xml:space="preserve">
+    <value>Kumulativni čas</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Menu" xml:space="preserve">
+    <value>Stolpci</value>
+  </data>
+  <data name="mnuMeasure_Chrono_Tag" xml:space="preserve">
+    <value>Značka</value>
+  </data>
+  <data name="mnuMeasure_Clock" xml:space="preserve">
+    <value>Ura</value>
+  </data>
+  <data name="mnuMeasure_FrameNumber" xml:space="preserve">
+    <value>Številka sličice</value>
+  </data>
+  <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
+    <value>Oznake</value>
+  </data>
+  <data name="mnuMeasure_Name" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="mnuMeasure_Stopwatch" xml:space="preserve">
+    <value>Štoparica</value>
+  </data>
+  <data name="mnuMeasure_Label_Menu" xml:space="preserve">
+    <value>Oznaka</value>
+  </data>
+  <data name="mnuMeasure_Label_None" xml:space="preserve">
+    <value>Brez</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>Zaklenjeno</value>
+  </data>
+  <data name="mnuOptions_Kinogram_AutoInterpolate" xml:space="preserve">
+    <value>Samodejna interpolacija</value>
+  </data>
+  <data name="mnuOptions_Kinogram_RightToLeft" xml:space="preserve">
+    <value>Od desne proti levi</value>
+  </data>
+  <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
+    <value>Pokaži mejo</value>
+  </data>
+  <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
+    <value>Interaktivno sledenje</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>Glej prihodnost</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowKeyImageLabels" xml:space="preserve">
+    <value>Pokaži oznake ključnih slik</value>
+  </data>
+  <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
+    <value>Pokaži oznako sledi</value>
+  </data>
+  <data name="mnuOptions_Trajectory_UseKeyImageColors" xml:space="preserve">
+    <value>Uporabi barve ključnih slik</value>
+  </data>
+  <data name="mnuProperties" xml:space="preserve">
+    <value>Lastnosti</value>
+  </data>
 </root>
