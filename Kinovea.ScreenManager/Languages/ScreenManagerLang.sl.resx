@@ -1291,4 +1291,154 @@
   <data name="mnuProperties" xml:space="preserve">
     <value>Lastnosti</value>
   </data>
+  <data name="mnuThumbnail_MoveToCurrentTime" xml:space="preserve">
+    <value>Premakni na trenutni čas</value>
+  </data>
+  <data name="mnuTimeCalibration" xml:space="preserve">
+    <value>Kalibracija časa …</value>
+  </data>
+  <data name="mnuTimeSections" xml:space="preserve">
+    <value>Časovni odseki</value>
+  </data>
+  <data name="toolTip_Speed" xml:space="preserve">
+    <value>Hitrost</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGraduations" xml:space="preserve">
+    <value>Pokaži delitve</value>
+  </data>
+  <data name="mnuOptions_CoordinateSystem_ShowGrid" xml:space="preserve">
+    <value>Pokaži mrežo</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowFrame" xml:space="preserve">
+    <value>Pokaži okvir</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowHorizontalAxis" xml:space="preserve">
+    <value>Pokaži vodoravne osi</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowThirds" xml:space="preserve">
+    <value>Pokaži 3x3 mrežo</value>
+  </data>
+  <data name="mnuOptions_TestGrid_ShowVerticalAxis" xml:space="preserve">
+    <value>Pokaži pokončne osi</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>Kadenca</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>Dodaj utrip</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>Izbriši utrip</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>Izbriši vse utripe</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>Številčenje od ničle</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>Polovica</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>Dvojno</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>Poravnaj s kalibracijskim objektom</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>Zapolnjeno</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>Pika</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Pokaži pokončne črte</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Pokaži vodoravne črte</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>Ozadje</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>Ozadje …</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Obrni X osi</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Obrni Y osi</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Zasukaj za 90°</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>Decimalna mesta</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>Potrditev kalibracije</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>najdeno</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>manjkajoče</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>Kalibracija leč: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>Kalibracija plošč: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Kontrolne točke</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Validacijski način</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>Spremeni vse osi in preveri položaj označevalnika na sliki</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>Spremeni eno os in preveri preostali dve osi</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>3D položaji, izračunani iz dveh pogledov</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Položaj kamere ({0}): X:{1}, Y:{2}, Z:{3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Razdalja od originala ({0}): {1}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Začetek</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Konec</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Trajanje</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Kumulativa</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Značka</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Način kalibracije leč</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>Ročna ocena …</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Brez</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Validacija kalibracije …</value>
+  </data>
 </root>
