@@ -1441,4 +1441,34 @@
   <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
     <value>Validacija kalibracije …</value>
   </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Lastnosti ozadja</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Barva</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>Nastavi ocenjevanje gibanja kamere</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>Vrsta značilnosti:</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>Značilnosti na sličico:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Zaženi ocenjevanje gibanja kamere</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>Najdi značilnosti</value>
+  </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>Ujemaj značilnosti</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>Poišči homografije</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>Skupinska izravnava</value>
+  </data>
 </root>
