@@ -9,7 +9,7 @@
     Name "Kinovea"
     SetCompressor /SOLID lzma
 
-    !define VERSION "2025.1.0"
+    !define VERSION "2025.1.1"
     !define EXTRADIR "OtherFiles"
     !define LOCALIZATIONDIR "..\Localization\WorkingDirectory\"
 
@@ -121,7 +121,7 @@
     !insertmacro MUI_LANGUAGE "Portuguese"
     !insertmacro MUI_LANGUAGE "PortugueseBR"
     !insertmacro MUI_LANGUAGE "Polish"
-    ;!insertmacro MUI_LANGUAGE "Ukrainian"
+    !insertmacro MUI_LANGUAGE "Ukrainian"
     !insertmacro MUI_LANGUAGE "Czech"
     ;!insertmacro MUI_LANGUAGE "Slovak"
     !insertmacro MUI_LANGUAGE "Croatian"
@@ -134,7 +134,7 @@
     ;!insertmacro MUI_LANGUAGE "Estonian"
     !insertmacro MUI_LANGUAGE "Turkish"
     !insertmacro MUI_LANGUAGE "Lithuanian"
-    ;!insertmacro MUI_LANGUAGE "Slovenian"
+    !insertmacro MUI_LANGUAGE "Slovenian"
     !insertmacro MUI_LANGUAGE "Serbian"
     !insertmacro MUI_LANGUAGE "SerbianLatin"
     !insertmacro MUI_LANGUAGE "Arabic"
@@ -147,7 +147,7 @@
     ;!insertmacro MUI_LANGUAGE "Breton"
     ;!insertmacro MUI_LANGUAGE "Belarusian"
     !insertmacro MUI_LANGUAGE "Icelandic"
-    ;!insertmacro MUI_LANGUAGE "Malay"
+    !insertmacro MUI_LANGUAGE "Malay"
     ;!insertmacro MUI_LANGUAGE "Bosnian"
     ;!insertmacro MUI_LANGUAGE "Kurdish"
     ;!insertmacro MUI_LANGUAGE "Irish"

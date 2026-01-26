@@ -3,13 +3,13 @@ makensis /DPORTABLE /DREBUILD /DX64 kinovea.nsi > build-portable.txt
 
 REM Run the installer, it will extract itself locally.
 REM forfiles /p "." /m Kinovea-Portable-*-x64.exe /c "@file"
-Kinovea-Portable-2025.1.0.exe
+Kinovea-Portable-2025.1.1.exe
 
 REM Delete the installer.
-del Kinovea-Portable-2025.1.0.exe /q
+del Kinovea-Portable-2025.1.1.exe /q
 
 REM Zip the content.
-cd Kinovea-2025.1.0
-7z a -r ../Kinovea-2025.1.zip *
+cd Kinovea-2025.1.1
+7z a -r ../Kinovea-2025.1.1.zip *
 
 
