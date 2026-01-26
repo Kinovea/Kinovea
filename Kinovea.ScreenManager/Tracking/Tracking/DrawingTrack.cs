@@ -165,6 +165,15 @@ namespace Kinovea.ScreenManager
         {
             get { return invalid; }
         }
+
+        /// <summary>
+        /// Last tracking operation failed.
+        /// </summary>
+        public bool LastTrackingFailed
+        {
+            get { return lastTrackingFailed; }
+        }
+
         // Fading is not modifiable from outside.
         public override InfosFading InfosFading
         {
@@ -226,6 +235,7 @@ namespace Kinovea.ScreenManager
         // Current state.
         private TrackStatus trackStatus = TrackStatus.Interactive;
         private bool isConfiguring = false;
+        private bool lastTrackingFailed = false;
 
         // Handle ids
         // -1: no hit.
@@ -1503,6 +1513,7 @@ namespace Kinovea.ScreenManager
 
             CheckCustomDecodingSize(true);
             trackStatus = TrackStatus.Edit;
+            lastTrackingFailed = false;
             AfterTrackingStatusChanged();
             TrackingStatusChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -1515,6 +1526,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             trackStatus = TrackStatus.Interactive;
+            lastTrackingFailed = false;
             CheckCustomDecodingSize(false);
             AfterTrackingStatusChanged();
             //TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
@@ -1613,6 +1625,7 @@ namespace Kinovea.ScreenManager
 
             TimedPoint tp = null;
             bool matched = tracker.TrackStep(positions, current.Timestamp, cvImage, out tp);
+            lastTrackingFailed = !matched;
 
             if (tp == null)
             {

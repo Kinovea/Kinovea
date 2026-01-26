@@ -2905,6 +2905,10 @@ namespace Kinovea.ScreenManager
 
             sidePanelTracking.UpdateContent();
             UpdateFramesMarkers();
+
+            if (m_bIsCurrentlyPlaying && m_FrameServer.Metadata.AnyTrackFailed())
+                StopPlaying(true);
+
             CheckCustomDecodingSize(false);
         }
 

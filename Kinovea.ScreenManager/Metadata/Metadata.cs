@@ -1635,6 +1635,14 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Check if any track is currently in failed state.
+        /// </summary>
+        public bool AnyTrackFailed()
+        {
+            return Tracks().Any(t => t.LastTrackingFailed);
+        }
+
+        /// <summary>
         /// Update the current timestamp for trackable drawings.
         /// </summary>
         public void BeforeTrackingStep(long timestamp)
