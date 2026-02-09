@@ -17,7 +17,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Frame interval to export at, in timestamps.
         /// </summary>
-        public long IntervalTimestamps
+        public double IntervalTimestamps
         {
             get { return videoInfo.AverageTimeStampsPerFrame * decimationFrames; }
         }

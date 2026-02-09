@@ -407,7 +407,7 @@ namespace Kinovea.ScreenManager
             set { baselineFrameInterval = value; }
         }
 
-        public long AverageTimeStampsPerFrame
+        public double AverageTimeStampsPerFrame
         {
             get { return averageTimeStampsPerFrame; }
             set { averageTimeStampsPerFrame = value;}
@@ -536,7 +536,7 @@ namespace Kinovea.ScreenManager
 
         // Non user-modifiable timing information.
         private double baselineFrameInterval = 40;
-        private long averageTimeStampsPerFrame = 1;
+        private double averageTimeStampsPerFrame = 1;
         private double averageTimeStampsPerSecond = 25;
         private long firstTimeStamp = 0;
 
@@ -1426,24 +1426,20 @@ namespace Kinovea.ScreenManager
             if (type == TimeType.UserOrigin)
                 actualTimestamps = timestamps - timeOrigin;
 
-            // TODO: use double for info.AverageTimestampsPerFrame.
-            //double averageTimestampsPerFrame = AverageTimeStampsPerSeconds / FramesPerSeconds;
-            double averageTimestampsPerFrame = this.AverageTimeStampsPerFrame;
-
-            float frames = 0;
+            double fractionalFrames = 0;
             if (AverageTimeStampsPerFrame != 0)
-                frames = (float)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+                fractionalFrames = Math.Round(actualTimestamps / averageTimeStampsPerFrame);
 
             if (type == TimeType.Duration)
-                frames++;
+                fractionalFrames++;
 
-            double milliseconds = frames * BaselineFrameInterval / HighSpeedFactor;
+            double milliseconds = fractionalFrames * BaselineFrameInterval / HighSpeedFactor;
 
             double time;
             switch (tcf)
             {
                 case TimecodeFormat.Frames:
-                    time = frames;
+                    time = fractionalFrames;
                     break;
                 case TimecodeFormat.Milliseconds:
                     time = milliseconds;
@@ -1453,17 +1449,18 @@ namespace Kinovea.ScreenManager
                     break;
                 case TimecodeFormat.TenThousandthOfHours:
                     // 1 Ten Thousandth of Hour = 360 ms.
-                    time = Math.Round(milliseconds) / 360.0;
+                    time = milliseconds / 360.0;
                     break;
                 case TimecodeFormat.HundredthOfMinutes:
                     // 1 Hundredth of minute = 600 ms.
-                    time = Math.Round(milliseconds) / 600.0;
+                    time = milliseconds / 600.0;
                     break;
                 case TimecodeFormat.Timestamps:
                     time = timestamps;
                     break;
                 default:
-                    time = Math.Round(milliseconds) / 1000.0;
+                    // Return  time in seconds.
+                    time = milliseconds / 1000.0;
                     break;
             }
 
@@ -1478,14 +1475,13 @@ namespace Kinovea.ScreenManager
         {
             TimecodeFormat tcf = PreferencesManager.PlayerPreferences.TimecodeFormat;
             long actualTimestamps = timestamps - timeOrigin;
-            double averageTimestampsPerFrame = this.AverageTimeStampsPerFrame;
-            float frames = 0;
+            double fractionalFrames = 0;
             if (AverageTimeStampsPerFrame != 0)
-                frames = (float)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+                fractionalFrames = Math.Round(actualTimestamps / averageTimeStampsPerFrame);
 
-            double startMS = frames * BaselineFrameInterval / HighSpeedFactor;
-            double endMS = (frames + 1) * BaselineFrameInterval / HighSpeedFactor;
-            double milliseconds = startMS + ((endMS - startMS) * fraction);
+            double millisecondsStart = fractionalFrames * BaselineFrameInterval / HighSpeedFactor;
+            double millisecondsEnd = (fractionalFrames + 1) * BaselineFrameInterval / HighSpeedFactor;
+            double milliseconds = millisecondsStart + ((millisecondsEnd - millisecondsStart) * fraction);
 
             double framerate = 1000.0 / BaselineFrameInterval * HighSpeedFactor;
             double framerateMagnitude = Math.Log10(framerate);
@@ -1495,7 +1491,7 @@ namespace Kinovea.ScreenManager
             switch (tcf)
             {
                 case TimecodeFormat.Frames:
-                    outputTimeCode = String.Format("{0}", frames + Math.Round(fraction * 1000) / 1000);
+                    outputTimeCode = String.Format("{0}", fractionalFrames + Math.Round(fraction * 1000) / 1000);
                     break;
                 case TimecodeFormat.Milliseconds:
                     outputTimeCode = String.Format("{0}", Math.Round(milliseconds * 1000) / 1000);

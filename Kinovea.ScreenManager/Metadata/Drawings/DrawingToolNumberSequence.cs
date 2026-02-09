@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
             defaultStylePreset.Elements.Add("font size", new StyleElementFontSize(16));
             stylePreset = defaultStylePreset.Clone();
         }
-        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, double averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
            return null;
         }

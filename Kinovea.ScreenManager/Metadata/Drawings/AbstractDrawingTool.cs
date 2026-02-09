@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
     	#endregion
     	
     	#region Public Interface
-    	public abstract AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer);
+    	public abstract AbstractDrawing GetNewDrawing(PointF origin, long timestamp, double averageTimeStampsPerFrame, IImageToViewportTransformer transformer);
     	#endregion
     	
     	#region Public Concrete Methods

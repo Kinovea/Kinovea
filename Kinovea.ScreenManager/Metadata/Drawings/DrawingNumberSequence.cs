@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractMultiDrawing Implementation
-        public override AbstractMultiDrawingItem GetNewItem(PointF point, long position, long averageTimeStampsPerFrame)
+        public override AbstractMultiDrawingItem GetNewItem(PointF point, long position, double averageTimeStampsPerFrame)
         {
             int nextValue = NextValue(position);
             return new DrawingNumberSequenceItem(position, averageTimeStampsPerFrame, point, nextValue);
@@ -237,7 +237,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Reconfigure the auto-numbers to be placed at the passed locations.
         /// </summary>
-        public void Configure(long timestamp, long averageTimeStampsPerFrame, List<PointF> locations)
+        public void Configure(long timestamp, double averageTimeStampsPerFrame, List<PointF> locations)
         {
             Clear();
 

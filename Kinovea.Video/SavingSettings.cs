@@ -48,7 +48,7 @@ namespace Kinovea.Video
         /// Zero means we collect every frame.
         /// Larger than zero means we do a timelapse-style export and jump from timestamp to timestamp.
         /// </summary>
-        public long InputIntervalTimestamps = 0;
+        public double InputIntervalTimestamps = 0;
 
         //-------------------------------
         // Output parameters

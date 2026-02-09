@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
         //------------------------------------------------------
 
         #region Constructor
-        public DrawingCircle(PointF center, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingCircle(PointF center, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             this.center = center;
             miniLabel.SetAttach(center, true);

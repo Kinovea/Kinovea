@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCounter(PointF p, long start, long averageTimeStampsPerFrame, StyleElements preset = null)
+        public DrawingCounter(PointF p, long start, double averageTimeStampsPerFrame, StyleElements preset = null)
         {
             // Core
             visibleTimestamp = 0;
@@ -324,11 +324,13 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            long maxHitTimeStamps = invisibleTimestamp;
-            if (maxHitTimeStamps != long.MaxValue)
-                maxHitTimeStamps += (allowedFramesOver * parentMetadata.AverageTimeStampsPerFrame);
+            long maxHitTimeStamp = invisibleTimestamp;
+            if (maxHitTimeStamp != long.MaxValue)
+            {
+                maxHitTimeStamp = (long)Math.Round(maxHitTimeStamp + (allowedFramesOver * parentMetadata.AverageTimeStampsPerFrame));
+            }
 
-            if (currentTimestamp >= visibleTimestamp && currentTimestamp <= maxHitTimeStamps)
+            if (currentTimestamp >= visibleTimestamp && currentTimestamp <= maxHitTimeStamp)
             {
                 using (Font fontText = styleData.GetFont(1.0f))
                 {

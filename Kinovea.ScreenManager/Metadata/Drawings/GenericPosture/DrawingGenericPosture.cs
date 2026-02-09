@@ -144,7 +144,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public DrawingGenericPosture(Guid toolId, PointF origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, StyleElements stylePreset)
+        public DrawingGenericPosture(Guid toolId, PointF origin, GenericPosture posture, long timestamp, double averageTimeStampsPerFrame, StyleElements stylePreset)
         {
             this.toolId = toolId;
             this.origin = origin;

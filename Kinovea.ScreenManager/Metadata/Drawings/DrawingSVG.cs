@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingSVG(long timestamp, long averageTimeStampsPerFrame, string filename)
+        public DrawingSVG(long timestamp, double averageTimeStampsPerFrame, string filename)
         {
             this.filename = filename;
             renderer.BackColor = Color.Transparent;
@@ -279,7 +279,7 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("Error while loading SVG file. {0}", e.Message);
             }
         }
-        private void Initialize(long timestamp, long averageTimeStampsPerFrame)
+        private void Initialize(long timestamp, double averageTimeStampsPerFrame)
         {
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);

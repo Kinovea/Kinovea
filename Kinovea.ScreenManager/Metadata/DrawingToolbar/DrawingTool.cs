@@ -103,11 +103,11 @@ namespace Kinovea.ScreenManager
                 this.currentStyleElements = defaultStyle.Clone();
         }
 
-        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, double averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             // Drawings constructors must conforms to one of two predefined prototypes:
-            // (PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null).
-            // (PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset).
+            // (PointF origin, long timestamp, double averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null).
+            // (PointF origin, long timestamp, double averageTimeStampsPerFrame, DrawingStyle stylePreset).
             // Exemple for 1: DrawingAngle.
             // Exemple for 2: DrawingText.
 

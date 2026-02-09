@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, double averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             if (ToolManager.Tools.ContainsKey(name))
                 stylePreset = ToolManager.GetDefaultStyleElements(name);

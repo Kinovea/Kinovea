@@ -67,7 +67,7 @@ namespace Kinovea.Video
         public ImageRotation ImageRotation;
 
         // Timing info - some of this might be overriden by the user.
-        public long AverageTimeStampsPerFrame;
+        public double AverageTimeStampsPerFrame;
         public double AverageTimeStampsPerSeconds;
         public double FramesPerSeconds;
         public double FrameIntervalMilliseconds;

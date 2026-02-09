@@ -129,7 +129,8 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                return TimestampToPixel(curTimestamp + (tsPerFrame / 2));
+                long ts = (long)Math.Round(curTimestamp + (tsPerFrame / 2.0));
+                return TimestampToPixel(ts);
             }
         }
 
@@ -145,7 +146,7 @@ namespace Kinovea.ScreenManager
         private long minTimestamp;
         private long curTimestamp;
         private long maxTimestamp;
-        private long tsPerFrame;
+        private double tsPerFrame;
 
         private int gutterLeft;                             // Start of the mapped area of the gutter.
         private int gutterRight;                            // End of the mapped area of the gutter, this includes the interval of the last frame.
@@ -221,7 +222,7 @@ namespace Kinovea.ScreenManager
         /// Update the appearance of the control after the selection end points were changed.
         /// Does not raise events back.
         /// </summary>
-        public void Remap(long minTimestamp, long maxTimeStamp, long tsPerFrame)
+        public void Remap(long minTimestamp, long maxTimeStamp, double tsPerFrame)
         {
             // This method is only a shortcut to updating min and max properties at once.
             // This method update the appearence of the control only, it doesn't raise the events back.
@@ -229,11 +230,11 @@ namespace Kinovea.ScreenManager
             this.maxTimestamp = maxTimeStamp;
             this.tsPerFrame = tsPerFrame;
             curTimestamp = Clamp(curTimestamp, minTimestamp, maxTimeStamp);
-            cursorWidth = (int)Rescale(tsPerFrame, 0, maxTimestamp - minTimestamp, 0, gutterRight - gutterLeft);
+            cursorWidth = (int)Rescale((long)Math.Round(tsPerFrame), 0, maxTimestamp - minTimestamp, 0, gutterRight - gutterLeft);
             cursorWidth = Math.Max(cursorWidth, frameMarkerWidth);
             
             // Make room for one more frame so the gutter contains the interval of the last frame.
-            this.maxTimestamp += tsPerFrame;
+            this.maxTimestamp = (long)Math.Round(this.maxTimestamp + tsPerFrame);
             UpdateCachesMarkersPosition();
             UpdateMarkersPositions();
             UpdateSyncPointMarkerPosition();
@@ -310,7 +311,7 @@ namespace Kinovea.ScreenManager
         {
             // Resize of the control only : internal data doesn't change.
             gutterRight = this.Width - gutterMargin - gutterUnusable;
-            cursorWidth = (int)Rescale(tsPerFrame, 0, maxTimestamp - minTimestamp, 0, gutterRight - gutterLeft);
+            cursorWidth = (int)Rescale((long)Math.Round(tsPerFrame), 0, maxTimestamp - minTimestamp, 0, gutterRight - gutterLeft);
             cursorWidth = Math.Max(cursorWidth, frameMarkerWidth);
             UpdateCachesMarkersPosition();
             UpdateMarkersPositions();
@@ -635,7 +636,7 @@ namespace Kinovea.ScreenManager
                 end = maxTimestamp;
 
             int pixelStart = TimestampToPixel(Math.Max(start, minTimestamp));
-            int pixelEnd = TimestampToPixel(Math.Min(end + tsPerFrame, maxTimestamp));
+            int pixelEnd = TimestampToPixel(Math.Min((long)Math.Round(end + tsPerFrame), maxTimestamp));
             int pixelWidth = Math.Max(pixelEnd - pixelStart, frameMarkerWidth);
             return new Point(pixelStart, pixelWidth);
         }

@@ -230,8 +230,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the last valid time relative to selection start.
-        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// Returns the total duration of the selection in microseconds.
+        /// Takes high speed factor into account.
         /// </summary>
         public long LocalLastTime
         {
@@ -242,14 +242,14 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the average time of one frame.
-        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// Returns the average duration of one frame in microseconds.
+        /// Takes high speed factor into account.
         /// </summary>
         public long LocalFrameTime
         {
             get
             {
-                return TimestampToRealtime(m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                return TimestampToRealtime((long)Math.Round(m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
             }
 
         }
@@ -735,7 +735,7 @@ namespace Kinovea.ScreenManager
             // Force a reload of the cache to account for possible changes in aspect ratio, image rotation, etc.
             m_iSelStart = m_FrameServer.Metadata.SelectionStart;
             m_iSelEnd = m_FrameServer.Metadata.SelectionEnd;
-            m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             bool invalidateCache = !screenDescriptor.IsReplayWatcher;
             UpdateWorkingZone(invalidateCache);
@@ -863,7 +863,7 @@ namespace Kinovea.ScreenManager
             m_iCurrentPosition = m_iCurrentPosition + (m_FrameServer.VideoReader.WorkingZone.Start - m_iSelStart);
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
-            m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             if (trkSelection.SelStart != m_iSelStart)
                 trkSelection.SelStart = m_iSelStart;
@@ -915,7 +915,7 @@ namespace Kinovea.ScreenManager
                 ActivateKeyframe(m_iCurrentPosition);
             }
         }
-        public void ForceCurrentFrame(long frame, bool allowUIUpdate)
+        public void ForceCurrentFrame(long frameSinceSelStart, bool allowUIUpdate)
         {
             // Called during static sync.
             // Common position changed, we get a new frame to jump to.
@@ -927,7 +927,7 @@ namespace Kinovea.ScreenManager
             m_iFramesToDecode = 1;
             StopPlaying();
 
-            if (frame == -1)
+            if (frameSinceSelStart == -1)
             {
                 // Special case for +1 frame.
                 if (m_iCurrentPosition < m_iSelEnd)
@@ -937,11 +937,11 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                m_iCurrentPosition = frame * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-                m_iCurrentPosition += m_iSelStart;
-
+                m_iCurrentPosition = (long)Math.Round(m_iSelStart + frameSinceSelStart * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
                 if (m_iCurrentPosition > m_iSelEnd)
+                {
                     m_iCurrentPosition = m_iSelEnd;
+                }
 
                 ShowNextFrame(m_iCurrentPosition, allowUIUpdate);
             }
@@ -1215,7 +1215,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Loaded)
             {
                 m_iSelStart = m_iStartingPosition;
-                m_iSelEnd = m_iStartingPosition + m_iTotalDuration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+                m_iSelEnd = (long)Math.Round(m_iStartingPosition + m_iTotalDuration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
                 m_iSelDuration = m_iTotalDuration;
             }
             else
@@ -2285,7 +2285,7 @@ namespace Kinovea.ScreenManager
             string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, timecodeFormat, true);
             lblSelStartSelection.Text = "◢ " + startTimecode;
 
-            duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
+            duration = (long)Math.Round(duration - m_FrameServer.Metadata.AverageTimeStampsPerFrame);
             string durationTimecode = m_FrameServer.TimeStampsToTimecode(duration, TimeType.Duration, timecodeFormat, true);
             int right = lblSelDuration.Right;
             lblSelDuration.Text = "[" + durationTimecode + "]";
@@ -2304,7 +2304,7 @@ namespace Kinovea.ScreenManager
 
                 m_iSelStart = trkSelection.SelStart;
                 m_iSelEnd = trkSelection.SelEnd;
-                m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+                m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
         }
         private void AfterSelectionChanged()
@@ -2758,8 +2758,8 @@ namespace Kinovea.ScreenManager
 
             bool tracking = m_FrameServer.Metadata.AnyTracking;
             int skip = tracking ? 0 : missedFrames;
-
-            long estimateNext = m_iCurrentPosition + ((skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            double skipTs = (skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            long estimateNext = (long)Math.Round(m_iCurrentPosition + skipTs);
 
             if (estimateNext > m_iSelEnd)
             {

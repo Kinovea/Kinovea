@@ -143,14 +143,14 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private static void AddSubtitle(Metadata metadata, int start, int end, string content)
         {
-            long startTs = (long)(start * metadata.AverageTimeStampsPerSecond / 1000.0f);
-            long endTs = (long)(end * metadata.AverageTimeStampsPerSecond / 1000.0f);
+            long startTs = (long)Math.Round(start * metadata.AverageTimeStampsPerSecond / 1000.0f);
+            long endTs = (long)Math.Round(end * metadata.AverageTimeStampsPerSecond / 1000.0f);
 
             // Make sure the keyframe timestamps corresponds to an actual video frame.
-            long startFrame = (long)Math.Round((float)startTs / metadata.AverageTimeStampsPerFrame);
-            startTs = startFrame * metadata.AverageTimeStampsPerFrame;
-            long endFrame = (long)Math.Round((float)endTs / metadata.AverageTimeStampsPerFrame);
-            endTs = endFrame * metadata.AverageTimeStampsPerFrame;
+            long startFrame = (long)Math.Round(startTs / metadata.AverageTimeStampsPerFrame);
+            startTs = (long)Math.Round(startFrame * metadata.AverageTimeStampsPerFrame);
+            long endFrame = (long)Math.Round(endTs / metadata.AverageTimeStampsPerFrame);
+            endTs = (long)Math.Round(endFrame * metadata.AverageTimeStampsPerFrame);
 
             Guid id = Guid.NewGuid();
             long position = startTs;

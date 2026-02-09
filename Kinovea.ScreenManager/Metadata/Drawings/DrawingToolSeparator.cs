@@ -25,7 +25,7 @@ namespace Kinovea.ScreenManager
 
         public override StyleElements DefaultStyleElements => throw new NotImplementedException();
 
-        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, double averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             throw new NotImplementedException();
         }

@@ -263,8 +263,9 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
+        /// interval is the time in timestamps between each frame.
         /// </summary>
-        public IEnumerable<VideoFrame> EnumerateFrames(long interval)
+        public IEnumerable<VideoFrame> EnumerateFrames(double interval)
         {
             if (DecodingMode == VideoDecodingMode.PreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
@@ -277,7 +278,7 @@ namespace Kinovea.Video
                 if (interval == 0)
                     hasMore = MoveNext(0, true);
                 else
-                    hasMore = MoveTo(Current.Timestamp, Current.Timestamp + interval);
+                    hasMore = MoveTo(Current.Timestamp, (long)Math.Round(Current.Timestamp + interval));
 
                 yield return Current;
             }
@@ -288,7 +289,7 @@ namespace Kinovea.Video
         #region Move playhead shortcuts
         public bool MovePrev()
         {
-            return MoveTo(Current.Timestamp, Current.Timestamp - Info.AverageTimeStampsPerFrame);
+            return MoveTo(Current.Timestamp, (long)Math.Round(Current.Timestamp - Info.AverageTimeStampsPerFrame));
         }
         public bool MoveFirst()
         {
@@ -307,7 +308,7 @@ namespace Kinovea.Video
             else
             {
                 long currentTimestamp = Current == null ? 0 : Current.Timestamp;
-                long target = currentTimestamp + (Info.AverageTimeStampsPerFrame * frames);
+                long target = currentTimestamp + (long)Math.Round(Info.AverageTimeStampsPerFrame * frames);
                 target = Math.Max(0, target);
                 
                 return MoveTo(currentTimestamp, target);

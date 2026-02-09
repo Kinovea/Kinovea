@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingTimePolyline(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
+        public DrawingTimePolyline(PointF origin, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null)
         {
             points["0"] = origin;
             points["1"] = origin.Translate(50, 50);

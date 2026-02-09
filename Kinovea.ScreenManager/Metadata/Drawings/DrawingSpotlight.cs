@@ -179,7 +179,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractMultiDrawing Implementation
-        public override AbstractMultiDrawingItem GetNewItem(PointF point, long position, long averageTimeStampsPerFrame)
+        public override AbstractMultiDrawingItem GetNewItem(PointF point, long position, double averageTimeStampsPerFrame)
         {
             return new DrawingSpotlightItem(position, averageTimeStampsPerFrame, point);
         }

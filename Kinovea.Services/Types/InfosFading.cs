@@ -97,7 +97,7 @@ namespace Kinovea.Services
         /// <summary>
         /// The average timestamp per frame for the video.
         /// </summary>
-        public long AverageTimeStampsPerFrame
+        public double AverageTimeStampsPerFrame
         {
             get { return averageTimeStampsPerFrame; }
             set { averageTimeStampsPerFrame = value; }
@@ -134,7 +134,7 @@ namespace Kinovea.Services
         private int fadingFrames = 20;
         private int opaqueFrames = 1;
         private long referenceTimestamp = 0;
-        private long averageTimeStampsPerFrame = 0;
+        private double averageTimeStampsPerFrame = 0;
         private float masterFactor = 1.0f;
         private InfosFading defaultFading = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -146,7 +146,7 @@ namespace Kinovea.Services
             // This constructor is used only by the Preference manager to create the default fading values.
         }
 
-        public InfosFading(long referenceTimestamp, long averageTimeStampsPerFrame)
+        public InfosFading(long referenceTimestamp, double averageTimeStampsPerFrame)
         {
             // This constructor is used by all drawings to get the default values.
             FromInfosFading(PreferencesManager.PlayerPreferences.DefaultFading);
@@ -278,46 +278,34 @@ namespace Kinovea.Services
                 return baselineOpacity;
 
             // Fading based on distance to the closest tracked frame.
-            long fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
-            double relativeOpacity = 1.0f - ((float)relativeTimestamps / (float)fadingTimestamps);
+            double fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
+            double relativeOpacity = 1.0f - (relativeTimestamps / fadingTimestamps);
             relativeOpacity = Math.Max(0, relativeOpacity) * masterFactor;
 
             // Take the max, in order to honor the "Always visible" mode as well as opaque sections that go beyond the end of the tracked section.
             return Math.Max(baselineOpacity, relativeOpacity);
         }
 
-        public bool IsVisible(long referenceTimestamp, long testTimestamp, int visibleFrames)
-        {
-            return ComputeOpacityFactor(referenceTimestamp, testTimestamp, (long)visibleFrames) > 0;
-        }
-        
-        private double ComputeOpacityFactor(long referenceTimestamp, long testTimestamp, long fadingFrames)
-        {
-            long distanceTimestamps = Math.Abs(testTimestamp - referenceTimestamp);
-            long fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
-            return distanceTimestamps > fadingTimestamps ? 0.0f : 1.0f - ((double)distanceTimestamps / (double)fadingTimestamps);
-        }
-
-        private double ComputeOpacityFactor(long referenceTimestamp, long testTimestamp, bool alwaysVisible, long opaqueFrames, long fadingFrames, float masterFactor)
+        private double ComputeOpacityFactor(long referenceTimestamp, long queryTimestamp, bool alwaysVisible, long opaqueFrames, long fadingFrames, float masterFactor)
         {
             if (alwaysVisible)
                 return 1.0f * masterFactor;
 
-            long opaqueTimestamps = ((opaqueFrames-1) * averageTimeStampsPerFrame);
+            double opaqueTimestamps = (opaqueFrames - 1) * averageTimeStampsPerFrame;
             long opaqueStart = referenceTimestamp;
-            long opaqueEnd = opaqueStart + opaqueTimestamps;
+            long opaqueEnd = (long)Math.Round(opaqueStart + opaqueTimestamps);
 
-            if ((testTimestamp >= opaqueStart) && (testTimestamp <= opaqueEnd))
+            if ((queryTimestamp >= opaqueStart) && (queryTimestamp <= opaqueEnd))
                 return 1.0f * masterFactor;
 
             long distanceTimestamps;
-            if (testTimestamp < opaqueStart)
-                distanceTimestamps = opaqueStart - testTimestamp;
+            if (queryTimestamp < opaqueStart)
+                distanceTimestamps = opaqueStart - queryTimestamp;
             else
-                distanceTimestamps = testTimestamp - opaqueEnd;
+                distanceTimestamps = queryTimestamp - opaqueEnd;
 
-            long fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
-            float factor = 1.0f - ((float)distanceTimestamps / (float)fadingTimestamps);
+            double fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
+            double factor = 1.0f - (distanceTimestamps / fadingTimestamps);
             factor = Math.Max(0, factor);
 
             return factor * masterFactor;

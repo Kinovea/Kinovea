@@ -292,8 +292,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the average time of one frame.
-        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// Returns the average duration of one frame in microseconds.
+        /// Takes high speed factor into account.
         /// </summary>
         public long LocalFrameTime
         {

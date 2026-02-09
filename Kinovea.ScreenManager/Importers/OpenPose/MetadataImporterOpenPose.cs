@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            long timestamp = metadata.FirstTimeStamp + (frameNumber * metadata.AverageTimeStampsPerFrame);
+            long timestamp = (long)Math.Round(metadata.FirstTimeStamp + (frameNumber * metadata.AverageTimeStampsPerFrame));
             
             List<AbstractDrawing> drawings = new List<AbstractDrawing>();
             foreach (OpenPosePerson person in frame.people)

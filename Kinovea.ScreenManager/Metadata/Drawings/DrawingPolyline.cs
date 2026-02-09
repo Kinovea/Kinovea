@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPolyline(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
+        public DrawingPolyline(PointF origin, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null)
         {
             points["0"] = origin;
             points["1"] = origin;

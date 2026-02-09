@@ -349,7 +349,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingTrack(PointF p, long start, long averageTimeStampsPerFrame)
+        public DrawingTrack(PointF p, long start, double averageTimeStampsPerFrame)
         {
             // Create the tracker.
             TrackingParameters parameters = PreferencesManager.PlayerPreferences.TrackingParameters.Clone();
@@ -649,11 +649,13 @@ namespace Kinovea.ScreenManager
                 return -1;
 
             //log.DebugFormat("Hit test, status={0}", trackStatus);
-            long maxHitTimeStamps = invisibleTimestamp;
-            if (maxHitTimeStamps != long.MaxValue)
-                maxHitTimeStamps += (allowedFramesOver * parentMetadata.AverageTimeStampsPerFrame);
+            long maxHitTimeStamp = invisibleTimestamp;
+            if (maxHitTimeStamp != long.MaxValue)
+            {
+                maxHitTimeStamp = (long)Math.Round(maxHitTimeStamp + (allowedFramesOver * parentMetadata.AverageTimeStampsPerFrame));
+            }
 
-            if (currentTimestamp < visibleTimestamp || currentTimestamp > maxHitTimeStamps)
+            if (currentTimestamp < visibleTimestamp || currentTimestamp > maxHitTimeStamp)
             {
                 movingHandler = -1;
                 return -1;
@@ -1978,7 +1980,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Import from non-KVA data.
         /// </summary>
-        public DrawingTrack(string name, List<TimedPoint> timedPoints, long averageTimeStampsPerFrame, StyleElements styleElements)
+        public DrawingTrack(string name, List<TimedPoint> timedPoints, double averageTimeStampsPerFrame, StyleElements styleElements)
             : this(timedPoints[0].Point, timedPoints[0].T, averageTimeStampsPerFrame)
         {
             invalid = true;

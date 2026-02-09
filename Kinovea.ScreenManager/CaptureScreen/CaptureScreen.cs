@@ -908,7 +908,7 @@ namespace Kinovea.ScreenManager
             // Keep ts per frame in sync.
             // This means that if we have imported keyframes, their time should be kept the same.
             if (cameraGrabber.Framerate != 0)
-                metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / cameraGrabber.Framerate);
+                metadata.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerSecond / cameraGrabber.Framerate;
 
             // Start the low frequency / low precision timer.
             // This timer is used for display and to feed the delay buffer when using recording mode "Camera".
@@ -1414,7 +1414,7 @@ namespace Kinovea.ScreenManager
             // This is used when importing keyframes from external KVA,
             // and when exporting the KVA next to the saved videos.
             metadata.AverageTimeStampsPerSecond = 1000000;
-            metadata.AverageTimeStampsPerFrame = (long)(metadata.AverageTimeStampsPerSecond / 25.0);
+            metadata.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerSecond / 25.0;
 
             ReloadDefaultAnnotations(false, false);
 
@@ -1487,7 +1487,7 @@ namespace Kinovea.ScreenManager
             double averageTimestampsPerFrame = metadata.AverageTimeStampsPerFrame;
             int frames = 0;
             if (averageTimestampsPerFrame != 0)
-                frames = (int)Math.Round(timestamps/ averageTimestampsPerFrame);
+                frames = (int)Math.Round(timestamps / averageTimestampsPerFrame);
 
             if (type == TimeType.Duration)
                 frames++;
@@ -1934,7 +1934,9 @@ namespace Kinovea.ScreenManager
             // If the camera isn't currently streaming we are in "pause & browse" mode and delay isn't relevant.
             metadata.TimeOrigin = 0;
             if (cameraConnected && (recordingMode == CaptureRecordingMode.Delay || recordingMode == CaptureRecordingMode.Scheduled) && delay > 0)
-                metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
+            {
+                metadata.TimeOrigin = (long)Math.Round(delay * metadata.AverageTimeStampsPerFrame);
+            }
 
             string contextString = null;
             if (PreferencesManager.CapturePreferences.ContextEnabled && VariablesRepository.HasVariables)

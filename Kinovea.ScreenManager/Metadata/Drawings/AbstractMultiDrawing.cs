@@ -24,7 +24,7 @@ namespace Kinovea.ScreenManager
             get;
         }
         
-        public abstract AbstractMultiDrawingItem GetNewItem(PointF point, long position, long averageTimeStampsPerFrame);
+        public abstract AbstractMultiDrawingItem GetNewItem(PointF point, long position, double averageTimeStampsPerFrame);
         public abstract AbstractMultiDrawingItem GetItem(Guid id);
         public abstract void Add(AbstractMultiDrawingItem item);
         public abstract void Remove(Guid id);

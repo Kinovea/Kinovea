@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPencil(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingPencil(PointF origin, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             pointList.Add(origin);
             pointList.Add(origin.Translate(1, 0));

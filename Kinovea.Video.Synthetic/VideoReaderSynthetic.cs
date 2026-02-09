@@ -81,7 +81,7 @@ namespace Kinovea.Video.Synthetic
                 return res;
             
             SetupVideoInfo();
-            workingZone = new VideoSection(0, videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame);
+            workingZone = new VideoSection(0, (long)Math.Round(videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame));
             
             return res;
         }
@@ -128,8 +128,8 @@ namespace Kinovea.Video.Synthetic
             }
             else
             {
-                long offset = (skip + 1) * videoInfo.AverageTimeStampsPerFrame;
-                return UpdateCurrent(current.Timestamp + offset);
+                double offsetTimestamps = (skip + 1) * videoInfo.AverageTimeStampsPerFrame;
+                return UpdateCurrent((long)Math.Round(current.Timestamp + offsetTimestamps));
             }
         }
         public override bool MoveTo(long from, long target)

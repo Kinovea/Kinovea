@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, string filename)
+        public DrawingBitmap(long timestamp, double averageTimeStampsPerFrame, string filename)
         {
             if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
             {
@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
             Initialize(timestamp, averageTimeStampsPerFrame);
         }
 
-        public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, Bitmap bmp)
+        public DrawingBitmap(long timestamp, double averageTimeStampsPerFrame, Bitmap bmp)
         {
             if (bmp != null)
                 bitmap = BitmapHelper.Copy(bmp);
@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Standard drawing tool constructor, used for the Sticker variant of the tool.
         /// </summary>
-        public DrawingBitmap(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingBitmap(PointF origin, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             isSticker = true;
             bitmap = Stickers.ResourceManager.GetObject(stickerRef) as Bitmap;
@@ -313,7 +313,7 @@ namespace Kinovea.ScreenManager
             return changedSticker;
         }
 
-        private void Initialize(long timestamp, long averageTimeStampsPerFrame)
+        private void Initialize(long timestamp, double averageTimeStampsPerFrame)
         {
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);

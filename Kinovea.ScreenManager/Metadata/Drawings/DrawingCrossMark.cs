@@ -122,7 +122,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingCrossMark(PointF center, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             points["0"] = center;
             miniLabel = new MiniLabel(points["0"], Color.Black, transformer);

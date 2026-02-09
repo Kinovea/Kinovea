@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingSpotlightItem(long position, long averageTimeStampsPerFrame, PointF center)
+        public DrawingSpotlightItem(long position, double averageTimeStampsPerFrame, PointF center)
         {
             this.position = position;
             points["o"] = center;

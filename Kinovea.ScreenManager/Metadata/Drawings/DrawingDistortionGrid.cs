@@ -114,7 +114,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingDistortionGrid(PointF point, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
+        public DrawingDistortionGrid(PointF point, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null)
         {
             styleData.Color = Color.Empty;
             if (preset == null)

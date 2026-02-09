@@ -59,7 +59,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingNumberSequenceItem(long position, long averageTimeStampsPerFrame, PointF location, int value)
+        public DrawingNumberSequenceItem(long position, double averageTimeStampsPerFrame, PointF location, int value)
         {
             this.timestamp = position;
             background.Rectangle = new RectangleF(location, SizeF.Empty);

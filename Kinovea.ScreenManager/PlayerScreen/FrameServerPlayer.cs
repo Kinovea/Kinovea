@@ -365,22 +365,21 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            // TODO: use double for info.AverageTimestampsPerFrame.
-            double averageTimestampsPerFrame = videoReader.Info.AverageTimeStampsPerSeconds / videoReader.Info.FramesPerSeconds;
+            double averageTimestampsPerFrame = videoReader.Info.AverageTimeStampsPerFrame;
 
-            int frames = 0;
+            int fractionalFrames = 0;
             if (averageTimestampsPerFrame != 0)
-                frames = (int)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+                fractionalFrames = (int)Math.Round(actualTimestamps / averageTimestampsPerFrame);
 
             if (type == TimeType.Duration)
-                frames++;
+                fractionalFrames++;
 
-            double milliseconds = frames * metadata.BaselineFrameInterval / metadata.HighSpeedFactor;
+            double milliseconds = fractionalFrames * metadata.BaselineFrameInterval / metadata.HighSpeedFactor;
             double framerate = 1000.0 / metadata.BaselineFrameInterval * metadata.HighSpeedFactor;
             double durationTimestamps = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
             double totalFrames = durationTimestamps / averageTimestampsPerFrame;
 
-            return TimeHelper.GetTimestring(framerate, frames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
+            return TimeHelper.GetTimestring(framerate, fractionalFrames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
         }
 
         public void ActivateVideoFilter(VideoFilterType type)

@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
+        public DrawingText(PointF p, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null)
         {
             text = "";
             background.Rectangle = new RectangleF(p, SizeF.Empty);
@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
 
             InitializeMenus();
         }
-        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, string text)
+        public DrawingText(PointF p, long timestamp, double averageTimeStampsPerFrame, string text)
             : this(p, timestamp, averageTimeStampsPerFrame, ToolManager.GetDefaultStyleElements("Label"))
         {
             this.text = TextHelper.FixMissingCarriageReturns(text);

@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingPlane(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null)
+        public DrawingPlane(PointF origin, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null)
         {
             // Decoration
             styleData.Color = Color.Empty;

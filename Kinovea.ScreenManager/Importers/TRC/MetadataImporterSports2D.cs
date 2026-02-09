@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
             for (int i = 5; i < numFrames; i++)
             {
                 int frameIndex = i - 5;
-                long timestamp = metadata.FirstTimeStamp + (frameIndex * metadata.AverageTimeStampsPerFrame);
+                long timestamp = (long)Math.Round(metadata.FirstTimeStamp + (frameIndex * metadata.AverageTimeStampsPerFrame));
 
                 GenericPosture posture = GenericPostureManager.Instanciate(tool.ToolId, true);
                 ParsePosture(posture, allLines[i], markers);

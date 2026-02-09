@@ -160,7 +160,7 @@ namespace Kinovea.Video.GIF
             for(int i = 0; i<count; i++)
             {
                 VideoFrame vf = new VideoFrame();
-                vf.Timestamp = i * videoInfo.AverageTimeStampsPerFrame;
+                vf.Timestamp = (long)Math.Round(i * videoInfo.AverageTimeStampsPerFrame);
                 vf.Image = GetFrameAt(dimension, i);
                 Cache.Add(vf);
             }

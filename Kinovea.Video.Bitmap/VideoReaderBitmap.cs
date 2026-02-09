@@ -119,7 +119,7 @@ namespace Kinovea.Video.Bitmap
         public override void PostLoad(){}
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
-            return UpdateCurrent(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            return UpdateCurrent((long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame));
         }
         public override bool MoveTo(long from, long target)
         {

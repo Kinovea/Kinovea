@@ -84,7 +84,7 @@ namespace Kinovea.Video.SVG
                 return res;
 
             SetupVideoInfo(filePath);
-            workingZone = new VideoSection(0, videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame);
+            workingZone = new VideoSection(0, (long)Math.Round(videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame));
 
             return res;
         }
@@ -118,7 +118,7 @@ namespace Kinovea.Video.SVG
         public override void PostLoad() { }
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
-            return UpdateCurrent(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            return UpdateCurrent((long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame));
         }
         public override bool MoveTo(long from, long target)
         {

@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
             defaultStyleElements.Elements.Add("line color", new StyleElementColor(Color.Red));
             styleElements = defaultStyleElements.Clone();
         }
-        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, double averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
            return null;
         }

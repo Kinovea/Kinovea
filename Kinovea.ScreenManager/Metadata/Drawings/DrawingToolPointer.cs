@@ -151,7 +151,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractDrawingTool Implementation
-        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, double averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             return null;
         }

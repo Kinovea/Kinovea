@@ -115,7 +115,7 @@ namespace Kinovea.Services
             int seconds = (int)(remainder / millisecondsPerSecond);
 
             double milliseconds = remainder % millisecondsPerSecond;
-            int centiseconds = (int)Math.Round((int)milliseconds / 10.0);
+            int centiseconds = (int)Math.Round(milliseconds / 10.0);
 
             bool negative = totalMilliseconds < 0;
             if (negative)

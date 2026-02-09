@@ -123,7 +123,8 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ _filePath, int _thumbs, 
     SwitchDecodingMode(VideoDecodingMode::OnDemand);
 
     summary->IsImage = m_VideoInfo.DurationTimeStamps == 1;
-    summary->DurationMilliseconds = (int64_t)(((m_VideoInfo.DurationTimeStamps - m_VideoInfo.AverageTimeStampsPerFrame) / m_VideoInfo.AverageTimeStampsPerSeconds) * 1000.0);
+    double durationSeconds = (m_VideoInfo.DurationTimeStamps - m_VideoInfo.AverageTimeStampsPerFrame) / m_VideoInfo.AverageTimeStampsPerSeconds;
+    summary->DurationMilliseconds = (int64_t)Math::Round(durationSeconds * 1000.0);
     summary->ImageSize = m_VideoInfo.ReferenceSize;
     summary->Framerate = m_VideoInfo.FramesPerSeconds;
 
@@ -380,12 +381,12 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
         if (verbose)
             log->Debug("Ticks per frame: " + iTicksPerFrame);
 
-        m_VideoInfo.FrameIntervalMilliseconds = (double)1000 / m_VideoInfo.FramesPerSeconds;
-        m_VideoInfo.AverageTimeStampsPerFrame = (int64_t)Math::Round(m_VideoInfo.AverageTimeStampsPerSeconds / m_VideoInfo.FramesPerSeconds);
+        m_VideoInfo.FrameIntervalMilliseconds = 1000.0 / m_VideoInfo.FramesPerSeconds;
+        m_VideoInfo.AverageTimeStampsPerFrame = m_VideoInfo.AverageTimeStampsPerSeconds / m_VideoInfo.FramesPerSeconds;
 
         m_WorkingZone = VideoSection(
             m_VideoInfo.FirstTimeStamp,
-            m_VideoInfo.FirstTimeStamp + m_VideoInfo.DurationTimeStamps - m_VideoInfo.AverageTimeStampsPerFrame);
+            (int64_t)Math::Round(m_VideoInfo.FirstTimeStamp + m_VideoInfo.DurationTimeStamps - m_VideoInfo.AverageTimeStampsPerFrame));
 
         // Image size
         m_VideoInfo.OriginalSize = Size(pCodecCtx->width, pCodecCtx->height);
@@ -433,7 +434,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
         // If not many frames compared to the dynamic cache size (single image or very short video), 
         // load everything right away, freeze the cache, and disable extra capabilities.
         // the Cache.WorkingZone boundaries may be updated with actual values from the file.
-        double nbFrames = (double)(m_VideoInfo.DurationTimeStamps / m_VideoInfo.AverageTimeStampsPerFrame);
+        double nbFrames = m_VideoInfo.DurationTimeStamps / m_VideoInfo.AverageTimeStampsPerFrame;
         int veryShortThresholdFrames = 0;
         m_bIsVeryShort = nbFrames <= veryShortThresholdFrames;
 
@@ -1316,7 +1317,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
             // For some files, one additional second back is not enough. The seek is wrong by up to 4 seconds.
             // We also allow the target to go before 0.
             int iSecondsBack = 4;
-            int64_t iForceSeekTimestamp = iTargetTimeStamp - ((int64_t)m_VideoInfo.AverageTimeStampsPerSeconds * iSecondsBack);
+            int64_t iForceSeekTimestamp = (int64_t)(iTargetTimeStamp - (m_VideoInfo.AverageTimeStampsPerSeconds * iSecondsBack));
             int64_t iMinTarget = System::Math::Min(iForceSeekTimestamp, (int64_t)0);
 
             // Do the seek.
@@ -1471,7 +1472,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t _target)
     // Then we'll need to decode frame by frame until the target is reached.
     long minTs = m_timestampOffset;
     long ts = _target + m_timestampOffset;
-    long maxTs = _target + m_timestampOffset + (int64_t)m_VideoInfo.AverageTimeStampsPerSeconds;
+    long maxTs = (int64_t)(_target + m_timestampOffset + m_VideoInfo.AverageTimeStampsPerSeconds);
 
     int res = avformat_seek_file(
         m_pFormatCtx,

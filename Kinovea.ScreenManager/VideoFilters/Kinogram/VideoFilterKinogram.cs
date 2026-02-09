@@ -477,9 +477,9 @@ namespace Kinovea.ScreenManager
         {
             int maxFrames = Math.Min(framesContainer.Frames.Count, tileCount);
             float intervalFrames = (float)framesContainer.Frames.Count / maxFrames;
-            float intervalTimestamp = intervalFrames * parentMetadata.AverageTimeStampsPerFrame;
-            float intervalSeconds = (float)(intervalTimestamp/ parentMetadata.AverageTimeStampsPerSecond);
-            return intervalSeconds;
+            double intervalTimestamps = intervalFrames * parentMetadata.AverageTimeStampsPerFrame;
+            double intervalSeconds = intervalTimestamps / parentMetadata.AverageTimeStampsPerSecond;
+            return (float)intervalSeconds;
         }
         
         /// <summary>

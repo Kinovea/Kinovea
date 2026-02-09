@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingRectangle(PointF origin, long timestamp, long averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingRectangle(PointF origin, long timestamp, double averageTimeStampsPerFrame, StyleElements preset = null, IImageToViewportTransformer transformer = null)
         {
             quadImage = new QuadrilateralF(origin, origin.Translate(50, 0), origin.Translate(50, 50), origin.Translate(0, 50));
 
