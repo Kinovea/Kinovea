@@ -74,7 +74,7 @@
     <value>Liczba plików w historii :</value>
   </data>
   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
-    <value>Język :</value>
+    <value>Język:</value>
   </data>
   <data name="dlgPreferences_Title" xml:space="preserve">
     <value>Preferencje</value>
@@ -140,73 +140,73 @@
     <value>Dziesięcio-tysięczne części godziny</value>
   </data>
   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
-    <value>Suwak prętkości porównywania filmów</value>
+    <value>Połącz suwaki prędkości podczas porównywania filmów</value>
   </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
-    <value>Zalokowanie pamięci podręcznej do cofania obrazu:{0} MB.</value>
+    <value>Pamięć podręczna na każdy ekran odtwarzania: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
-    <value>Podstawowy proporcja:</value>
+    <value>Domyślne proporcje obrazu:</value>
   </data>
   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
-    <value>Aktualizowanie obrazu podczas ruch kursora</value>
+    <value>Odświeżaj obraz podczas przesuwania suwaka czasu</value>
   </data>
   <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
-    <value>Podstawa adnotacja pliku:</value>
+    <value>Domyślny plik adnotacji:</value>
   </data>
   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
-    <value>Zawsze usuwaj przeplot kiedy otwarty jest nowy film</value>
+    <value>Zawsze poprawiaj jakość obrazu (usuwaj przeplot) przy otwieraniu nowego filmu</value>
   </data>
   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
-    <value>Importuj obraz sekwencji filmu</value>
+    <value>Wczytaj sekwencję zdjęć jako film</value>
   </data>
   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
-    <value>widoczny w całym filmie</value>
+    <value>Widoczne przez cały czas trwania filmu</value>
   </data>
   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
-    <value>podstawowa nieprzeźroczystości dla nowego rysunku:</value>
+    <value>Domyślna przezroczystość nowych rysunków:</value>
   </data>
   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
-    <value>Włączone własne narzędzia trybu debugowania</value>
+    <value>Włącz tryb debugowania narzędzi niestandardowych</value>
   </data>
   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
-    <value>Włączono filtrowanie koordynatów</value>
+    <value>Włącz filtrowanie współrzędnych</value>
   </data>
   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
-    <value>Pokarz rysowanie kiedy film jest odtwarzany</value>
+    <value>Pokaż rysunki podczas odtwarzania wideo</value>
   </data>
   <data name="mnuFullScreen" xml:space="preserve">
-    <value>Pełen ekran</value>
+    <value>Pełny ekran</value>
   </data>
   <data name="mnuVideo" xml:space="preserve">
-    <value>Film</value>
+    <value>Wideo</value>
   </data>
   <data name="mnuTools" xml:space="preserve">
-    <value>Narzędia</value>
+    <value>Narzędzia</value>
   </data>
   <data name="mnuWorkspace" xml:space="preserve">
-    <value>Stanowisko</value>
+    <value>Przestrzeń robocza</value>
   </data>
   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
-    <value>Całkowite Milisekundy</value>
+    <value>Całkowita liczba milisekund</value>
   </data>
   <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
-    <value>Całkowte mikrosekundy</value>
+    <value>Całkowita liczba mikrosekund</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
-    <value>Podstawowy</value>
+    <value>Domyślny</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
     <value>Wyczyść</value>
   </data>
   <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
-    <value>Zatwierdz</value>
+    <value>Zastosuj</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
-    <value>sktóty klawiszowe {0}.{1}</value>
+    <value>Klawisz skrótu dla {0}.{1}</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
-    <value>Komendy</value>
+    <value>Polecenia</value>
   </data>
   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
     <value>Kategorie</value>
@@ -221,19 +221,19 @@
     <value>Własna jednostka długości:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
-    <value>Radiany na sekunde kwadrat ({0})</value>
+    <value>Radiany na sekundę kwadrat ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
-    <value>Stopnie na sekunde kwadrat ({0})</value>
+    <value>Stopnie na sekundę kwadrat ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
-    <value>Obroty na minute ({0})</value>
+    <value>Obroty na minutę ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
-    <value>Radiany na sekunde ({0})</value>
+    <value>Radiany na sekundę ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
-    <value>stopnie na sekunde ({0})</value>
+    <value>Stopnie na sekundę ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
     <value>Radiany ({0})</value>
@@ -242,16 +242,16 @@
     <value>Stopnie ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
-    <value>Stopy na sekunde kwadrat ({0})</value>
+    <value>Stopy na sekundę kwadrat ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
-    <value>Metry na sekunde kwadrat({0})</value>
+    <value>Metry na sekundę kwadrat ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
-    <value>Prętkość kątowa:</value>
+    <value>Prędkość kątowa:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
-    <value>Przypiesenie kątowe:</value>
+    <value>Przyspieszenie kątowe:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
     <value>Kąt:</value>
@@ -260,7 +260,7 @@
     <value>Przyspieszenie:</value>
   </data>
   <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
-    <value>Prętkość:</value>
+    <value>Prędkość:</value>
   </data>
   <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
     <value>Czas:</value>
@@ -269,16 +269,16 @@
     <value>Czas</value>
   </data>
   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
-    <value>Mile na godzine ({0})</value>
+    <value>Mile na godzinę ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
-    <value>Stopy na sekunde ({0})</value>
+    <value>Stopy na sekundę ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
-    <value>Kilometry na godzine ({0})</value>
+    <value>Kilometry na godzinę ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
-    <value>Metry na sekunde ({0})</value>
+    <value>Metry na sekundę ({0})</value>
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Jednostki</value>
@@ -287,34 +287,34 @@
     <value>Czas bezczynności (s):</value>
   </data>
   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
-    <value>Próg wyzwalacza:</value>
+    <value>Próg wyzwalania:</value>
   </data>
   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
-    <value>Włącz wyzwalacz dzwięku</value>
+    <value>Włącz wyzwalacz dźwiękowy</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
-    <value>Zastopywanie odświerzania (fps):</value>
+    <value>Zastępcza liczba klatek na sekundę (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
-    <value>Próg zastąpywania odświerzania (fps):</value>
+    <value>Próg wymiany klatek na sekundę (fps):</value>
   </data>
   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
-    <value>Szybka kamera</value>
+    <value>Kamery szybkie (szybkoklatkowe)</value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Ignoruj ostrzeżenia nadpisywania pliku</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
-    <value>Pamięć przeznaczona na bufor opóźnienia: {0} MB.</value>
+    <value>Pamięć przydzielona na bufory opóźnienia: {0} MB.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
-    <value>Wsteczne: nagrywanie klatek kiedy zatrzymano przechwytywanie.</value>
+    <value>Wsteczny: zapisuje klatki w momencie zatrzymania przechwytywania.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
-    <value>Kamera: nagrywanie klatek w czasie reczywistym.</value>
+    <value>Kamera: rejestrowanie klatek w czasie rzeczywistym.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
-    <value>Opóźnienie: nagrywanie opóźnionych klatek.</value>
+    <value>Opóźnione: nagrywa klatki z opóźnieniem.</value>
   </data>
   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
     <value>Tryb nagrywania i opóźnienie</value>
@@ -326,16 +326,16 @@
     <value>Przechwytywanie</value>
   </data>
   <data name="dlgAbout_Citation" xml:space="preserve">
-    <value>Cytat</value>
+    <value>Odniesienie</value>
   </data>
   <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
-    <value>Budowanie bloków</value>
+    <value>Elementy śledzenia</value>
   </data>
   <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
-    <value>Urządzenie Wejściowe:</value>
+    <value>Urządzenie wejściowe:</value>
   </data>
   <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
-    <value>Automatycznie</value>
+    <value>Automatyzacja</value>
   </data>
   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
     <value>Pamięć</value>
@@ -344,19 +344,19 @@
     <value>Nagrywanie</value>
   </data>
   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
-    <value>Nagrywanie zdekompresowanego filmu</value>
+    <value>Nagrywaj wideo bez kompresji</value>
   </data>
   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
-    <value>Zdekompresowany format filmu:</value>
+    <value>Format wideo bez kompresji:</value>
   </data>
   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
-    <value>Format Filmu:</value>
+    <value>Format wideo:</value>
   </data>
   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
     <value>Format obrazu:</value>
   </data>
   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
-    <value>Odświerzanie Obrazu (fps):</value>
+    <value>Wyświetlaj liczbę klatek na sekundę (fps):</value>
   </data>
   <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
     <value>Klawiatura</value>
@@ -365,13 +365,13 @@
     <value>Licencja</value>
   </data>
   <data name="dlgAbout_Translation" xml:space="preserve">
-    <value>Tłumaczenie</value>
+    <value>Przesunięcie</value>
   </data>
   <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
     <value>Eksportuj</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
-    <value>Skalibrowane pomiary</value>
+    <value>Pomiary skalibrowane</value>
   </data>
   <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
     <value>Ścieżka do pandoc:</value>
@@ -389,13 +389,13 @@
     <value>Piksele</value>
   </data>
   <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
-    <value>Akcja uruchamiająca:</value>
+    <value>Akcja wyzwalacza:</value>
   </data>
   <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
     <value>Tryb eksportu:</value>
   </data>
   <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
-    <value>Punkt</value>
+    <value>Kropka</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
     <value>Cykle na minutę ({0})</value>
@@ -404,7 +404,7 @@
     <value>Uderzenia na minutę ({0})</value>
   </data>
   <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
-    <value>Tętno ({0})</value>
+    <value>Herce ({0})</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
     <value>Cykle na sekundę ({0})</value>
@@ -419,7 +419,7 @@
     <value>Uderzenia na sekundę ({0})</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
-    <value>Zawiera obrazy</value>
+    <value>Dołącz obrazy</value>
   </data>
   <data name="mnuBigArrow" xml:space="preserve">
     <value>Duża strzałka</value>
@@ -453,5 +453,212 @@
   </data>
   <data name="mnuReopenWindow" xml:space="preserve">
     <value>Otwórz ponownie okno</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Konfiguruj foldery przechwytywania</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Podczas uruchamiania</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Włącz wygładzanie pochodnych dla nagrań slow-motion</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Zarządzaj oknami</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>Utwórz obszar roboczy z aktywnych okien</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>Zatrzymaj proces</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>Aby uruchomić programy zewnętrzne po zakończeniu nagrywania, użyj okna dialogowego poleceń po nagraniu na odpowiednim ekranie przechwytywania. \n \nKliknij prawym przyciskiem myszy tło okna podglądu i wybierz {0}.</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Eksportuj rysunki</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Usuń okno</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>Odśwież listę okien</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>Właściwości aktywnego okna</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>Otwórz przeglądarkę plików</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>Kontynuuj od miejsca, w którym skończyłeś</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>Przeglądarka plików</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>Powtórka: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Okna</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Lista ekranów</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Importuj bieżące ekrany</value>
+  </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>Wstaw zmienną…</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Zapisz okna</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>Rozpocznij proces</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>Utwórz skrót na pulpicie</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Eksportuj kalibrację</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Pokaż wszystkie języki</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Włącz dzienniki debugowania</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Włącz autonumerowanie</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Włącz filtrowanie pikseli</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Eksportowane adnotacje</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Foldery</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>Foldery przechwytywania</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>Szczegóły folderu przechwytywania</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>Przeglądaj foldery</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>Usuń folder przechwytywania z listy</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>Dodaj nowy folder przechwytywania</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Ścieżka:</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Domyślny stan wyzwalacza:</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Podgląd dynamicznej ścieżki</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Automatycznie aktualizuj nazwę pliku po każdym nagraniu, aby zawierała numer sekwencyjny.\nTa opcja jest ignorowana, jeśli nazwa pliku zawiera zmienne dynamiczne.</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Wyzwalacz</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>Włącz wyzwalacz UDP</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Zarządzaj oknami…</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Zarządzaj obszarami roboczymi…</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>Otwórz folder danych aplikacji…</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Odśwież</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Wyłącz logi debugowania</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>Otwórz konkretną zawartość</value>
+  </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>Odtwarzanie: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>Zarządzaj obszarami roboczymi</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>Zmień nazwę wybranego obszaru roboczego</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>Usuń wybrany obszar roboczy</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>Nazwa obszaru roboczego</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>Nazwa:</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>Krótka nazwa:</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Wstaw backslash ( \ )</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>Wstaw łącznik ( - )</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>Wstaw znak podkreślenia ( _ )</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>Przesuń w górę</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>Przesuń w dół</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Polecenie po nagraniu…</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Pliki</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Domyślna nazwa pliku:</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Nie wyświetlaj okna dialogowego potwierdzenia, gdy nagranie ma nadpisać istniejący plik.</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>Port UDP:</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Włączony</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Wyłączony</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Obraz</value>
+  </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>Ustawienie wstępne {0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>Przechwytywanie: {0}</value>
   </data>
 </root>
