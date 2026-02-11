@@ -95,19 +95,19 @@
     <value>Zapomnij własne ustawienia</value>
   </data>
   <data name="mnuVideoDelete" xml:space="preserve">
-    <value>Usuń Plik</value>
+    <value>Usuń plik</value>
   </data>
   <data name="mnuVideoLocate" xml:space="preserve">
-    <value>Znajdz w Exploratorze Windows </value>
+    <value>Znajdź w Eksploratorze Windows </value>
   </data>
   <data name="mnuDeleteShortcut" xml:space="preserve">
-    <value>Usuń sktót</value>
+    <value>Usuń z ulubionych</value>
   </data>
   <data name="mnuAddToShortcuts" xml:space="preserve">
-    <value>Dodaj do skrótów</value>
+    <value>Dodaj do ulubionych</value>
   </data>
   <data name="mnuAddShortcut" xml:space="preserve">
-    <value>Dodaj sktót</value>
+    <value>Dodaj do ulubionych</value>
   </data>
   <data name="lblCameras" xml:space="preserve">
     <value>Kamery</value>
@@ -141,5 +141,8 @@
   </data>
   <data name="navPane_FileSystem" xml:space="preserve">
     <value>System plików</value>
+  </data>
+  <data name="tabCameras" xml:space="preserve">
+    <value>Kamery</value>
   </data>
 </root>
