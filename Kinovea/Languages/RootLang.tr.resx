@@ -601,4 +601,43 @@
   <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
     <value>Varsayılan tetik durumu:</value>
   </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>Oynatma: {0}</value>
+  </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>Yakalama: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Pencereler</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>Kayıt sonrasında harici programları çalıştırmak için, ilgili yakalama ekranındaki kayıt sonrası komut iletişim kutusunu kullanın.\n\nGörüntüleme alanının arka planını sağ tıklayın ve {0} seçeneğini seçin.</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Ayarlı</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Etkisiz hale getirilmiş</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Görsel</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Piksel filtrelemeyi etkinleştir</value>
+  </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>Ön ayar {0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Başlangıçta</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Ekran listesi</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Mevcut ekranları içe aktar</value>
+  </data>
 </root>
