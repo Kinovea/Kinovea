@@ -160,4 +160,7 @@
   <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
     <value>Oluşacak kare hızı:</value>
   </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Yazılım mozaik giderme özelliğini etkinleştir</value>
+  </data>
 </root>
