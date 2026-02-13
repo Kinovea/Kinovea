@@ -1693,4 +1693,16 @@
   <data name="track_UpdateThreshold" xml:space="preserve">
     <value>Prag aktualiziranja:</value>
   </data>
+  <data name="tracking_TrackingAlgorithm" xml:space="preserve">
+    <value>Algoritam praċenja:</value>
+  </data>
+  <data name="tracking_MatchThreshold" xml:space="preserve">
+    <value>Prag podudaranja:</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>Prikaz uživo</value>
+  </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>Prikaz kasni</value>
+  </data>
 </root>
