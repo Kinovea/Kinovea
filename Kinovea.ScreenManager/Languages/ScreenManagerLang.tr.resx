@@ -994,4 +994,13 @@
   <data name="mnuPostRecordingCommand" xml:space="preserve">
     <value>Kaydetme sonrası komut…</value>
   </data>
+  <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
+    <value>En uygun daireyi göster</value>
+  </data>
+  <data name="DrawingName_Bikefit" xml:space="preserve">
+    <value>Bisiklet ayarı</value>
+  </data>
+  <data name="DrawingName_Genu" xml:space="preserve">
+    <value>Diz</value>
+  </data>
 </root>
