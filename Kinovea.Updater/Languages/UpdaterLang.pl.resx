@@ -82,6 +82,6 @@
   </data>
   <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Sprawdzanie nowej wersji.</value>
   </data>
-  <data name="Updater_UpToDate" xml:space="preserve"><value>Posiadasz najbardziej aktualną wersję programu!</value>
+  <data name="Updater_UpToDate" xml:space="preserve"><value>Posiadasz najnowszą wersję programu!</value>
   </data>
 </root>
