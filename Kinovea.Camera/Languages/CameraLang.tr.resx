@@ -155,7 +155,7 @@
     <value>Şifre</value>
   </data>
   <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
-    <value>Donanım tabanlı sıkıştırmayı etkinleştir</value>
+    <value>Donanım sıkıştırmasını etkinleştir</value>
   </data>
   <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
     <value>Oluşacak kare hızı:</value>
