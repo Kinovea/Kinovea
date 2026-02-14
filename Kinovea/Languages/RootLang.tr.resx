@@ -410,28 +410,28 @@
     <value>Büyük ok</value>
   </data>
   <data name="mnuBigHand" xml:space="preserve">
-    <value>Büyük işaretleme elii</value>
+    <value>Büyük işaretleme eli</value>
   </data>
   <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
     <value>Hız ({0})</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
-    <value>Saniyedeki döngü sayısı ({0})</value>
+    <value>Saniyedeki döngü sayısı</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
-    <value>Dakikadaki döngü sayısı ({0})</value>
+    <value>Dakikadaki döngü sayısı</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_StepsPerSecond" xml:space="preserve">
-    <value>Saniyedeki adım sayısı ({0})</value>
+    <value>Saniyedeki adım sayısı</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
-    <value>Dakikadaki adım sayısı ({0})</value>
+    <value>Dakikadaki adım sayısı</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
-    <value>Saniyedeki vuruş sayısı {0}</value>
+    <value>Saniyedeki vuruş sayısı</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
-    <value>Dakikadaki vuruş sayısı ({0})</value>
+    <value>Dakikadaki vuruş sayısı</value>
   </data>
   <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
     <value>Görüntüleri dahil et</value>
