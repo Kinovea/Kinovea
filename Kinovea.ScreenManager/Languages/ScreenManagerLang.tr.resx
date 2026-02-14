@@ -995,7 +995,7 @@
     <value>Kaydetme sonrası komut…</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowRotationCircle" xml:space="preserve">
-    <value>En uygun daireyi göster</value>
+    <value>En iyi uyan daireyi göster</value>
   </data>
   <data name="DrawingName_Bikefit" xml:space="preserve">
     <value>Bisiklet ayarı</value>
