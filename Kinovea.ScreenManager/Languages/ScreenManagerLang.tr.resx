@@ -1003,4 +1003,175 @@
   <data name="DrawingName_Genu" xml:space="preserve">
     <value>Diz</value>
   </data>
+  <data name="mnuThumbnailDelete" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="mnuThumbnailForget" xml:space="preserve">
+    <value>Özel ayarları unutun</value>
+  </data>
+  <data name="mnuThumbnailRename" xml:space="preserve">
+    <value>Yeniden adlandır</value>
+  </data>
+  <data name="mnuThumbnailLocate" xml:space="preserve">
+    <value>Windows Gezgini'nde dosyayı bulun</value>
+  </data>
+  <data name="mnuCoordinateSystem" xml:space="preserve">
+    <value>Koordinat sistemi</value>
+  </data>
+  <data name="mnuCoordinateSystemHide" xml:space="preserve">
+    <value>Gizle</value>
+  </data>
+  <data name="mnuPolyline_FinishHere" xml:space="preserve">
+    <value>Polilini burada bitir</value>
+  </data>
+  <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve">
+    <value>Önceki noktada polilini bitir</value>
+  </data>
+  <data name="mnuPolyline_CloseMenu" xml:space="preserve">
+    <value>Bu menüyü kapat</value>
+  </data>
+  <data name="mnuCutDrawing" xml:space="preserve">
+    <value>Kesim çizimi</value>
+  </data>
+  <data name="mnuCopyDrawing" xml:space="preserve">
+    <value>Çizimi kopyala</value>
+  </data>
+  <data name="mnuPasteDrawing" xml:space="preserve">
+    <value>Çizimi yapıştır</value>
+  </data>
+  <data name="mnuVisibilityDefault" xml:space="preserve">
+    <value>Varsayılan solma</value>
+  </data>
+  <data name="mnuVisibilityCustom" xml:space="preserve">
+    <value>Özel solma</value>
+  </data>
+  <data name="mnuVisibilityConfigure" xml:space="preserve">
+    <value>Özel solma özelliğini yapılandırın</value>
+  </data>
+  <data name="mnuPasteImage" xml:space="preserve">
+    <value>Panodan resmi yapıştır</value>
+  </data>
+  <data name="mnuShowArrow" xml:space="preserve">
+    <value>Ok göster</value>
+  </data>
+  <data name="mnuShowCircleCenter" xml:space="preserve">
+    <value>Daire merkezini göster</value>
+  </data>
+  <data name="Toast_TriggerArmed" xml:space="preserve">
+    <value>Yakalama tetikleyicisi etkinleştirildi</value>
+  </data>
+  <data name="Toast_TriggerDisarmed" xml:space="preserve">
+    <value>Yakalama tetikleyicisi devre dışı bırakıldı</value>
+  </data>
+  <data name="Toast_AudioLost" xml:space="preserve">
+    <value>Ses cihazı kayboldu</value>
+  </data>
+  <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve">
+    <value>Spot ışığı</value>
+  </data>
+  <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve">
+    <value>Otomatik numaralar</value>
+  </data>
+  <data name="ToolTip_PauseCamera" xml:space="preserve">
+    <value>Kamerayı duraklat</value>
+  </data>
+  <data name="ToolTip_StartCamera" xml:space="preserve">
+    <value>Kamerayı başlat</value>
+  </data>
+  <data name="ToolTip_ConfigureCamera" xml:space="preserve">
+    <value>Kamerayı yapılandırın</value>
+  </data>
+  <data name="FormCrashRecovery_Title" xml:space="preserve">
+    <value>Çökme kurtarma</value>
+  </data>
+  <data name="FormCrashRecovery_Recover" xml:space="preserve">
+    <value>Kurtar</value>
+  </data>
+  <data name="FormCrashRecovery_File" xml:space="preserve">
+    <value>Dosya</value>
+  </data>
+  <data name="FormCrashRecovery_Date" xml:space="preserve">
+    <value>Tarih</value>
+  </data>
+  <data name="FormCrashRecovery_Info" xml:space="preserve">
+    <value>Aşağıdaki projeler düzgün bir şekilde kaydedilmemiştir ancak kurtarılabilir:</value>
+  </data>
+  <data name="Infobar_Player_Observing" xml:space="preserve">
+    <value>Gözlem klasörü: {0}</value>
+  </data>
+  <data name="Infobar_Player_StopWatcher" xml:space="preserve">
+    <value>Gözlemlemeyi durdur klasörü: {0}</value>
+  </data>
+  <data name="Infobar_Player_StartWatcher" xml:space="preserve">
+    <value>Gözlemlemeye başla klasörü: {0}</value>
+  </data>
+  <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
+    <value>Ortalama piksel boyutu: {0}.</value>
+  </data>
+  <data name="dlgCalibratePlane_HelpPlane" xml:space="preserve">
+    <value>Her bir kenarın uzunluğunu girin.</value>
+  </data>
+  <data name="filterName_Analysis" xml:space="preserve">
+    <value>Analiz</value>
+  </data>
+  <data name="filterName_Kinogram" xml:space="preserve">
+    <value>Kinogram</value>
+  </data>
+  <data name="formConfigureExport_ImageSequence" xml:space="preserve">
+    <value>Görüntü dizisini dışa aktar</value>
+  </data>
+  <data name="formConfigureExport_SBS" xml:space="preserve">
+    <value>Yan yana dışa aktar</value>
+  </data>
+  <data name="formConfigureExport_SBS_Horizontal" xml:space="preserve">
+    <value>Yatay</value>
+  </data>
+  <data name="formConfigureExport_SBS_Vertical" xml:space="preserve">
+    <value>Dikey</value>
+  </data>
+  <data name="formConfigureKinogram_CropSize" xml:space="preserve">
+    <value>Kırpma boyutu:</value>
+  </data>
+  <data name="formConfigureKinogram_lblFrameInterval" xml:space="preserve">
+    <value>Kare aralığı: {0:0.000} ms</value>
+  </data>
+  <data name="formConfigureKinogram_lblTotal" xml:space="preserve">
+    <value>Kare sayısı: {0}</value>
+  </data>
+  <data name="formConfigureKinogram_Table" xml:space="preserve">
+    <value>Tablo:</value>
+  </data>
+  <data name="formConfigureKinogram_Title" xml:space="preserve">
+    <value>Kinogram'ı yapılandırın</value>
+  </data>
+  <data name="Generic_OK" xml:space="preserve">
+    <value>TAMAM</value>
+  </data>
+  <data name="lblConfig_ImageSize" xml:space="preserve">
+    <value>Görüntü boyutu:</value>
+  </data>
+  <data name="mnuAction" xml:space="preserve">
+    <value>Eylem</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteSection" xml:space="preserve">
+    <value>Geçerli zaman bölümünü sil</value>
+  </data>
+  <data name="mnuAction_Chrono_DeleteTimes" xml:space="preserve">
+    <value>Tüm zamanları sil</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
+    <value>Geçerli zaman bölümünün sonunu bu kareye taşıyın</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Geçerli zaman bölümünün başlangıcını bu kareye taşıyın</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Bir sonraki bölme noktasını bu kareye taşıyın</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Bir sonraki bölümün başlangıcını bu kareye taşıyın</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Önceki bölümün sonunu bu kareye taşıyın</value>
+  </data>
 </root>
