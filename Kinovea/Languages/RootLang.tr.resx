@@ -640,4 +640,25 @@
   <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
     <value>Mevcut ekranları içe aktar</value>
   </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Kaydedilen pencereler</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Dışa aktarılan açıklamalar</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Çizimleri dışa aktar</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Kalibrasyonu dışa aktar</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Yüksek hızlı çekimler için türevlerin yumuşatılmasını etkinleştirin</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>İşlemi başlat</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Tüm dilleri göster</value>
+  </data>
 </root>
