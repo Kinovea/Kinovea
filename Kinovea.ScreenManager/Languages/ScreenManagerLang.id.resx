@@ -1363,4 +1363,382 @@
   <data name="mnuPostRecordingCommand" xml:space="preserve">
     <value>Perintah setelah perekaman…</value>
   </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>Sejajarkan dengan objek kalibrasi</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>Terisi</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>Titik</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>Tampilkan garis vertikal</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>Tampilkan garis horizontal</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>Latar belakang</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>Latar belakang…</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>Balik sumbu X</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>Balik sumbu Y</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>Putar 90°</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>Jumlah desimal</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>Validasi kalibrasi</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>ditemukan</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>hilang</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>Kalibrasi lensa: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>Kalibrasi bidang: {0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>Titik kontrol</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>Mode validasi</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>Ubah semua sumbu dan verifikasi lokasi penanda dalam gambar</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>Ubah satu sumbu dan verifikasi dua sumbu lainnya</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>Posisi 3D dihitung dari dua tampilan</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>Posisi kamera ({0}): X:{1}, Y:{2}, Z:{3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>Jarak ke titik asal ({0}): {1}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>Mulai</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>Akhir</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>Durasi</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>Kumulatif</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>Mode kalibrasi lensa</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>Estimasi manual…</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>Tidak ada</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>Validasi kalibrasi…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>Properti latar belakang</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>Warna</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>Konfigurasikan estimasi gerakan kamera</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>Tipe fitur:</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>Fitur per frame:</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>Jalankan estimasi gerakan kamera</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>Temukan fitur</value>
+  </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>Cocokkan fitur</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>Temukan homografi</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>Penyetelan bundel</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>Bangun trek</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>Hapus data pelacakan</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>Tampilkan titik</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
+    <value>Tampilkan inlier</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>Tampilkan outlier</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>Tampilkan medan gerak</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>Tampilkan transformasi frame</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>Tampilkan trek</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>Konfigurasikan kalibrasi lensa</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>Maks gambar:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>Ukuran pola:</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>Maks iterasi:</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>Jalankan kalibrasi lensa</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>Hapus data kalibrasi</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>Tampilkan sudut yang terdeteksi</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>Tampilkan sudut yang diproyeksikan ulang</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>Salin data kalibrasi</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>Simpan data kalibrasi…</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>Offset diterapkan ke koordinat ({0})</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>Ukuran label</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>Warna batas</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>Warna label</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>Koordinat</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>Gunakan kecepatan pemutaran saat ini: {0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>Estimasi gerakan kamera</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>Kalibrasi lensa</value>
+  </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>Konfigurasikan kamera…</value>
+  </data>
+  <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Simpan sebagai anotasi pemutar bawaan</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Simpan sebagai anotasi penangkapan bawaan</value>
+  </data>
+  <data name="mnuUnloadAnnotations" xml:space="preserve">
+    <value>Lepas anotasi</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>Muat ulang anotasi penangkapan bawaan</value>
+  </data>
+  <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
+    <value>Muat ulang anotasi tertaut</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>Perintah pasca perekaman</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>Aktifkan perintah pasca perekaman</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>Sisipkan variabel…</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>Simpan dan lanjutkan</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>Tampilkan lingkaran</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>Buka folder…</value>
+  </data>
+  <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
+    <value>Muat ulang anotasi pemutar bawaan</value>
+  </data>
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
+    <value>Hapus akhir trek</value>
+  </data>
+  <data name="tracking_DeleteTracks" xml:space="preserve">
+    <value>Hapus trek</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>Stabilisasi</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>Konteks</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>Sisipkan variabel konteks</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>Sisipkan</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>Deskripsi</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>Contoh</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>Kata kunci</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>Frame rate kamera</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>Path ke berkas video</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>Path ke folder penangkapan</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>Nama berkas dengan ekstensi</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>Nama berkas tanpa ekstensi</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>Ekstensi berkas</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>Nama berkas anotasi</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>Tanggal (ISO 8601)</value>
+  </data>
+  <data name="variable_TimeISO8601" xml:space="preserve">
+    <value>Waktu (ISO 8601)</value>
+  </data>
+  <data name="variable_Hours" xml:space="preserve">
+    <value>Jam</value>
+  </data>
+  <data name="variable_Milliseconds" xml:space="preserve">
+    <value>Milidetik</value>
+  </data>
+  <data name="mnuNext" xml:space="preserve">
+    <value>Berikutnya</value>
+  </data>
+  <data name="mnuPrevious" xml:space="preserve">
+    <value>Sebelumnya</value>
+  </data>
+  <data name="mnuVerticalLayout" xml:space="preserve">
+    <value>Tata letak vertikal</value>
+  </data>
+  <data name="tracking_TrackingAlgorithm" xml:space="preserve">
+    <value>Algoritma pelacakan:</value>
+  </data>
+  <data name="tracking_MatchThreshold" xml:space="preserve">
+    <value>Ambang batas pencocokan:</value>
+  </data>
+  <data name="track_UpdateThreshold" xml:space="preserve">
+    <value>Ambang batas pembaruan:</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>Hapus akhir trek</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>Gambar kunci sebelumnya</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>Gambar kunci berikutnya</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>Tampilkan semua gambar kunci</value>
+  </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>Tampilan tertunda</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>Tampilan langsung</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>Konteks penangkapan</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>Nonaktifkan konteks penangkapan</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>Aktifkan konteks penangkapan</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>Penundaan dalam detik</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>Total panjang perekaman dalam detik</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>Pemicu penangkapan diaktifkan</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>Pemicu penangkapan dinonaktifkan</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>Pilih folder penangkapan</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>Sinyal:{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>Throughput:{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>Beban:{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>Drop:{0}</value>
+  </data>
 </root>
