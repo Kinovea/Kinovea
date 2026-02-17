@@ -10,6 +10,7 @@ using System.ComponentModel;
 
 using Kinovea.Video;
 using Kinovea.Services;
+using System.Drawing.Imaging;
 
 namespace Kinovea.ScreenManager
 {
@@ -56,13 +57,17 @@ namespace Kinovea.ScreenManager
             BackgroundWorker worker = sender as BackgroundWorker;
             SavingSettings s = e.Argument as SavingSettings;
 
+            player.view.BeforeExportVideo();
+
             // Get the image enumerator.
             player.FrameServer.VideoReader.BeforeFrameEnumeration();
             IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
 
-            // Enumerate and save the images.
+            // Export loop.
             string dir = Path.GetDirectoryName(s.File);
             string extension = Path.GetExtension(s.File);
+            PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(s.File);
+            
             int i = 0;
             foreach (var image in images)
             {
@@ -77,13 +82,11 @@ namespace Kinovea.ScreenManager
                 string filename = player.FrameServer.GetImageFilename(s.File, timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat);
                 string filePath = Path.Combine(dir, filename + extension);
 
-                image.Save(filePath);
+                ImageHelper.Save(filePath, image);
 
                 i++;
                 worker.ReportProgress(i, s.TotalFrameCount);
             }
-
-            player.FrameServer.VideoReader.AfterFrameEnumeration();
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -101,7 +104,10 @@ namespace Kinovea.ScreenManager
             formProgressBar.Close();
             formProgressBar.Dispose();
 
+            player.FrameServer.VideoReader.AfterFrameEnumeration();
+            player.view.AfterExportVideo();
             player.FrameServer.AfterSave();
+
             // Return to the start of the zone.
             //m_iFramesToDecode = 1;
             //ShowNextFrame(m_iSelStart, true);
