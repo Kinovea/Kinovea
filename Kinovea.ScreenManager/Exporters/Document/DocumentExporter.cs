@@ -141,7 +141,7 @@ namespace Kinovea.ScreenManager
             {
                 // Get the key image enumerator.
                 player.FrameServer.VideoReader.BeforeFrameEnumeration();
-                IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
+                IEnumerable<Bitmap> images = player.FrameServer.EnumerateKeyImages(s);
 
                 string assetsDir = "images";
                 string assetsPath = Path.Combine(Path.GetDirectoryName(s.File), assetsDir);
