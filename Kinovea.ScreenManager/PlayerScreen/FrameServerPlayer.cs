@@ -502,7 +502,55 @@ namespace Kinovea.ScreenManager
             if (output != null)
                 output.Dispose();
         }
-        
+
+        /// <summary>
+        /// Lazily enumerates the keyframe images from the video, for export purposes.
+        /// Same as above but jumps from key frame to key frame.
+        /// Returns an internal bitmap and the caller should do its own copy.
+        /// </summary>
+        public IEnumerable<Bitmap> EnumerateKeyImages(SavingSettings settings)
+        {
+            Bitmap output = null;
+
+            var keyframes = this.metadata.Keyframes;
+            long currentTimestamp = settings.Section.Start;
+
+            for (int i = 0; i < keyframes.Count; i++)
+            {
+                var kf = keyframes[i];
+                if (kf.Timestamp < settings.Section.Start)
+                {
+                    continue;
+                }
+
+                if (kf.Timestamp > settings.Section.End)
+                {
+                    break;
+                }
+
+                // Move timeline to the target timestamp and get the image.
+                videoReader.MoveTo(currentTimestamp, kf.Timestamp);
+                VideoFrame vf = videoReader.Current;
+                currentTimestamp = vf.Timestamp;
+
+                // Initialize the output Bitmap if not done already.
+                if (output == null)
+                    output = new Bitmap(vf.Image.Width, vf.Image.Height, vf.Image.PixelFormat);
+
+                // Paint the frame + annotations to our bitmap.
+                settings.ImageRetriever(vf, output);
+
+                // Store the input timestamp in the bitmap, this may be used by the caller to build a file name for image exports.
+                output.Tag = vf.Timestamp;
+
+                yield return output;
+            }
+
+            // End of enumeration.
+            if (output != null)
+                output.Dispose();
+        }
+
         public void ReportError(SaveResult saveResult)
         {
             switch(saveResult)
