@@ -94,13 +94,21 @@ namespace Kinovea.ScreenManager
                 Stop();
             }
 
-            port = nextPort;
-            udpServer = new UdpClient(port);
-            stopAsked = false;
-            changePortAsked = false;
-            log.DebugFormat("Starting UDP monitor on port {0}.", port);
-            udpServer.BeginReceive(new AsyncCallback(OnUDPData), udpServer);
-            started = true;
+            try
+            {
+                port = nextPort;
+                udpServer = new UdpClient(port);
+                stopAsked = false;
+                changePortAsked = false;
+                log.DebugFormat("Starting UDP monitor on port {0}.", port);
+                udpServer.BeginReceive(new AsyncCallback(OnUDPData), udpServer);
+                started = true;
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("Failed to start UDP monitor on port {0}: {1}", port, ex.Message);
+                started = false;
+            }
         }
 
         private void OnUDPData(IAsyncResult result)
@@ -151,6 +159,7 @@ namespace Kinovea.ScreenManager
             stopAsked = true;
             started = false;
             udpServer.Close();
+            udpServer.Dispose();
             log.DebugFormat("UDP trigger monitor stopped.");
         }
     }
