@@ -415,4 +415,34 @@
   <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
     <value>赫兹 ({0})</value>
   </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>打开文件夹…</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>导航面板</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>窗口</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>窗口属性…</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>打开新的窗口</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>重新打开窗口</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>管理窗口…</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>管理工作区…</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>打开应用数据文件夹…</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>包括图像</value>
+  </data>
 </root>
