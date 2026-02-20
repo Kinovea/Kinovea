@@ -445,4 +445,10 @@
   <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
     <value>包括图像</value>
   </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>禁用调试日志</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>启用调试日志</value>
+  </data>
 </root>
