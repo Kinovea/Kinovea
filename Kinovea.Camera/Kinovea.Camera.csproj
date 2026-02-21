@@ -193,6 +193,7 @@
       <DependentUpon>FormIconPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\CameraLang.ar.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.az.resx" />
     <EmbeddedResource Include="Languages\CameraLang.bg.resx" />
     <EmbeddedResource Include="Languages\CameraLang.ca.resx" />
     <EmbeddedResource Include="Languages\CameraLang.cs.resx" />
@@ -200,6 +201,7 @@
     <EmbeddedResource Include="Languages\CameraLang.de.resx" />
     <EmbeddedResource Include="Languages\CameraLang.el.resx" />
     <EmbeddedResource Include="Languages\CameraLang.es.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.et.resx" />
     <EmbeddedResource Include="Languages\CameraLang.fa.resx" />
     <EmbeddedResource Include="Languages\CameraLang.fi.resx" />
     <EmbeddedResource Include="Languages\CameraLang.fr.resx" />
@@ -222,12 +224,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\CameraLang.ro.resx" />
     <EmbeddedResource Include="Languages\CameraLang.ru.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.sl.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sv.resx" />
     <EmbeddedResource Include="Languages\CameraLang.th.resx" />
     <EmbeddedResource Include="Languages\CameraLang.tr.resx" />
     <EmbeddedResource Include="Languages\CameraLang.uk.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.vi.resx" />
     <EmbeddedResource Include="Languages\CameraLang.Zh-CHS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.zh-Hant.resx" />
     <EmbeddedResource Include="Properties\Icons.resx">
