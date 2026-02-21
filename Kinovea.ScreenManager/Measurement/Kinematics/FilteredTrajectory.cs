@@ -147,11 +147,22 @@ namespace Kinovea.ScreenManager
 
         public PointF RawCoordinates(int index)
         {
+            if (index >= Length)
+            {
+                int lastIndex = Length - 1;
+                return new PointF((float)RawXs[lastIndex], (float)RawYs[lastIndex]);
+            }
+
             return new PointF((float)RawXs[index], (float)RawYs[index]);
         }
 
         public PointF Coordinates(int index)
         {
+            if (index >= Length)
+            {
+                return RawCoordinates(index);
+            }
+
             float x = 0;
             if (XCutoffIndex < 0)
                 x = RawCoordinates(index).X;

@@ -44,9 +44,10 @@ namespace Kinovea.ScreenManager
             if (trajs == null || trajs.Count != 3)
                 throw new InvalidProgramException();
 
-            // Assume o, a, b keys for now.
-            // We also use the "o" key as a reference, this implies that all three trajectories must have data at the same time points.
-            // We must take care during tracking to keep the length of trajectories the same.
+            // Keys are "o", "a", "b" for origin, leg1 and leg2 respectively.
+            // We assume the times are synchronized but we don't assume the trajectories have the same length.
+            // For example one of the points may be completely static.
+            // We use the "o" trajectory as a reference for the length and time coordinates of the final time series collection.
             TimeSeriesCollection tsc = new TimeSeriesCollection(trajs["o"].Length);
 
             tsc.AddTimes(trajs["o"].Times);

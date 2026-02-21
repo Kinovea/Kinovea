@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
                 if (!metadata.TrackabilityManager.IsObjectTrackingInitialized(drawing.Id))
                     continue;
 
-                // Get all the individual trajectories.
+                // Get all the individual trajectories bound to points of this drawing.
                 Dictionary<string, DrawingTrack> tracks = metadata.TrackabilityManager.GetTrackingTracks(drawing);
                 Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
                 foreach (var pair in tracks)
@@ -67,10 +67,36 @@ namespace Kinovea.ScreenManager
                     string keyA = gpa.Leg1.ToString();
                     string keyB = gpa.Leg2.ToString();
 
-                    // All points in an angle must be trackable as there is currently no way to get the static point coordinate.
-                    if (!trajs.ContainsKey(keyO) || !trajs.ContainsKey(keyA) || !trajs.ContainsKey(keyB))
+                    // In some tools like angle-to-horizontal or angle-to-vertical, one of the point is static
+                    // and doesn't have a track associated with it.
+                    // For these missing keys we will reconstruct a trajectory with a single point in it.
+                    List<string> keys = new List<string>() { keyO, keyA, keyB };
+                    List<string> missingKeys = keys.Where(k => !trajs.ContainsKey(k)).ToList();
+                    
+                    // At the moment we don't allow the O key to be missing as it's used later as a reference
+                    // for the time coordinates and length.
+                    if (missingKeys.Contains(keyO))
+                    {
                         continue;
+                    }
 
+                    // Create a single-point "trajectory" for the missing keys.
+                    // The rest of the code needs to handle the fact that the angle is supported
+                    // by trajectories with possibly varying lengths.
+                    List<PointF> points = drawing.GenericPosture.PointList;
+                    foreach (string key in missingKeys)
+                    {
+                        int index = int.Parse(key);
+                        PointF point = PointF.Empty;
+                        if (index >= 0 && index < points.Count)
+                            point = points[index];
+
+                        TimedPoint timedPoint = new TimedPoint(point.X, point.Y, 0);
+                        FilteredTrajectory traj = new FilteredTrajectory();
+                        traj.Initialize(new List<TimedPoint>() { timedPoint }, metadata.CalibrationHelper);
+                        trajs.Add(key, traj);
+                    }
+                    
                     // Remap to oab.
                     Dictionary<string, FilteredTrajectory> angleTrajs = new Dictionary<string, FilteredTrajectory>();
                     angleTrajs["o"] = trajs[keyO];
