@@ -32,5 +32,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: |
-          **/bin/x64/Release/
+        path: Kinovea/bin/x64/Release/
