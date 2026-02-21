@@ -47,8 +47,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #pragma once
 
 extern "C" {
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
+#endif
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
 #include <avcodec.h>
 #include <avdevice.h>
 #include <avfilter.h>
@@ -186,10 +190,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool m_bIsLoaded;
         bool m_bFirstFrameRead;
         VideoInfo m_VideoInfo;
-        Dictionary<long, TimedPoint^>^ stabOffsets = gcnew Dictionary<long, TimedPoint^>();
+        Dictionary<int64_t, TimedPoint^>^ stabOffsets = gcnew Dictionary<int64_t, TimedPoint^>();
         
         // Decoding mode & working zone.
-        long m_timestampOffset = 0;
+        int64_t m_timestampOffset = 0;
         VideoDecodingMode m_DecodingMode;
         bool m_bIsVeryShort;
         VideoSection m_WorkingZone;

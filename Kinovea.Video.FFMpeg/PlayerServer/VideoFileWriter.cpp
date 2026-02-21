@@ -72,7 +72,7 @@ SaveResult VideoFileWriter::Save(SavingSettings^ s, VideoInfo videoInfo, String^
             log->Error("Frame not saved.");
         
         i++;
-        worker->ReportProgress(i, s->TotalFrameCount);
+        worker->ReportProgress((int)i, s->TotalFrameCount);
 
         if(result != SaveResult::Success)
         {
@@ -149,7 +149,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
     if(_fFramesInterval > 0) 
         m_SavingContext->fFramesInterval = _fFramesInterval;
     
-    m_SavingContext->iBitrate = ComputeBitrate(m_SavingContext->outputSize, m_SavingContext->fFramesInterval);
+    m_SavingContext->iBitrate = (int)ComputeBitrate(m_SavingContext->outputSize, m_SavingContext->fFramesInterval);
     
     do
     {

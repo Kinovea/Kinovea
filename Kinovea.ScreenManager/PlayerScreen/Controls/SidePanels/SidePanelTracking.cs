@@ -40,7 +40,6 @@ namespace Kinovea.ScreenManager
         private Metadata metadata;
         private Guid managerId;
         private Guid drawingId;
-        private Action invalidator;
         private HistoryMementoModifyDrawing memento;
         private IDrawingHostView hostView;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

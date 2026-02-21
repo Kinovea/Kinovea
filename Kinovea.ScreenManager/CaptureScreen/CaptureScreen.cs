@@ -176,7 +176,6 @@ namespace Kinovea.ScreenManager
         private ConsumerDelayer consumerDelayer;
         private Thread recorderThread;
         private Bitmap recordingThumbnail;
-        private DateTime recordingStart;
         private CaptureRecordingMode recordingMode;
         private Stopwatch stopwatchRecording = new Stopwatch();
         private bool triggerArmed = false;  // This indicates whether we are currently armed or not and is used to discard capture trigger commands.
@@ -197,7 +196,6 @@ namespace Kinovea.ScreenManager
 
         private bool shared;
         private bool synched;
-        private int index;
         
         private Metadata metadata;
         private MetadataRenderer metadataRenderer;

@@ -154,7 +154,7 @@
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswresample;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>

@@ -53,7 +53,6 @@ namespace Kinovea.ScreenManager
         private Guid managerId;
         private bool manualUpdate;
         private bool editing;
-        private Pen penBorder = Pens.Silver;
         public static readonly List<TrackingAlgorithm> options = new List<TrackingAlgorithm>() {
             TrackingAlgorithm.Correlation,
             TrackingAlgorithm.Circle,

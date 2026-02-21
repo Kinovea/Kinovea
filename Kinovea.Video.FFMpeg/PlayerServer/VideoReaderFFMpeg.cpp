@@ -277,7 +277,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
             fAvgFrameRate = (double)pFormatCtx->streams[m_iVideoStream]->avg_frame_rate.num / (double)pFormatCtx->streams[m_iVideoStream]->avg_frame_rate.den;
 
         // This may be updated after the first actual decoding.
-        long firstTimestamp = (int64_t)((double)((double)pFormatCtx->start_time / (double)AV_TIME_BASE) * m_VideoInfo.AverageTimeStampsPerSeconds);
+        long firstTimestamp = (long)((double)((double)pFormatCtx->start_time / (double)AV_TIME_BASE) * m_VideoInfo.AverageTimeStampsPerSeconds);
         m_VideoInfo.FirstTimeStamp = Math::Max(firstTimestamp, 0);
 
         // In case of negative start time, we still want to expose 0-based timestamps to the outside.
@@ -936,13 +936,13 @@ bool VideoReaderFFMpeg::SetStabilizationData(List<Kinovea::Services::TimedPoint^
     if (points == nullptr)
         return true;
 
-    for (size_t i = 0; i < points->Count; i++)
+    for (int i = 0; i < points->Count; i++)
     {
-        if (stabOffsets->ContainsKey(points[i]->T))
+        if (stabOffsets->ContainsKey((long)points[i]->T))
             continue;
 
         TimedPoint^ p = gcnew TimedPoint(points[i]->X - points[0]->X, points[i]->Y - points[0]->Y, points[i]->T);
-        stabOffsets->Add(points[i]->T, p);
+        stabOffsets->Add((long)points[i]->T, p);
     }
 
     return true;
@@ -978,7 +978,7 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
     if (m_Verbose)
         log->DebugFormat("Changing decoding size from {0} to {1}", m_DecodingSize, targetSize);
 
-    long currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
+    int64_t currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
 
     log->DebugFormat("ChangeDecodingSize, stopping pre-buffering.");
     StopPreBuffering();
@@ -1005,7 +1005,7 @@ void VideoReaderFFMpeg::DisableCustomDecodingSize()
     if (m_DecodingMode != VideoDecodingMode::PreBuffering)
         return;
 
-    long currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
+    int64_t currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
 
     log->DebugFormat("DisableCustomDecodingSize, stopping pre-buffering.");
     StopPreBuffering();
@@ -1218,7 +1218,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
     if (_iFramesToDecode < 0)
     {
         // Negative move. Compute seek target.
-        iTargetTimeStamp = m_FramesContainer->CurrentFrame->Timestamp + (_iFramesToDecode * m_VideoInfo.AverageTimeStampsPerFrame);
+        iTargetTimeStamp = (int64_t)Math::Round(m_FramesContainer->CurrentFrame->Timestamp + (_iFramesToDecode * m_VideoInfo.AverageTimeStampsPerFrame));
         if (iTargetTimeStamp < 0)
             iTargetTimeStamp = 0;
     }
@@ -1295,7 +1295,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
             continue;
         }
 
-        long beTimestamp = pDecodingAVFrame->best_effort_timestamp;
+        int64_t beTimestamp = pDecodingAVFrame->best_effort_timestamp;
         if (beTimestamp < m_timestampOffset)
         {
             m_timestampOffset = beTimestamp;
@@ -1391,7 +1391,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t _iTimeStampToSeekTo, int _iFrame
                     float dx = stabOffsets[m_TimestampInfo.CurrentTimestamp]->X;
                     float dy = stabOffsets[m_TimestampInfo.CurrentTimestamp]->Y;
                     // TODO: handle scaling (decoding size).
-                    g->DrawImageUnscaled(bmp2, -dx, -dy);
+                    g->DrawImageUnscaled(bmp2, (int)(-dx), (int)(-dy));
                     delete g;
                     delete bmp2;
                 }
@@ -1470,9 +1470,9 @@ int VideoReaderFFMpeg::SeekTo(int64_t _target)
     // Perform an FFMpeg seek without decoding the frame.
     // AVSEEK_FLAG_BACKWARD -> goes to first I-Frame before target.
     // Then we'll need to decode frame by frame until the target is reached.
-    long minTs = m_timestampOffset;
-    long ts = _target + m_timestampOffset;
-    long maxTs = (int64_t)(_target + m_timestampOffset + m_VideoInfo.AverageTimeStampsPerSeconds);
+    int64_t minTs = m_timestampOffset;
+    int64_t ts = _target + m_timestampOffset;
+    int64_t maxTs = (int64_t)(_target + m_timestampOffset + m_VideoInfo.AverageTimeStampsPerSeconds);
 
     int res = avformat_seek_file(
         m_pFormatCtx,

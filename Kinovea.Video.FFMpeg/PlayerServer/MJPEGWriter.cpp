@@ -781,7 +781,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
 
             m_encodingDurationAccumulator += (m_swEncoding->ElapsedMilliseconds - then);
 
-            WriteBuffer(length, _SavingContext, pYUV420Buffer, true);
+            WriteBuffer((int)length, _SavingContext, pYUV420Buffer, true);
             written = true;
             break;
         }
@@ -867,7 +867,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, ar
     do
     {     
         pin_ptr<uint8_t> pOutputVideoBuffer = &managedBuffer[0];
-        WriteBuffer(length, _SavingContext, pOutputVideoBuffer, true);
+        WriteBuffer((int)length, _SavingContext, pOutputVideoBuffer, true);
         pOutputVideoBuffer = nullptr;
         bWritten = true;
     }

@@ -243,7 +243,6 @@ namespace Kinovea.ScreenManager
         // In config/edit mode: 1: search window, 2-5: search window corners, 6-10: block window corners.
         private int movingHandler = -1;    
         private bool invalid;                                 // Used for XML import.
-        private bool scalingDone;
         private bool isVisible = true;
         private bool enableFiltering = true;
 
@@ -1905,8 +1904,6 @@ namespace Kinovea.ScreenManager
             }
 
             xmlReader.ReadEndElement();
-            scalingDone = true;
-
             AfterImportXML(trackingParameters);
         }
         public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)

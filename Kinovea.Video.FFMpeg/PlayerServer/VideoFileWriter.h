@@ -32,8 +32,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 extern "C" 
 {
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
+#endif
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
 #include <avformat.h>
 #include <avcodec.h>
 #include <avstring.h>

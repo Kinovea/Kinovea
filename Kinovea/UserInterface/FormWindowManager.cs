@@ -38,7 +38,6 @@ namespace Kinovea.Root
         }
         #endregion
 
-        private bool manualUpdate;
         private RootKernel rootKernel;
         private ListViewWindowDescriptor selected;
 

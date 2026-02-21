@@ -32,7 +32,6 @@ namespace Kinovea.Root
     {
         #region Members
         private RootKernel rootKernel;
-        private bool isOpening;
         private bool initializing = true;
         #endregion
 
