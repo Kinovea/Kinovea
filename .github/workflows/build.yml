@@ -22,6 +22,10 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
     - name: Restore NuGet packages
       run: nuget restore Kinovea.VS2019.sln
 
@@ -31,5 +35,5 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: build-artifacts
+        name: Kinovea-dev
         path: Kinovea/bin/x64/Release/
