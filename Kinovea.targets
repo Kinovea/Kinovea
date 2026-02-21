@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <ItemGroup>
     <XSLTFiles Include="..\Tools\XML\Kva to Kva\*.xsl" />
     <XSLTFiles Include="..\Tools\XML\Preferences\*.xsl" />
@@ -12,13 +12,15 @@
       CopyNativeDependencies;
       CopyXSLT;
       CopyDrawingTools;
+      CopyExtraFiles;
+      MoveLanguages;
     </BuildDependsOn>
   </PropertyGroup>
 
   <Target Name="CopyNativeDependencies">
 
     <Message Text="Copying native dependencies."/>
-    
+
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avcodec-56.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avdevice-56.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avfilter-5.dll" DestinationFolder="$(TargetDir)"/>
@@ -28,7 +30,7 @@
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swresample-1.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swscale-3.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\ffmpeg.exe" DestinationFolder="$(TargetDir)"/>
-        
+
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcm90.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcp90.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcr90.dll" DestinationFolder="$(TargetDir)"/>
@@ -38,13 +40,13 @@
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcp110.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcr110.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\vcruntime140.dll" DestinationFolder="$(TargetDir)"/>
-    
+
     <Copy SourceFiles="..\Refs\TurboJpeg\$(Platform)\turbojpeg.dll" DestinationFolder="$(TargetDir)"/>
 
     <Copy SourceFiles="..\packages\OpenCvSharp4.runtime.win.4.10.0.20240616\runtimes\win-x64\native\OpenCvSharpExtern.dll" DestinationFolder="$(TargetDir)"/>
 
   </Target>
-  
+
   <Target Name="CopyXSLT">
     <Message Text="Copying XSLT sheets."/>
     <RemoveDir Directories="$(TargetDir)xslt" />
@@ -59,4 +61,61 @@
     <Copy SourceFiles="@(DrawingToolsFiles)" DestinationFolder="$(TargetDir)DrawingTools\%(RecursiveDir)"/>
   </Target>
 
+    <Target Name="CopyExtraFiles">
+        <Message Text="Copying extra files."/>
+        <Copy SourceFiles="..\Installer\OtherFiles\GPLv2.txt" DestinationFolder="$(TargetDir)"/>
+        <Copy SourceFiles="..\Installer\OtherFiles\License.txt" DestinationFolder="$(TargetDir)"/>
+        <Copy SourceFiles="..\Installer\OtherFiles\Readme.txt" DestinationFolder="$(TargetDir)"/>
+        <RemoveDir Directories="$(TargetDir)dll" />
+    </Target>
+
+  <ItemGroup>
+    <Lang Include="ar" />
+    <Lang Include="az" />
+    <Lang Include="bg" />
+    <Lang Include="ca" />
+    <Lang Include="cs" />
+    <Lang Include="da" />
+    <Lang Include="de" />
+    <Lang Include="el" />
+    <Lang Include="es" />
+    <Lang Include="et" />
+    <Lang Include="fa" />
+    <Lang Include="fi" />
+    <Lang Include="fr" />
+    <Lang Include="hr" />
+    <Lang Include="id" />
+    <Lang Include="it" />
+    <Lang Include="ja" />
+    <Lang Include="ko" />
+    <Lang Include="lt" />
+    <Lang Include="mk" />
+    <Lang Include="ms" />
+    <Lang Include="nl" />
+    <Lang Include="no" />
+    <Lang Include="pl" />
+    <Lang Include="pt" />
+    <Lang Include="ro" />
+    <Lang Include="ru" />
+    <Lang Include="sl" />
+    <Lang Include="sr-Cyrl-RS" />
+    <Lang Include="sr-Latn-RS" />
+    <Lang Include="sv" />
+    <Lang Include="th" />
+    <Lang Include="tr" />
+    <Lang Include="uk" />
+    <Lang Include="vi" />
+    <Lang Include="zh-CHS" />
+    <Lang Include="zh-Hant" />
+  </ItemGroup>
+
+  <Target Name="MoveLanguages">
+    <Message Text="Moving language files"/>
+    <Move SourceFiles="$(TargetDir)%(Lang.Identity)\Kinovea.resources.dll" DestinationFolder="$(TargetDir)Languages\%(Lang.Identity)"/>
+    <Move SourceFiles="$(TargetDir)%(Lang.Identity)\Kinovea.Camera.resources.dll" DestinationFolder="$(TargetDir)Languages\%(Lang.Identity)"/>
+    <Move SourceFiles="$(TargetDir)%(Lang.Identity)\Kinovea.FileBrowser.resources.dll" DestinationFolder="$(TargetDir)Languages\%(Lang.Identity)"/>
+    <Move SourceFiles="$(TargetDir)%(Lang.Identity)\Kinovea.ScreenManager.resources.dll" DestinationFolder="$(TargetDir)Languages\%(Lang.Identity)"/>
+    <Move SourceFiles="$(TargetDir)%(Lang.Identity)\Kinovea.Updater.resources.dll" DestinationFolder="$(TargetDir)Languages\%(Lang.Identity)"/>
+    <RemoveDir Directories="$(TargetDir)%(Lang.Identity)" />
+  </Target>
 </Project>
