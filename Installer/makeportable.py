@@ -20,14 +20,9 @@ subprocess.run(
 
 # The output of the build is in ..\Kinovea\bin\x64\Release
 # This is already the portable version, we just need to add the AppData folder.
-# The code will detect it and use it instead of the user AppData folder.
+# The code will detect it and use it instead of the global AppData folder.
 appdata_folder = os.path.join(output_folder, "AppData")
 os.mkdir(appdata_folder)
-
-# For some reason the .pdb files are still copied to the output folder.
-for file in os.listdir(output_folder):
-    if file.endswith(".pdb"):
-        os.remove(os.path.join(output_folder, file))
 
 # Zip the output folder
 shutil.make_archive("Kinovea-2025.2", 'zip', output_folder)
