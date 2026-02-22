@@ -22,15 +22,11 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-
     - name: Restore NuGet packages
       run: nuget restore Kinovea.VS2019.sln
 
     - name: Build Solution
-      run: msbuild Kinovea.VS2019.sln /p:Platform="x64" /p:Configuration=Release
+      run: msbuild Kinovea.VS2019.sln /p:Platform="x64" /p:Configuration=Release /p:AllowedReferenceRelatedFileExtensions=none
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4

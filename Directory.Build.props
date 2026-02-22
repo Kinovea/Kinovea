@@ -1,0 +1,8 @@
+<Project>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <AllowedReferenceRelatedFileExtensions>
+            <!-- Prevent default XML and PDB files copied to output in RELEASE.-->
+            .allowedextension
+        </AllowedReferenceRelatedFileExtensions>
+    </PropertyGroup>
+</Project>
