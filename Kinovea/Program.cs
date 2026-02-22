@@ -87,7 +87,7 @@ namespace Kinovea.Root
             // Make sure each instance logs to its own log file.
             // Up to this line the logging went to the default "log.txt" file.
             // After this line it goes to log.<idName>.txt.
-            Software.ConfigureLogging();
+            Software.ConfigureInstanceLogging();
 
             //----------------------------------------------------------------
 

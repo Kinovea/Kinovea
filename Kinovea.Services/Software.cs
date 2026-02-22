@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using log4net.Layout;
 
 namespace Kinovea.Services
 {
@@ -159,6 +160,8 @@ namespace Kinovea.Services
             RemoteHelpIndex = Experimental ? 
                 "https://www.kinovea.org/setup/updatebeta.xml" : 
                 "https://www.kinovea.org/setup/update.xml";
+
+            ConfigureLogging();
         }
  
         /// <summary>
@@ -199,13 +202,43 @@ namespace Kinovea.Services
             log.Info("--------------------------------------------------");
         }
 
-
         /// <summary>
-        /// Initialize the logging on the right file and level.
+        /// Initialize the logging default configuration.
         /// </summary>
         public static void ConfigureLogging()
         {
-            // Logging starts with whatever is in LogConf.xml.
+            // This replaces the old LogConf.xml which needed to be different between portable and installed versions.
+            Hierarchy logRepository = (Hierarchy)LogManager.GetRepository();
+
+            PatternLayout patternLayout = new PatternLayout();
+            patternLayout.Header = "\r\n\r\n";
+            patternLayout.ConversionPattern = "%timestamp - %-5level - [%thread] - %logger{1} - %message%newline";
+            patternLayout.ActivateOptions();
+
+            RollingFileAppender appender = new RollingFileAppender();
+            appender.Name = "RollingFileAppender";
+            appender.File = Path.Combine(LogsDirectory, "log.txt");
+            appender.AppendToFile = true;
+            appender.RollingStyle = RollingFileAppender.RollingMode.Size;
+            appender.MaxSizeRollBackups = 1;
+            appender.MaximumFileSize = "200KB";
+            appender.StaticLogFileName = true;
+            appender.Layout = patternLayout;
+            appender.ActivateOptions();
+
+            Logger rootLogger = logRepository.Root;
+            rootLogger.Level = Level.Debug;
+            rootLogger.AddAppender(appender);
+
+            logRepository.Configured = true;
+        }
+
+        /// <summary>
+        /// Initialize the logging for the instance.
+        /// </summary>
+        public static void ConfigureInstanceLogging()
+        {
+            // Logging starts with whatever is in ConfigureLogging().
             // We update based on preferences and instance name.
             Hierarchy logRepository = (Hierarchy)LogManager.GetRepository();
             Logger rootLogger = logRepository.Root;
@@ -214,13 +247,13 @@ namespace Kinovea.Services
             appender.Threshold = logLevel;
 
             // Each instance gets its own log files.
-            // The title name may use illegal characters and the window name may be empty.
-            // Use the id-derived name.
+            // Because the title name may use illegal characters and the window name
+            // may be empty we use the id-derived name.
             string idName = WindowManager.GetIdName(WindowManager.ActiveWindow);
             string logFile = string.IsNullOrEmpty(idName) ? "log.txt" : string.Format("log.{0}.txt", idName);
             appender.File = Path.Combine(Path.GetDirectoryName(appender.File), logFile);
-
             appender.ActivateOptions();
+            
             logRepository.Configured = true;
         }
 

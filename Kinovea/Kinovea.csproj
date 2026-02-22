@@ -654,11 +654,6 @@
     <None Include="Resources\bin_empty.png" />
     <None Include="Resources\arrow_undo.png" />
     <None Include="Resources\arrow_redo.png" />
-    <None Include="..\Installer\OtherFiles\LogConf.xml">
-      <Visible>True</Visible>
-      <Link>LogConf.xml</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">

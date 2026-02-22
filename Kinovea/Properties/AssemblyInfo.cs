@@ -17,5 +17,3 @@ using System.Resources;
 [assembly: AssemblyVersion("2025.2.0.0")]
 [assembly: AssemblyFileVersion("2025.2.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
-
-[assembly: log4net.Config.XmlConfigurator(ConfigFile = "LogConf.xml", Watch = true)]
