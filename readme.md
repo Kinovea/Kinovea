@@ -1,17 +1,20 @@
 [![Hosted Weblate](https://hosted.weblate.org/widgets/kinovea/-/svg-badge.svg)](https://hosted.weblate.org/engage/kinovea/)
+[![Build Kinovea](https://github.com/Kinovea/Kinovea/actions/workflows/build.yml/badge.svg)](https://github.com/Kinovea/Kinovea/actions/workflows/build.yml)
 
 Kinovea is a video annotation tool designed for motion analysis. It features utilities to capture, slow down, compare, annotate and measure motion in videos.
 
 
 # Building
 
-Download and install Visual Studio Community 2019: https://visualstudio.microsoft.com/vs/
+Install Visual Studio Community.
 
 On the installation screen: 
-- Check .NET Desktop development.
-- On the side panel for optional components, check .NET Framework 4.8 development tools.
-- Check Desktop development with C++.
-- On the side panel, check C++/CLI support for v142 build tools (14.23).
+- Check .NET desktop development, and the following optional components:
+    - Development tools for .NET
+    - .NET Framework 4.8 development tools.
+- Check Desktop development with C++, and the following optional components:
+    - MSVC v143 - VS2022 C++ x64/x86 build tools (Latest)
+    - C++/CLI support for v143.
     
 Open the solution in Visual Studio and set the `Kinovea` project as startup up project. Rebuild and run.
 
