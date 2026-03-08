@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
 
             // Get the image enumerator.
             player.FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<Bitmap> images = player.FrameServer.EnumerateKeyImages(s);
+            IEnumerable<Bitmap> images = s.KeyframesOnly ? player.FrameServer.EnumerateKeyImages(s) : player.FrameServer.EnumerateImages(s);
 
             // Export loop.
             string dir = Path.GetDirectoryName(s.File);

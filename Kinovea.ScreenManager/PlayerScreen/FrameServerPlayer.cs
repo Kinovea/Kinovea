@@ -445,8 +445,13 @@ namespace Kinovea.ScreenManager
         public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
         {
             Bitmap output = null;
-            int consumedKeyframes = 0;
 
+            if (settings.KeyframesOnly)
+            {
+                throw new InvalidProgramException("EnumerateImages should not be called with KeyframesOnly, use EnumerateKeyImages instead.");
+            }
+
+            int count = 0;
             // Enumerates the raw frames from the video.
             foreach (VideoFrame vf in videoReader.EnumerateFrames(settings.InputIntervalTimestamps))
             {
@@ -460,14 +465,8 @@ namespace Kinovea.ScreenManager
                     yield break;
                 }
 
-                // We have a video frame.
-                bool isKeyframe = this.metadata.IsKeyframe(vf.Timestamp);
-                if (settings.KeyframesOnly && !isKeyframe)
-                    continue;
-
-                // Keep track of how many keyframes we have seen to exit early if we are only interested in these.
-                if (isKeyframe)
-                    consumedKeyframes++;
+                log.DebugFormat("Enumerated frame [{0}]: {1}", count, vf.Timestamp);
+                count++;
 
                 // Initialize the output Bitmap if not done already.
                 if (output == null)
@@ -483,15 +482,6 @@ namespace Kinovea.ScreenManager
                 for (int i = 0; i < repeatCount; i++)
                 { 
                     yield return output;
-                }
-
-                // If we are done getting keyframes, no need to enumerate further.
-                if (settings.KeyframesOnly && consumedKeyframes == metadata.Keyframes.Count)
-                {
-                    if (output != null)
-                        output.Dispose();
-                    
-                    yield break;
                 }
             }
 
