@@ -1065,10 +1065,7 @@ namespace Kinovea.ScreenManager
 
             double correctedTPS = frameServer.VideoReader.Info.FrameIntervalMilliseconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds / frameServer.Metadata.BaselineFrameInterval;
             double timestamp = videoSeconds * correctedTPS;
-            timestamp = Math.Round(timestamp);
-
-            long relativeTimestamp = (long)timestamp;
-            long absoluteTimestamp = relativeTimestamp + frameServer.VideoReader.WorkingZone.Start;
+            long absoluteTimestamp = (long)Math.Round(frameServer.Metadata.SelectionStart + timestamp);
             
             return absoluteTimestamp;
         }

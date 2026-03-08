@@ -352,9 +352,6 @@ namespace Kinovea.ScreenManager
             long actualTimestamps;
             switch (type)
             {
-                case TimeType.WorkingZone:
-                    actualTimestamps = timestamps - videoReader.WorkingZone.Start;
-                    break;
                 case TimeType.UserOrigin:
                     actualTimestamps = timestamps - metadata.TimeOrigin;
                     break;

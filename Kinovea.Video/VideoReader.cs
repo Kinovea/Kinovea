@@ -270,7 +270,7 @@ namespace Kinovea.Video
             if (DecodingMode == VideoDecodingMode.PreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
 
-            bool hasMore = MoveFirst();
+            bool hasMore = MoveTo(Current.Timestamp, WorkingZone.Start);
             yield return Current;
 
             while (hasMore)
@@ -287,18 +287,6 @@ namespace Kinovea.Video
         #endregion
 
         #region Move playhead shortcuts
-        public bool MovePrev()
-        {
-            return MoveTo(Current.Timestamp, (long)Math.Round(Current.Timestamp - Info.AverageTimeStampsPerFrame));
-        }
-        public bool MoveFirst()
-        {
-            return MoveTo(Current.Timestamp, WorkingZone.Start);
-        }
-        public bool MoveLast()
-        {
-            return MoveTo(Current.Timestamp, WorkingZone.End);
-        }
         public bool MoveBy(int frames, bool decodeIfNecessary)
         {
             if(frames == 1)

@@ -843,40 +843,53 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
+            VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
+            log.DebugFormat("Working zone update. Current:{0}, Asked:{1}.", m_FrameServer.VideoReader.WorkingZone, newZone);
+
             if (m_FrameServer.VideoReader.CanChangeWorkingZone)
             {
                 StopPlaying();
                 OnPauseAsked();
-                VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
                 m_FrameServer.VideoReader.UpdateWorkingZone(newZone, invalidateCache, PreferencesManager.PlayerPreferences.WorkingZoneMemory, ProgressWorker);
                 ResizeUpdate(true);
             }
 
-            // Time origin: we try to maintain user-defined time origin, but we don't want the origin to stay at the absolute zero when the zone changes.
-            // Check if we were previously aligned with the start of the zone, if so, keep it that way, otherwise keep the absolute value.
+            // Time origin: check if we were previously aligned with the start of the working zone.
+            // If so, keep it that way, otherwise keep the absolute value.
             // A side effect of this approach is that when the start of the zone is moved forward so as to overtake the current time origin,
             // it will scoop it and drag it along with it.
-            if (m_FrameServer.Metadata.TimeOrigin == m_iSelStart)
-                m_FrameServer.Metadata.TimeOrigin = m_FrameServer.VideoReader.WorkingZone.Start;
+            bool timeOriginIsAligned = m_FrameServer.Metadata.TimeOrigin == m_iSelStart;
+            
+            // Decode and show the first frame of the new working zone.
+            m_iFramesToDecode = 1;
+            long targetTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
+            ShowNextFrame(targetTimestamp, true);
 
-
-            // FIXME: it's possible that the first frame of the range we load is after the asked one.
+            // It's possible that the first frame of the working zone is after the asked one.
             // This happens on some files where we seek to a target and it returns a frame after the target.
-            // In this case we should re-align the values of the selection.
-
-            m_iCurrentPosition = m_iCurrentPosition + (m_FrameServer.VideoReader.WorkingZone.Start - m_iSelStart);
-            m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
+            // Reset the values afterwards on the actual timestamp.
+            m_iSelStart = m_iCurrentPosition;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
             m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+
+            if (timeOriginIsAligned)
+                m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
+
+            // Update the metadata internal values.
+            m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_FrameServer.Metadata.TimeOrigin);
+            
+            // FIXME: the video reader may be misaligned.
+            if (m_FrameServer.VideoReader.WorkingZone.Start != m_iSelStart)
+            {
+                log.WarnFormat("Working zone start mismatch. video reader: {0}, metadata: {1}, player: {2}",
+                    m_FrameServer.VideoReader.WorkingZone.Start, m_FrameServer.Metadata.SelectionStart, m_iSelStart);
+            }
 
             if (trkSelection.SelStart != m_iSelStart)
                 trkSelection.SelStart = m_iSelStart;
 
             if (trkSelection.SelEnd != m_iSelEnd)
                 trkSelection.SelEnd = m_iSelEnd;
-
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
 
             // Reset timeline mapping.
             trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
