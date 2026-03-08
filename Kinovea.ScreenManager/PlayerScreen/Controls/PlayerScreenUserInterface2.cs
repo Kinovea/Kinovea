@@ -859,7 +859,11 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Metadata.TimeOrigin == m_iSelStart)
                 m_FrameServer.Metadata.TimeOrigin = m_FrameServer.VideoReader.WorkingZone.Start;
 
-            // Reupdate back the locals as the reader uses more precise values.
+
+            // FIXME: it's possible that the first frame of the range we load is after the asked one.
+            // This happens on some files where we seek to a target and it returns a frame after the target.
+            // In this case we should re-align the values of the selection.
+
             m_iCurrentPosition = m_iCurrentPosition + (m_FrameServer.VideoReader.WorkingZone.Start - m_iSelStart);
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
@@ -871,10 +875,11 @@ namespace Kinovea.ScreenManager
             if (trkSelection.SelEnd != m_iSelEnd)
                 trkSelection.SelEnd = m_iSelEnd;
 
-            trkFrame.Remap(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
+
+            // Reset timeline mapping.
+            trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             UpdatePositionUI();
             UpdateSelectionLabels();
@@ -2149,7 +2154,7 @@ namespace Kinovea.ScreenManager
                 UpdateSelectionLabels();
 
                 // Update the frame tracker internal timestamps (including position if needed).
-                trkFrame.Remap(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
         }
         private void trkSelection_SelectionChanged(object sender, EventArgs e)
@@ -2210,8 +2215,8 @@ namespace Kinovea.ScreenManager
                 trkSelection.SelStart = m_iCurrentPosition;
                 UpdateSelectionDataFromControl();
                 UpdateSelectionLabels();
-                trkFrame.Remap(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
                 UpdateWorkingZone(false);
+                trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
                 AfterSelectionChanged();
             }
@@ -2224,8 +2229,8 @@ namespace Kinovea.ScreenManager
                 trkSelection.SelEnd = m_iCurrentPosition;
                 UpdateSelectionDataFromControl();
                 UpdateSelectionLabels();
-                trkFrame.Remap(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
                 UpdateWorkingZone(false);
+                trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
                 AfterSelectionChanged();
             }
@@ -2399,7 +2404,7 @@ namespace Kinovea.ScreenManager
             string timecode = m_FrameServer.TimeStampsToTimecode(m_iCurrentPosition, TimeType.UserOrigin, timecodeFormat, true);
             lblTimeCode.Text = "▼ " + timecode;
             lblTimeTip.Text = timecode;
-            lblTimeTip.Left = trkFrame.PixelPosition;
+            lblTimeTip.Left = trkFrame.CursorBlockCenter;
         }
         private void UpdatePositionUI()
         {
