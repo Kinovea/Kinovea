@@ -256,9 +256,17 @@ namespace Kinovea.Video
             }
         }
 
+        /// <summary>
+        /// Returns true if the enumerator may still move to the next frame in the working zone.
+        /// This is only used during export.
+        /// </summary>
         public bool HasMoreFrames()
         {
-            return Current != null && Current.Timestamp < WorkingZone.End;
+            if (Current == null)
+                return false;
+
+            double nextTimestamp = Current.Timestamp + Info.AverageTimeStampsPerFrame;
+            return nextTimestamp <= WorkingZone.End;
         }
 
         /// <summary>
