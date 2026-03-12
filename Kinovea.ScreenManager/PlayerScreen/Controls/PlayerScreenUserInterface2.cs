@@ -764,6 +764,9 @@ namespace Kinovea.ScreenManager
 
             double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
             double captureInterval = 1000 / m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond;
+
+
+
             m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.BaselineFrameInterval / captureInterval;
             UpdateTimebase();
 
@@ -1069,6 +1072,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.ReferenceSize;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
+            UpdateInfobar();
             ResetZoom(false);
         }
         public void FullScreen(bool _bFullScreen)
@@ -1281,12 +1285,14 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            string size = string.Format("{0}×{1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
-            string fps = string.Format("{0:0.00} fps", 1000 / timeMapper.UserInterval);
+            int w = m_FrameServer.Metadata.ImageSize.Width;
+            int h = m_FrameServer.Metadata.ImageSize.Height;
+            string size = string.Format("{0}×{1} px", w, h);
+            string captureFps = string.Format("{0:0.00} fps", 1000 / timeMapper.CaptureInterval);
 
             infobar.Visible = true;
             infobar.Dock = DockStyle.Fill;
-            infobar.UpdateValues(m_FrameServer.VideoReader.FilePath, size, fps, m_FrameServer.Metadata.ActiveVideoFilter);
+            infobar.UpdateValues(m_FrameServer.VideoReader.FilePath, size, captureFps, m_FrameServer.Metadata.ActiveVideoFilter);
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {
