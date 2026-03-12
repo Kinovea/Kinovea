@@ -311,9 +311,6 @@ namespace Kinovea.ScreenManager
                     case "CaptureFramerate":
                         metadata.CalibrationHelper.CaptureFramesPerSecond = r.ReadElementContentAsDouble();
                         break;
-                    case "UserFramerate":
-                        metadata.BaselineFrameInterval = 1000 / r.ReadElementContentAsDouble();
-                        break;
                     case "SelectionStart":
                         long selStart = r.ReadElementContentAsLong();
                         if (IsSameContext())
@@ -696,7 +693,7 @@ namespace Kinovea.ScreenManager
             // Timing information
             w.WriteElementString("AverageTimeStampsPerFrame", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.AverageTimeStampsPerFrame));
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
-            w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.BaselineFrameInterval));
+            w.WriteElementString("VideoFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.BaselineFrameInterval));
             
             if (!isCaptureRecording)
             {

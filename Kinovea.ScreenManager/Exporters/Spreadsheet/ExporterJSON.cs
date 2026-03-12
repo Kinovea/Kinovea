@@ -48,8 +48,8 @@ namespace Kinovea.ScreenManager
             WriteSize(w, md.ImageSize);
             w.WritePropertyName("captureFramerate");
             w.WriteValue(md.CaptureFramerate);
-            w.WritePropertyName("userFramerate");
-            w.WriteValue(md.UserFramerate);
+            w.WritePropertyName("videoFramerate");
+            w.WriteValue(md.VideoFramerate);
             w.WriteEndObject();
         }
 

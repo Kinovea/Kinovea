@@ -408,8 +408,9 @@ namespace Kinovea.ScreenManager
         // Non user-modifiable timing info
         /// <summary>
         /// The frame interval used as the baseline for the playback timer, in milliseconds.
-        /// Same as the video frame interval unless overriden by the user in time calibration.
+        /// Same as the video frame interval.
         /// Not affected by the slow motion slider.
+        /// This should only be set based on the actual video file, not from reading KVA.
         /// </summary>
         public double BaselineFrameInterval
         {
@@ -1309,7 +1310,7 @@ namespace Kinovea.ScreenManager
             md.FullPath = videoPath;
             md.ImageSize = imageSize;
             md.CaptureFramerate = (float)calibrationHelper.CaptureFramesPerSecond;
-            md.UserFramerate = (float)(1000.0 / baselineFrameInterval);
+            md.VideoFramerate = (float)(1000.0 / baselineFrameInterval);
 
             MeasuredDataUnits mdu = new MeasuredDataUnits();
 

@@ -22,7 +22,7 @@ namespace Kinovea.ScreenManager
         public string OriginalFilename { get; set; }
         public Size ImageSize { get; set; }
         public float CaptureFramerate { get; set; }
-        public float UserFramerate { get; set; }
+        public float VideoFramerate { get; set; }
         public MeasuredDataUnits Units { get; set; }
 
         public List<MeasuredDataKeyframe> Keyframes { get; set; } = new List<MeasuredDataKeyframe>();
