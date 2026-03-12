@@ -599,13 +599,11 @@ namespace Kinovea.ScreenManager
                     return inputIsSameContext;
                 }
             }
-            
-            // Also double check timing information although this is probably no longer needed at this point.
-            // The serialization doesn't export the full double so allow for some wiggle room.
-            bool matchFirstTimeStamp = inputFirstTimeStamp == metadata.FirstTimeStamp;
-            bool matchAverageTimeStampsPerFrame = Math.Abs(inputAverageTimeStampsPerFrame - metadata.AverageTimeStampsPerFrame) < 1e-3;
 
-            inputIsSameContext = isSameVideo && matchFirstTimeStamp && matchAverageTimeStampsPerFrame;
+            // At this point we have a good-enough idea of whether we are in the same video or not.
+            // We do not need to double check timing information as before (< 2025.2).
+            // This allows older files saved with average timestamps per frame as long to still match.
+            inputIsSameContext = isSameVideo;
             sameContextDetermined = true;
             
             return inputIsSameContext;
