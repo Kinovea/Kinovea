@@ -230,6 +230,9 @@ namespace Kinovea.ScreenManager
             if (!VideoReader.CanChangeAspectRatio)
                 return false;
 
+            if (value == metadata.ImageAspect)
+                return false;
+            
             metadata.ImageAspect = value;
             return VideoReader.ChangeAspectRatio(value);
         }
@@ -237,6 +240,9 @@ namespace Kinovea.ScreenManager
         public bool ChangeImageRotation(ImageRotation value)
         {
             if (!VideoReader.CanChangeImageRotation)
+                return false;
+
+            if (value == metadata.ImageRotation)
                 return false;
 
             metadata.ImageRotation = value;

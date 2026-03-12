@@ -424,8 +424,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ _filePath, bool _forSummary)
 
         Options->ImageRotation = m_VideoInfo.ImageRotation;
         UpdateReferenceSizes(Options->ImageAspectRatio, verbose);
-        m_DecodingSize = m_VideoInfo.AspectRatioSize;
-
+        
         m_pFormatCtx = pFormatCtx;
         m_pCodecCtx = pCodecCtx;
 
@@ -799,6 +798,8 @@ void VideoReaderFFMpeg::SwitchDecodingMode(VideoDecodingMode _mode)
         log->DebugFormat("SwitchDecodingMode, stopping pre-buffering.");
         StopPreBuffering();
         ResetDecodingSize();
+
+        m_CanDrawUnscaled = false;
     }
 
     if (m_FramesContainer != nullptr)
@@ -868,21 +869,27 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
 
 #pragma region Image adjustments (aspect, rotation, demosaicing, deinterlace, stabilization)
 
-bool VideoReaderFFMpeg::ChangeAspectRatio(ImageAspectRatio _ratio)
+bool VideoReaderFFMpeg::ChangeAspectRatio(ImageAspectRatio aspectRatio)
 {
     if (!CanChangeAspectRatio)
         throw gcnew CapabilityNotSupportedException();
 
-    // Decoding thread should be stopped at this point.
+    if (aspectRatio == Options->ImageAspectRatio)
+    {
+        // Program error.
+        log->ErrorFormat("Request to change aspect ratio but already using the correct aspect ratio.");
+    }
+
+    // Potentially changes the aspect ratio size and the reference image size.
+    // This invalidates any cached frames.
     if (m_PreBufferingThread != nullptr && m_PreBufferingThread->IsAlive)
-        log->ErrorFormat("PreBuffering thread is started.");
+    {
+        StopPreBuffering();
+    }
 
-    Options->ImageAspectRatio = _ratio;
-    UpdateReferenceSizes(_ratio, true);
-
-    // TODO: decoding size should be updated from the outside ?
-    m_DecodingSize = m_VideoInfo.AspectRatioSize;
-
+    Options->ImageAspectRatio = aspectRatio;
+    UpdateReferenceSizes(Options->ImageAspectRatio, true);
+    
     m_FramesContainer->Clear();
     return true;
 }
@@ -891,15 +898,23 @@ bool VideoReaderFFMpeg::ChangeImageRotation(ImageRotation rotation)
     if (!CanChangeImageRotation)
         throw gcnew CapabilityNotSupportedException();
 
-    // Decoding thread should be stopped at this point.
+    if (rotation == Options->ImageRotation)
+    {
+        // Program error.
+        log->ErrorFormat("Request to change image rotation but already using the correct rotation.");
+    }
+
+    // Potentially changes the aspect ratio size (padded to rotated width), 
+    // and the reference image size. This invalidates any cached frames.
     if (m_PreBufferingThread != nullptr && m_PreBufferingThread->IsAlive)
-        log->ErrorFormat("PreBuffering thread is started.");
+    {
+        StopPreBuffering();
+    }
 
     Options->ImageRotation = rotation;
     m_VideoInfo.ImageRotation = rotation;
-
     UpdateReferenceSizes(Options->ImageAspectRatio, true);
-    m_DecodingSize = m_VideoInfo.AspectRatioSize;
+    
     m_FramesContainer->Clear();
     return true;
 }
@@ -910,10 +925,12 @@ bool VideoReaderFFMpeg::ChangeDemosaicing(Demosaicing demosaicing)
 
     // Decoding thread should be stopped at this point.
     if (m_PreBufferingThread != nullptr && m_PreBufferingThread->IsAlive)
+    {
         log->ErrorFormat("PreBuffering thread is started.");
+    }
 
     Options->Demosaicing = demosaicing;
-    
+
     m_FramesContainer->Clear();
     return true;
 }
@@ -976,7 +993,8 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
     }
 
     if (m_Verbose)
-        log->DebugFormat("Changing decoding size from {0} to {1}", m_DecodingSize, targetSize);
+        log->DebugFormat("Changing decoding size: {0}x{1} -> {2}x{3}", 
+            m_DecodingSize.Width, m_DecodingSize.Height, targetSize.Width, targetSize.Height);
 
     int64_t currentTimestamp = m_PreBuffer->CurrentFrame != nullptr ? m_PreBuffer->CurrentFrame->Timestamp : -1;
 
@@ -984,6 +1002,7 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
     StopPreBuffering();
     m_PreBuffer->Clear();
     m_DecodingSize = targetSize;
+
     m_CanDrawUnscaled = true;
 
     if (currentTimestamp >= 0)
@@ -1024,8 +1043,10 @@ void VideoReaderFFMpeg::DisableCustomDecodingSize()
 
 void VideoReaderFFMpeg::ResetDecodingSize()
 {
+    // Reset the decoding size to the default.
+    // "Aspect ratio size" is the video image size with 
+    // custom aspect ratio and padded along rotated width.
     m_DecodingSize = m_VideoInfo.AspectRatioSize;
-    m_CanDrawUnscaled = false;
 }
 
 void VideoReaderFFMpeg::UpdateReferenceSizes(Kinovea::Services::ImageAspectRatio _ratio, bool verbose)
@@ -1062,6 +1083,11 @@ void VideoReaderFFMpeg::UpdateReferenceSizes(Kinovea::Services::ImageAspectRatio
 
     if (verbose)
         log->DebugFormat("Image size: Original:{0}, AspectRatioSize:{1}, ReferenceSize:{2}.", m_VideoInfo.OriginalSize, m_VideoInfo.AspectRatioSize, m_VideoInfo.ReferenceSize);
+
+    // After this the decoding size should be reset.
+    // First to the default (aspect ratio size), and later to a custom size based on the viewport, if possible.
+    // This second step will happen in psui > ResizeUpdate().
+    ResetDecodingSize();
 }
 
 Size VideoReaderFFMpeg::FixSize(Size _size, bool sideways)
