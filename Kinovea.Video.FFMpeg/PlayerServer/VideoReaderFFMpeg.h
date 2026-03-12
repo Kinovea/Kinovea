@@ -246,7 +246,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
         ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
         int SeekTo(int64_t _target);
-        bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
+        bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _decodingWidth, int _decodingHeight, int _outputFmt, bool _deinterlace);
         static void DisposeFrame(VideoFrame^ _frame);
         
         // Decoding mode.

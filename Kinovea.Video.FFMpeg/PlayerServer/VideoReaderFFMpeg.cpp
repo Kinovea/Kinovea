@@ -1487,7 +1487,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t _target)
     return res;
 }
 
-bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace)
+bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _decodingWidth, int _decodingHeight, int _outputFmt, bool _deinterlace)
 {
     //------------------------------------------------------------------------
     // Utility function called by ReadFrame().
@@ -1519,17 +1519,26 @@ bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInp
         }
     }
 
-    SwsContext* pSWSCtx = sws_getContext(
+    log->DebugFormat("sws_getContext. codec: {0}x{1}, decoding: {2}x{3}.", 
+        m_pCodecCtx->width, m_pCodecCtx->height, _decodingWidth, _decodingHeight);
+
+    SwsContext* c = sws_getContext(
         m_pCodecCtx->width, m_pCodecCtx->height, srcFormat,
-        _OutputWidth, _OutputHeight, (AVPixelFormat)_OutputFmt,
+        _decodingWidth, _decodingHeight, (AVPixelFormat)_outputFmt,
         DecodingQuality,
         nullptr, nullptr, nullptr);
 
-    uint8_t* pDeinterlaceBuffer = nullptr;
-    uint8_t** ppOutputData = nullptr;
-    int* piStride = nullptr;
+    uint8_t** srcSlice = nullptr;               // Array containing pointers to planes of source slice.
+    int* srcStride = nullptr;                   // Array containing strides for each plane of the source image. 
+    int srcSliceY = 0;                          // the position in the source image of the slice to process, 
+                                                // that is the number(counted starting from zero) in the image 
+                                                // of the first row of the slice
+    int srcSliceH = m_pCodecCtx->height;        // the height of the source slice, that is the number of rows in the slice.
+    uint8_t** dst = _pOutputFrame->data;        // the array containing the pointers to the planes of the destination image.
+    int* dstStride = _pOutputFrame->linesize;   // the array containing the strides for each plane of the destination image.
 
-    if (_bDeinterlace)
+    uint8_t* pDeinterlaceBuffer = nullptr;
+    if (_deinterlace)
     {
         AVPicture* pDeinterlacingFrame;
         AVPicture	tmpPicture;
@@ -1547,25 +1556,25 @@ bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInp
         {
             // Deinterlacing failed, use original image.
             log->Debug("Deinterlacing failed, use original image.");
-            ppOutputData = _pInputFrame->data;
-            piStride = _pInputFrame->linesize;
+            srcSlice = _pInputFrame->data;
+            srcStride = _pInputFrame->linesize;
         }
         else
         {
             // Use deinterlaced image.
-            ppOutputData = pDeinterlacingFrame->data;
-            piStride = pDeinterlacingFrame->linesize;
+            srcSlice = pDeinterlacingFrame->data;
+            srcStride = pDeinterlacingFrame->linesize;
         }
     }
     else
     {
-        ppOutputData = _pInputFrame->data;
-        piStride = _pInputFrame->linesize;
+        srcSlice = _pInputFrame->data;
+        srcStride = _pInputFrame->linesize;
     }
 
     try
     {
-        sws_scale(pSWSCtx, ppOutputData, piStride, 0, m_pCodecCtx->height, _pOutputFrame->data, _pOutputFrame->linesize);
+        sws_scale(c, srcSlice, srcStride, srcSliceY, srcSliceH, dst, dstStride);
     }
     catch (Exception^)
     {
@@ -1574,7 +1583,7 @@ bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInp
     }
 
     // Clean Up.
-    sws_freeContext(pSWSCtx);
+    sws_freeContext(c);
 
     if (pDeinterlaceBuffer != nullptr)
         delete[] pDeinterlaceBuffer;
