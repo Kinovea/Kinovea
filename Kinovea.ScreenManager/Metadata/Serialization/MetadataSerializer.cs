@@ -25,11 +25,15 @@ namespace Kinovea.ScreenManager
     {
         private Metadata metadata;
         private string inputFileName;
+        private string inputPath;
+        private long inputByteLength;
         private bool inputIsCaptureRecording;
         private Size inputImageSize;
-        private long inputAverageTimeStampsPerFrame;
+        private double inputAverageTimeStampsPerFrame;
         private long inputFirstTimeStamp;
         private long inputTimeOrigin;
+        private bool inputIsSameContext;
+        private bool sameContextDetermined;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Load(Metadata metadata, string source, bool isFile)
@@ -259,9 +263,13 @@ namespace Kinovea.ScreenManager
                         inputFileName = r.ReadElementContentAsString();
                         break;
                     case "FullPath":
-                        string fullPath = r.ReadElementContentAsString();
-                        if (string.IsNullOrEmpty(metadata.VideoPath))
-                            metadata.VideoPath = fullPath;
+                        inputPath = r.ReadElementContentAsString();
+                        // If we are loading annotations from a video but loading into capture store the original video reference.
+                        if (string.IsNullOrEmpty(metadata.VideoPath) && !string.IsNullOrEmpty(inputPath))
+                            metadata.VideoPath = inputPath;
+                        break;
+                    case "ByteLength":
+                        inputByteLength = r.ReadElementContentAsLong();
                         break;
                     case "CaptureRecording":
                         inputIsCaptureRecording = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
@@ -295,7 +303,7 @@ namespace Kinovea.ScreenManager
                         metadata.BackgroundColor = XmlHelper.ParseColor(r.ReadElementContentAsString(), Color.Empty);
                         break;
                     case "AverageTimeStampsPerFrame":
-                        inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
+                        inputAverageTimeStampsPerFrame = r.ReadElementContentAsDouble();
                         break;
                     case "FirstTimeStamp":
                         inputFirstTimeStamp = r.ReadElementContentAsLong();
@@ -504,9 +512,9 @@ namespace Kinovea.ScreenManager
         private long RemapTimestamp(long inputTimestamp, long inputReferenceTimestamp, long outputReferenceTimestamp)
         {
             // Compute the frame relatively to the reference and convert it back to timestamps.
-            double frame = (double)(inputTimestamp - inputReferenceTimestamp) / inputAverageTimeStampsPerFrame;
+            double frame = (inputTimestamp - inputReferenceTimestamp) / inputAverageTimeStampsPerFrame;
             double outputAverageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.BaselineFrameInterval);
-            long outputTimestamp = (long)Math.Round(frame * outputAverageTimestampsPerFrame) + outputReferenceTimestamp;
+            long outputTimestamp = (long)Math.Round(outputReferenceTimestamp + (frame * outputAverageTimestampsPerFrame));
             return outputTimestamp;
         }
 
@@ -515,11 +523,92 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private bool IsSameContext()
         {
-            // Note: we are only testing the filename, not the full path but this is a good enough heuristic.
-            // We still want to allow importing from a different path if the file is the same.
-            return (inputFirstTimeStamp == metadata.FirstTimeStamp) &&
-                   (inputAverageTimeStampsPerFrame == metadata.AverageTimeStampsPerFrame) &&
-                   (inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath)); 
+            if (sameContextDetermined)
+                return inputIsSameContext;
+
+            // metadata.VideoPath is the recipient video.
+            // It may be empty when loading into a capture screen.
+            if (string.IsNullOrEmpty(metadata.VideoPath))
+            {
+                // This happens when loading capture annotations into a capture screen.
+                inputIsSameContext = true;
+                sameContextDetermined = true;
+                return inputIsSameContext;
+            }
+
+            FileInfo fileInfo = new FileInfo(metadata.VideoPath);
+            if (!fileInfo.Exists)
+            {
+                // Happens when loading a KVA referencing a non-existent file into a capture screen.
+                inputIsSameContext = false;
+                sameContextDetermined = true;
+                return inputIsSameContext;
+            }
+
+            long byteLength = fileInfo.Length;
+            if (byteLength == 0)
+            {
+                inputIsSameContext = false;
+                sameContextDetermined = true;
+                return inputIsSameContext;
+            }
+
+            bool isSameVideo = false;
+            if (inputPath == metadata.VideoPath)
+            {
+                // We also get here when loading annotations from a video into a capture scren, 
+                // as the reference file from the imported KVA has been copied locally.
+                isSameVideo = true;
+            }
+            else if (inputByteLength > 0)
+            {
+                // Exact same byte length is good-enough proof for this purpose.
+                isSameVideo = inputByteLength == byteLength;
+            }
+            else
+            {
+                // The file length is not directly available in the imported KVA. 
+                // Happens when importing from a capture annotations or from an older KVA (< 2025.2).
+                if (!string.IsNullOrEmpty(inputPath))
+                {
+                    // Check if the referenced file still exsists on this machine.
+                    // In that case we can still compare by length.
+                    FileInfo inputFileInfo = new FileInfo(inputPath);
+                    if (inputFileInfo.Exists)
+                    {
+                        isSameVideo = inputFileInfo.Length == byteLength;
+                    }
+                    else
+                    {
+                        // There was a file but it can't be found any longer.
+                        // Fallback to the file name heuristic.
+                        isSameVideo = Path.GetFileNameWithoutExtension(inputPath) == Path.GetFileNameWithoutExtension(metadata.VideoPath);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(inputFileName))
+                {
+                    // We only have the filename to work with.
+                    isSameVideo = inputFileName == Path.GetFileNameWithoutExtension(metadata.VideoPath);
+                }
+                else
+                {
+                    // Input doesn't have a reference file. This shouldn't happen.
+                    log.ErrorFormat("Input KVA does not have a reference video file.");
+                    inputIsSameContext = false;
+                    sameContextDetermined = true;
+                    return inputIsSameContext;
+                }
+            }
+            
+            // Also double check timing information although this is probably no longer needed at this point.
+            // The serialization doesn't export the full double so allow for some wiggle room.
+            bool matchFirstTimeStamp = inputFirstTimeStamp == metadata.FirstTimeStamp;
+            bool matchAverageTimeStampsPerFrame = Math.Abs(inputAverageTimeStampsPerFrame - metadata.AverageTimeStampsPerFrame) < 1e-3;
+
+            inputIsSameContext = isSameVideo && matchFirstTimeStamp && matchAverageTimeStampsPerFrame;
+            sameContextDetermined = true;
+            
+            return inputIsSameContext;
         }
         #endregion
 
@@ -576,13 +665,14 @@ namespace Kinovea.ScreenManager
 
         private void WriteGeneralInformation(XmlWriter w, bool isCaptureRecording)
         {
-            w.WriteElementString("FormatVersion", "2.0");
+            w.WriteElementString("FormatVersion", "2.1");
             w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
 
             if (!isCaptureRecording)
             {
                 w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.VideoPath));
                 w.WriteElementString("FullPath", metadata.VideoPath);
+                w.WriteElementString("ByteLength", metadata.VideoByteLength.ToString());
             }
             else
             {
@@ -606,7 +696,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("BackgroundColor", XmlHelper.WriteColor(metadata.BackgroundColor, true));
 
             // Timing information
-            w.WriteElementString("AverageTimeStampsPerFrame", metadata.AverageTimeStampsPerFrame.ToString());
+            w.WriteElementString("AverageTimeStampsPerFrame", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.AverageTimeStampsPerFrame));
             w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", metadata.CalibrationHelper.CaptureFramesPerSecond));
             w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.BaselineFrameInterval));
             

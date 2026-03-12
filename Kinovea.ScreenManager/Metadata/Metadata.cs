@@ -247,6 +247,16 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Byte length of the video.
+        /// Used as a "good-enough" sameness check for the video file when loading a KVA.
+        /// </summary>
+        public long VideoByteLength
+        {
+            get { return videoByteLength; }
+            set { videoByteLength = value; }
+        }
+
+        /// <summary>
         /// Keyframe accessor.
         /// </summary>
         public Keyframe this[int index]
@@ -531,6 +541,7 @@ namespace Kinovea.ScreenManager
 
         // Video related info.
         private string videoPath;
+        private long videoByteLength;
         private string globalTitle;
         private Size imageSize = new Size(0, 0);
 
@@ -621,6 +632,9 @@ namespace Kinovea.ScreenManager
             firstTimeStamp = info.FirstTimeStamp;
 
             videoPath = info.FilePath;
+
+            FileInfo fileInfo = new FileInfo(videoPath);
+            videoByteLength = fileInfo.Length;
 
             MetadataSerializer serializer = new MetadataSerializer();
             serializer.Load(this, kvaString, false);
@@ -2340,6 +2354,7 @@ namespace Kinovea.ScreenManager
 
             // Common properties.
             videoPath = string.Empty;
+            videoByteLength = 0;
             globalTitle = string.Empty;
             imageSize = Size.Empty;
 

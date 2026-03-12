@@ -641,7 +641,13 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_iSelStart);
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
-            
+
+            FileInfo fileInfo = new FileInfo(m_FrameServer.VideoReader.FilePath);
+            if (fileInfo.Exists)
+            {
+                m_FrameServer.Metadata.VideoByteLength = fileInfo.Length;
+            }
+
             sidePanelKeyframes.OrganizeContent(m_FrameServer.Metadata);
             sidePanelDrawing.SetMetadata(m_FrameServer.Metadata);
             sidePanelTracking.SetMetadata(m_FrameServer.Metadata);
