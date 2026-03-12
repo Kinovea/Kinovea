@@ -3,12 +3,12 @@ Kinovea is a free and open source video annotation tool designed for motion anal
 It features utilities to capture, slow down, compare, annotate and measure motion in videos.
 
 
-System Requirements:
+Minimum requirements:
 --------------------
 - OS : Microsoft Windows 7, 8, 8.1, 10, 11 with .NET framework 4.8.
-- CPU : 1 Ghz
+- CPU : 1 Ghz, x64 architecture.
 - RAM : 256 MB
-- Disk Space : 70 MB.
+- Disk Space : 130 MB.
 - Screen Resolution : 1024x600 pixels.
 
 
@@ -23,14 +23,13 @@ Please see license.txt for details. In a nutshell:
 Project:
 --------
 - Website: https://www.kinovea.org
-- Reference manual: https://www.kinovea.org/help.html
+- User manual: https://www.kinovea.org/help.html
 - Forum: https://www.kinovea.org/en/forum
 - Bug tracker: https://github.com/Kinovea/Kinovea/issues
 - Translation: https://hosted.weblate.org/engage/kinovea/
 - Contact: asso@kinovea.org
-- Youtube: @kinovea
-- Twitter: @Kinovea
 - Instagram: @kinovea
+- Youtube: @kinovea
 
 Changelog:
 ----------
