@@ -630,29 +630,37 @@ namespace Kinovea.Camera.GenICam
             if (!device.IsOpen)
                 return false;
 
-            bool present = device.RemoteNodeList.GetNodePresent(name);
-            if (!present)
+            try
             {
-                log.DebugFormat("Property {0} not found: node is not present.", name);
-                return false;
-            }
+                bool present = device.RemoteNodeList.GetNodePresent(name);
+                if (!present)
+                {
+                    log.DebugFormat("Property {0} not found: node is not present.", name);
+                    return false;
+                }
 
-            Node node = device.RemoteNodeList[name];
-            if (!node.IsImplemented)
-            {
-                log.DebugFormat("Property {0} not found: node is not implemented.", name);
-                return false;
-            }
+                Node node = device.RemoteNodeList[name];
+                if (!node.IsImplemented)
+                {
+                    log.DebugFormat("Property {0} unavailable: node is not implemented.", name);
+                    return false;
+                }
 
-            if (!node.IsAvailable)
-            {
-                log.DebugFormat("Property {0} not found: node is not available.", name);
-                return false;
-            }
+                if (!node.IsAvailable)
+                {
+                    log.DebugFormat("Property {0} unavailable: node is not available.", name);
+                    return false;
+                }
 
-            if (!node.IsReadable)
+                if (!node.IsReadable)
+                {
+                    log.DebugFormat("Property {0} unavailable: node is not readable.", name);
+                    return false;
+                }
+            }
+            catch (Exception e)
             {
-                log.DebugFormat("Property {0} not found: node is not readable.", name);
+                log.ErrorFormat("Property {0} unavailable: exception while accessing node. {1}.", name, e.Message);
                 return false;
             }
 
@@ -665,15 +673,35 @@ namespace Kinovea.Camera.GenICam
         /// </summary>
         public static Node GetNode(NodeMap map, string name)
         {
-            bool present = map.GetNodePresent(name);
-            if (!present)
-                return null;
+            try
+            {
+                bool present = map.GetNodePresent(name);
+                if (!present)
+                {
+                    log.DebugFormat("Property {0} not found: node is not present.", name);
+                    return null;
+                }
+                
+                Node node = map[name];
+                if (!node.IsImplemented)
+                {
+                    log.DebugFormat("Property {0} unavailable: node is not implemented.", name);
+                    return null;
+                }
 
-            Node node = map[name];
-            if (!node.IsImplemented || !node.IsAvailable)
-                return null;
+                if (!node.IsAvailable)
+                {
+                    log.DebugFormat("Property {0} unavailable: node is not available.", name);
+                    return null;
+                }
 
-            return node;
+                return node;
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Property {0} unavailable: exception while accessing node. {1}.", name, e.Message);
+                return null;
+            }
         }
 
         /// <summary>

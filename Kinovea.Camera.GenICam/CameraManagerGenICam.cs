@@ -197,7 +197,12 @@ namespace Kinovea.Camera.GenICam
 
                         summaries.Add(summary);
                         cache.Add(identifier, summary);
-                        log.DebugFormat("Added new device to cache: {0}", stopwatch.ElapsedMilliseconds);
+                        log.DebugFormat("Added device to cache: {0} ms. Alias:{1}, DisplayName: {2}, Identifier:{3}", 
+                            stopwatch.ElapsedMilliseconds,
+                            alias,
+                            device.DisplayName,
+                            identifier
+                            );
                     }
                 }
                 catch (BGAPI2.Exceptions.ErrorException e)
