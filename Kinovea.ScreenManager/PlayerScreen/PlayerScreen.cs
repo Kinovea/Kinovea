@@ -845,26 +845,23 @@ namespace Kinovea.ScreenManager
                 return;
 
             double captureInterval = frameServer.Metadata.BaselineFrameInterval / frameServer.Metadata.HighSpeedFactor;
-            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.BaselineFrameInterval, captureInterval);
+            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FrameIntervalMilliseconds, captureInterval);
             fcs.StartPosition = FormStartPosition.CenterScreen;
-
             if (fcs.ShowDialog() != DialogResult.OK)
             {
                 fcs.Dispose();
                 return;
             }
 
-            frameServer.Metadata.BaselineFrameInterval = fcs.UserInterval;
-            frameServer.Metadata.HighSpeedFactor = fcs.UserInterval / fcs.CaptureInterval;
+            frameServer.Metadata.HighSpeedFactor = frameServer.Metadata.BaselineFrameInterval / fcs.CaptureInterval;
             fcs.Dispose();
 
             log.DebugFormat("Time configuration. File interval:{0:0.###}ms, User interval:{1:0.###}ms, Capture interval:{2:0.###}ms.",
                 frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.BaselineFrameInterval, fcs.CaptureInterval);
 
-            if (HighSpeedFactorChanged != null)
-                HighSpeedFactorChanged(this, EventArgs.Empty);
+            HighSpeedFactorChanged?.Invoke(this, EventArgs.Empty);
 
-            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = 1000 * frameServer.Metadata.HighSpeedFactor / frameServer.Metadata.BaselineFrameInterval;
+            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = 1000 / fcs.CaptureInterval;
             frameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
             view.UpdateTimebase();

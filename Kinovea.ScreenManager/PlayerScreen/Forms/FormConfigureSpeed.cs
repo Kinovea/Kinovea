@@ -28,18 +28,15 @@ using System.Windows.Forms;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Configure capture speed of video.
-    /// The capture FPS is only updated when the user actually enters something in the textbox.
-    /// FIXME: store capture speed everywhere instead of precomputing the "slowFactor" ratio.
+    /// Dialog to configure the capture frame rate of the video.
+    /// Defines the scale of the time axis.
     /// </summary>
     public partial class formConfigureSpeed : Form
     {
         #region Properties
-        public double UserInterval
-        {
-            get { return userInterval; }
-        }
-
+        /// <summary>
+        /// Frame interval at capture time in milliseconds.
+        /// </summary>
         public double CaptureInterval
         {
             get { return captureInterval; }
@@ -48,22 +45,15 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private double fileInterval;
-       
-        private double userInterval;
-        private double minUserFPS = 1;
-        private double maxUserFPS = 1000;
-        
         private double captureInterval;
         private double minCaptureFPS = 0.1;
         private double maxCaptureFPS = 1000000; // 1MHz.
-        
         private bool manualUpdate;
         #endregion
 
-        public formConfigureSpeed(double fileInterval, double userInterval, double captureInterval)
+        public formConfigureSpeed(double fileInterval, double captureInterval)
         {
             this.fileInterval = fileInterval;
-            this.userInterval = userInterval;
             this.captureInterval = captureInterval;
 
             InitializeComponent();
@@ -81,15 +71,7 @@ namespace Kinovea.ScreenManager
             tbCaptureInfo.Clear();
             tbCaptureInfo.AppendText(ScreenManagerLang.dlgTimebase_InfoCapture);
 
-            grpVideo.Text = ScreenManagerLang.Generic_Video;
-            lblFile.Text = string.Format(ScreenManagerLang.dlgTimebase_lblFileFPS, 1000 / fileInterval);
-            lblUser.Text = ScreenManagerLang.dlgTimebase_lblUserFPS;
-            toolTips.SetToolTip(btnResetUser, ScreenManagerLang.dlgTimebase_ToolTip_Reset);
-            tbVideoInfo.Clear();
-            tbVideoInfo.AppendText(ScreenManagerLang.dlgTimebase_InfoUser);
-            
             UpdateCaptureText();
-            UpdateUserText();
         }
 
         #region High speed camera
@@ -123,56 +105,10 @@ namespace Kinovea.ScreenManager
         }
         private void btnResetCapture_Click(object sender, EventArgs e)
         {
-            captureInterval = userInterval;
+            captureInterval = fileInterval;
             UpdateCaptureText();
         }
         #endregion
-
-        #region Video
-        private void tbUser_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!IsNumerical(e.KeyChar))
-                e.Handled = true;
-        }
-        private void tbUser_TextChanged(object sender, EventArgs e)
-        {
-            if (manualUpdate)
-                return;
-
-            bool usingNominalCaptureFramerate = captureInterval == userInterval;
-
-            // Text is parsed using the current culture.
-            double result;
-            bool parsed = double.TryParse(tbUser.Text, out result);
-            if (!parsed)
-                return;
-
-            double userFPS = Math.Max(Math.Min(result, maxUserFPS), minUserFPS);
-            userInterval = 1000 / userFPS;
-
-            if (userFPS != result)
-                UpdateUserText();
-
-            if (usingNominalCaptureFramerate)
-            {
-                // Update the capture framerate if the user wasn't using a special capture framerate.
-                captureInterval = userInterval;
-                UpdateCaptureText();
-            }
-        }
-        private void UpdateUserText()
-        {
-            manualUpdate = true;
-            tbUser.Text = String.Format("{0:0.##}", 1000 / userInterval);
-            manualUpdate = false;
-        }
-        private void btnResetUser_Click(object sender, EventArgs e)
-        {
-            userInterval = fileInterval;
-            UpdateUserText();
-        }
-        #endregion
-
 
         private bool IsNumerical(char key)
         {
