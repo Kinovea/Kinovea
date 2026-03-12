@@ -1545,9 +1545,6 @@ bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInp
         }
     }
 
-    log->DebugFormat("sws_getContext. codec: {0}x{1}, decoding: {2}x{3}.", 
-        m_pCodecCtx->width, m_pCodecCtx->height, _decodingWidth, _decodingHeight);
-
     SwsContext* c = sws_getContext(
         m_pCodecCtx->width, m_pCodecCtx->height, srcFormat,
         _decodingWidth, _decodingHeight, (AVPixelFormat)_outputFmt,

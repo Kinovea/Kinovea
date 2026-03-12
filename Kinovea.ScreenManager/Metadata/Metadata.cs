@@ -408,8 +408,7 @@ namespace Kinovea.ScreenManager
         // Non user-modifiable timing info
         /// <summary>
         /// The frame interval used as the baseline for the playback timer, in milliseconds.
-        /// Same as the video frame interval.
-        /// Not affected by the slow motion slider.
+        /// Same as the video frame interval. Value not affected by the slow motion slider.
         /// This should only be set based on the actual video file, not from reading KVA.
         /// </summary>
         public double BaselineFrameInterval
@@ -428,6 +427,21 @@ namespace Kinovea.ScreenManager
             get { return averageTimeStampsPerSecond; }
             set { averageTimeStampsPerSecond = value; }
         }
+
+        /// <summary>
+        /// The ratio between the capture framerate and the video framerate.
+        /// This relates the video time to real time.
+        /// </summary>
+        public double HighSpeedFactor
+        {
+            get { return highSpeedFactor; }
+            set { highSpeedFactor = value == 0 ? 1.0 : value; }
+        }
+
+        /// <summary>
+        /// Timestamp of the first frame of the video.
+        /// Usually 0 but sometimes something else.
+        /// </summary>
         public long FirstTimeStamp
         {
             get { return firstTimeStamp; }
@@ -476,17 +490,6 @@ namespace Kinovea.ScreenManager
             get { return drawingTestGrid.Visible; }
             set { drawingTestGrid.Visible = value; }
         }
-
-        /// <summary>
-        /// The ratio between the capture framerate and the video framerate.
-        /// This relates the video time to real time.
-        /// </summary>
-        public double HighSpeedFactor
-        {
-            get { return highSpeedFactor; }
-            set { highSpeedFactor = value == 0 ? 1.0 : value; }
-        }
-
         
         public VideoFilterType ActiveVideoFilterType
         {

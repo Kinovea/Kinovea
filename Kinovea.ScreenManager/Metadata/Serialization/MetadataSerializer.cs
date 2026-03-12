@@ -311,6 +311,10 @@ namespace Kinovea.ScreenManager
                     case "CaptureFramerate":
                         metadata.CalibrationHelper.CaptureFramesPerSecond = r.ReadElementContentAsDouble();
                         break;
+                    case "UserFramerate":
+                        // Ignored.
+                        r.ReadElementContentAsDouble();
+                        break;
                     case "SelectionStart":
                         long selStart = r.ReadElementContentAsLong();
                         if (IsSameContext())
