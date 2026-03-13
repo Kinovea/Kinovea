@@ -22,7 +22,6 @@ using System;
 using System.Drawing;
 using Kinovea.Services;
 using SharpVectors.Dom.Svg;
-using SharpVectors.Dom.Svg.Rendering;
 using SharpVectors.Renderer.Gdi;
 
 namespace Kinovea.Video.SVG

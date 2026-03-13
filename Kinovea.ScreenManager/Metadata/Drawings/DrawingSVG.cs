@@ -31,7 +31,6 @@ using System.Xml;
 
 using Kinovea.Services;
 using SharpVectors.Dom.Svg;
-using SharpVectors.Dom.Svg.Rendering;
 using SharpVectors.Renderer.Gdi;
 using System.Xml.Serialization;
 using System.IO;
