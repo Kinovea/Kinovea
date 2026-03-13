@@ -229,29 +229,20 @@
     <Reference Include="OxyPlot.WindowsForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.WindowsForms.1.0.0\lib\net45\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorBindings, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorBindings.dll</HintPath>
+    <Reference Include="SharpVectors.Core, Version=1.8.5.0, Culture=neutral, PublicKeyToken=7407205e337c98ef, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.5\lib\net48\SharpVectors.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorCss, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorCss.dll</HintPath>
+    <Reference Include="SharpVectors.Css, Version=1.8.5.0, Culture=neutral, PublicKeyToken=7a46e3f532fdb787, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.5\lib\net48\SharpVectors.Css.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorDom, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorDom.dll</HintPath>
+    <Reference Include="SharpVectors.Dom, Version=1.8.5.0, Culture=neutral, PublicKeyToken=517340b6277b1a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.5\lib\net48\SharpVectors.Dom.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorObjectModel, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorObjectModel.dll</HintPath>
+    <Reference Include="SharpVectors.Model, Version=1.8.5.0, Culture=neutral, PublicKeyToken=2236cfc76b505845, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.5\lib\net48\SharpVectors.Model.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.32115, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorRenderingEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorUtil, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorUtil.dll</HintPath>
+    <Reference Include="SharpVectors.Rendering.Gdi, Version=1.8.5.0, Culture=neutral, PublicKeyToken=03902092284347e3, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.5\lib\net48\SharpVectors.Rendering.Gdi.dll</HintPath>
     </Reference>
     <Reference Include="SpreadsheetLight, Version=3.5.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>

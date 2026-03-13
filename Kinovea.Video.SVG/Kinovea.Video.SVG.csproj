@@ -92,30 +92,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorBindings, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorBindings.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorCss, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorCss.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorDom, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorDom.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorObjectModel, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorObjectModel.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.32115, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorRenderingEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorUtil, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorUtil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -134,6 +110,11 @@
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SharpVectors">
+      <Version>1.8.5</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

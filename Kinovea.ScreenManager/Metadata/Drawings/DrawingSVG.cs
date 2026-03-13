@@ -31,7 +31,8 @@ using System.Xml;
 
 using Kinovea.Services;
 using SharpVectors.Dom.Svg;
-using SharpVectors.Renderer.Gdi;
+using SharpVectors.Renderers.Gdi;
+using SharpVectors.Renderers;
 using System.Xml.Serialization;
 using System.IO;
 
@@ -72,7 +73,7 @@ namespace Kinovea.ScreenManager
         private bool valid;
         private string filename;
         // SVG
-        private GdiRenderer renderer  = new GdiRenderer();
+        private GdiGraphicsRenderer renderer  = new GdiGraphicsRenderer();
         private SvgWindow svgWindow;
         private bool loaded;
         private Bitmap svgRendered;
@@ -104,7 +105,7 @@ namespace Kinovea.ScreenManager
         {
             this.filename = filename;
             renderer.BackColor = Color.Transparent;
-            svgWindow = new SvgWindow(100, 100, renderer);
+            svgWindow = new GdiSvgWindow(100, 100, renderer);
             
             if (!string.IsNullOrEmpty(filename))
                 LoadSVG(filename);
@@ -253,7 +254,7 @@ namespace Kinovea.ScreenManager
 
             try
             {
-                svgWindow.Src = filename;
+                svgWindow.Source = filename;
                 loaded = true;
                 valid = true;
 
@@ -315,8 +316,9 @@ namespace Kinovea.ScreenManager
 
                 svgWindow.InnerWidth = size.Width;
                 svgWindow.InnerHeight = size.Height;
-                
-                svgRendered = renderer.Render(svgWindow.Document as SvgDocument);
+                svgRendered = new Bitmap(size.Width, size.Height);
+                renderer.GdiGraphics = GdiGraphics.Create(svgRendered, false);
+                renderer.Render(svgWindow.Document);
                 
                 log.Debug(String.Format("Rendering SVG ({0};{1}), Initial scaling to fit video: {2:0.00}. User scaling: {3:0.00}. Video image scaling: {4:0.00}, Final transformation: {5:0.00}.",
                                         originalWidth, originalHeight, initialScale, drawingScale, screenScaling, drawingRenderingScale));

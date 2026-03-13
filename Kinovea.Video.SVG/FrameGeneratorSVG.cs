@@ -22,7 +22,8 @@ using System;
 using System.Drawing;
 using Kinovea.Services;
 using SharpVectors.Dom.Svg;
-using SharpVectors.Renderer.Gdi;
+using SharpVectors.Renderers.Gdi;
+using SharpVectors.Renderers;
 
 namespace Kinovea.Video.SVG
 {
@@ -46,7 +47,7 @@ namespace Kinovea.Video.SVG
         #endregion
 
         #region Members
-        private GdiRenderer renderer = new GdiRenderer();
+        private GdiGraphicsRenderer renderer = new GdiGraphicsRenderer();
         private SvgWindow svgWindow;
         private bool sizeInPercentage;
         private Size originalSize;
@@ -64,7 +65,7 @@ namespace Kinovea.Video.SVG
             currentBitmap = new Bitmap(640, 480);
 
             renderer.BackColor = Color.Transparent;
-            svgWindow = new SvgWindow(100, 100, renderer);
+            svgWindow = new GdiSvgWindow(100, 100, renderer);
         }
 
         public OpenVideoResult Open(string filepath)
@@ -73,7 +74,7 @@ namespace Kinovea.Video.SVG
 
             try
             {
-                svgWindow.Src = filepath;
+                svgWindow.Source = filepath;
                 InitSizeInfo();
                 res = OpenVideoResult.Success;
             }
@@ -154,7 +155,9 @@ namespace Kinovea.Video.SVG
             svgWindow.InnerHeight = size.Height;
             try
             {
-                currentBitmap = renderer.Render(svgWindow.Document as SvgDocument);
+                currentBitmap = new Bitmap(size.Width, size.Height);
+                renderer.GdiGraphics = GdiGraphics.Create(currentBitmap, false);
+                renderer.Render(svgWindow.Document);
             }
             catch (Exception e)
             {
