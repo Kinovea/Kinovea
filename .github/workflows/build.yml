@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 env:
-  VERSION: 2025.2
+  VERSION: 2025.2.0
 
 jobs:
   build:
@@ -31,10 +31,35 @@ jobs:
     - name: Build Solution
       run: msbuild Kinovea.VS2019.sln /p:Platform="x64" /p:Configuration=Release /p:AllowedReferenceRelatedFileExtensions=none
 
+    - name: Create Portable AppData Folder
+      shell: cmd
+      run: mkdir Kinovea\bin\x64\Release\AppData
+        
     - name: Upload Portable
       id: upload-portable
       uses: actions/upload-artifact@v6
       with:
-        name: Kinovea-${{env.VERSION}}
+        name: Kinovea-Portable-${{env.VERSION}}
         path: Kinovea/bin/x64/Release/
         
+    - name: Remove Portable AppData Folder
+      shell: cmd
+      run: rmdir Kinovea\bin\x64\Release\AppData
+    
+    - name: Install NSIS
+      uses: repolevedavaj/install-nsis@v1.0.1
+      with:
+        nsis-version: '3.11'
+        
+    - name: Make Installer
+      shell: cmd
+      run: makensis Installer\Kinovea.nsi
+      
+    - name: Upload Installer
+      id: upload-installer
+      uses: actions/upload-artifact@v6
+      with:
+        name: Kinovea-Installer-${{env.VERSION}}
+        path: Installer/Kinovea-${{env.VERSION}}.exe
+
+
