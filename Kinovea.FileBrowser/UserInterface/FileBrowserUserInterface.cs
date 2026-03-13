@@ -38,7 +38,6 @@ using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 using BrightIdeasSoftware;
-using log4net.Layout;
 
 namespace Kinovea.FileBrowser
 {
