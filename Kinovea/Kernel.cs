@@ -98,7 +98,6 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
         private Dictionary<string, ToolStripMenuItem> languageMenus = new Dictionary<string, ToolStripMenuItem>();
         private ToolStripMenuItem mnuTranslate1 = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTranslate2 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
@@ -112,6 +111,7 @@ namespace Kinovea.Root
         // Help
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTranslate2 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
         private ToolStripMenuItem mnuEnableDebugLogs = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWebsite = new ToolStripMenuItem();
@@ -445,20 +445,9 @@ namespace Kinovea.Root
 
             #region Options
             mnuLanguages.Image = Properties.Resources.international;
-            bool enableAllLanguages = PreferencesManager.GeneralPreferences.EnableAllLanguages;
-            var enabledLanguages = LanguageManager.GetEnabledLanguages(enableAllLanguages);
-            foreach (KeyValuePair<string, string> lang in enabledLanguages)
-            {
-                ToolStripMenuItem mnuLang = new ToolStripMenuItem(lang.Value);
-                mnuLang.Tag = lang.Key;
-                mnuLang.Click += mnuLanguage_OnClick;
-                languageMenus.Add(lang.Key, mnuLang);
-                mnuLanguages.DropDownItems.Add(mnuLang);
-            }
             mnuTranslate1.Image = Properties.Resources.international;
             mnuTranslate1.Click += (s, e) => Process.Start("https://hosted.weblate.org/engage/kinovea/");
-            mnuLanguages.DropDownItems.Add(new ToolStripSeparator());
-            mnuLanguages.DropDownItems.Add(mnuTranslate1);
+            BuildLanguageMenus();
 
             mnuPreferences.Image = Properties.Resources.wrench;
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
@@ -584,7 +573,7 @@ namespace Kinovea.Root
             mnuOptions.Text = RootLang.mnuOptions;
             mnuLanguages.Text = RootLang.mnuLanguages;
             mnuTranslate1.Text = RootLang.mnuTranslate;
-            mnuTranslate2.Text = RootLang.mnuTranslate;
+            BuildLanguageMenus();
             mnuPreferences.Text = RootLang.mnuPreferences;
             mnuTimecode.Text = RootLang.mnuTimeFormat;
 
@@ -616,6 +605,7 @@ namespace Kinovea.Root
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
+            mnuTranslate2.Text = RootLang.mnuTranslate;
             mnuApplicationFolder.Text = RootLang.mnuOpenApplicationDataFolder;
             mnuEnableDebugLogs.Text = PreferencesManager.GeneralPreferences.EnableDebugLog ? RootLang.mnuDisableDebugLogs : RootLang.mnuEnableDebugLogs;
             mnuWebsite.Text = "www.kinovea.org";
@@ -1201,6 +1191,26 @@ namespace Kinovea.Root
             
             // Propagates the call to screens.
             screenManager.FullScreen(mainWindow.FullScreen);
+        }
+
+        private void BuildLanguageMenus()
+        {
+            mnuLanguages.DropDownItems.Clear();
+            languageMenus.Clear();
+
+            bool enableAllLanguages = PreferencesManager.GeneralPreferences.EnableAllLanguages;
+            var enabledLanguages = LanguageManager.GetEnabledLanguages(enableAllLanguages);
+            foreach (KeyValuePair<string, string> lang in enabledLanguages)
+            {
+                ToolStripMenuItem mnuLang = new ToolStripMenuItem(lang.Value);
+                mnuLang.Tag = lang.Key;
+                mnuLang.Click += mnuLanguage_OnClick;
+                languageMenus.Add(lang.Key, mnuLang);
+                mnuLanguages.DropDownItems.Add(mnuLang);
+            }
+            
+            mnuLanguages.DropDownItems.Add(new ToolStripSeparator());
+            mnuLanguages.DropDownItems.Add(mnuTranslate1);
         }
         
         private void BuildPointerMenus()
