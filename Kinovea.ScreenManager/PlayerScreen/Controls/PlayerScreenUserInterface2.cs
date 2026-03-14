@@ -999,7 +999,6 @@ namespace Kinovea.ScreenManager
 
             // Update default fading for all drawings.
 
-
             // Labels
             lblSelStartSelection.AutoSize = true;
             lblSelDuration.AutoSize = true;
@@ -1021,7 +1020,7 @@ namespace Kinovea.ScreenManager
             }
 
             m_FrameServer.Metadata.CalibrationHelper.RefreshUnits();
-            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
+            m_FrameServer.Metadata.UpdateTrajectoriesKinematics();
             m_FrameServer.Metadata.UpdateDefaultFading();
 
             // Refresh image to update timecode in chronos, grids colors, default fading, etc.

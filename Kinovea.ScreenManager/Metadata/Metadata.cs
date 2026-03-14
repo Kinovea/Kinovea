@@ -1596,10 +1596,40 @@ namespace Kinovea.ScreenManager
 
             TrackabilityManager.InitializeTracking(trackableDrawing, tracks);
         }
+
+        /// <summary>
+        /// Rebuild the kinematics data for all trajectories and update 
+        /// the corresponding mini labels. 
+        /// This should be called when calibration changes or when the 
+        /// measurement unit has changed.
+        /// </summary>
+        public void UpdateTrajectoriesKinematics()
+        {
+            // Rebuilding kinematics is somewhat costly but can be done in parallel.
+            stopwatch.Restart();
+            List<DrawingTrack> tt = Tracks();
+            Parallel.ForEach(tt, t =>
+            {
+                t.UpdateKinematics();
+            });
+
+            log.DebugFormat("Updated kinematics for all tracks: {0} ms.", stopwatch.ElapsedMilliseconds);
+
+            // Update labels on the UI thread.
+            UpdateTrajectoriesForKeyframes();
+        }
+
+        /// <summary>
+        /// Update keyframe labels attached to trajectories.
+        /// This should be called when the core data of the keyframe 
+        /// may have changed and after add/delete of key frames.
+        /// </summary>
         public void UpdateTrajectoriesForKeyframes()
         {
             foreach (DrawingTrack t in Tracks())
+            {
                 t.KeyframesChanged();
+            }
         }
         public void FixRelativeTrajectories()
         {
@@ -1836,7 +1866,6 @@ namespace Kinovea.ScreenManager
 
             // Reset coordinate system origin and rebuild track kinematics.
             AfterCalibrationChanged();
-            UpdateTrajectoriesForKeyframes();
 
             KVAImported?.Invoke(this, EventArgs.Empty);
         }
@@ -2677,15 +2706,7 @@ namespace Kinovea.ScreenManager
 
             drawingCoordinateSystem.UpdateOrigin();
 
-            // Rebuilding kinematics is somewhat costly but can be done in parallel.
-            stopwatch.Restart();
-            List<DrawingTrack> tt = Tracks();
-            Parallel.ForEach(tt, t =>
-            {
-                t.UpdateKinematics();
-            });
-
-            log.DebugFormat("Updated kinematics for all tracks: {0} ms.", stopwatch.ElapsedMilliseconds);
+            UpdateTrajectoriesKinematics();
         }
 
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<MeasureLabelType> e)
