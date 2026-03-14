@@ -228,6 +228,7 @@
     <EmbeddedResource Include="Languages\CameraLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sv.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.ta.resx" />
     <EmbeddedResource Include="Languages\CameraLang.th.resx" />
     <EmbeddedResource Include="Languages\CameraLang.tr.resx" />
     <EmbeddedResource Include="Languages\CameraLang.uk.resx" />

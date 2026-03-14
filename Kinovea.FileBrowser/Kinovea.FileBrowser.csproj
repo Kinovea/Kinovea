@@ -252,6 +252,7 @@
     <EmbeddedResource Include="Languages\FileBrowserLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.sv.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.ta.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.th.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.tr.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.uk.resx" />

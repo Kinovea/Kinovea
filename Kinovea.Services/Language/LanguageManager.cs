@@ -53,6 +53,7 @@ namespace Kinovea.Services
             languages.Add("zh-CHS", "简体中文");
             languages.Add("zh-CHT", "繁體中文");
             languages.Add("ko", "한국어");
+            languages.Add("ta", "தமிழ்");
             languages.Add("th", "ไทย");
 
             languages.Add("az", "Azərbaycanca");
@@ -94,7 +95,7 @@ namespace Kinovea.Services
             // the whole project, the Root component or the ScreenManager component.
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
             //
-            // Last check: 2025-12-07.
+            // Last check: 2026-03-14.
             //------------------------------------------
             lowCoverage.Add("az");         // Azerbaijani.
             lowCoverage.Add("bg");         // Bulgarian.
@@ -108,6 +109,7 @@ namespace Kinovea.Services
             lowCoverage.Add("sr-Cyrl-RS"); // Serbian (cyrillic).
             lowCoverage.Add("sl");         // Slovenian.
             lowCoverage.Add("sv");         // Swedish.
+            lowCoverage.Add("ta");         // Tamil.
             lowCoverage.Add("th");         // Thai.
         }
 

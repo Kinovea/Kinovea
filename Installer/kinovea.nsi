@@ -252,6 +252,7 @@ Section "Uninstall"
     RMDir /r "$INSTDIR\x64"
     
     ; Individual languages directories (prior to 2025.1).
+    ; Languages added after 2025.1 do not need to be added here.
     RMDir /r "$INSTDIR\ar"
     RMDir /r "$INSTDIR\bg"
     RMDir /r "$INSTDIR\ca"
