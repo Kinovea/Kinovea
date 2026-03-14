@@ -1607,11 +1607,28 @@ namespace Kinovea.ScreenManager
         {
             // Rebuilding kinematics is somewhat costly but can be done in parallel.
             stopwatch.Restart();
+
+            // If the calibration object is currently being tracked,
+            // we can't run this in parallel as the kinematics are going to ask for calibration data
+            // at a timestamp where we may not have the data for the calibration tracks yet.
+            Guid calibrationDrawingId = CalibrationHelper.CalibrationDrawingId;
+            bool calibrationTracked = trackabilityManager.IsTracking(calibrationDrawingId);
             List<DrawingTrack> tt = Tracks();
-            Parallel.ForEach(tt, t =>
+            if (calibrationTracked)
             {
-                t.UpdateKinematics();
-            });
+                foreach (var t in tt)
+                {
+                    t.UpdateKinematics();
+                }
+            }
+            else
+            {
+                Parallel.ForEach(tt, t =>
+                {
+                    t.UpdateKinematics();
+                });
+            }
+
 
             log.DebugFormat("Updated kinematics for all tracks: {0} ms.", stopwatch.ElapsedMilliseconds);
 

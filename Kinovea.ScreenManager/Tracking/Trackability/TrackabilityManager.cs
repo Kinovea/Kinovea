@@ -209,10 +209,18 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool IsTracking(ITrackable drawing)
         {
-            if (!SanityCheck(drawing.Id))
+            return IsTracking(drawing.Id);
+        }
+
+        /// <summary>
+        /// Returns true if the drawing with this ID is currently actively tracking.
+        /// </summary>
+        public bool IsTracking(Guid id)
+        {
+            if (!SanityCheck(id))
                 return false;
 
-            return trackers[drawing.Id].IsCurrentlyTracking;
+            return trackers[id].IsCurrentlyTracking;
         }
 
         /// <summary>
