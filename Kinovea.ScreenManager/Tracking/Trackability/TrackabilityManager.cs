@@ -209,6 +209,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool IsTracking(ITrackable drawing)
         {
+            if (drawing == null)
+                return false;
+
             return IsTracking(drawing.Id);
         }
 
@@ -625,7 +628,10 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("This drawing was not registered for tracking. {0}.", id.ToString());
 
 #if DEBUG
-                throw new ArgumentException("This drawing was not registered for tracking.");
+                if (id != Guid.Empty)
+                {
+                    throw new ArgumentException("This drawing was not registered for tracking.");
+                }
 #endif
             }
 

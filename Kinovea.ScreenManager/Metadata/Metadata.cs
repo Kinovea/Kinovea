@@ -1214,6 +1214,9 @@ namespace Kinovea.ScreenManager
             BeforeDrawingDeletion(drawing);
 
             manager.RemoveDrawing(drawingId);
+            
+            // The calibration helper may be referencing this drawing.
+            // We keep the reference around in case of undo.
 
             DeselectAll();
 
@@ -1611,8 +1614,8 @@ namespace Kinovea.ScreenManager
             // If the calibration object is currently being tracked,
             // we can't run this in parallel as the kinematics are going to ask for calibration data
             // at a timestamp where we may not have the data for the calibration tracks yet.
-            Guid calibrationDrawingId = CalibrationHelper.CalibrationDrawingId;
-            bool calibrationTracked = trackabilityManager.IsTracking(calibrationDrawingId);
+            var calibrationDrawing = this.TrackableDrawings().FirstOrDefault(d => d.Id == CalibrationHelper.CalibrationDrawingId);
+            bool calibrationTracked = trackabilityManager.IsTracking(calibrationDrawing);
             List<DrawingTrack> tt = Tracks();
             if (calibrationTracked)
             {

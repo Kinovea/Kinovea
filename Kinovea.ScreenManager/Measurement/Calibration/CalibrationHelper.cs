@@ -121,6 +121,10 @@ namespace Kinovea.ScreenManager
             get { return imageSize; }
         }
 
+        /// <summary>
+        /// Id of the calibration drawing.
+        /// This may point to a deleted drawing.
+        /// </summary>
         public Guid CalibrationDrawingId
         {
             get { return calibrationDrawingId; }
@@ -185,6 +189,7 @@ namespace Kinovea.ScreenManager
         {
             calibratorType = CalibratorType.Line;
             calibrator = new CalibratorPlane();
+            calibrationDrawingId = Guid.Empty;
 
             PointF center = imageSize.Center();
             calibrator.Initialize(100, center, new PointF(center.X + 100, center.Y), CalibrationAxis.LineHorizontal);

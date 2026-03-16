@@ -84,7 +84,8 @@ namespace Kinovea.ScreenManager
 
                 // Do not show points belonging to the calibration object,
                 // since it defines the coordinate system.
-                if (drawing.Id == metadata.CalibrationHelper.CalibrationDrawingId || drawing.Id == metadata.DrawingCoordinateSystem.Id)
+                if (drawing.Id == metadata.CalibrationHelper.CalibrationDrawingId || 
+                    drawing.Id == metadata.DrawingCoordinateSystem.Id)
                 {
                     foreach (var pair in tracks)
                     {
