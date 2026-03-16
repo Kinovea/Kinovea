@@ -62,7 +62,7 @@
     <value>ยกเลิก</value>
   </data>
   <data name="Generic_Apply" xml:space="preserve">
-    <value>ใช้ค่าที่ตั้งไว้</value>
+    <value>นำไปใช้</value>
   </data>
   <data name="FormConnectionWizard_URL" xml:space="preserve">
     <value>URL สุดท้าย</value>
