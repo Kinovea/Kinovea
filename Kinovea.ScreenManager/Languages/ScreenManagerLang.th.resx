@@ -65,10 +65,10 @@
     <value>กลับไปยังตำแหน่งเริ่มต้นทั้งสองวิดีโอ</value>
   </data>
   <data name="Generic_Apply" xml:space="preserve">
-    <value>ใช้ค่าที่ตั้งไว้</value>
+    <value>นำไปใช้</value>
   </data>
   <data name="btnSync_ToolTip" xml:space="preserve">
-    <value>ซิงก์วิดีโอกับเฟรมปัจจุบัน</value>
+    <value>ซิงค์วิดีโอกับเฟรมปัจจุบัน</value>
   </data>
   <data name="dlgLoadAnalysis_Title" xml:space="preserve">
     <value>โหดข้อมูลอัตโนมัติ</value>
