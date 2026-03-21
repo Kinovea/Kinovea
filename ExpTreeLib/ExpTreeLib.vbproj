@@ -160,6 +160,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExpTreeLib2\ExpTreeLib2.csproj">
+      <Project>{fcb06375-0d35-4878-9504-ae7584fb025f}</Project>
+      <Name>ExpTreeLib2</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>
