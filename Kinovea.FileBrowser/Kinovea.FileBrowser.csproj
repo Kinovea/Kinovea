@@ -175,10 +175,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExpTreeLib, Version=2.11.9383.42775, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\ExpTreeLib\ExpTreeLib.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
     </Reference>
@@ -322,6 +318,10 @@
     <None Include="Resources\calendar_view_day.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExpTreeLib\ExpTreeLib.vbproj">
+      <Project>{22d53870-1b39-4fa2-92d7-1f4b7d3df0c8}</Project>
+      <Name>ExpTreeLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>{2BF373B8-5D33-4FCF-8C30-5E8CAF6777E7}</Project>
       <Name>Kinovea.Camera</Name>
