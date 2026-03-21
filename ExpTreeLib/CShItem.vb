@@ -2,7 +2,8 @@ Imports System.IO
 Imports System.IO.FileSystemInfo
 Imports System.Runtime.InteropServices
 Imports System.Text
-Imports ExpTreeLib.ShellDll
+Imports Kinovea.ExpTreeLib2.NativeMethods
+
 
 
 Public Class CShItem
@@ -211,17 +212,18 @@ Public Class CShItem
         Dim tmpPidl As IntPtr
         HR = SHGetSpecialFolderLocation(0, CSIDL.DRIVES, tmpPidl)
         Dim shfi As New SHFILEINFO()
-        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or _
-                                SHGFI.TYPENAME Or _
+        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or
+                                SHGFI.TYPENAME Or
                                 SHGFI.PIDL
         Dim dwAttr As Integer = 0
         SHGetFileInfo(tmpPidl, dwAttr, shfi, cbFileInfo, dwflag)
         m_strSystemFolder = shfi.szTypeName
         m_strMyComputer = shfi.szDisplayName
         Marshal.FreeCoTaskMem(tmpPidl)
+
         'set OS version info
-        XPorAbove = ShellDll.IsXpOrAbove()
-        Win2KOrAbove = ShellDll.Is2KOrAbove
+        XPorAbove = IsXpOrAbove()
+        Win2KOrAbove = Is2KOrAbove()
 
         'With That done, now set up Desktop CShItem
         m_Path = "::{" & DesktopGUID.ToString & "}"
@@ -230,9 +232,9 @@ Public Class CShItem
         m_IsBrowsable = False
         HR = SHGetDesktopFolder(m_Folder)
         m_Pidl = GetSpecialFolderLocation(IntPtr.Zero, CSIDL.DESKTOP)
-        dwflag = SHGFI.DISPLAYNAME Or _
-                 SHGFI.TYPENAME Or _
-                 SHGFI.SYSICONINDEX Or _
+        dwflag = SHGFI.DISPLAYNAME Or
+                 SHGFI.TYPENAME Or
+                 SHGFI.SYSICONINDEX Or
                  SHGFI.PIDL
         dwAttr = 0
         Dim H As IntPtr = SHGetFileInfo(m_Pidl, dwAttr, shfi, cbFileInfo, dwflag)
@@ -248,11 +250,11 @@ Public Class CShItem
         'also get local name for "My Documents"
         Dim pchEaten As Integer
         tmpPidl = IntPtr.Zero
-        HR = m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}", _
+        HR = m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
                  pchEaten, tmpPidl, Nothing)
         shfi = New SHFILEINFO()
-        dwflag = SHGFI.DISPLAYNAME Or _
-                                SHGFI.TYPENAME Or _
+        dwflag = SHGFI.DISPLAYNAME Or
+                                SHGFI.TYPENAME Or
                                 SHGFI.PIDL
         dwAttr = 0
         SHGetFileInfo(tmpPidl, dwAttr, shfi, cbFileInfo, dwflag)
@@ -279,7 +281,7 @@ Public Class CShItem
         Dim HR As Integer
         If ID = CSIDL.MYDOCUMENTS Then
             Dim pchEaten As Integer
-            HR = DesktopBase.m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}", _
+            HR = DesktopBase.m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
                      pchEaten, m_Pidl, Nothing)
         Else
             HR = SHGetSpecialFolderLocation(0, ID, m_Pidl)
@@ -385,14 +387,14 @@ Public Class CShItem
         If m_IsFolder Then
             Dim HR As Integer
             HR = pParent.BindToObject(ipItem, IntPtr.Zero, IID_IShellFolder, m_Folder)
-#If Debug Then
+#If DEBUG Then
             If HR <> NOERROR Then
                 Marshal.ThrowExceptionForHR(HR)
             End If
 #End If
         End If
 XIT:    'On any kind of exit, free the allocated memory
-#If Debug Then
+#If DEBUG Then
         If m_Pidl.Equals(IntPtr.Zero) Then
             Debug.WriteLine("CShItem.New(FoldBytes,ItemBytes) Failed")
         Else
@@ -432,7 +434,7 @@ XIT:    'On any kind of exit, free the allocated memory
 #End Region
 
 #Region "   MakeFolderFromBytes"
-    Public Shared Function MakeFolderFromBytes(ByVal b As Byte()) As ShellDll.IShellFolder
+    Public Shared Function MakeFolderFromBytes(ByVal b As Byte()) As IShellFolder
         MakeFolderFromBytes = Nothing       'get rid of VS2005 warning
         If Not IsValidPidl(b) Then Return Nothing
         If b.Length = 2 AndAlso ((b(0) = 0) And (b(1) = 0)) Then 'this is the desktop
@@ -584,7 +586,7 @@ XIT:    'On any kind of exit, free the allocated memory
         Dim tmpPidl As IntPtr
         If ID = CSIDL.MYDOCUMENTS Then
             Dim pchEaten As Integer
-            HR = GetDeskTop.Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}", _
+            HR = GetDeskTop.Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
                      pchEaten, tmpPidl, Nothing)
         Else
             HR = SHGetSpecialFolderLocation(0, ID, tmpPidl)
@@ -857,8 +859,8 @@ XIT:    'On any kind of exit, free the allocated memory
     Private Sub SetDispType()
         'Get Displayname, TypeName
         Dim shfi As New SHFILEINFO()
-        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or _
-                                SHGFI.TYPENAME Or _
+        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or
+                                SHGFI.TYPENAME Or
                                 SHGFI.PIDL
         Dim dwAttr As Integer = 0
         If m_IsFileSystem And Not m_IsFolder Then
@@ -908,7 +910,7 @@ XIT:    'On any kind of exit, free the allocated memory
             If m_IconIndexNormal < 0 Then
                 If Not m_HasDispType Then SetDispType()
                 Dim shfi As New SHFILEINFO()
-                Dim dwflag As Integer = SHGFI.PIDL Or _
+                Dim dwflag As Integer = SHGFI.PIDL Or
                                         SHGFI.SYSICONINDEX
                 Dim dwAttr As Integer = 0
                 If m_IsFileSystem And Not m_IsFolder Then
@@ -930,8 +932,8 @@ XIT:    'On any kind of exit, free the allocated memory
                     If OpenFolderIconIndex < 0 Then
                         Dim dwflag As Integer = SHGFI.SYSICONINDEX Or SHGFI.PIDL
                         Dim shfi As New SHFILEINFO()
-                        Dim H As IntPtr = SHGetFileInfo(m_Pidl, 0, _
-                                          shfi, cbFileInfo, _
+                        Dim H As IntPtr = SHGetFileInfo(m_Pidl, 0,
+                                          shfi, cbFileInfo,
                                           dwflag Or SHGFI.OPENICON)
                         m_IconIndexOpen = shfi.iIcon
                         'If m_TypeName.Equals("File Folder") Then
@@ -965,7 +967,7 @@ XIT:    'On any kind of exit, free the allocated memory
                 'Network = 4
                 'CD = 5
                 'RAMDrive = 6
-                Dim disk As New Management.ManagementObject("win32_logicaldisk.deviceid=""" & _
+                Dim disk As New Management.ManagementObject("win32_logicaldisk.deviceid=""" &
                                                 m_Path.Substring(0, 2) & """")
                 m_Length = CType(disk("Size"), UInt64).ToString
                 If CType(disk("DriveType"), UInt32).ToString = CStr(4) Then
@@ -1066,8 +1068,8 @@ XIT:    'On any kind of exit, free the allocated memory
             Else
                 Dim shfi As New SHFILEINFO()
                 shfi.dwAttributes = SFGAO.RDONLY
-                Dim dwflag As Integer = SHGFI.PIDL Or _
-                                        SHGFI.ATTRIBUTES Or _
+                Dim dwflag As Integer = SHGFI.PIDL Or
+                                        SHGFI.ATTRIBUTES Or
                                         SHGFI.ATTR_SPECIFIED
                 Dim dwAttr As Integer = 0
                 Dim H As IntPtr = SHGetFileInfo(m_Pidl, dwAttr, shfi, cbFileInfo, dwflag)
@@ -1471,7 +1473,7 @@ NXTOLD:                 Next
         Dim HR As Integer
         Dim theInterface As IDropTarget = Nothing
         Dim tnH As IntPtr = tn.Handle
-        HR = m_Folder.CreateViewObject(tnH, ShellDll.IID_IDropTarget, theInterface)
+        HR = m_Folder.CreateViewObject(tnH, IID_IDropTarget, theInterface)
         If HR <> 0 Then
             Marshal.ThrowExceptionForHR(HR)
         End If

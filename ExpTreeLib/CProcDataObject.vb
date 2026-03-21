@@ -2,7 +2,9 @@ Imports System.Runtime.InteropServices
 Imports System.IO
 Imports System.Text
 Imports ExpTreeLib.CShItem
-Imports ExpTreeLib.ShellDll
+Imports Kinovea.ExpTreeLib2.NativeMethods
+
+
 
 '''<Summary>This class takes the IDataObject or .Net DataObjectpassed into DragEnter
 '''  and builds a IDataObject that is suitable for use when interacting with the
@@ -43,7 +45,7 @@ Public Class CProcDataObject
     Private m_StreamCIDA As MemoryStream    'A memorystream containing a CIDA
     Private IsNet As Boolean = False        'True if dealing with a .Net DataObject
     Private NetIDO As System.Windows.Forms.IDataObject
-    Private IDO As ShellDll.IDataObject
+    Private IDO As IDataObject
 
 #End Region
 
@@ -100,7 +102,7 @@ Public Class CProcDataObject
         m_DataObject = pDataObj
         Dim HadError As Boolean = False     'used for various error conditions
         Try
-            IDO = Marshal.GetTypedObjectForIUnknown(pDataObj, GetType(ShellDll.IDataObject))
+            IDO = Marshal.GetTypedObjectForIUnknown(pDataObj, GetType(IDataObject))
         Catch ex As Exception
             ' Debug.WriteLine("Exception Thrown in CMyDataObject -Getting COM interface: " & vbCrLf & ex.ToString)
             HadError = True
@@ -132,7 +134,7 @@ Public Class CProcDataObject
     ''' If not, build it in m_StreamCIDA, if so, copy to m_StreamCIDA
     '''If dealing with all FileSystem Items,
     ''' </Summary> 
-    Private Sub ProcessCOMIDataObject(ByVal IDO As ShellDll.IDataObject)
+    Private Sub ProcessCOMIDataObject(ByVal IDO As IDataObject)
         'Don't even look for an ArrayList. If there, we don't know how to access
         'Therefore, we need either a "FileDrop" or a "Shell IDList Array" to 
         'extract the info for m_DragList and to ensure that the IDataObject
@@ -149,7 +151,7 @@ Public Class CProcDataObject
             With fmtEtc
                 .cfFormat = cf
                 .lindex = -1
-                .dwAspect = ShellDll.DVASPECT.CONTENT
+                .dwAspect = DVASPECT.CONTENT
                 .ptd = IntPtr.Zero
                 .Tymd = TYMED.HGLOBAL
             End With
@@ -175,9 +177,9 @@ Public Class CProcDataObject
         'Check for "FileDrop" (CF.HDROP) if we have to
         If m_Draglist.Count < 1 Then     'skip this if already have list
             With fmtEtc
-                .cfFormat = ShellDll.CF.HDROP
+                .cfFormat = Kinovea.ExpTreeLib2.NativeMethods.CF.HDROP
                 .lindex = -1
-                .dwAspect = ShellDll.DVASPECT.CONTENT
+                .dwAspect = DVASPECT.CONTENT
                 .ptd = IntPtr.Zero
                 .Tymd = TYMED.HGLOBAL
             End With
@@ -220,7 +222,7 @@ Public Class CProcDataObject
             With fmtEtc
                 .cfFormat = cf      'registered at routine entry
                 .lindex = -1
-                .dwAspect = ShellDll.DVASPECT.CONTENT
+                .dwAspect = DVASPECT.CONTENT
                 .ptd = IntPtr.Zero
                 .Tymd = TYMED.HGLOBAL
             End With

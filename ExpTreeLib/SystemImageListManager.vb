@@ -16,7 +16,7 @@ Imports System.Windows.Forms
 Imports System.Runtime.InteropServices
 Imports System.Threading
 Imports System.Drawing
-Imports ExpTreeLib.ShellDll
+Imports Kinovea.ExpTreeLib2.NativeMethods
 
 Public Class SystemImageListManager
 
@@ -55,27 +55,27 @@ Public Class SystemImageListManager
             Exit Sub
         End If
 
-        Dim dwFlag As Integer = SHGFI.USEFILEATTRIBUTES Or _
-                        SHGFI.SYSICONINDEX Or _
+        Dim dwFlag As Integer = SHGFI.USEFILEATTRIBUTES Or
+                        SHGFI.SYSICONINDEX Or
                         SHGFI.SMALLICON
         Dim shfi As New SHFILEINFO()
-        m_smImgList = SHGetFileInfo(".txt", _
-                           FILE_ATTRIBUTE_NORMAL, _
-                           shfi, _
-                           cbFileInfo, _
+        m_smImgList = SHGetFileInfo(".txt",
+                           FILE_ATTRIBUTE_NORMAL,
+                           shfi,
+                           cbFileInfo,
                            dwFlag)
         Debug.Assert((Not m_smImgList.Equals(IntPtr.Zero)), "Failed to create Image Small ImageList")
         If m_smImgList.Equals(IntPtr.Zero) Then
             Throw New Exception("Failed to create Small ImageList")
         End If
 
-        dwFlag = SHGFI.USEFILEATTRIBUTES Or _
-                        SHGFI.SYSICONINDEX Or _
+        dwFlag = SHGFI.USEFILEATTRIBUTES Or
+                        SHGFI.SYSICONINDEX Or
                         SHGFI.LARGEICON
-        m_lgImgList = SHGetFileInfo(".txt", _
-                           FILE_ATTRIBUTE_NORMAL, _
-                           shfi, _
-                           cbFileInfo, _
+        m_lgImgList = SHGetFileInfo(".txt",
+                           FILE_ATTRIBUTE_NORMAL,
+                           shfi,
+                           cbFileInfo,
                            dwFlag)
         Debug.Assert((Not m_lgImgList.Equals(IntPtr.Zero)), "Failed to create Image Small ImageList")
         If m_lgImgList.Equals(IntPtr.Zero) Then
@@ -110,20 +110,20 @@ Public Class SystemImageListManager
     ''' <param name="item"></param>
     ''' <param name="GetOpenIcon"></param>
     ''' 
-    Public Shared Function GetIconIndex(ByRef item As CShItem, _
-                                        Optional ByVal GetOpenIcon As Boolean = False, _
-                                        Optional ByVal GetSelectedIcon As Boolean = False _
+    Public Shared Function GetIconIndex(ByRef item As CShItem,
+                                        Optional ByVal GetOpenIcon As Boolean = False,
+                                        Optional ByVal GetSelectedIcon As Boolean = False
                                         ) As Integer
 
         Initializer()
         Dim HasOverlay As Boolean = False  'true if it's an overlay
         Dim rVal As Integer     'The returned Index
 
-        Dim dwflag As Integer = SHGFI.SYSICONINDEX Or _
+        Dim dwflag As Integer = SHGFI.SYSICONINDEX Or
                         SHGFI.PIDL Or SHGFI.ICON
         Dim dwAttr As Integer = 0
         'build Key into HashTable for this Item
-        Dim Key As Integer = IIf(Not GetOpenIcon, item.IconIndexNormal * 256, _
+        Dim Key As Integer = IIf(Not GetOpenIcon, item.IconIndexNormal * 256,
                                                   item.IconIndexOpen * 256)
         With item
             If .IsLink Then

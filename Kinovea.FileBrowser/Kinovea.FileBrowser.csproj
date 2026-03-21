@@ -318,6 +318,10 @@
     <None Include="Resources\calendar_view_day.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExpTreeLib2\ExpTreeLib2.csproj">
+      <Project>{fcb06375-0d35-4878-9504-ae7584fb025f}</Project>
+      <Name>ExpTreeLib2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExpTreeLib\ExpTreeLib.vbproj">
       <Project>{22d53870-1b39-4fa2-92d7-1f4b7d3df0c8}</Project>
       <Name>ExpTreeLib</Name>

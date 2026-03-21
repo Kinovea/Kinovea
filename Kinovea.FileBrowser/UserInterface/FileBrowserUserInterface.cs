@@ -499,7 +499,7 @@ namespace Kinovea.FileBrowser
             // Create items out of the paths and populate the tree.
             etShortcuts.SetShortcuts(new ArrayList(shortcuts));
 
-            etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Desktop;
+            etShortcuts.StartUpDirectory = ExpTree.StartDir.Desktop;
         }
 
         /// <summary>

@@ -119,9 +119,6 @@
     <Compile Include="NativeTreeView.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ShellDll.vb">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SystemImageListManager.vb">
       <SubType>Code</SubType>
     </Compile>

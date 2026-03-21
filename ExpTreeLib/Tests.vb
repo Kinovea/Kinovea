@@ -1,6 +1,6 @@
 Imports System.Runtime.InteropServices
 Imports ExpTreeLib.CShItem
-Imports ExpTreeLib.ShellDll
+Imports Kinovea.ExpTreeLib2.NativeMethods
 
 Public Class Tests
 

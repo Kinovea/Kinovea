@@ -1,36 +1,37 @@
 Imports System.Text
 Imports System.Windows.Forms
 Imports System.Runtime.InteropServices
-Imports ExpTreeLib.ShellDll
+Imports Kinovea.ExpTreeLib2.NativeMethods
+
 
 Public Class TVDragWrapper
-    Implements ShellDll.IDropTarget
+    Implements Kinovea.ExpTreeLib2.NativeMethods.IDropTarget
 #Region "   Private Fields"
     Private m_View As Control
     Private m_Original_Effect As Integer    'Save it
     Private m_OriginalRefCount As Integer   'Set in DragEnter, used in DragDrop
     Private m_DragDataObj As IntPtr         'Saved on DragEnter for use in DragOver
-    Private m_LastTarget As ExpTreeLib.ShellDll.IDropTarget     'Of most recent Folder dragged over
+    Private m_LastTarget As Kinovea.ExpTreeLib2.NativeMethods.IDropTarget     'Of most recent Folder dragged over
     Private m_LastNode As Object            'Most recent node dragged over
     Private m_DropList As ArrayList         'CShItems of Items dragged/dropped
     Private m_MyDataObject As CProcDataObject 'Does parsing of dragged IDataObject
 #End Region
 
 #Region "   Public Events"
-    Public Event ShDragEnter(ByVal DragItemList As ArrayList, _
-                                ByVal pDataObj As IntPtr, _
-                                ByVal grfKeyState As Integer, _
+    Public Event ShDragEnter(ByVal DragItemList As ArrayList,
+                                ByVal pDataObj As IntPtr,
+                                ByVal grfKeyState As Integer,
                                 ByVal pdwEffect As Integer)
 
-    Public Event ShDragOver(ByVal Node As Object, _
-                                ByVal ClientPoint As System.Drawing.Point, _
-                                ByVal grfKeyState As Integer, _
+    Public Event ShDragOver(ByVal Node As Object,
+                                ByVal ClientPoint As System.Drawing.Point,
+                                ByVal grfKeyState As Integer,
                                 ByVal pdwEffect As Integer)
     Public Event ShDragLeave()
 
-    Public Event ShDragDrop(ByVal DragItemList As ArrayList, _
-                            ByVal Node As Object, _
-                            ByVal grfKeyState As Integer, _
+    Public Event ShDragDrop(ByVal DragItemList As ArrayList,
+                            ByVal Node As Object,
+                            ByVal grfKeyState As Integer,
                             ByVal pdwEffect As Integer)
 
 #End Region
@@ -53,11 +54,11 @@ Public Class TVDragWrapper
         End If
     End Sub
 
-    Public Function DragEnter(ByVal pDataObj As IntPtr, _
-                                ByVal grfKeyState As Integer, _
-                                ByVal pt As POINT, _
+    Public Function DragEnter(ByVal pDataObj As IntPtr,
+                                ByVal grfKeyState As Integer,
+                                ByVal pt As Point,
                                 ByRef pdwEffect As Integer) As Integer _
-                        Implements ExpTreeLib.ShellDll.IDropTarget.DragEnter
+                        Implements Kinovea.ExpTreeLib2.NativeMethods.IDropTarget.DragEnter
         Debug.WriteLine("In DragEnter: Effect = " & pdwEffect & " Keystate = " & grfKeyState)
         m_Original_Effect = pdwEffect
         m_DragDataObj = pDataObj
@@ -83,14 +84,14 @@ Public Class TVDragWrapper
     '    End If
     'End Sub
 
-    Public Function DragOver(ByVal grfKeyState As Integer, _
-                                ByVal pt As POINT, _
+    Public Function DragOver(ByVal grfKeyState As Integer,
+                                ByVal pt As Point,
                                 ByRef pdwEffect As Integer) As Integer _
-                        Implements ExpTreeLib.ShellDll.IDropTarget.DragOver
+                        Implements Kinovea.ExpTreeLib2.NativeMethods.IDropTarget.DragOver
         'Debug.WriteLine("In DragOver: Effect = " & pdwEffect & " Keystate = " & grfKeyState)
 
         Dim tn As Object
-        Dim ptClient As System.Drawing.Point = m_View.PointToClient(New System.Drawing.Point(pt.x, pt.y))
+        Dim ptClient As System.Drawing.Point = m_View.PointToClient(New System.Drawing.Point(pt.X, pt.Y))
         tn = CType(m_View, TreeView).GetNodeAt(ptClient)
         If IsNothing(tn) Then  'not over a TreeNode
             ResetPrevTarget()
@@ -136,7 +137,7 @@ Public Class TVDragWrapper
         Return 0
     End Function
 
-    Public Function DragLeave() As Integer Implements ExpTreeLib.ShellDll.IDropTarget.DragLeave
+    Public Function DragLeave() As Integer Implements Kinovea.ExpTreeLib2.NativeMethods.IDropTarget.DragLeave
         'Debug.WriteLine("In DragLeave")
         m_Original_Effect = 0
         ResetPrevTarget()
@@ -149,11 +150,11 @@ Public Class TVDragWrapper
         Return 0
     End Function
 
-    Public Function DragDrop(ByVal pDataObj As IntPtr, _
-                                ByVal grfKeyState As Integer, _
-                                ByVal pt As POINT, _
+    Public Function DragDrop(ByVal pDataObj As IntPtr,
+                                ByVal grfKeyState As Integer,
+                                ByVal pt As Point,
                                 ByRef pdwEffect As Integer) As Integer _
-                            Implements ExpTreeLib.ShellDll.IDropTarget.DragDrop
+                            Implements Kinovea.ExpTreeLib2.NativeMethods.IDropTarget.DragDrop
         'Debug.WriteLine("In DragDrop: Effect = " & pdwEffect & " Keystate = " & grfKeyState)
         Dim res As Integer
         If Not IsNothing(m_LastTarget) Then

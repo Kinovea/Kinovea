@@ -7,11 +7,11 @@ Imports System.Text
 Imports System.Threading
 Imports System.Windows.Forms
 Imports ExpTreeLib.CShItem
-Imports ExpTreeLib.ShellDll
 Imports ExpTreeLib.SystemImageListManager
+Imports Kinovea.ExpTreeLib2.NativeMethods
 
 
-<DefaultProperty("StartUpDirectory"), DefaultEvent("StartUpDirectoryChanged")> _
+<DefaultProperty("StartUpDirectory"), DefaultEvent("StartUpDirectoryChanged")>
 Public Class ExpTree
     Inherits System.Windows.Forms.UserControl
 
@@ -435,7 +435,7 @@ XIT:    tv1.EndUpdate()
             'We give root the desktop icon + no text.
             'we don't build tree automatically.
             Dim special As CShItem
-            special = GetCShItem(CType(Val(StartDir.Desktop), ShellDll.CSIDL))
+            special = GetCShItem(CType(Val(StartDir.Desktop), CSIDL))
             If IsNothing(m_RootDisplayName) Then
                 m_RootDisplayName = "Root"
             End If
@@ -456,7 +456,7 @@ XIT:    tv1.EndUpdate()
         Else
             ' Normal mode, add the root and expand it.
             Dim special As CShItem
-            special = GetCShItem(CType(Val(m_StartUpDirectory), ShellDll.CSIDL))
+            special = GetCShItem(CType(Val(m_StartUpDirectory), CSIDL))
             Root = New TreeNode(special.DisplayName)
             Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
             Root.SelectedImageIndex = Root.ImageIndex
