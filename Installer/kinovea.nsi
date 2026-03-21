@@ -194,7 +194,7 @@ Section ""
     WriteRegStr HKCU "Software\Kinovea" "InstallDirectory" $INSTDIR
 
     ; Create uninstaller
-    WriteUninstaller "$INSTDIR\Uninstall.exe"
+    WriteUninstaller "$INSTDIR\Uninstall-Kinovea.exe"
 
     ; Register uninstaller to Windows.
     !define AppRemovePath "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kinovea"
@@ -203,14 +203,14 @@ Section ""
     WriteRegDWORD HKLM "${AppRemovePath}" "NoModify" "1"
     WriteRegDWORD HKLM "${AppRemovePath}" "NoRepair" "1"
     WriteRegStr HKLM "${AppRemovePath}" "Publisher" "Joan Charmant"
-    WriteRegStr HKLM "${AppRemovePath}" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
+    WriteRegStr HKLM "${AppRemovePath}" "UninstallString" "$\"$INSTDIR\Uninstall-Kinovea.exe$\""
 
     ; Create shortcuts under all users.
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     SetShellVarContext all
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER\Kinovea.lnk" "$INSTDIR\Kinovea.exe"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\UninstallKinovea.lnk" "$INSTDIR\Uninstall.exe"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\UninstallKinovea.lnk" "$INSTDIR\Uninstall-Kinovea.exe"
     !insertmacro MUI_STARTMENU_WRITE_END
 
 SectionEnd
@@ -350,6 +350,14 @@ Section "Uninstall"
     Delete "$INSTDIR\SharpVectorObjectModel.dll"
     Delete "$INSTDIR\SharpVectorRenderingEngine.dll"
     Delete "$INSTDIR\SharpVectorUtil.dll"
+    Delete "$INSTDIR\SharpVectors.Converters.dll"
+    Delete "$INSTDIR\SharpVectors.Core.dll"
+    Delete "$INSTDIR\SharpVectors.Css.dll"
+    Delete "$INSTDIR\SharpVectors.Dom.dll"
+    Delete "$INSTDIR\SharpVectors.Model.dll"
+    Delete "$INSTDIR\SharpVectors.Rendering.Gdi.dll"
+    Delete "$INSTDIR\SharpVectors.Rendering.Wpf.dll"
+    Delete "$INSTDIR\SharpVectors.Runtime.Wpf.dll"
     Delete "$INSTDIR\SpreadsheetLight.dll"
     Delete "$INSTDIR\swresample-1.dll"
     Delete "$INSTDIR\swscale-3.dll"
@@ -365,7 +373,7 @@ Section "Uninstall"
     Delete "$INSTDIR\vcruntime140.dll"
     
     ; Delete the uninstaller itself.
-    Delete "$INSTDIR\Uninstall.exe"
+    Delete "$INSTDIR\Uninstall-Kinovea.exe"
     
     ; At this point the main directory should be empty. 
     ; If it's not it won't be deleted, it means there are still user files in there.
