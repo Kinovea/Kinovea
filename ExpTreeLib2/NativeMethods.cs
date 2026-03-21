@@ -423,6 +423,9 @@ namespace Kinovea.ExpTreeLib2
             [MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpszFile,
             int cch);
 
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+        public static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
+
         #endregion
 
         #region Drag/Drop Enums and Structures
