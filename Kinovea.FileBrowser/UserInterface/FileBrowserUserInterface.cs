@@ -32,7 +32,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Globalization;
 
-using ExpTreeLib;
+using Kinovea.ExpTreeLib2;
 using Kinovea.Camera;
 using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
@@ -49,8 +49,8 @@ namespace Kinovea.FileBrowser
     public partial class FileBrowserUserInterface : KinoveaControl
     {
         #region Members
-        private CShItem currentExptreeItem; // Current item in exptree tab.
-        private CShItem currentShortcutItem; // Current item in shortcuts tab.
+        private CShItem2 currentExptreeItem; // Current item in exptree tab.
+        private CShItem2 currentShortcutItem; // Current item in shortcuts tab.
         private SessionHistory sessionHistory = new SessionHistory();
         private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
@@ -375,7 +375,7 @@ namespace Kinovea.FileBrowser
             if (!Directory.Exists(pathFolder))
                 return;
 
-            CShItem item = new CShItem(pathFolder);
+            CShItem2 item = new CShItem2(pathFolder);
             sessionHistory.Add(item);
         }
 
@@ -499,7 +499,7 @@ namespace Kinovea.FileBrowser
             // Create items out of the paths and populate the tree.
             etShortcuts.SetShortcuts(new ArrayList(shortcuts));
 
-            etShortcuts.StartUpDirectory = ExpTree.StartDir.Desktop;
+            etShortcuts.StartUpDirectory = StartDir.Desktop;
         }
 
         /// <summary>
@@ -570,7 +570,7 @@ namespace Kinovea.FileBrowser
         #region File system tab
 
         #region TreeView
-        private void InitializeTreeView(ExpTree tv)
+        private void InitializeTreeView(ExpTree2 tv)
         {
             tv.AllowDrop = false;
             tv.tv1.BorderStyle = BorderStyle.None;
@@ -588,9 +588,11 @@ namespace Kinovea.FileBrowser
                     e.Handled = true;
             };
         }
-        private void FilterOutDesktopChildren(ExpTree etv)
+        private void FilterOutDesktopChildren(ExpTree2 etv)
         {
             TreeView tv = etv.tv1;
+            if (tv.Nodes.Count == 0)
+                return;
 
             // Filter list for children of Desktop.
             List<string> toFilter = new List<string>
@@ -607,7 +609,7 @@ namespace Kinovea.FileBrowser
             TreeNode rootNode = tv.Nodes[0];
             for (int i = rootNode.Nodes.Count - 1; i >= 0; i--)
             {
-                CShItem item = (CShItem)rootNode.Nodes[i].Tag;
+                CShItem2 item = (CShItem2)rootNode.Nodes[i].Tag;
                 if (item.Path == pathComputer)
                 {
                     computerNode = rootNode.Nodes[i];
@@ -646,7 +648,7 @@ namespace Kinovea.FileBrowser
             // This is raised after the node children have been added but before it is visually expanded.
             // Use this to filter out unwanted folders.
             // Zip files have already been purged (Done inside ExpTree).
-            var item = e.Node.Tag as CShItem;
+            var item = e.Node.Tag as CShItem2;
             if (item == null)
                 return;
 
@@ -660,7 +662,7 @@ namespace Kinovea.FileBrowser
             // Remove any non-drive folder under Computer.
             for (int i = e.Node.Nodes.Count - 1; i >= 0; i--)
             {
-                var childItem = e.Node.Nodes[i].Tag as CShItem;
+                var childItem = e.Node.Nodes[i].Tag as CShItem2;
                 if (childItem == null)
                     continue;
 
@@ -677,9 +679,9 @@ namespace Kinovea.FileBrowser
                 }
             }
         }
-        private void etExplorer_ExpTreeNodeSelected(string selectedPath, CShItem item)
+        private void etExplorer_ExpTreeNodeSelected(object sender, EventArgs<CShItem2> item)
         {
-            currentExptreeItem = item;
+            currentExptreeItem = item.Value;
             
             if(!expanding && !initializing)
             {
@@ -753,9 +755,9 @@ namespace Kinovea.FileBrowser
         #endregion
         
         #region TreeView
-        private void etShortcuts_ExpTreeNodeSelected(string selectedPath, CShItem item)
+        private void etShortcuts_ExpTreeNodeSelected(object sender, EventArgs<CShItem2> item)
         {
-            currentShortcutItem = item;
+            currentShortcutItem = item.Value;
             if (initializing)
                 return;
     
@@ -1092,7 +1094,7 @@ namespace Kinovea.FileBrowser
         /// Update a list view with the files from the passed folder.
         /// Optionally triggers an update of the thumbnails pane.
         /// </summary>
-        private void UpdateFileList(CShItem folder, ListView listView, bool doRefresh, bool isShortcuts)
+        private void UpdateFileList(CShItem2 folder, ListView listView, bool doRefresh, bool isShortcuts)
         {
             if (folder == null)
                 return;
@@ -1117,7 +1119,7 @@ namespace Kinovea.FileBrowser
             List<string> filenames = new List<string>();
             foreach(object item in fileList)
             {
-                CShItem shellItem = item as CShItem; 
+                CShItem2 shellItem = item as CShItem2; 
                 if(shellItem == null)
                     continue;
                 
@@ -1299,7 +1301,7 @@ namespace Kinovea.FileBrowser
         #region Menu Event Handlers
         private void mnuAddToShortcuts_Click(object sender, EventArgs e)
         {
-            CShItem itemToAdd = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem; 
+            CShItem2 itemToAdd = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem; 
             if(itemToAdd == null || itemToAdd.Path.StartsWith("::"))
                 return;
             
@@ -1309,7 +1311,7 @@ namespace Kinovea.FileBrowser
         }
         private void mnuLocateFolder_Click(object sender, EventArgs e)
         {
-            CShItem item = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem;
+            CShItem2 item = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem;
             if (item == null || string.IsNullOrEmpty(item.Path) || item.Path.StartsWith("::"))
                 return;
 
@@ -1346,7 +1348,7 @@ namespace Kinovea.FileBrowser
             fileWatcher.Renamed += fileWatcher_Renamed;
         }
 
-        private void UpdateFileWatcher(CShItem folder)
+        private void UpdateFileWatcher(CShItem2 folder)
         {
             fileWatcher.EnableRaisingEvents = false;
 

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ExpTreeLib;
+using Kinovea.ExpTreeLib2;
 
 namespace Kinovea.FileBrowser
 {
@@ -16,7 +16,7 @@ namespace Kinovea.FileBrowser
         /// <summary>
         /// Get the current folder.
         /// </summary>
-        public CShItem Current
+        public CShItem2 Current
         {
             get 
             {
@@ -39,7 +39,7 @@ namespace Kinovea.FileBrowser
             set { navigating = value; }
         }
 
-        private List<CShItem> history = new List<CShItem>();
+        private List<CShItem2> history = new List<CShItem2>();
         private int index = -1;
         private bool navigating;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -47,7 +47,7 @@ namespace Kinovea.FileBrowser
         /// <summary>
         /// Add new path and delete forward history.
         /// </summary>
-        public void Add(CShItem item)
+        public void Add(CShItem2 item)
         {
             if (navigating)
                 return;

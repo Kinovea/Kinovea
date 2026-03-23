@@ -33,14 +33,14 @@ namespace Kinovea.FileBrowser
       this.tabControl = new System.Windows.Forms.TabControl();
       this.tabPageClassic = new System.Windows.Forms.TabPage();
       this.splitExplorerFiles = new System.Windows.Forms.SplitContainer();
-      this.etExplorer = new ExpTreeLib.ExpTree();
+      this.etExplorer = new Kinovea.ExpTreeLib2.ExpTree2();
       this.lblFolders = new System.Windows.Forms.Label();
       this.lvExplorer = new System.Windows.Forms.ListView();
       this.imgListFiles = new System.Windows.Forms.ImageList(this.components);
       this.lblVideoFiles = new System.Windows.Forms.Label();
       this.tabPageShortcuts = new System.Windows.Forms.TabPage();
       this.splitShortcutsFiles = new System.Windows.Forms.SplitContainer();
-      this.etShortcuts = new ExpTreeLib.ExpTree();
+      this.etShortcuts = new Kinovea.ExpTreeLib2.ExpTree2();
       this.btnDeleteShortcut = new System.Windows.Forms.Button();
       this.btnAddShortcut = new System.Windows.Forms.Button();
       this.lblFavFolders = new System.Windows.Forms.Label();
@@ -130,7 +130,7 @@ namespace Kinovea.FileBrowser
       this.etExplorer.ShowRootLines = false;
       this.etExplorer.Size = new System.Drawing.Size(299, 267);
       this.etExplorer.TabIndex = 0;
-      this.etExplorer.ExpTreeNodeSelected += new ExpTreeLib.ExpTree.ExpTreeNodeSelectedEventHandler(this.etExplorer_ExpTreeNodeSelected);
+      this.etExplorer.ExpTreeNodeSelected += etExplorer_ExpTreeNodeSelected;
       this.etExplorer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.etExplorer_MouseDown);
       this.etExplorer.MouseEnter += new System.EventHandler(this.etExplorer_MouseEnter);
       // 
@@ -242,9 +242,9 @@ namespace Kinovea.FileBrowser
       this.etShortcuts.ShowHiddenFolders = false;
       this.etShortcuts.ShowRootLines = false;
       this.etShortcuts.Size = new System.Drawing.Size(305, 272);
-      this.etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Favorites;
+      this.etShortcuts.StartUpDirectory = Kinovea.ExpTreeLib2.StartDir.Favorites;
       this.etShortcuts.TabIndex = 13;
-      this.etShortcuts.ExpTreeNodeSelected += new ExpTreeLib.ExpTree.ExpTreeNodeSelectedEventHandler(this.etShortcuts_ExpTreeNodeSelected);
+      this.etShortcuts.ExpTreeNodeSelected += etShortcuts_ExpTreeNodeSelected;
       this.etShortcuts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.etShortcuts_MouseDown);
       this.etShortcuts.MouseEnter += new System.EventHandler(this.etShortcuts_MouseEnter);
       // 
@@ -493,12 +493,12 @@ namespace Kinovea.FileBrowser
         private System.Windows.Forms.ImageList imgListFiles;
         private System.Windows.Forms.SplitContainer splitShortcutsFiles;
         private System.Windows.Forms.SplitContainer splitExplorerFiles;
-        private ExpTreeLib.ExpTree etShortcuts;
+        private Kinovea.ExpTreeLib2.ExpTree2 etShortcuts;
         private System.Windows.Forms.ToolTip ttTabs;
         private System.Windows.Forms.ImageList imgListTabs;
         private System.Windows.Forms.Button btnDeleteShortcut;
         private System.Windows.Forms.Button btnAddShortcut;
-        private ExpTreeLib.ExpTree etExplorer;
+        private Kinovea.ExpTreeLib2.ExpTree2 etExplorer;
         public System.Windows.Forms.TabPage tabPageShortcuts;
         public System.Windows.Forms.Label lblFavFiles;
         public System.Windows.Forms.Label lblFavFolders;
