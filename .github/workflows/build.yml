@@ -2,7 +2,7 @@ name: Build Kinovea
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "explorer" ]
   pull_request:
     branches: [ "master" ]
 
@@ -33,7 +33,7 @@ jobs:
 
     - name: Create Portable AppData Folder
       shell: cmd
-      run: mkdir Kinovea\bin\x64\Release\AppData
+      run: mkdir "Kinovea\bin\x64\Release\AppData"
         
     - name: Upload Portable
       id: upload-portable
@@ -44,7 +44,7 @@ jobs:
         
     - name: Remove Portable AppData Folder
       shell: cmd
-      run: rmdir Kinovea\bin\x64\Release\AppData
+      run: rmdir "Kinovea\bin\x64\Release\AppData"
     
     - name: Install NSIS
       uses: repolevedavaj/install-nsis@v1.1.0
