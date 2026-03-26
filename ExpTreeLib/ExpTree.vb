@@ -40,6 +40,10 @@ Public Class ExpTree
 
     Private m_bManualCollapse As Boolean = False
 
+    Private m_Stopwatch As New Stopwatch()
+
+    Private Shared ReadOnly log As log4net.ILog = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType)
+
 #Region " Windows Form Designer generated code "
 
     Public Sub New()
@@ -354,6 +358,9 @@ Public Class ExpTree
     End Function
 
     Public Function ExpandANode(ByVal newItem As CShItem) As Boolean
+
+        log.Debug("Expanding node: " & newItem.Path)
+
         ExpandANode = False     'assume failure
         Dim baseNode As TreeNode = Root
         tv1.BeginUpdate()
@@ -363,23 +370,47 @@ Public Class ExpTree
         Dim lim As Integer = CShItem.PidlCount(newItem.PIDL) - CShItem.PidlCount(baseNode.Tag.pidl)
         'TODO: Test ExpandARow again on XP to ensure that the CP problem ix fixed
         Do While lim > 0
+
+            'm_Stopwatch.Restart()
+
+            log.DebugFormat("Looking for ancestor node at level {0} (PIDL count {1})", CShItem.PidlCount(baseNode.Tag.pidl) + 1, CShItem.PidlCount(newItem.PIDL))
+
             For Each testNode In baseNode.Nodes
+
+                log.DebugFormat("Testing node: {0} (PIDL count {1})", testNode.Tag.DisplayName, CShItem.PidlCount(testNode.Tag.PIDL))
+
                 If CShItem.IsAncestorOf(testNode.Tag, newItem, False) Then
+
+                    log.DebugFormat("Found ancestor node: {0} (PIDL count {1})", testNode.Tag.DisplayName, CShItem.PidlCount(testNode.Tag.PIDL))
+
                     baseNode = testNode
                     RefreshNode(baseNode)   'ensure up-to-date
+
+                    log.DebugFormat("Node refreshed: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
+                    'log.DebugFormat("Node refreshed: {0} (PIDL count {1}), time taken: {2} ms", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL), m_Stopwatch.ElapsedMilliseconds)
 
                     ' Kinovea: raise an event to allow filtering.
                     Dim args As New TreeViewEventArgs(baseNode, TreeViewAction.Expand)
                     RaiseEvent TreeViewBeforeExpand(Me, args)
 
+                    log.DebugFormat("After event raised.")
+
+
                     baseNode.Expand()
+
+                    log.DebugFormat("Node expanded: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
+
                     lim -= 1
                     GoTo NEXLEV
                 End If
             Next
+
             GoTo XIT     'on falling thru For, we can't find it, so get out
 NEXLEV: Loop
         'after falling thru here, we have found & expanded the node
+
+        log.DebugFormat("Node expanded: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
+
         Me.tv1.HideSelection = False
         Me.Select()
         Me.tv1.SelectedNode = baseNode
@@ -504,6 +535,7 @@ XIT:    tv1.EndUpdate()
         newNode.Tag = item
         newNode.ImageIndex = SystemImageListManager.GetIconIndex(item, False)
         newNode.SelectedImageIndex = SystemImageListManager.GetIconIndex(item, True)
+
         'The following code, from Calum implements the following logic
         ' Allow/disallow the showing of Hidden folders based on ShowHidden Propert
         ' For Removable disks, always show + (allow expansion) - avoids floppy access
@@ -619,6 +651,9 @@ XIT:    tv1.EndUpdate()
             'Do not get directories.	
         Else
             'Debug.WriteLine("In RefreshNode: Node = " & thisRoot.Tag.path & " -- " & thisRoot.Tag.displayname)
+
+            log.DebugFormat("Refreshing node: {0} (PIDL count {1}) --------------------", thisRoot.Tag.DisplayName, CShItem.PidlCount(thisRoot.Tag.PIDL))
+
             If Not (thisRoot.Nodes.Count = 1 AndAlso thisRoot.Nodes(0).Text.Equals(" : ")) Then
                 Dim thisItem As CShItem = thisRoot.Tag
                 If thisItem.RefreshDirectories Then   'RefreshDirectories True = the contained list of Directories has changed
@@ -635,13 +670,22 @@ XIT:    tv1.EndUpdate()
                         Next
                         'fall thru = node no longer here
                         delNodes.Add(node)
+                        log.DebugFormat("Node to delete: {0} (PIDL count {1})", node.Tag.DisplayName, CShItem.PidlCount(node.Tag.PIDL))
 NXTOLD:             Next
+
                     If delNodes.Count + curDirs.Count > 0 Then  'had changes
+
+                        log.DebugFormat("Node {0} has changed: {1} nodes to delete, {2} nodes to add", thisRoot.Tag.DisplayName, delNodes.Count, curDirs.Count)
+                        m_Stopwatch.Restart()
+
                         Try
                             tv1.BeginUpdate()
                             For Each node In delNodes 'dir not here anymore, delete node
                                 thisRoot.Nodes.Remove(node)
                             Next
+
+                            log.DebugFormat("Deleted nodes: {0}, time: {1} ms", delNodes.Count, m_Stopwatch.ElapsedMilliseconds)
+
                             'any CShItems remaining in curDirs is a new dir under thisRoot
                             Dim csi As CShItem
                             For Each csi In curDirs
@@ -649,6 +693,9 @@ NXTOLD:             Next
                                     thisRoot.Nodes.Add(MakeNode(csi))
                                 End If
                             Next
+
+                            log.DebugFormat("Added nodes: {0}, time: {1} ms", curDirs.Count, m_Stopwatch.ElapsedMilliseconds)
+
                             'we only need to resort if we added
                             'sort is based on CShItem in .Tag
                             If curDirs.Count > 0 Then
@@ -658,6 +705,10 @@ NXTOLD:             Next
                                 thisRoot.Nodes.Clear()
                                 thisRoot.Nodes.AddRange(tmpA)
                             End If
+
+                            log.DebugFormat("Sorted nodes: {0}, time: {1} ms", thisRoot.Nodes.Count, m_Stopwatch.ElapsedMilliseconds)
+
+
                         Catch ex As Exception
                             Debug.WriteLine("Error in RefreshNode -- " & ex.ToString _
                                             & vbCrLf & ex.StackTrace)

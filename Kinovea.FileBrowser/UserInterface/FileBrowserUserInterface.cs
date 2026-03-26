@@ -90,6 +90,7 @@ namespace Kinovea.FileBrowser
 
         private static string pathDesktop = "::{00021400-0000-0000-c000-000000000046}";
         private static string pathComputer = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
+        private static readonly bool filtering = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -590,6 +591,9 @@ namespace Kinovea.FileBrowser
         }
         private void FilterOutDesktopChildren(ExpTree etv)
         {
+            if (!filtering)
+                return;
+
             TreeView tv = etv.tv1;
 
             // Filter list for children of Desktop.
@@ -646,6 +650,9 @@ namespace Kinovea.FileBrowser
             // This is raised after the node children have been added but before it is visually expanded.
             // Use this to filter out unwanted folders.
             // Zip files have already been purged (Done inside ExpTree).
+            if (!filtering)
+                return;
+
             var item = e.Node.Tag as CShItem;
             if (item == null)
                 return;
@@ -758,7 +765,7 @@ namespace Kinovea.FileBrowser
             currentShortcutItem = item;
             if (initializing)
                 return;
-    
+
             // The operation that will trigger the thumbnail refresh MUST only be called at the end. 
             // Otherwise the other threads take precedence and the thumbnails are not 
             // shown progressively but all at once, when other operations are over.
@@ -766,18 +773,25 @@ namespace Kinovea.FileBrowser
             if (currentExptreeItem == null || currentExptreeItem.Path != currentShortcutItem.Path)
             {
                 // Maintain synchronization with the explorer tree but don't refresh.
+                log.DebugFormat("Shortcut selection: Before updating file list of filesystem tab");
                 UpdateFileList(currentShortcutItem, lvExplorer, false, false);
-                
+                log.DebugFormat("Shortcut selection: After updating file list of filesystem tab");
+
+                stopwatch.Restart();
                 expanding = true;
                 etExplorer.ExpandANode(currentShortcutItem);
+                log.DebugFormat("Shortcut selection: Time to expand explorer tree: {0} ms", stopwatch.ElapsedMilliseconds);
                 etExplorer.tv1.SelectedNode?.EnsureVisible();
+                log.DebugFormat("Shortcut selection: Time to ensure visible: {0} ms", stopwatch.ElapsedMilliseconds);
                 expanding = false;
 
                 currentExptreeItem = etExplorer.SelectedItem;
             }
 
             // Finally update the shortcuts tab, and refresh thumbs.
+            log.DebugFormat("Shortcut selection: Before updating file list of shortcuts tab");
             UpdateFileList(currentShortcutItem, lvShortcuts, true, true);
+            log.DebugFormat("Shortcut selection: After updating file list of shortcuts tab");
         }
         private void etShortcuts_MouseEnter(object sender, EventArgs e)
         {
@@ -1097,7 +1111,8 @@ namespace Kinovea.FileBrowser
             if (folder == null)
                 return;
 
-            log.Debug("Updating the file list.");
+            string logPrefix = isShortcuts ? "Shortcuts" : "Filesystem";
+            log.DebugFormat("[{0}] - Updating the file list.", logPrefix);
             stopwatch.Restart();
 
             this.Cursor = Cursors.WaitCursor;
@@ -1137,7 +1152,7 @@ namespace Kinovea.FileBrowser
                 }
             }
 
-            log.DebugFormat("Collected list of supported files: {0} ms.", stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("[{0}] - Collected list of supported files: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
             // Sort the files.
             try
@@ -1152,7 +1167,7 @@ namespace Kinovea.FileBrowser
                 log.ErrorFormat("An error happened while trying to sort files : {0}", e.Message);
             }
 
-            log.DebugFormat("Sorted files: {0} ms.", stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("[{0}] - Sorted files: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
             // Push them to the list view.
             foreach (string filename in filenames)
@@ -1165,7 +1180,7 @@ namespace Kinovea.FileBrowser
             
             listView.EndUpdate();
 
-            log.DebugFormat("Updated list view: {0} ms.", stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("[{0}] - Updated list view: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
             UpdateFileWatcher(folder);
 
@@ -1180,13 +1195,13 @@ namespace Kinovea.FileBrowser
             if (!folder.IsFileSystem)
                 folderPath = folder.DisplayName;
 
-            log.DebugFormat("Before sending event to thumbnail viewer: {0} ms.", stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("[{0}] - Before sending event to thumbnail viewer: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
             NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, filenames, isShortcuts, doRefresh);
             NotificationCenter.RaiseUpdateStatus();
             this.Cursor = Cursors.Default;
 
-            log.DebugFormat("Updated file list: {0} ms.", stopwatch.ElapsedMilliseconds);
+            log.DebugFormat("[{0}] - Updated file list: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
         }
 
         /// <summary>
