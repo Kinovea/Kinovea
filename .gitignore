@@ -382,3 +382,4 @@ Installer/build-*.txt
 /Kinovea/sign.bat
 /Refs/ExpTreeLib/ExpTreeLib.xml
 /Tools/explorer-harness/videos/*
+/Tools/explorer-harness/*.mp4
