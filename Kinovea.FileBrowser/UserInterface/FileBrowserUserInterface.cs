@@ -106,7 +106,8 @@ namespace Kinovea.FileBrowser
             InitializeTreeView(etExplorer);
             InitializeTreeView(etShortcuts);
             etExplorer.TreeViewBeforeExpand += etExplorer_TreeViewBeforeExpand;
-            FilterOutDesktopChildren(etExplorer);
+            etExplorer.RebuildFromRoot();
+            //FilterOutDesktopChildren(etExplorer);
 
             PrepareCameraListView();
             BuildContextMenu();
@@ -458,7 +459,8 @@ namespace Kinovea.FileBrowser
             lblFavFolders.Text = lblFolders.Text;
             lblFavFiles.Text = lblVideoFiles.Text;
             etShortcuts.RootDisplayName = FileBrowserLang.tabShortcuts;
-            
+            etShortcuts.tv1.Refresh();
+
             tabPageCameras.Text = "";
             label1.Text = FileBrowserLang.lblCameras;
             btnManual.Text = FileBrowserLang.FormCameraWizard_Title;
@@ -500,7 +502,9 @@ namespace Kinovea.FileBrowser
             // Create items out of the paths and populate the tree.
             etShortcuts.SetShortcuts(new ArrayList(shortcuts));
 
-            etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Desktop;
+            // This causes the tree view to be rebuilt at the root and expanded.
+            // See OnStartUpDirectoryChanged() in ExpTree.
+            etShortcuts.RebuildFromRoot();
         }
 
         /// <summary>

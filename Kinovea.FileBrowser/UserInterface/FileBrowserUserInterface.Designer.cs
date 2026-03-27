@@ -125,7 +125,6 @@ namespace Kinovea.FileBrowser
       this.etExplorer.Cursor = System.Windows.Forms.Cursors.Default;
       this.etExplorer.Location = new System.Drawing.Point(3, 31);
       this.etExplorer.Name = "etExplorer";
-      this.etExplorer.RootDisplayName = "Bureau";
       this.etExplorer.ShowHiddenFolders = false;
       this.etExplorer.ShowRootLines = false;
       this.etExplorer.Size = new System.Drawing.Size(299, 267);
@@ -237,12 +236,10 @@ namespace Kinovea.FileBrowser
       this.etShortcuts.Cursor = System.Windows.Forms.Cursors.Default;
       this.etShortcuts.Location = new System.Drawing.Point(0, 34);
       this.etShortcuts.Name = "etShortcuts";
-      this.etShortcuts.RootDisplayName = "Root";
       this.etShortcuts.ShortcutsMode = true;
       this.etShortcuts.ShowHiddenFolders = false;
       this.etShortcuts.ShowRootLines = false;
       this.etShortcuts.Size = new System.Drawing.Size(305, 272);
-      this.etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Favorites;
       this.etShortcuts.TabIndex = 13;
       this.etShortcuts.ExpTreeNodeSelected += new ExpTreeLib.ExpTree.ExpTreeNodeSelectedEventHandler(this.etShortcuts_ExpTreeNodeSelected);
       this.etShortcuts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.etShortcuts_MouseDown);

@@ -54,15 +54,10 @@ Public Class ExpTree
 
         'Add any initialization after the InitializeComponent() call
 
-
         'setting the imagelist here allows many good things to happen, but
         ' also one bad thing -- the "tooltip" like display of selectednode.text
         ' is made invisible.  This remains a problem to be solved.
         SystemImageListManager.SetTreeViewImageList(tv1, False)
-
-        AddHandler StartUpDirectoryChanged, AddressOf OnStartUpDirectoryChanged
-
-        OnStartUpDirectoryChanged(m_StartUpDirectory)
 
         If tv1.IsHandleCreated Then
             If Me.AllowDrop Then
@@ -152,6 +147,7 @@ Public Class ExpTree
                 Root.SelectedImageIndex = Root.ImageIndex
                 Root.Tag = Value
                 tv1.Nodes.Add(Root)
+
                 Root.Expand()
                 tv1.SelectedNode = Root
             End If
@@ -239,29 +235,11 @@ Public Class ExpTree
         Special = &HFF
     End Enum
 
-    Private m_StartUpDirectory As StartDir = StartDir.Desktop
-
-    <Category("Options"),
-     Description("Sets the Initial Directory of the Tree"),
-     DefaultValue(StartDir.Desktop), Browsable(True)>
-    Public Property StartUpDirectory() As StartDir
-        Get
-            Return m_StartUpDirectory
-        End Get
-        Set(ByVal Value As StartDir)
-            If Array.IndexOf([Enum].GetValues(Value.GetType), Value) >= 0 Then
-                m_StartUpDirectory = Value
-                RaiseEvent StartUpDirectoryChanged(Value)
-            Else
-                Throw New ApplicationException("Invalid Initial StartUpDirectory")
-            End If
-        End Set
-    End Property
 #End Region
 
 #Region "       ShortcutMode"
     <Category("Options"),
-      Description("The firt level of nodes is set up manually."),
+      Description("The first level of nodes is set up manually."),
       DefaultValue(False), Browsable(True)>
     Public Property ShortcutsMode() As Boolean
         Get
@@ -283,8 +261,12 @@ Public Class ExpTree
             Return Root.Text
         End Get
         Set(ByVal Value As String)
-            Root.Text = Value
-            tv1.Refresh()
+            If Root Is Nothing Then
+                m_RootDisplayName = Value
+                Return
+            End If
+            'Root.Text = Value
+            'tv1.Refresh()
         End Set
     End Property
 #End Region
@@ -450,54 +432,54 @@ XIT:    tv1.EndUpdate()
     End Sub
 #End Region
 
-#End Region
+#Region "   RebuildFromRoot"
 
-#Region "   Initial Dir Set Handler"
-
-    Private Sub OnStartUpDirectoryChanged(ByVal newVal As StartDir)
+    Public Sub RebuildFromRoot()
         If Not IsNothing(Root) Then
             ClearTree()
         End If
 
-        If m_bShortcutsMode Then
-            ' Special mode for shortcuts, 
-            ' add root, then each shortcut as child node and expand them.
+        ' Always start at the desktop.
+        Dim rootItem As CShItem
+        rootItem = GetCShItem(CType(Val(StartDir.Desktop), ShellDll.CSIDL))
 
-            'We give root the desktop icon + no text.
-            'we don't build tree automatically.
-            Dim special As CShItem
-            special = GetCShItem(CType(Val(StartDir.Desktop), ShellDll.CSIDL))
+        If m_bShortcutsMode Then
+            ' Shortcuts mode: add the desktop as the root but don't build its children,
+            ' instead the children are from user shortcuts + current directory.
+            ' Give root the desktop icon + no text.
             If IsNothing(m_RootDisplayName) Then
                 m_RootDisplayName = "Root"
             End If
-            Root = New TreeNode(m_RootDisplayName)
-            Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
-            Root.SelectedImageIndex = Root.ImageIndex
-            Root.Tag = special
 
-            'Build tree (no sort)
+            Root = New TreeNode(m_RootDisplayName)
+            Root.ImageIndex = SystemImageListManager.GetIconIndex(rootItem, False)
+            Root.SelectedImageIndex = Root.ImageIndex
+            Root.Tag = rootItem
+
+            log.DebugFormat("Shortcuts tree view: building tree")
+            log.DebugFormat("{0} shortcuts to add.", m_shortcuts.Count)
+
+            ' Add the shortcuts as direct children of the root.
             Dim CSI As CShItem
             For Each CSI In m_shortcuts
                 Root.Nodes.Add(MakeNode(CSI))
             Next
 
-            tv1.Nodes.Add(Root)
-            Root.Expand()
-
         Else
-            ' Normal mode, add the root and expand it.
-            Dim special As CShItem
-            special = GetCShItem(CType(Val(m_StartUpDirectory), ShellDll.CSIDL))
-            Root = New TreeNode(special.DisplayName)
-            Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
+            ' File system mode: build the tree under the startup dir.
+            Root = New TreeNode(rootItem.DisplayName)
+            Root.ImageIndex = SystemImageListManager.GetIconIndex(rootItem, False)
             Root.SelectedImageIndex = Root.ImageIndex
-            Root.Tag = special
-            BuildTree(special.GetDirectories())
+            Root.Tag = rootItem
 
-            tv1.Nodes.Add(Root)
-            Root.Expand()
+            log.Debug("Before BuildTree from OnStartUpDirectoryChanged")
+            BuildTree(rootItem.GetDirectories())
 
         End If
+
+        tv1.Nodes.Add(Root)
+        Root.Expand()
+
     End Sub
 
     Private Sub BuildTree(ByVal L1 As ArrayList)
@@ -552,6 +534,7 @@ XIT:    tv1.EndUpdate()
             newNode.Nodes.Add(New TreeNode(" : "))  'Added Code
             'End Calum's change
         End If
+
         Return newNode
     End Function
 
@@ -559,6 +542,8 @@ XIT:    tv1.EndUpdate()
         tv1.Nodes.Clear()
         Root = Nothing
     End Sub
+#End Region
+
 #End Region
 
 #Region "   TreeView BeforeExpand Event"
@@ -591,12 +576,13 @@ XIT:    tv1.EndUpdate()
         Else    'Ensure content is accurate
             RefreshNode(e.Node)
         End If
+
         Cursor = oldCursor
 
         ' Kinovea: raise an event to allow filtering.
         ' Convert the TreeViewCancelEventArgs to TreeViewEventArgs
-        Dim args As New TreeViewEventArgs(e.Node, TreeViewAction.Expand)
-        RaiseEvent TreeViewBeforeExpand(sender, args)
+        'Dim args As New TreeViewEventArgs(e.Node, TreeViewAction.Expand)
+        'RaiseEvent TreeViewBeforeExpand(sender, args)
 
     End Sub
 #End Region
