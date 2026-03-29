@@ -1174,4 +1174,16 @@
   <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
     <value>Önceki bölümün sonunu bu kareye taşıyın</value>
   </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>Çıkış {0}</value>
+  </data>
+  <data name="mnuExport_Document" xml:space="preserve">
+    <value>Belgeyi dışa aktar</value>
+  </data>
+  <data name="mnuExport_Image" xml:space="preserve">
+    <value>Görüntüleri dışa aktar</value>
+  </data>
+  <data name="mnuExport_Images_Image" xml:space="preserve">
+    <value>Görüntü…</value>
+  </data>
 </root>
