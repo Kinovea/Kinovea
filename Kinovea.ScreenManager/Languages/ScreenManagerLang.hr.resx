@@ -1235,7 +1235,7 @@
     <value>Pomakni početak trenutnog vremenskog segmenta na ovaj kadar</value>
   </data>
   <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
-    <value>Interaktivna putanja</value>
+    <value>Interaktivno praćenje</value>
   </data>
   <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
     <value>Oznake</value>
@@ -1250,7 +1250,7 @@
     <value>Prikaži rešetku</value>
   </data>
   <data name="mnuOptions_Trajectory_ShowTrackLabel" xml:space="preserve">
-    <value>Prikaži oznaku trake</value>
+    <value>Prikaži oznaku praćenja</value>
   </data>
   <data name="dlgCalibratePlane_AveragePixelSize" xml:space="preserve">
     <value>Prosječna veličina piksela: {0}.</value>
@@ -1424,7 +1424,7 @@
     <value>Pokreni procjenu kretanja kamere</value>
   </data>
   <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
-    <value>Prikaži snimke</value>
+    <value>Prikaži praćenja</value>
   </data>
   <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
     <value>Veličina mustre:</value>
@@ -1463,7 +1463,7 @@
     <value>Prikaži točke</value>
   </data>
   <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
-    <value>Izradi snimke</value>
+    <value>Izradi praćenja</value>
   </data>
   <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
     <value>Prikaži polje kretanja</value>
@@ -1607,10 +1607,10 @@
     <value>Ponovo učitaj zadane bilješke za player</value>
   </data>
   <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
-    <value>Izbriši snimke nakon ove točke</value>
+    <value>Izbriši krajeve praćenja</value>
   </data>
   <data name="tracking_DeleteTracks" xml:space="preserve">
-    <value>Izbriši snimke</value>
+    <value>Izbriši praćenja</value>
   </data>
   <data name="mnuConfigureCaptureFolders" xml:space="preserve">
     <value>Konfiguriraj mape za snimanje</value>
@@ -1704,5 +1704,41 @@
   </data>
   <data name="tooltip_ViewIsDelayed" xml:space="preserve">
     <value>Prikaz kasni</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>Izbriši kraj praćenja</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>Prethodna ključna slika</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>Sljedeća ključna slika</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>Prikaži sve ključne slike</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>Snimi kontekst</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>Deaktiviraj snimanje konteksta</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>Aktiviraj snimanje konteksta</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>Pokretač za snimanje je aktiviran</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>Pokretač za snimanje je deaktiviran</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>Odaberi mapu za snimke</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>Učitaj:{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>Izgubljeno:{0}</value>
   </data>
 </root>
