@@ -1408,4 +1408,7 @@
   <data name="variable_Minutes" xml:space="preserve">
     <value>分鐘</value>
   </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>設定擷取資料夾</value>
+  </data>
 </root>
