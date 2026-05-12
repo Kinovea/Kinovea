@@ -130,4 +130,13 @@
   <data name="mnuSortBy_Descending" xml:space="preserve">
     <value>降冪</value>
   </data>
+  <data name="mnuRemoveFromShortcuts" xml:space="preserve">
+    <value>從捷徑中移除</value>
+  </data>
+  <data name="navPane_FileSystem" xml:space="preserve">
+    <value>檔案系統</value>
+  </data>
+  <data name="tabCameras" xml:space="preserve">
+    <value>相機</value>
+  </data>
 </root>
