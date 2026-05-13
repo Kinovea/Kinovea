@@ -622,4 +622,37 @@
   <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
     <value>Izvezene bilješke</value>
   </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>Snimi: {0}</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>Mape snimki</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>Detalji mape snimki</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>Ukloni mapu snimki s popisa</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>Dodaj novu mapu snimki</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Pokretač</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>Aktiviraj UDP pokretač</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Standardno stanje pokretača:</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Aktivno</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Neaktivno</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Aktiviraj zaglađivanje derivata za brze snimke</value>
+  </data>
 </root>
