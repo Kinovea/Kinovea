@@ -134,7 +134,7 @@
     <value>Bộ nhớ</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
-    <value>Bộ nhớ cấp phát cho các bộ đặm trễ: {0} MB.</value>
+    <value></value>
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Bỏ qua cảnh báo ghi đè tệp</value>
@@ -203,7 +203,7 @@
     <value>Ngôn ngữ:</value>
   </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
-    <value>Bộ nhớ vùng nế cấp phát cho mắt hình phát lại: {0} MB.</value>
+    <value></value>
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Đơn vị</value>
