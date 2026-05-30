@@ -35,12 +35,6 @@ Public Class CShItem
     'We can avoid an extra SHGetFileInfo call once this is set up
     Private Shared OpenFolderIconIndex As Integer = -1
 
-    ' It is also useful to know if the OS is XP or above.
-    ' Set up in Sub New() to avoid multiple calls to find this info
-    Private Shared XPorAbove As Boolean
-    ' Likewise if OS is Win2K or Above
-    Private Shared Win2KOrAbove As Boolean
-
     ' DragDrop, possibly among others, needs to know the Path of
     ' the DeskTopDirectory in addition to the Desktop itself
     ' Also need the actual CShItem for the DeskTopDirectory, so get it
@@ -219,9 +213,6 @@ Public Class CShItem
         m_strSystemFolder = shfi.szTypeName
         m_strMyComputer = shfi.szDisplayName
         Marshal.FreeCoTaskMem(tmpPidl)
-        'set OS version info
-        XPorAbove = ShellDll.IsXpOrAbove()
-        Win2KOrAbove = ShellDll.Is2KOrAbove
 
         'With That done, now set up Desktop CShItem
         m_Path = "::{" & DesktopGUID.ToString & "}"
@@ -230,9 +221,9 @@ Public Class CShItem
         m_IsBrowsable = False
         HR = SHGetDesktopFolder(m_Folder)
         m_Pidl = GetSpecialFolderLocation(IntPtr.Zero, CSIDL.DESKTOP)
-        dwflag = SHGFI.DISPLAYNAME Or _
-                 SHGFI.TYPENAME Or _
-                 SHGFI.SYSICONINDEX Or _
+        dwflag = SHGFI.DISPLAYNAME Or
+                 SHGFI.TYPENAME Or
+                 SHGFI.SYSICONINDEX Or
                  SHGFI.PIDL
         dwAttr = 0
         Dim H As IntPtr = SHGetFileInfo(m_Pidl, dwAttr, shfi, cbFileInfo, dwflag)
@@ -248,11 +239,11 @@ Public Class CShItem
         'also get local name for "My Documents"
         Dim pchEaten As Integer
         tmpPidl = IntPtr.Zero
-        HR = m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}", _
+        HR = m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
                  pchEaten, tmpPidl, Nothing)
         shfi = New SHFILEINFO()
-        dwflag = SHGFI.DISPLAYNAME Or _
-                                SHGFI.TYPENAME Or _
+        dwflag = SHGFI.DISPLAYNAME Or
+                                SHGFI.TYPENAME Or
                                 SHGFI.PIDL
         dwAttr = 0
         SHGetFileInfo(tmpPidl, dwAttr, shfi, cbFileInfo, dwflag)
@@ -279,7 +270,7 @@ Public Class CShItem
         Dim HR As Integer
         If ID = CSIDL.MYDOCUMENTS Then
             Dim pchEaten As Integer
-            HR = DesktopBase.m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}", _
+            HR = DesktopBase.m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
                      pchEaten, m_Pidl, Nothing)
         Else
             HR = SHGetSpecialFolderLocation(0, ID, m_Pidl)
@@ -385,14 +376,14 @@ Public Class CShItem
         If m_IsFolder Then
             Dim HR As Integer
             HR = pParent.BindToObject(ipItem, IntPtr.Zero, IID_IShellFolder, m_Folder)
-#If Debug Then
+#If DEBUG Then
             If HR <> NOERROR Then
                 Marshal.ThrowExceptionForHR(HR)
             End If
 #End If
         End If
 XIT:    'On any kind of exit, free the allocated memory
-#If Debug Then
+#If DEBUG Then
         If m_Pidl.Equals(IntPtr.Zero) Then
             Debug.WriteLine("CShItem.New(FoldBytes,ItemBytes) Failed")
         Else
@@ -526,7 +517,7 @@ XIT:    'On any kind of exit, free the allocated memory
         If HR = NOERROR Then
             m_Path = buf.ToString
             'check for zip file = folder on xp, leave it a file
-            If m_IsFolder AndAlso m_IsFileSystem AndAlso XPorAbove Then
+            If m_IsFolder AndAlso m_IsFileSystem Then
                 'Note:meaning of SFGAO.STREAM changed between win2k and winXP
                 'Version 20 code
                 'If File.Exists(m_Path) Then
@@ -584,7 +575,7 @@ XIT:    'On any kind of exit, free the allocated memory
         Dim tmpPidl As IntPtr
         If ID = CSIDL.MYDOCUMENTS Then
             Dim pchEaten As Integer
-            HR = GetDeskTop.Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}", _
+            HR = GetDeskTop.Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
                      pchEaten, tmpPidl, Nothing)
         Else
             HR = SHGetSpecialFolderLocation(0, ID, tmpPidl)
@@ -857,8 +848,8 @@ XIT:    'On any kind of exit, free the allocated memory
     Private Sub SetDispType()
         'Get Displayname, TypeName
         Dim shfi As New SHFILEINFO()
-        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or _
-                                SHGFI.TYPENAME Or _
+        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or
+                                SHGFI.TYPENAME Or
                                 SHGFI.PIDL
         Dim dwAttr As Integer = 0
         If m_IsFileSystem And Not m_IsFolder Then
@@ -908,7 +899,7 @@ XIT:    'On any kind of exit, free the allocated memory
             If m_IconIndexNormal < 0 Then
                 If Not m_HasDispType Then SetDispType()
                 Dim shfi As New SHFILEINFO()
-                Dim dwflag As Integer = SHGFI.PIDL Or _
+                Dim dwflag As Integer = SHGFI.PIDL Or
                                         SHGFI.SYSICONINDEX
                 Dim dwAttr As Integer = 0
                 If m_IsFileSystem And Not m_IsFolder Then
@@ -930,8 +921,8 @@ XIT:    'On any kind of exit, free the allocated memory
                     If OpenFolderIconIndex < 0 Then
                         Dim dwflag As Integer = SHGFI.SYSICONINDEX Or SHGFI.PIDL
                         Dim shfi As New SHFILEINFO()
-                        Dim H As IntPtr = SHGetFileInfo(m_Pidl, 0, _
-                                          shfi, cbFileInfo, _
+                        Dim H As IntPtr = SHGetFileInfo(m_Pidl, 0,
+                                          shfi, cbFileInfo,
                                           dwflag Or SHGFI.OPENICON)
                         m_IconIndexOpen = shfi.iIcon
                         'If m_TypeName.Equals("File Folder") Then
@@ -965,7 +956,7 @@ XIT:    'On any kind of exit, free the allocated memory
                 'Network = 4
                 'CD = 5
                 'RAMDrive = 6
-                Dim disk As New Management.ManagementObject("win32_logicaldisk.deviceid=""" & _
+                Dim disk As New Management.ManagementObject("win32_logicaldisk.deviceid=""" &
                                                 m_Path.Substring(0, 2) & """")
                 m_Length = CType(disk("Size"), UInt64).ToString
                 If CType(disk("DriveType"), UInt32).ToString = CStr(4) Then
@@ -1066,8 +1057,8 @@ XIT:    'On any kind of exit, free the allocated memory
             Else
                 Dim shfi As New SHFILEINFO()
                 shfi.dwAttributes = SFGAO.RDONLY
-                Dim dwflag As Integer = SHGFI.PIDL Or _
-                                        SHGFI.ATTRIBUTES Or _
+                Dim dwflag As Integer = SHGFI.PIDL Or
+                                        SHGFI.ATTRIBUTES Or
                                         SHGFI.ATTR_SPECIFIED
                 Dim dwAttr As Integer = 0
                 Dim H As IntPtr = SHGetFileInfo(m_Pidl, dwAttr, shfi, cbFileInfo, dwflag)
@@ -1155,21 +1146,7 @@ XIT:    'On any kind of exit, free the allocated memory
                                         ByVal ChildPidl As IntPtr,
                                         Optional ByVal fParent As Boolean = False) _
                                         As Boolean
-        If Is2KOrAbove() Then
-            Return ILIsParent(AncestorPidl, ChildPidl, fParent)
-        Else
-            Dim Child As New cPidl(ChildPidl)
-            Dim Ancestor As New cPidl(AncestorPidl)
-            IsAncestorOf = Child.StartsWith(Ancestor)
-            If Not IsAncestorOf Then Exit Function
-            If fParent Then ' check for immediate ancestor, if desired
-                Dim oAncBytes() As Object = Ancestor.Decompose
-                Dim oChildBytes() As Object = Child.Decompose
-                If oAncBytes.Length <> (oChildBytes.Length - 1) Then
-                    IsAncestorOf = False
-                End If
-            End If
-        End If
+        Return ILIsParent(AncestorPidl, ChildPidl, fParent)
     End Function
 #End Region
 
@@ -1517,15 +1494,8 @@ NXTOLD:                 Next
                         Dim aPidl(0) As IntPtr
                         aPidl(0) = item
                         m_Folder.GetAttributesOf(1, aPidl, attrFlag)
-                        If Not XPorAbove Then
-                            If CBool(attrFlag And SFGAO.FOLDER) Then 'Don't need it
-                                GoTo SKIPONE
-                            End If
-                        Else         'XP or above
-                            If CBool(attrFlag And SFGAO.FOLDER) AndAlso
-                               Not CBool(attrFlag And SFGAO.STREAM) Then
-                                GoTo SKIPONE
-                            End If
+                        If CBool(attrFlag And SFGAO.FOLDER) AndAlso Not CBool(attrFlag And SFGAO.STREAM) Then
+                            GoTo SKIPONE
                         End If
                     End If
                     If IntPtrOnly Then   'just relative pidls for fast look, no CShITem overhead
@@ -1691,31 +1661,7 @@ HRError:  'not ready disks will return the following error
     End Function
 
     Public Shared Function IsEqual(ByVal Pidl1 As IntPtr, ByVal Pidl2 As IntPtr) As Boolean
-        If Win2KOrAbove Then
-            Return ILIsEqual(Pidl1, Pidl2)
-        Else 'do hard way, may not work for some folders on XP
-
-            Dim cb1 As Integer, cb2 As Integer
-            cb1 = ItemIDListSize(Pidl1)
-            cb2 = ItemIDListSize(Pidl2)
-            If cb1 <> cb2 Then Return False
-            Dim lim32 As Integer = cb1 \ 4
-
-            Dim i As Integer
-            For i = 0 To lim32 - 1
-                If Marshal.ReadInt32(Pidl1, i) <> Marshal.ReadInt32(Pidl2, i) Then
-                    Return False
-                End If
-            Next
-            Dim limB As Integer = cb1 Mod 4
-            Dim offset As Integer = lim32 * 4
-            For i = 0 To limB - 1
-                If Marshal.ReadByte(Pidl1, offset + i) <> Marshal.ReadByte(Pidl2, offset + i) Then
-                    Return False
-                End If
-            Next
-            Return True 'made it to here, so they are equal
-        End If
+        Return ILIsEqual(Pidl1, Pidl2)
     End Function
 
     ''' <summary>

@@ -518,21 +518,12 @@ XIT:    tv1.EndUpdate()
         newNode.ImageIndex = SystemImageListManager.GetIconIndex(item, False)
         newNode.SelectedImageIndex = SystemImageListManager.GetIconIndex(item, True)
 
-        'The following code, from Calum implements the following logic
-        ' Allow/disallow the showing of Hidden folders based on ShowHidden Propert
-        ' For Removable disks, always show + (allow expansion) - avoids floppy access
-        ' For all others, add + based on HasSubFolders
-        '  Except - If showing Hidden dirs, do extra check to  allow for
-        '  the case of all hidden items in the Dir which will cause
-        '  HasSubFolders to be always left unset
-        If item.IsRemovable Then             'Calum's fix to hidden file fix
+        ' Allow expansion by creating a dummy child node.
+        ' For Removable disks, always allow expansion.
+        ' For all others, allow expansion based on HasSubFolders
+        ' We don't care about hidden folders and hidden files.
+        If item.IsRemovable Or item.HasSubFolders Then
             newNode.Nodes.Add(New TreeNode(" : "))
-        ElseIf item.HasSubFolders Then
-            newNode.Nodes.Add(New TreeNode(" : "))
-            'Begin Calum's change so Hidden dirs with all hidden content are expandable
-        ElseIf item.GetDirectories.Count > 0 Then   'Added Code
-            newNode.Nodes.Add(New TreeNode(" : "))  'Added Code
-            'End Calum's change
         End If
 
         Return newNode
@@ -643,48 +634,49 @@ XIT:    tv1.EndUpdate()
             If Not (thisRoot.Nodes.Count = 1 AndAlso thisRoot.Nodes(0).Text.Equals(" : ")) Then
                 Dim thisItem As CShItem = thisRoot.Tag
                 If thisItem.RefreshDirectories Then   'RefreshDirectories True = the contained list of Directories has changed
-                    Dim curDirs As ArrayList = thisItem.GetDirectories(False) 'suppress 2nd refresh
-                    Dim delNodes As New ArrayList()
+                    Dim directoriesToAdd As ArrayList = thisItem.GetDirectories(False) 'suppress 2nd refresh
+                    Dim nodesToDelete As New ArrayList()
                     Dim node As TreeNode
                     For Each node In thisRoot.Nodes 'this is the old node contents
                         Dim i As Integer
-                        For i = 0 To curDirs.Count - 1
-                            If CType(curDirs(i), CShItem).Equals(node.Tag) Then
-                                curDirs.RemoveAt(i)   'found it, don't compare again
+                        For i = 0 To directoriesToAdd.Count - 1
+                            If CType(directoriesToAdd(i), CShItem).Equals(node.Tag) Then
+                                directoriesToAdd.RemoveAt(i)   'found it, don't compare again
                                 GoTo NXTOLD
                             End If
                         Next
-                        'fall thru = node no longer here
-                        delNodes.Add(node)
-                        log.DebugFormat("Node to delete: {0} (PIDL count {1})", node.Tag.DisplayName, CShItem.PidlCount(node.Tag.PIDL))
+                        ' fall thru = node no longer here
+                        nodesToDelete.Add(node)
 NXTOLD:             Next
 
-                    If delNodes.Count + curDirs.Count > 0 Then  'had changes
+                    If nodesToDelete.Count + directoriesToAdd.Count > 0 Then  'had changes
 
-                        log.DebugFormat("Node {0} has changed: {1} nodes to delete, {2} nodes to add", thisRoot.Tag.DisplayName, delNodes.Count, curDirs.Count)
+                        log.DebugFormat("Node {0} children have changed: {1} nodes to delete, {2} directories to add", thisRoot.Tag.DisplayName, nodesToDelete.Count, directoriesToAdd.Count)
                         m_Stopwatch.Restart()
 
                         Try
                             tv1.BeginUpdate()
-                            For Each node In delNodes 'dir not here anymore, delete node
+
+                            ' Remove nodes that are no longer there
+                            For Each node In nodesToDelete
                                 thisRoot.Nodes.Remove(node)
                             Next
 
-                            log.DebugFormat("Deleted nodes: {0}, time: {1} ms", delNodes.Count, m_Stopwatch.ElapsedMilliseconds)
+                            log.DebugFormat("Deleted nodes: {0}, time: {1} ms", nodesToDelete.Count, m_Stopwatch.ElapsedMilliseconds)
 
-                            'any CShItems remaining in curDirs is a new dir under thisRoot
+                            ' Add directories that are new
                             Dim csi As CShItem
-                            For Each csi In curDirs
+                            For Each csi In directoriesToAdd
                                 If Not (csi.IsHidden And Not m_showHiddenFolders) Then
                                     thisRoot.Nodes.Add(MakeNode(csi))
                                 End If
                             Next
 
-                            log.DebugFormat("Added nodes: {0}, time: {1} ms", curDirs.Count, m_Stopwatch.ElapsedMilliseconds)
+                            log.DebugFormat("Added nodes: {0}, time: {1} ms", directoriesToAdd.Count, m_Stopwatch.ElapsedMilliseconds)
 
                             'we only need to resort if we added
                             'sort is based on CShItem in .Tag
-                            If curDirs.Count > 0 Then
+                            If directoriesToAdd.Count > 0 Then
                                 Dim tmpA(thisRoot.Nodes.Count - 1) As TreeNode
                                 thisRoot.Nodes.CopyTo(tmpA, 0)
                                 Array.Sort(tmpA, New TagComparer())

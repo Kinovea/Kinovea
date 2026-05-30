@@ -1314,27 +1314,6 @@ Public Structure STGMEDIUM
     End Function
 #End Region
 
-#Region "       IsXpOrAbove and Is2KOrAbove"
-    Public Shared Function IsXpOrAbove() As Boolean
-        Dim rVal As Boolean = False
-        If Environment.OSVersion.Version.Major > 5 Then
-            rVal = True
-        ElseIf Environment.OSVersion.Version.Major = 5 AndAlso _
-               Environment.OSVersion.Version.Minor >= 1 Then
-            rVal = True
-        End If
-        'if none of the above tests succeed, then return false
-        Return rVal
-    End Function
-    Public Shared Function Is2KOrAbove() As Boolean
-        If Environment.OSVersion.Version.Major >= 5 Then
-            Return True
-        Else
-            Return False
-        End If
-    End Function
-#End Region
-
 #End Region
 
 End Class
