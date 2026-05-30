@@ -419,5 +419,11 @@ namespace Kinovea.ScreenManager
             // Delete the keyframe.
             DeletionAsked?.Invoke(this, new EventArgs<Guid>(keyframe.Id));
         }
+
+        private void btnComments_Click(object sender, EventArgs e)
+        {
+            // Clicking the button should focus the comment box.
+            rtbComment.Focus();
+        }
     }
 }

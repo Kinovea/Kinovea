@@ -148,6 +148,7 @@ namespace Kinovea.ScreenManager
       this.btnComments.Size = new System.Drawing.Size(20, 20);
       this.btnComments.TabIndex = 100;
       this.btnComments.UseVisualStyleBackColor = false;
+      this.btnComments.Click += new System.EventHandler(this.btnComments_Click);
       // 
       // btnTopbar
       // 
@@ -251,7 +252,7 @@ namespace Kinovea.ScreenManager
       this.pbThumbnail.TabStop = false;
       this.pbThumbnail.Click += new System.EventHandler(this.pbThumbnail_Click);
       // 
-      // KeyframeCommentBox
+      // ControlKeyframe
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -271,7 +272,7 @@ namespace Kinovea.ScreenManager
       this.DoubleBuffered = true;
       this.ForeColor = System.Drawing.Color.Gray;
       this.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
-      this.Name = "KeyframeCommentBox";
+      this.Name = "ControlKeyframe";
       this.Size = new System.Drawing.Size(271, 286);
       this.Click += new System.EventHandler(this.KeyframeCommentBox_Click);
       this.Enter += new System.EventHandler(this.KeyframeCommentBox_Enter);
