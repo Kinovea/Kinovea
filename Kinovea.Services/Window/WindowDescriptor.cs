@@ -51,7 +51,14 @@ namespace Kinovea.Services
         public WindowStartupMode StartupMode
         {
             get { return startupMode; }
-            set { startupMode = value; }
+            set 
+            { 
+                startupMode = value;
+                if (startupMode == WindowStartupMode.Explorer)
+                {
+                    screenList.Clear();
+                }
+            }
         }
 
         /// <summary>
@@ -302,6 +309,11 @@ namespace Kinovea.Services
                         reader.ReadOuterXml();
                         break;
                 }
+            }
+
+            if (startupMode == WindowStartupMode.Explorer)
+            {
+                screenList.Clear();
             }
         }
 

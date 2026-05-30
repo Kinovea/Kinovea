@@ -179,8 +179,11 @@ namespace Kinovea.Root
             descriptor.Name = name;
             descriptor.StartupMode = startupMode;
             descriptor.ScreenList.Clear();
-            foreach (var screen in screenList)
-                descriptor.ScreenList.Add(screen.Clone());
+            if (startupMode != WindowStartupMode.Explorer)
+            {
+                foreach (var screen in screenList)
+                    descriptor.ScreenList.Add(screen.Clone());
+            }
 
             WindowManager.SetTitleName();
         }
