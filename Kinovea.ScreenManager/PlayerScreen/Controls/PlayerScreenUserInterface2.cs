@@ -2006,6 +2006,14 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
         }
+
+
+        /// <summary>
+        /// Jump to the next stop point on the timeline based on percentage.
+        /// Example: if round is 10 and we are currently at 36%, the next stop point forward will be 40%, and backward 30%.
+        /// </summary>
+        /// <param name="round">Stop point width in percentage</param>
+        /// <param name="forward">Whether we should jump forward or backward on the timeline</param>
         public void JumpToPercent(int round, bool forward)
         {
             if (!m_FrameServer.Loaded)
