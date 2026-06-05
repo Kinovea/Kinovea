@@ -439,4 +439,7 @@
   <data name="mnuOpenNewWindow" xml:space="preserve">
     <value>فتح نافذة جديدة</value>
   </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>التردد ({0})</value>
+  </data>
 </root>
