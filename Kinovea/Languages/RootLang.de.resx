@@ -476,7 +476,7 @@
     <value>Fensterliste neu laden</value>
   </data>
   <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
-    <value>Eigenschaften aktiver Fenster</value>
+    <value>Aktive Fenstereigenschaften</value>
   </data>
   <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
     <value>Öffne Dateibrowser</value>
@@ -654,5 +654,8 @@
   </data>
   <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
     <value>Schläge pro Minute ({0})</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Armiert</value>
   </data>
 </root>
