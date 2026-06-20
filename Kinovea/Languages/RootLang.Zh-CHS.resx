@@ -463,4 +463,46 @@
   <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
     <value>每分步数({0})</value>
   </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>次/秒 ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>次/分钟 ({0})</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>配置捕获文件夹</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>管理窗口</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>停止流程</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>删除窗口</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>刷新窗口列表</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>活动窗口属性</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>打开文件浏览器</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>继续上次进度</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>打开特定内容</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>文件浏览器</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>延迟：{0}</value>
+  </data>
 </root>
