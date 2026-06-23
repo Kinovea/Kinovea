@@ -1324,4 +1324,7 @@
   <data name="mnuConfigureCaptureFolders" xml:space="preserve">
     <value>配置捕获文件夹</value>
   </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>重置所有贴图</value>
+  </data>
 </root>
