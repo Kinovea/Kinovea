@@ -505,4 +505,91 @@
   <data name="formWindowProperties_Replay0" xml:space="preserve">
     <value>延迟：{0}</value>
   </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>回放: {0}</value>
+  </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>捕获:{0}</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>管理工作区</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>窗口</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>创建桌面快捷方式</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>从活动窗口创建工作区</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>重命名选定工作区</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>删除选定工作区</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>工作区名称</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>名字:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>文件夹</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>捕获文件夹</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>捕获文件夹信息</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>快捷名:</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>路径:</value>
+  </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>插入一个变量…</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>插入反斜杠</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>插入连字符</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>插入下划线</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>预览动态路径</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>浏览文件夹</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>从列表中移除捕获文件夹</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>添加新的捕获文件夹</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>下移</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>录制结束后，在对应捕获窗口中的使用 post-recording 命令运行外部程序。\n\n右键单击视口背景，然后选择{0}.</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Post-recording（录制后）执行…</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>默认文件名:</value>
+  </data>
 </root>
