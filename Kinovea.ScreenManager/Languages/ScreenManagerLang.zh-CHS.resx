@@ -1327,4 +1327,7 @@
   <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
     <value>重置所有贴图</value>
   </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Post-recording（录制后）执行…</value>
+  </data>
 </root>
