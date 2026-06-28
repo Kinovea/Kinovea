@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,106 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Atcelt</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Atvērt</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Kārtot pēc</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Datuma</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Nosaukuma</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Izmēra</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Dilstošā secībā</value>
+  </data>
+  <data name="DataAnalysis_Title" xml:space="preserve">
+    <value>Virsraksts:</value>
+  </data>
+  <data name="DataAnalysis_Pixels" xml:space="preserve">
+    <value>pikseļi</value>
+  </data>
+  <data name="DataAnalysis_AngularPosition" xml:space="preserve">
+    <value>Leņķis</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve">
+    <value>Pozīcija</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve">
+    <value>Ātrums</value>
+  </data>
+  <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve">
+    <value>Paātrinājums</value>
+  </data>
+  <data name="ExtraData_Length" xml:space="preserve">
+    <value>Garums</value>
+  </data>
+  <data name="ExtraData_Center" xml:space="preserve">
+    <value>Centrs</value>
+  </data>
+  <data name="ExtraData_Radius" xml:space="preserve">
+    <value>Rādiuss</value>
+  </data>
+  <data name="ExtraData_Diameter" xml:space="preserve">
+    <value>Diametrs</value>
+  </data>
+  <data name="ExtraData_Circumference" xml:space="preserve">
+    <value>Apkārtmērs</value>
+  </data>
+  <data name="DrawingName_Trajectory" xml:space="preserve">
+    <value>Trajektorija</value>
+  </data>
+  <data name="DrawingName_Curve" xml:space="preserve">
+    <value>Līkne</value>
+  </data>
+  <data name="DrawingName_Clock" xml:space="preserve">
+    <value>Pulkstenis</value>
+  </data>
+  <data name="Generic_Appearance" xml:space="preserve">
+    <value>Izskats</value>
+  </data>
+  <data name="Generic_Curved" xml:space="preserve">
+    <value>Līkne:</value>
+  </data>
+  <data name="Generic_Perspective" xml:space="preserve">
+    <value>Perspektīva:</value>
+  </data>
+  <data name="Generic_Clock" xml:space="preserve">
+    <value>Pulkstenis:</value>
+  </data>
+  <data name="Generic_Close" xml:space="preserve">
+    <value>Aizvērt</value>
+  </data>
+  <data name="Generic_ColorPicker" xml:space="preserve">
+    <value>Krāsa:</value>
+  </data>
+  <data name="Generic_PenSizePicker" xml:space="preserve">
+    <value>Izmērs:</value>
+  </data>
+  <data name="Generic_Image" xml:space="preserve">
+    <value>Attēls</value>
+  </data>
+  <data name="Generic_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Generic_File" xml:space="preserve">
+    <value>Datne</value>
+  </data>
+  <data name="Generic_Import" xml:space="preserve">
+    <value>Ievietot…</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Iziet</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Saglabāt</value>
+  </data>
 </root>
