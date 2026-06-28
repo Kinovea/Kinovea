@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,133 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Atcelt</value>
+  </data>
+  <data name="dlgAbout_Translation" xml:space="preserve">
+    <value>Tulkojums</value>
+  </data>
+  <data name="dlgAbout_License" xml:space="preserve">
+    <value>Licence</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>Vispārīgie</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>Atskaņošanas</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Tastatūras</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>Attēla formāts:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>Video formāts:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Nesaspiests video formāts:</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>Zīmējumi</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Automatizācija</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>Valoda:</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Mērvienības</value>
+  </data>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>Iestatījumi</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Laiks</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Laiks:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Ātrums:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Paātrinājums:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Leņķis:</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Procenti</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategorijas</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Komandas</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>Iestatījumi…</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>Atsaukt</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Punkts</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pikseļi</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Izgūt</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Logi</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>Nosaukums:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Mapes</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Ceļš:</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Datnes</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>Atmiņa</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Iziet</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Saglabāt</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>Rediģēt</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>Datne</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>Palīdzība</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Komats</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Atsvaidzināt</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Attēls</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nosaukums</value>
+  </data>
 </root>
