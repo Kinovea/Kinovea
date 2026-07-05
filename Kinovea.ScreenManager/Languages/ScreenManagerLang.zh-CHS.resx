@@ -1259,7 +1259,7 @@
     <value>移动当前时间区段的起始到当前帧</value>
   </data>
   <data name="mnuOptions_Trajectory_Interactive" xml:space="preserve">
-    <value>交互式足迹</value>
+    <value>交互式追踪</value>
   </data>
   <data name="mnuMeasure_Labels_Menu" xml:space="preserve">
     <value>标签</value>
@@ -1329,5 +1329,47 @@
   </data>
   <data name="mnuPostRecordingCommand" xml:space="preserve">
     <value>Post-recording（录制后）执行…</value>
+  </data>
+  <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
+    <value>插补图块</value>
+  </data>
+  <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
+    <value>重置这个文件</value>
+  </data>
+  <data name="mnuDemosaicNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="mnuExitFilter" xml:space="preserve">
+    <value>退出{0}</value>
+  </data>
+  <data name="mnuOptions_Trajectory_SeeFuture" xml:space="preserve">
+    <value>预测</value>
+  </data>
+  <data name="Cadence" xml:space="preserve">
+    <value>节奏</value>
+  </data>
+  <data name="DrawingCounter_AddBeat" xml:space="preserve">
+    <value>标记节拍</value>
+  </data>
+  <data name="DrawingCounter_Half" xml:space="preserve">
+    <value>半拍</value>
+  </data>
+  <data name="DrawingCounter_Double" xml:space="preserve">
+    <value>双拍</value>
+  </data>
+  <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
+    <value>向标记点对齐</value>
+  </data>
+  <data name="DrawingCrossMark_Dot" xml:space="preserve">
+    <value>点</value>
+  </data>
+  <data name="DrawingPlane_ShowVerticalLine" xml:space="preserve">
+    <value>显示垂直线</value>
+  </data>
+  <data name="DrawingPlane_ShowHorizontalLine" xml:space="preserve">
+    <value>显示水平线</value>
+  </data>
+  <data name="DrawingText_Background" xml:space="preserve">
+    <value>背景</value>
   </data>
 </root>
