@@ -33,7 +33,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("CoordinateSystem")]
-    public class DrawingCoordinateSystem : AbstractDrawing, IScalable, ITrackable, IMeasurable, IDecorable, IKvaSerializable
+    public class DrawingCoordinateSystem : AbstractDrawing, IScalable, ITrackable, IMeasurable, IDecorable, IKvaSerializable, ICalibratable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
@@ -104,6 +104,7 @@ namespace Kinovea.ScreenManager
         private StyleElements styleElements = new StyleElements();
         private StyleData styleData = new StyleData();
 
+        private bool originDirty;
         private bool trackingUpdate;
 
         private const int axesAlpha = 255;
@@ -308,21 +309,11 @@ namespace Kinovea.ScreenManager
         }
         public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
-            /// Called by the trackability manager after a Track() call.
-            /// The value of the trackable point should be updated inside the drawing so the 
-            /// drawing reflects the new coordinate.
             if (!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
 
-            var oldValue = points[name];
+            originDirty = value != points[name];
             points[name] = value;
-
-            if (value == oldValue)
-                return;
-
-            trackingUpdate = true;
-            CalibrationHelper.SetOrigin(value);
-            trackingUpdate = false;
         }
         private void SignalTrackablePointMoved()
         {
@@ -332,6 +323,20 @@ namespace Kinovea.ScreenManager
                 return;
 
             TrackablePointMoved(this, new TrackablePointMovedEventArgs("0", points["0"]));
+        }
+        #endregion
+
+        #region ICalibratable implementation
+        public void AfterAllTrackablePointsSet()
+        {
+            if (originDirty)
+            {
+                trackingUpdate = true;
+                CalibrationHelper.SetOrigin(points["0"]);
+                trackingUpdate = false;
+            }
+
+            originDirty = false;
         }
         #endregion
 

@@ -319,6 +319,18 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// All tracks have finished their tracking step.
+        /// This is used to update calibration and kinematics outside of the tracking parallel loop.
+        /// </summary>
+        public void AfterAllTracksTrackingStep()
+        {
+            foreach (var tracker in trackers.Values)
+            {
+                tracker.AfterObjectTrackingStep();
+            }
+        }
+
+        /// <summary>
         /// Perform camera tracking step: update all trackable points of all trackable drawings 
         /// that are not using object tracking to match the camera motion.
         /// </summary>

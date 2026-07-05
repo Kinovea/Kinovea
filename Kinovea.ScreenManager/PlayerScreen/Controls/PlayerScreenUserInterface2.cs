@@ -2896,6 +2896,7 @@ namespace Kinovea.ScreenManager
         /// Update tracks and trackable drawings for the new timestamp.
         /// At the end of this all drawings bound to tracks must have been 
         /// updated to the underlying position from the track, even if we are not actively tracking.
+        /// This handles both object tracking and camera tracking.
         /// </summary>
         private void ComputeOrStopTracking(bool contiguous)
         {

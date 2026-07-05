@@ -81,13 +81,22 @@ namespace Kinovea.ScreenManager
         // This is used to handle opacity for tracked drawings.
 
         /// <summary>
-        /// Called by the trackability manager during the Track() step at video time change.
+        /// Called by the trackability manager during the Track() step on video time change.
+        /// This is when the point is moved to match the tracked coordinates for object tracking
+        /// or camera tracking.
+        /// 
         /// The value of the trackable point must be updated to reflect the tracked coordinate.
-        /// trackingTimestamps indicates the distance between the current video time 
+        /// `trackingTimestamps` indicates the distance between the current video time 
         /// and the closest entry in the timeline.
+        /// 
+        /// This may run in a thread for a track underlying a trackable point.
+        /// For ICalibratable drawings, do not update calibration here, 
+        /// as this would trigger a kinematics update on all tracks while the 
+        /// other tracks are still running their update. 
+        /// That will be done in ICalibratable.AfterAllTrackablePointsSet().
         /// </summary>
         void SetTrackablePointValue(string name, PointF value, long trackingTimestamps);
-        
+
         /// <summary>
         /// Event raised by trackable drawings when the points are moved manually.
         /// </summary>

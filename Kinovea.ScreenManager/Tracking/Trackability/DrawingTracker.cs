@@ -499,6 +499,17 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Update calibration and kinematics after all trackable points have been updated for this frame.
+        /// </summary>
+        public void AfterObjectTrackingStep()
+        {
+            if (drawing is ICalibratable calibratable)
+            {
+                calibratable.AfterAllTrackablePointsSet();
+            }
+        }
+
+        /// <summary>
         /// Camera tracking step (called once per frame, only if camera tracking is active).
         /// If the drawing is not using object tracking and we have camera motion information, 
         /// synchronize the trackable points with the current frame motion.
@@ -515,7 +526,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Ignore camera motion for the coordinate system.
-            // We already know by this ponit that the coordinate system is not object-tracked.
+            // We already know by this point that the coordinate system is not object-tracked.
             // 1. If we don't have calibration data, the coordinate system is of no use.
             // 2. If we do have calibration data, the coordinate system will already be moved
             // by the calibration object, either via object tracking or via camera tracking on that calibration object.
@@ -527,16 +538,16 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            // For calibration objects, if they are camera-tracked, they should be updated.
-            // This will cause the coordinate system origin to change and rebuild all kinematics data
-            // on all tracks.
-
             // Update the drawing based on camera motion data.
             foreach (var pair in trackablePoints2)
             {
                 PointF p = pair.Value.CameraTrack(trackingTimestamp, cameraTransformer);
                 drawing.SetTrackablePointValue(pair.Key, p, -1);
             }
+
+            // Update calibration and kinematics.
+            if (drawing is ICalibratable calibratable)
+                calibratable.AfterAllTrackablePointsSet();
         }
         #endregion
 

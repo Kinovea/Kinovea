@@ -310,6 +310,8 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Updates the calibration coordinate system without changing the real-world rectangle nor the user-defined origin.
+        /// Does nothing if the passed drawing id is not the calibration drawing.
+        /// Raise the CalibrationChanged event if the calibration was updated.
         /// </summary>
         public void CalibrationByPlane_Update(Guid id, QuadrilateralF quadImage)
         {
@@ -740,9 +742,7 @@ namespace Kinovea.ScreenManager
         private void AfterCalibrationChanged()
         {
             ComputeCoordinateSystemGrid();
-
-            if (CalibrationChanged != null)
-                CalibrationChanged(this, EventArgs.Empty);
+            CalibrationChanged?.Invoke(this, EventArgs.Empty);
         }
         private void ComputeCoordinateSystemGrid()
         {

@@ -39,7 +39,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Line")]
-    public class DrawingLine : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable, IMeasurable
+    public class DrawingLine : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable, IMeasurable, ICalibratable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
@@ -485,9 +485,6 @@ namespace Kinovea.ScreenManager
             
             points[name] = value;
             this.trackingTimestamps = trackingTimestamps;
-
-            if (CalibrationHelper != null)
-                CalibrationHelper.CalibrationByLine_Update(Id, points["a"], points["b"]);
         }
         private void SignalAllTrackablePointsMoved()
         {
@@ -503,6 +500,13 @@ namespace Kinovea.ScreenManager
                 return;
             
             TrackablePointMoved(this, new TrackablePointMovedEventArgs(name, points[name]));
+        }
+        #endregion
+
+        #region ICalibratable implementation
+        public void AfterAllTrackablePointsSet()
+        {
+            CalibrationHelper?.CalibrationByLine_Update(Id, points["a"], points["b"]);
         }
         #endregion
 

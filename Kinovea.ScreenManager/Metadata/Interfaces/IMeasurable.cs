@@ -26,6 +26,8 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Interface for objects that can be mapped to physical values.
     /// Any object that can show its coordinates or length should implement this interface.
+    /// These objects are not necessarily ICalibratable.
+    /// Examples: Angle, Circle, Line, etc.
     /// </summary>
     public interface IMeasurable
     {

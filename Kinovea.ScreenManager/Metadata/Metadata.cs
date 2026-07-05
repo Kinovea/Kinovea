@@ -1685,6 +1685,9 @@ namespace Kinovea.ScreenManager
                         TrackabilityManager.AfterTrackTrackingStep(t, tp);
                     }
                 });
+
+                // Update calibration/kinematics.
+                TrackabilityManager.AfterAllTracksTrackingStep();
             }
         }
         public void StartAllTracking()
@@ -1715,7 +1718,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Update all trackable drawings bound to tracks.
+        /// Update all trackable drawings bound to tracks (object tracking).
         /// This is called when the we move on the timeline without actively tracking.
         /// </summary>
         public void SyncTrackableDrawings(long timestamp)
@@ -1730,6 +1733,9 @@ namespace Kinovea.ScreenManager
                     TrackabilityManager.AfterTrackTrackingStep(t, tp);
                 }
             }
+
+            // Update calibration/kinematics.
+            TrackabilityManager.AfterAllTracksTrackingStep();
         }
 
         /// <summary>

@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
     /// A flat or perspective grid.
     /// </summary>
     [XmlType ("Plane")]
-    public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable, ITrackable
+    public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable, ITrackable, ICalibratable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
@@ -682,12 +682,6 @@ namespace Kinovea.ScreenManager
             int p = int.Parse(name);
             quadImage[p] = new PointF(value.X, value.Y);
             this.trackingTimestamps = trackingTimestamps;
-
-            // FIXME: this should use rectified image space.
-            // CalibrationByPlane_Update will take care of the distortion, why do we 
-            // need to keep a separate projectiveMapper here?
-            projectiveMapping.Update(quadPlane, quadImage);
-            CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
             planeIsConvex = quadImage.IsConvex;
         }
         private void SignalAllTrackablePointsMoved()
@@ -704,6 +698,13 @@ namespace Kinovea.ScreenManager
                 return;
 
             TrackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), quadImage[index]));
+        }
+        #endregion
+
+        #region ICalibratable implementation
+        public void AfterAllTrackablePointsSet()
+        {
+            CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
         }
         #endregion
 
