@@ -357,6 +357,12 @@
     <Compile Include="Exporters\Video\VideoExporter.cs" />
     <Compile Include="Exporters\Video\VideoExportFormat.cs" />
     <Compile Include="Metadata\Interfaces\ICalibratable.cs" />
+    <Compile Include="PlayerScreen\Forms\FormConfigureDrawingName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\Forms\FormConfigureDrawingName.Designer.cs">
+      <DependentUpon>FormConfigureDrawingName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tracking\Trackability\TrackablePoint.cs" />
     <Compile Include="Variables\CsvTextFieldParser.cs" />
     <Compile Include="Variables\DynamicPathResolver.cs" />
@@ -1138,6 +1144,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormCalibrationValidation.resx">
       <DependentUpon>FormCalibrationValidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\Forms\FormConfigureDrawingName.resx">
+      <DependentUpon>FormConfigureDrawingName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\Forms\FormTimeSections.resx">
       <DependentUpon>FormTimeSections.cs</DependentUpon>

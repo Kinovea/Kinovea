@@ -1349,10 +1349,10 @@ namespace Kinovea.ScreenManager
             mnuCloseScreen.Click += btnClose_Click;
             mnuExitFilter.Click += MnuExitFilter_Click;
 
-            // Drawings context menu (Configure, Delete, Tracking)
+            // Drawings context menu (Name, Configure, Delete, Tracking)
             mnuDrawingTitle.Font = new Font(mnuDrawingTitle.Font, FontStyle.Bold);
-
-            mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
+            mnuDrawingTitle.Click += mnuConfigureDrawingName_Click;
+            mnuConfigureDrawing.Click += mnuConfigureDrawing_Click;
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
             
             mnuVisibility.Image = Properties.Drawings.persistence;
@@ -5259,6 +5259,33 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Drawings Menus
+        private void mnuConfigureDrawingName_Click(object sender, EventArgs e)
+        {
+            Metadata metadata = m_FrameServer.Metadata;
+            AbstractDrawing drawing = metadata.HitDrawing;
+            if (drawing == null)
+                return;
+
+            var drawingId = metadata.HitDrawing.Id;
+            var managerId = metadata.FindManagerId(metadata.HitDrawing);
+            var memento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, metadata.HitDrawing.Name, SerializationFilter.Style);
+
+            FormConfigureDrawingName fcd = new FormConfigureDrawingName(metadata.HitDrawing);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+
+            if (fcd.DialogResult == DialogResult.OK)
+            {
+                memento.UpdateCommandName(drawing.Name);
+                m_FrameServer.HistoryStack.PushNewCommand(memento);
+
+                sidePanelDrawing.SetDrawing(metadata.HitDrawing, managerId, drawingId);
+                sidePanelTracking.SetDrawing(metadata.HitDrawing, managerId, drawingId);
+            }
+
+            fcd.Dispose();
+            DoInvalidate();
+        }
         private void mnuConfigureDrawing_Click(object sender, EventArgs e)
         {
             Metadata metadata = m_FrameServer.Metadata;
