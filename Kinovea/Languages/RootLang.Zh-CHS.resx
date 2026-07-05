@@ -592,4 +592,43 @@
   <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
     <value>默认文件名:</value>
   </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>启用自动编号</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>每次录制完成后都自动更新文件名以添加序号。\n如果文件名使用动态变量，该选项会被忽略。</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>当录制将要覆盖已存在文件时不要展示确认对话框。</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>触发器</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>启用UDP触发器</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>UDP端口：</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>默认触发状态：</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>已解除</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>图片</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>启用像素过滤</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>启动流程</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>展示所有语言</value>
+  </data>
 </root>
