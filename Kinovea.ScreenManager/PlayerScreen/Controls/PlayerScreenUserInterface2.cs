@@ -5305,7 +5305,7 @@ namespace Kinovea.ScreenManager
             if (fcd.DialogResult == DialogResult.OK)
             {
                 memento.UpdateCommandName(drawing.Name);
-                m_FrameServer.HistoryStack.PushNewCommand(memento);
+                metadata.HistoryStack.PushNewCommand(memento);
 
                 // Update the style preset for the parent tool of this drawing
                 // so the next time we use this tool it will have the style we just set.

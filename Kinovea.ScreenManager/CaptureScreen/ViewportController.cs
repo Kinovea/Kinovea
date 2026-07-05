@@ -152,6 +152,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
+        private ToolStripMenuItem mnuDrawingTitle = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
         private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
@@ -440,8 +441,10 @@ namespace Kinovea.ScreenManager
             mnuReloadDefaultCaptureAnnotations.Click += (s, e) => ReloadDefaultCaptureAnnotationsAsked?.Invoke(this, e);
             mnuReloadLinkedAnnotations.Click += (s, e) => ReloadLinkedAnnotationsAsked?.Invoke(this, e);
             mnuCloseScreen.Click += (s, e) => CloseAsked?.Invoke(this, e);
-            
+
             // Drawings context menu.
+            mnuDrawingTitle.Font = new Font(mnuDrawingTitle.Font, FontStyle.Bold);
+            mnuDrawingTitle.Click += mnuConfigureDrawingName_Click;
             mnuConfigureDrawing.Click += mnuConfigureDrawing_Click;
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
             //mnuConfigureOpacity.Click += mnuConfigureOpacity_Click;
@@ -571,6 +574,7 @@ namespace Kinovea.ScreenManager
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
+            AddDrawingTitleMenu(drawing, popMenu);
 
             // Generic menus based on the drawing capabilities: configuration (style), visibility, tracking.
             if (!metadata.DrawingInitializing)
@@ -596,6 +600,12 @@ namespace Kinovea.ScreenManager
                 //popMenuDrawings.Items.Add(mnuCopyDrawing);
                 //popMenuDrawings.Items.Add(mnuSepDrawing3);
             }
+        }
+        private void AddDrawingTitleMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
+        {
+            mnuDrawingTitle.Text = string.Format("{0} ({1})", drawing.Name, drawing.ToolDisplayName);
+            popMenu.Items.Add(mnuDrawingTitle);
+            popMenu.Items.Add(new ToolStripSeparator());
         }
 
         private void PrepareDrawingContextMenuCapabilities(AbstractDrawing drawing, ContextMenuStrip popMenu)
@@ -663,6 +673,29 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Menu handlers
+        private void mnuConfigureDrawingName_Click(object sender, EventArgs e)
+        {
+            AbstractDrawing drawing = metadata.HitDrawing;
+            if (drawing == null)
+                return;
+
+            var drawingId = metadata.HitDrawing.Id;
+            var managerId = metadata.FindManagerId(metadata.HitDrawing);
+            var memento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, metadata.HitDrawing.Name, SerializationFilter.Style);
+
+            FormConfigureDrawingName fcd = new FormConfigureDrawingName(metadata.HitDrawing);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+
+            if (fcd.DialogResult == DialogResult.OK)
+            {
+                memento.UpdateCommandName(drawing.Name);
+                metadata.HistoryStack.PushNewCommand(memento);
+            }
+
+            fcd.Dispose();
+            DoInvalidate();
+        }
         private void mnuConfigureDrawing_Click(object sender, EventArgs e)
         {
             IDecorable decorable = metadata.HitDrawing as IDecorable;
