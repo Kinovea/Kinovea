@@ -404,6 +404,19 @@ namespace Kinovea.ScreenManager
             // 5: X line.
             // 6: Y line.
 
+            // Hitting the inside of the grid is generally disabled as we give 
+            // priority to other drawings on top of the grid.
+            // However, if we are actively tracking we need to be able to hit the grid 
+            // to access the tracking menu at the grid level, since there are trajectory 
+            // objects sitting at the corners.
+            // Tracking the grid should normally be done first, before adding any other object.
+            bool isTracking = parentMetadata.TrackabilityManager.IsTracking(this.Id);
+            if (isTracking)
+            {
+                if (quadImage.Contains(point))
+                    return 0;
+            }
+            
             if (showXLine)
             {
                 // Reverse the mapping to find the location of the line in image space.
