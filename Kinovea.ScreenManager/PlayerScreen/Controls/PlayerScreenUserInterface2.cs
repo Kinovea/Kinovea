@@ -402,6 +402,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExitFilter = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
+        private ToolStripMenuItem mnuDrawingTitle = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
         private ToolStripMenuItem mnuVisibilityAlways = new ToolStripMenuItem();
@@ -1349,6 +1350,8 @@ namespace Kinovea.ScreenManager
             mnuExitFilter.Click += MnuExitFilter_Click;
 
             // Drawings context menu (Configure, Delete, Tracking)
+            mnuDrawingTitle.Font = new Font(mnuDrawingTitle.Font, FontStyle.Bold);
+
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
             
@@ -3714,6 +3717,7 @@ namespace Kinovea.ScreenManager
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
+            AddDrawingTitleMenu(drawing, popMenu);
 
             // Generic menus based on the drawing capabilities: configuration (style), visibility, tracking.
             if (!m_FrameServer.Metadata.DrawingInitializing)
@@ -3747,6 +3751,12 @@ namespace Kinovea.ScreenManager
                 popMenuDrawings.Items.Add(mnuCopyDrawing);
                 popMenuDrawings.Items.Add(mnuSepDrawing3);
             }
+        }
+        private void AddDrawingTitleMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
+        {
+            mnuDrawingTitle.Text = string.Format("{0} ({1})", drawing.Name, drawing.ToolDisplayName); 
+            popMenu.Items.Add(mnuDrawingTitle);
+            popMenu.Items.Add(new ToolStripSeparator());
         }
         private void PrepareDrawingContextMenuCapabilities(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
@@ -3829,6 +3839,7 @@ namespace Kinovea.ScreenManager
         private void PrepareTrackContextMenu(DrawingTrack track, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
+            AddDrawingTitleMenu(track, popMenu);
             popMenu.Items.Add(mnuConfigureTrajectory);
             popMenu.Items.Add(new ToolStripSeparator());
 
