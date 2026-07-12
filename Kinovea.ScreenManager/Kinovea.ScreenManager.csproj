@@ -1092,6 +1092,7 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.ja.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ko.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.lt.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.lv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.mk.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ms.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />

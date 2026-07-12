@@ -70,6 +70,7 @@ namespace Kinovea.Services
             languages.Add("hr", "Hrvatski");
             languages.Add("id", "Bahasa Indonesia");
             languages.Add("it", "Italiano");
+            languages.Add("lv", "Latviešu");
             languages.Add("lt", "Lietuvių");
             languages.Add("mk", "Македонски");
             languages.Add("ms", "Bahasa Melayu");
@@ -103,6 +104,7 @@ namespace Kinovea.Services
             lowCoverage.Add("el");         // Greek.
             lowCoverage.Add("et");         // Estonian.
             lowCoverage.Add("fa");         // Persian.
+            lowCoverage.Add("lv");         // Latvian.
             lowCoverage.Add("ms");         // Malay.
             lowCoverage.Add("no");         // Norwegian.
             lowCoverage.Add("sr-Latn-RS"); // Serbian (latin)
