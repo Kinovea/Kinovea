@@ -53,16 +53,13 @@ extern "C" {
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#include <avcodec.h>
-#include <avdevice.h>
-#include <avfilter.h>
-#include <avfiltergraph.h>
-#include <buffersink.h>
-#include <avformat.h>
-#include <avutil.h>
-#include <postprocess.h>
-#include <swresample.h>
-#include <swscale.h>
+#include "avcodec.h"
+#include "avdevice.h"
+#include "avfilter.h"
+#include "avformat.h"
+#include "avutil.h"
+#include "swresample.h"
+#include "swscale.h"
 }
 
 #include "ReadResult.h"
@@ -104,10 +101,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             }
         }
         virtual property bool Loaded {
-            bool get() override { return m_bIsLoaded; }
+            bool get() override { return mIsLoaded; }
         }
         virtual property VideoInfo Info {
-            VideoInfo get() override { return m_VideoInfo; }
+            VideoInfo get() override { return mVideoInfo; }
         }
         virtual property IWorkingZoneFramesContainer^ WorkingZoneFrames {
             IWorkingZoneFramesContainer^ get() override { 
@@ -119,7 +116,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         }
         virtual property VideoSection WorkingZone {
             // Return the internal working zone.
-            VideoSection get() override { return m_WorkingZone; }
+            VideoSection get() override { return mWorkingZone; }
         }
         virtual property VideoSection PreBufferingSegment {
             VideoSection get() override {
@@ -155,8 +152,12 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     public:
         
-        // Open/Close
+        /// <summary>
+        /// Open a video file.
+        /// Returns an OpenVideoResult indicating success or failure.
+        /// </summary>
         virtual OpenVideoResult Open(String^ _filePath) override;
+        
         virtual void Close() override;
         virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
         virtual void PostLoad() override;
@@ -187,16 +188,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     private:
         // General
         VideoCapabilities m_Capabilities;
-        bool m_bIsLoaded;
+        bool mIsLoaded;
         bool m_bFirstFrameRead;
-        VideoInfo m_VideoInfo;
+        VideoInfo mVideoInfo;
         Dictionary<int64_t, TimedPoint^>^ stabOffsets = gcnew Dictionary<int64_t, TimedPoint^>();
         
         // Decoding mode & working zone.
         int64_t m_timestampOffset = 0;
         VideoDecodingMode m_DecodingMode;
         bool m_bIsVeryShort;
-        VideoSection m_WorkingZone;
+        VideoSection mWorkingZone;
         VideoSection m_SectionToPrepend;
         VideoSection m_SectionToAppend;
         
@@ -211,13 +212,12 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         Cache^ m_Cache;
         
         // FFMpeg specifics
-        int m_iVideoStream;
-        int m_iAudioStream;
-        AVFormatContext* m_pFormatCtx;
-        AVCodecContext* m_pCodecCtx;
-        TimestampInfo m_TimestampInfo;
-        static const enum AVPixelFormat m_PixelFormatFFmpeg = AV_PIX_FMT_BGRA;
-        static const int DecodingQuality = SWS_FAST_BILINEAR;
+        int mVideoStreamIndex;
+        AVFormatContext* mFormatCtx;
+        AVCodecContext* mVideoCodecCtx;
+        TimestampInfo mTimestampInfo;
+        static const enum AVPixelFormat sFFMpegPixelFormat = AV_PIX_FMT_BGRA;
+        static const int sDecodingQuality = SWS_FAST_BILINEAR;
 
         // Others
         Object^ m_Locker;
@@ -233,10 +233,18 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         void DataInit();
         
-        // Open/Close.
-        OpenVideoResult Load(String^ _filePath, bool _forSummary);
-        static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
         
+        /// <summary>
+        /// Load the video file and initialize the FFMpeg context.
+        /// </summary>
+        OpenVideoResult Load(String^ _filePath, bool _forSummary);
+        
+        /// <summary>
+        /// Estimate the frame rate of the video stream.
+        /// Updates mVideoInfo.FramesPerSeconds.
+        /// </summary>
+        void GuessFrameRate(AVFormatContext* formatCtx, AVCodecContext* videoCodecCtx, int streamIndex, bool verbose);
+
         // Decoding size.
         void ResetDecodingSize();
         void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);

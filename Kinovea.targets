@@ -21,15 +21,14 @@
 
     <Message Text="Copying native dependencies."/>
 
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avcodec-56.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avdevice-56.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avfilter-5.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avformat-56.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\avutil-54.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\postproc-53.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swresample-1.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swscale-3.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\ffmpeg.exe" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avcodec-62.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avdevice-62.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avfilter-11.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avformat-62.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avutil-60.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\swresample-6.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\swscale-9.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\ffmpeg.exe" DestinationFolder="$(TargetDir)"/>
 
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcm90.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcp90.dll" DestinationFolder="$(TargetDir)"/>

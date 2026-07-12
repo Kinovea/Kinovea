@@ -1,0 +1,37 @@
+
+1. Go to http://ffmpeg.zeranoe.com/builds/
+2. Download latest 32 bit build for Shared and Dev.
+3. Copy bin directory from the Shared folder.
+4. Copy include and lib files from dev folder.
+4.b The additional files inttypes.h and stdint.h must also be present at the root of the include directory.
+5. Move readme.txt into the other folder.
+6. In lib, only keep the .lib files.
+7. On the top FFmpeg folder, do Hg add. Add everything, including binaries.
+8. Edit Kinovea.targets to use the correct binairies.
+10. Open Kinovea.Video.FFMpeg project. 
+
+11. In properties sheet C/C++ > General, check the include directories.
+..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\;..\..\Refs\FFmpeg\include\libswresample\
+
+12. In properties sheet Linker > General, check library directories. 
+..\..\Refs\FFmpeg\lib
+
+13. In properties sheet Linker > Input, check Dependencies.
+avcodec.lib avdevice.lib avfilter.lib avformat.lib avutil.lib postproc.lib swresample.lib swscale.lib Gdi32.lib
+
+14. In include > libavutil > pixfmt.h : comment the line #define PixelFormat AVPixelFormat.
+This define causes much problems with any other code that would use something named "PixelFormat".
+
+15. Remove .h from the FFmpeg folder/filter in the C++ project and add back .h for each folder in include. This is just to have the files handy.
+16. Build, fix the many errors caused by API breaking changes :-)
+17. Test for regression or bugfixes.
+
+
+
+
+
+
+
+
+
+
