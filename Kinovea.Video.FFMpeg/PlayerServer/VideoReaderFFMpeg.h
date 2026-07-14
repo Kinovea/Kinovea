@@ -60,6 +60,7 @@ extern "C" {
 #include "avutil.h"
 #include "swresample.h"
 #include "swscale.h"
+#include "imgutils.h"
 }
 
 #include "ReadResult.h"
@@ -109,7 +110,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual property IWorkingZoneFramesContainer^ WorkingZoneFrames {
             IWorkingZoneFramesContainer^ get() override { 
                 if(m_DecodingMode == VideoDecodingMode::Caching)
-                    return m_Cache;
+                    return mCache;
                 else 
                     return nullptr;
             }
@@ -121,19 +122,19 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual property VideoSection PreBufferingSegment {
             VideoSection get() override {
                 if(m_DecodingMode == VideoDecodingMode::PreBuffering)
-                    return m_PreBuffer->Segment;
+                    return mPreBuffer->Segment;
                 else 
                     return VideoSection::MakeEmpty(); 
             }
         }
         virtual property VideoFrame^ Current {
             VideoFrame^ get() override { 
-                return m_FramesContainer != nullptr ? m_FramesContainer->CurrentFrame : nullptr; 
+                return mFrameContainer != nullptr ? mFrameContainer->CurrentFrame : nullptr; 
             }
         }
         virtual property int Drops {
             int get() override {
-                return m_DecodingMode == VideoDecodingMode::PreBuffering ? m_PreBuffer->Drops : 0;
+                return m_DecodingMode == VideoDecodingMode::PreBuffering ? mPreBuffer->Drops : 0;
             }
         }
         virtual property bool CanDrawUnscaled {
@@ -186,6 +187,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     // Members
     private:
+        static const enum AVPixelFormat sConvertPixelFormat = AV_PIX_FMT_BGRA;
+        static const int sDecodingQuality = SWS_FAST_BILINEAR;
+
         // General
         VideoCapabilities m_Capabilities;
         bool mIsLoaded;
@@ -206,18 +210,18 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool m_CanDrawUnscaled;
 
         // Frame containers
-        IVideoFramesContainer^ m_FramesContainer;
-        SingleFrame^ m_SingleFrameContainer;
-        PreBuffer^ m_PreBuffer;
-        Cache^ m_Cache;
+        IVideoFramesContainer^ mFrameContainer;
+        SingleFrame^ mSingleFrameContainer;
+        PreBuffer^ mPreBuffer;
+        Cache^ mCache;
         
         // FFMpeg specifics
         int mVideoStreamIndex;
         AVFormatContext* mFormatCtx;
         AVCodecContext* mVideoCodecCtx;
         TimestampInfo mTimestampInfo;
-        static const enum AVPixelFormat sFFMpegPixelFormat = AV_PIX_FMT_BGRA;
-        static const int sDecodingQuality = SWS_FAST_BILINEAR;
+
+        
 
         // Others
         Object^ m_Locker;
@@ -226,7 +230,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         Thread^ m_PreBufferingThread;
         ThreadCanceler^ m_PreBufferingThreadCanceler;
         Stopwatch^ m_Stopwatch = gcnew Stopwatch();
-        bool m_Verbose = true;
+        bool mVerbose = true;
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
     private:
@@ -234,15 +238,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void DataInit();
         
         
-        /// <summary>
         /// Load the video file and initialize the FFMpeg context.
-        /// </summary>
-        OpenVideoResult Load(String^ _filePath, bool _forSummary);
+        OpenVideoResult Load(String^ filePath, bool forSummary);
         
-        /// <summary>
         /// Estimate the frame rate of the video stream.
         /// Updates mVideoInfo.FramesPerSeconds.
-        /// </summary>
         void GuessFrameRate(AVFormatContext* formatCtx, AVCodecContext* videoCodecCtx, int streamIndex, bool verbose);
 
         // Decoding size.
@@ -250,11 +250,51 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);
         Size FixSize(Size _size, bool sideways);
 
-        // Low level frame reading.
+        /// Read one frame from the video stream and add it to the frame cache.
+        /// Seeks backwards if needed.
+        /// 
+        /// If approximate is true, seek to the target and decode one frame, even if
+        /// it's not the target. This is used for thumbnails for example.
+        /// 
+        /// Otherwise advance as many frames as needed to reach the target timestamp or frame.
+        /// targetJumpFrame is relative to the current frame.
+        ReadResult ReadFrame(int64_t targetTimestamp, int targetJumpFrame, bool approximate);
+        
+        /// Seek to a frame at or before the target. 
+        /// Does not decode any frames.
+        int SeekTo(int64_t targetTimestamp);
+
+        /// Read packets from the file until one frame is decoded or the end of the stream is reached.
+        /// At the end of this the libav buffer may contain one or more frames ready to be decoded
+        /// without the need to feed more packets to the decoder.
+        ReadResult ReadPacketsUntilFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame);
+        
+        /// Convert the libav AVFrame to a .NET Bitmap and store it to the container.
+        /// 
+        /// Calls rescale and convert to get a new AVFrame in the correct format.
+        /// Sets up a bitmap and make it point to the AVFrame buffer.
+        /// Applies stabilization offset.
+        /// Applies image rotation.
+        /// Creates a VideoFrame out of the bitmap and timestamp.
+        /// Stores the VideoFrame in the active frame container.
+        /// 
+        /// Does not release the passed AVFrame.
+        ReadResult ConvertAndStoreFrame(AVFrame* decodedFrame);
+
+        /// Get the source format of decoded frames.
+        /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
+        AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
+
         bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
-        ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
-        int SeekTo(int64_t _target);
-        bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _decodingWidth, int _decodingHeight, int _outputFmt, bool _deinterlace);
+        
+        /// Convert and scale the decoded frame to the final pixel format and size.
+        /// dstFrame must already be allocated.
+        bool RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace);
+        
+        /// Apply the rotation to the .NET bitmap.
+        void ApplyRotation(Bitmap^ bmp, ImageRotation rotation);
+        
+        /// Release the memory allocated by libav for the frame buffer.
         static void DisposeFrame(VideoFrame^ _frame);
         
         // Decoding mode.
@@ -269,8 +309,12 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void PreBufferingWorker(Object^ _canceler);
 
         // Degug dumps.
-        void DumpInfo();
-        static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);
-        static void DumpFrameType(int _type);
+        void LogFileInfo();
+        static void LogPacketInfo(AVPacket* packet);
+        static void LogFrameInfo(AVFrame* frame);
+        static void LogFFMpegError(String^ context, int errorCode);
+        static void LogStreamList(AVFormatContext* formatCtx);
+        static String^ GetFrameTypeString(int type);
+        static String^ GetFrameFormatString(int format);
     };
 }}}

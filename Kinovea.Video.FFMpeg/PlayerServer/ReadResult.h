@@ -25,10 +25,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	public enum class ReadResult
 	{
 		Success,
-		MovieNotLoaded,
+		FileNotLoaded,
 		FrameContainerNotSet,
 		MemoryNotAllocated,
 		ImageNotConverted,
-		FrameNotRead
+		FrameNotRead,
+        SeekAfterTarget
 	};
 }}}
