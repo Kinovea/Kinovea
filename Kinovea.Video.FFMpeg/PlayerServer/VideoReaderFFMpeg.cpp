@@ -65,7 +65,7 @@ VideoReaderFFMpeg::!VideoReaderFFMpeg()
 
 void VideoReaderFFMpeg::DataInit()
 {
-    SwitchDecodingMode(VideoDecodingMode::NotInitialized);
+    ChangeCachingMode(VideoDecodingMode::NotInitialized);
     mIsLoaded = false;
     mVideoStreamIndex = -1;
     mVideoInfo = VideoInfo::Empty;
@@ -127,7 +127,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         return summary;
     }
 
-    SwitchDecodingMode(VideoDecodingMode::OnDemand);
+    ChangeCachingMode(VideoDecodingMode::OnDemand);
 
     summary->IsImage = mVideoInfo.DurationTimeStamps == 1;
     double durationSeconds = (mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame) / mVideoInfo.AverageTimeStampsPerSeconds;
@@ -150,7 +150,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         index++;
         ReadResult read = ReadFrame(ts == 0 ? -1 : ts, 1, true);
         
-        log->DebugFormat("After ReadFrame [{0}]: {1} ms.", index, m_Stopwatch->ElapsedMilliseconds);
+        log->DebugFormat("After ReadFrame #{0} [{1}]: {2} ms.", index, mTimestampInfo.CurrentTimestamp, m_Stopwatch->ElapsedMilliseconds);
 
         if (read == ReadResult::Success &&
             mFrameContainer->CurrentFrame != nullptr &&
@@ -180,9 +180,9 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
 
 void VideoReaderFFMpeg::PostLoad()
 {
-    if (CanPreBuffer && m_DecodingMode == VideoDecodingMode::OnDemand)
+    if (CanPreBuffer && mCachingMode == VideoDecodingMode::OnDemand)
     {
-        SwitchDecodingMode(VideoDecodingMode::PreBuffering);
+        ChangeCachingMode(VideoDecodingMode::PreBuffering);
 
         // FIXME: use a spin loop in the caller instead of sleeping.
 
@@ -386,14 +386,14 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     if (forSummary)
     {
         m_Capabilities = VideoCapabilities::CanDecodeOnDemand;
-        SwitchDecodingMode(VideoDecodingMode::OnDemand);
+        ChangeCachingMode(VideoDecodingMode::OnDemand);
     }
     else
     {
         m_Capabilities =
             VideoCapabilities::CanDecodeOnDemand |
-            VideoCapabilities::CanPreBuffer |
-            VideoCapabilities::CanCache |
+            //VideoCapabilities::CanPreBuffer |
+            //VideoCapabilities::CanCache |
             VideoCapabilities::CanChangeAspectRatio |
             VideoCapabilities::CanChangeImageRotation |
             VideoCapabilities::CanChangeDeinterlacing |
@@ -407,7 +407,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         }
 
         // Start with no caching, we'll switch later.
-        SwitchDecodingMode(VideoDecodingMode::OnDemand);
+        ChangeCachingMode(VideoDecodingMode::OnDemand);
     }
 
     return OpenVideoResult::Success;
@@ -524,21 +524,21 @@ void VideoReaderFFMpeg::GuessFrameRate(AVFormatContext* formatCtx, AVCodecContex
 #pragma region Frame requests
 bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
 {
-    if (!mIsLoaded || m_DecodingMode == VideoDecodingMode::NotInitialized)
+    if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
         return false;
 
     bool moved = false;
 
-    if (m_DecodingMode == VideoDecodingMode::OnDemand)
+    if (mCachingMode == VideoDecodingMode::OnDemand)
     {
         ReadResult res = ReadFrame(-1, _skip + 1, false);
         moved = res == ReadResult::Success;
     }
-    else if (m_DecodingMode == VideoDecodingMode::Caching)
+    else if (mCachingMode == VideoDecodingMode::Caching)
     {
         moved = mCache->MoveBy(_skip + 1);
     }
-    else if (m_DecodingMode == VideoDecodingMode::PreBuffering)
+    else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
         if (!_decodeIfNecessary || mPreBuffer->HasNext(_skip))
         {
@@ -559,9 +559,10 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
 
     return moved && HasMoreFrames();
 }
+
 bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
 {
-    if (!mIsLoaded || m_DecodingMode == VideoDecodingMode::NotInitialized)
+    if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
         return false;
 
     
@@ -569,16 +570,16 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
     target = MapTimestamp(target);
     //log->DebugFormat("VideoReaderFFMpeg::MoveTo: {0} -> {1}.", from, target);
 
-    if (m_DecodingMode == VideoDecodingMode::OnDemand)
+    if (mCachingMode == VideoDecodingMode::OnDemand)
     {
         ReadResult res = ReadFrame(target, 1, false);
         moved = (res == ReadResult::Success);
     }
-    else if (m_DecodingMode == VideoDecodingMode::Caching)
+    else if (mCachingMode == VideoDecodingMode::Caching)
     {
         moved = mCache->MoveTo(target);
     }
-    else if (m_DecodingMode == VideoDecodingMode::PreBuffering)
+    else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
         if (mPreBuffer->Contains(target))
         {
@@ -640,19 +641,19 @@ void VideoReaderFFMpeg::BeforePlayloop()
         (CanPreBuffer && DecodingMode != VideoDecodingMode::PreBuffering))
     {
         log->Error("Forcing PreBuffering thread to restart.");
-        SwitchDecodingMode(VideoDecodingMode::PreBuffering);
+        ChangeCachingMode(VideoDecodingMode::PreBuffering);
     }
 }
 
 void VideoReaderFFMpeg::ResetDrops()
 {
-    if (m_DecodingMode == VideoDecodingMode::PreBuffering)
+    if (mCachingMode == VideoDecodingMode::PreBuffering)
         mPreBuffer->ResetDrops();
 }
 
 void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn)
 {
-    if (!mIsLoaded || m_DecodingMode == VideoDecodingMode::NotInitialized)
+    if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
         return;
 
     if (!CanChangeWorkingZone)
@@ -667,9 +668,9 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
     if (!CanCache)
     {
         mWorkingZone = _newZone;
-        if (m_DecodingMode == VideoDecodingMode::OnDemand && CanPreBuffer)
-            SwitchDecodingMode(VideoDecodingMode::PreBuffering);
-        else if (m_DecodingMode == VideoDecodingMode::PreBuffering)
+        if (mCachingMode == VideoDecodingMode::OnDemand && CanPreBuffer)
+            ChangeCachingMode(VideoDecodingMode::PreBuffering);
+        else if (mCachingMode == VideoDecodingMode::PreBuffering)
             mPreBuffer->UpdateWorkingZone(mWorkingZone);
     }
     else
@@ -693,26 +694,26 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
                 log->Debug("New working zone does not fit in memory.");
 
             mWorkingZone = _newZone;
-            SwitchToBestAfterCaching();
+            ChangeToBestAfterCaching();
         }
         else
         {
             m_SectionToPrepend = VideoSection::MakeEmpty();
             m_SectionToAppend = VideoSection::MakeEmpty();
 
-            if (m_DecodingMode != VideoDecodingMode::Caching || _forceReload)
+            if (mCachingMode != VideoDecodingMode::Caching || _forceReload)
             {
                 if (mVerbose)
                     log->Debug("Just entering the cached mode, import everything.");
 
-                if (m_DecodingMode == VideoDecodingMode::Caching)
+                if (mCachingMode == VideoDecodingMode::Caching)
                 {
                     // Force a reload of the cache.
                     if (mFrameContainer != nullptr)
                         mFrameContainer->Clear();
                 }
 
-                SwitchDecodingMode(VideoDecodingMode::Caching);
+                ChangeCachingMode(VideoDecodingMode::Caching);
                 m_SectionToPrepend = _newZone;
             }
             else
@@ -770,7 +771,7 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
 
                 /*C# (including ImportWorkingZoneToCache)
                 _workerFn((s,e) => {
-                bool success = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
+                bool success = ReadManyToCache((BackgroundWorker)s, sectionToCache, prepend));
                 if(!success)
                 ExitCaching();
                 }*/
@@ -783,34 +784,34 @@ void VideoReaderFFMpeg::BeforeFrameEnumeration()
 {
     // Frames are about to be enumerated (for example for saving).
     // This operation is not compatible with Prebuffering mode.
-    if (m_DecodingMode == VideoDecodingMode::PreBuffering)
+    if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
         m_WasPrebuffering = true;
-        SwitchDecodingMode(VideoDecodingMode::OnDemand);
+        ChangeCachingMode(VideoDecodingMode::OnDemand);
     }
 }
 
 void VideoReaderFFMpeg::AfterFrameEnumeration()
 {
     if (m_WasPrebuffering)
-        SwitchDecodingMode(VideoDecodingMode::PreBuffering);
+        ChangeCachingMode(VideoDecodingMode::PreBuffering);
     m_WasPrebuffering = false;
 }
 
-void VideoReaderFFMpeg::SwitchDecodingMode(VideoDecodingMode _mode)
+void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode wantedMode)
 {
-    if (_mode == m_DecodingMode)
+    if (wantedMode == mCachingMode)
         return;
 
-    if (!CanSwitchDecodingMode(_mode))
+    if (!CanSwitchDecodingMode(wantedMode))
         throw gcnew CapabilityNotSupportedException();
 
     if (mVerbose)
-        log->DebugFormat("Switching decoding mode. {0} -> {1}", m_DecodingMode.ToString(), _mode.ToString());
+        log->DebugFormat("Changing decoding mode: {0} -> {1}", mCachingMode.ToString(), wantedMode.ToString());
 
-    if (m_DecodingMode == VideoDecodingMode::PreBuffering)
+    if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        log->DebugFormat("SwitchDecodingMode, stopping pre-buffering.");
+        log->DebugFormat("ChangeCachingMode, stopping pre-buffering.");
         StopPreBuffering();
         ResetDecodingSize();
 
@@ -820,8 +821,8 @@ void VideoReaderFFMpeg::SwitchDecodingMode(VideoDecodingMode _mode)
     if (mFrameContainer != nullptr)
         mFrameContainer->Clear();
 
-    m_DecodingMode = _mode;
-    switch (m_DecodingMode)
+    mCachingMode = wantedMode;
+    switch (mCachingMode)
     {
     case VideoDecodingMode::OnDemand:
         mFrameContainer = mSingleFrameContainer;
@@ -833,7 +834,6 @@ void VideoReaderFFMpeg::SwitchDecodingMode(VideoDecodingMode _mode)
         StartPreBuffering();
         break;
     case VideoDecodingMode::Caching:
-
         mFrameContainer = mCache;
         break;
     default:
@@ -841,30 +841,34 @@ void VideoReaderFFMpeg::SwitchDecodingMode(VideoDecodingMode _mode)
     }
 }
 
-void VideoReaderFFMpeg::SwitchToBestAfterCaching()
+void VideoReaderFFMpeg::ChangeToBestAfterCaching()
 {
     // If we cannot enter Caching mode, switch to the next best thing.
     if (CanPreBuffer && !mWorkingZone.IsEmpty)
-        SwitchDecodingMode(VideoDecodingMode::PreBuffering);
+    {
+        ChangeCachingMode(VideoDecodingMode::PreBuffering);
+    }
     else if (CanDecodeOnDemand)
-        SwitchDecodingMode(VideoDecodingMode::OnDemand);
+    {
+        ChangeCachingMode(VideoDecodingMode::OnDemand);
+    }
     else
+    {
         throw gcnew CapabilityNotSupportedException();
+    }
 }
 
 bool VideoReaderFFMpeg::WorkingZoneFitsInMemory(VideoSection _newZone, int _maxMemory)
 {
-    return false;
+    double durationSeconds = (double)(_newZone.End - _newZone.Start) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-    //double durationSeconds = (double)(_newZone.End - _newZone.Start) / mVideoInfo.AverageTimeStampsPerSeconds;
+    // Loading is done at full aspect ratio size, not at the current decoding size based on the rendering container.
+    // Otherwise we would have to potentially reload the cache each time there is a stretch/squeeze request.
+    int bufferSize = av_image_get_buffer_size(sConvertPixelFormat, mVideoInfo.ReferenceSize.Width, mVideoInfo.ReferenceSize.Height, 1);
+    double frameMegaBytes = (double)bufferSize / 1048576;
+    double durationMegaBytes = durationSeconds * mVideoInfo.FramesPerSeconds * frameMegaBytes;
 
-    //// Loading is done at full aspect ratio size, not at the current decoding size based on the rendering container.
-    //// Otherwise we would have to potentially reload the cache each time there is a stretch/squeeze request.
-    //int64_t frameBytes = avpicture_get_size(sConvertPixelFormat, mVideoInfo.ReferenceSize.Width, mVideoInfo.ReferenceSize.Height);
-    //double frameMegaBytes = (double)frameBytes / 1048576;
-    //double durationMegaBytes = durationSeconds * mVideoInfo.FramesPerSeconds * frameMegaBytes;
-
-    //return durationMegaBytes <= _maxMemory;
+    return durationMegaBytes <= _maxMemory;
 }
 
 void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkEventArgs^ e)
@@ -874,13 +878,13 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
 
     //bool success = true;
     //if (!m_SectionToPrepend.IsEmpty)
-    //    success = ReadMany(worker, m_SectionToPrepend, true);
+    //    success = ReadManyToCache(worker, m_SectionToPrepend, true);
 
     //if (success && !m_SectionToAppend.IsEmpty)
-    //    success = ReadMany(worker, m_SectionToAppend, false);
+    //    success = ReadManyToCache(worker, m_SectionToAppend, false);
 
     //if (!success)
-    //    SwitchToBestAfterCaching();
+    //    ChangeToBestAfterCaching();
 }
 
 #pragma endregion
@@ -1003,7 +1007,7 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
         return true;
     }
 
-    if (m_DecodingMode != VideoDecodingMode::PreBuffering)
+    if (mCachingMode != VideoDecodingMode::PreBuffering)
     {
         log->Debug("Will not change decoding size because we are not prebuffering.");
         m_CanDrawUnscaled = false;
@@ -1039,7 +1043,7 @@ void VideoReaderFFMpeg::DisableCustomDecodingSize()
 {
     m_CanDrawUnscaled = false;
 
-    if (m_DecodingMode != VideoDecodingMode::PreBuffering)
+    if (mCachingMode != VideoDecodingMode::PreBuffering)
         return;
 
     int64_t currentTimestamp = mPreBuffer->CurrentFrame != nullptr ? mPreBuffer->CurrentFrame->Timestamp : -1;
@@ -1122,13 +1126,13 @@ Size VideoReaderFFMpeg::FixSize(Size _size, bool sideways)
 
 #pragma region Low level frame reading
 
-bool VideoReaderFFMpeg::ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend)
+bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend)
 {
     // Load the asked section to cache (doesn't move the playhead).
     // Called when filling the cache with the Working Zone.
     // Might also be called internally when loading a very short video or single image.
 
-    if (!CanCache || m_DecodingMode != VideoDecodingMode::Caching)
+    if (!CanCache || mCachingMode != VideoDecodingMode::Caching)
         throw gcnew CapabilityNotSupportedException("Importing to cache is not supported for the video.");
 
     if (_bgWorker != nullptr)
@@ -1231,7 +1235,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 {
     m_LoopWatcher->LoopStart();
 
-    if (!mIsLoaded || m_DecodingMode == VideoDecodingMode::NotInitialized)
+    if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
     {
         return ReadResult::FileNotLoaded;
     }
@@ -1267,8 +1271,15 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // 2. Jump forward to the next frame.
     // 3. Jump forward by n frames.
 
+    // It's possible to get here with a target timestamp equal to the current timestamp.
+    // For example when we change the output size.
+    // Currently this means we'll seek back to the start of the GOP and decode many frames again.
+    // TODO: keep the AVFrame around and just redo the convert.
+
     // Do an initial seek if a seek target is specified.
     // This should land us at the start of the GOP containing the target.
+    // Note that even if the seek target is in the current GOP we go through the 
+    // seeking call and reset the libav internal buffers, because we can't know it beforehand.
     if (seeking)
     {
         framesToDecode = 1;
@@ -1286,7 +1297,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
     // Get the first frame after the seek.
     AVFrame* frame = av_frame_alloc();
-    result = ReadPacketsUntilFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+    result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
     if (result != ReadResult::Success)
     {
         av_frame_free(&frame);
@@ -1300,34 +1311,107 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // TODO: seek back further.
     if (seeking && !approximate && frame->best_effort_timestamp > targetTimestamp)
     {
-        log->ErrorFormat("Seek landed after target.");
+        log->ErrorFormat("Seek or decode landed after target.");
         av_frame_free(&frame);
         return ReadResult::SeekAfterTarget;
     }
 
-    //----------------------------
-    // Process the decoded frame.
-    //----------------------------
+    // At this point we have decoded one frame.
+    // Depending on the call we may be done or need to keep decoding.
 
     mTimestampInfo.CurrentTimestamp = frame->best_effort_timestamp;
 
     if (approximate)
     {
-        // We are done. Convert/store the frame and return.
+        // Early exit for thumbnail extraction.
         result = ConvertAndStoreFrame(frame);
         av_frame_free(&frame);
         return result;
     }
 
-    // TODO: for the normal case, continue decoding until we reach the target.
-    // At this point the next frame may already be available in libav.
+    if (seeking)
+    {
+        // Check if the initial decode is already at the seek target.
+        if (mTimestampInfo.CurrentTimestamp >= targetTimestamp)
+        {
+            log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
+            result = ConvertAndStoreFrame(frame);
+            av_frame_free(&frame);
+            return result;
+        }
 
+        // Otherwise keep decoding frames until we get to the target, or EOF.
+        while (true)
+        {
+            result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+            
+            if (result != ReadResult::Success)
+            {
+                av_frame_free(&frame);
+                return result;
+            }
 
+            LogFrameInfo(frame);
+            framesDecoded++;
+            mTimestampInfo.CurrentTimestamp = frame->best_effort_timestamp;
+        
+            if (frame->best_effort_timestamp >= targetTimestamp)
+            {
+                log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
+                result = ConvertAndStoreFrame(frame);
+                av_frame_free(&frame);
+                break;
+            }
 
-    //m_LoopWatcher->LoopEnd();
-    
-    return ReadResult::FrameNotRead;
+            // Keep decoding.
+        }
 
+        return result;
+    }
+    else
+    {
+        // Check initial decode is already the right number of frames.
+        if (framesToDecode == 1)
+        {
+            // We are done.
+            log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
+            result = ConvertAndStoreFrame(frame);
+            av_frame_free(&frame);
+            return result;
+        }
+
+        // Otherwise keep decoding frames until we get the right number, or EOF.
+        while (true)
+        {
+            result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+
+            if (result != ReadResult::Success)
+            {
+                av_frame_free(&frame);
+                return result;
+            }
+
+            LogFrameInfo(frame);
+            framesDecoded++;
+            mTimestampInfo.CurrentTimestamp = frame->best_effort_timestamp;
+
+            if (framesDecoded >= framesToDecode)
+            {
+                // We are done.
+                log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
+                result = ConvertAndStoreFrame(frame);
+                av_frame_free(&frame);
+                break;
+            }
+
+            // Keep decoding.
+        }
+
+        return result;
+    }
+
+    // We don't get here.
+    return result;
 
 
 
@@ -1569,92 +1653,127 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 }
 
 
-ReadResult VideoReaderFFMpeg::ReadPacketsUntilFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame)
+ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame)
 {
-    // Feed the decoder with packets until it can decode one frame.
-    // At the end of this function the libav buffer may already contain the next frame
-    // so we might not need to read/feed another packet to get it.
-
-    // TODO: handle end of stream case.
+    if (frame == nullptr)
+    {
+        return ReadResult::InvalidProgram;
+    }
 
     AVPacket* packet = av_packet_alloc();
     int res = 0;
-    ReadResult result = ReadResult::FrameNotRead;
+    ReadResult result = ReadResult::UnknownError;
+
     while (true)
     {
-        // Read one packet.
-        av_packet_unref(packet);
-        res = av_read_frame(formatCtx, packet);
-        if (res < 0)
+        // Try to decode the frame immediately in case libav already has it.
+        // This happens when the codec has B-frames, the next I-frame may already
+        // be decoded since it's required to decode the inside of the GOP.
+        res = avcodec_receive_frame(codecCtx, frame);
+
+        if (res >= 0)
         {
-            LogFFMpegError("av_read_frame", res);
+            // Our job is done.
+            result = ReadResult::Success;
+            break;
+        }
+        else if (res == AVERROR(EAGAIN))
+        {
+            // The decoder needs more packets before it can produce a frame.
+            // This is normal for codecs with B-frames.
+            
+            // Read packets until we get a video one and feed it to libav.
+            while (true)
+            {
+                av_packet_unref(packet);
+                res = av_read_frame(formatCtx, packet);
+
+                if (res == AVERROR_EOF)
+                {
+                    log->DebugFormat("Reached end of file.");
+                    result = ReadResult::EOFReached;
+                    break;
+                }
+
+                if (res < 0)
+                {
+                    // If not end of file this is unrecoverable.
+                    // We don't even know if it's on the right stream.
+                    LogFFMpegError("av_read_frame", res);
+                    result = ReadResult::UnknownError;
+                    break;
+                }
+                
+                // Keep reading if it's not in the right stream.
+                if (packet->stream_index != streamIndex)
+                {
+                    continue;
+                }
+
+                // Supply the raw packet data as input to the decoder.
+                res = avcodec_send_packet(codecCtx, packet);
+                if (res < 0)
+                {
+                    if (res == AVERROR(EAGAIN))
+                    {
+                        // libav buffer is full and requires a call to avcodec_receive_frame
+                        // to consume its internal buffer.
+                        // This should never happen here, as we were just told it needed more packets.
+                        LogFFMpegError("avcodec_send_packet", res);
+                        result = ReadResult::UnknownError;
+                        break;
+                    }
+                    else if (res == AVERROR_EOF)
+                    {
+                        // The decoder has been flushed and will not accept any more packets.
+                        // We should have noticed this when reading the packet.
+                        LogFFMpegError("avcodec_send_packet", res);
+                        result = ReadResult::EOFReached;
+                        break;
+                    }
+                    else
+                    {
+                        LogFFMpegError("avcodec_send_packet", res);
+                        result = ReadResult::UnknownError;
+                        break;
+                    }
+                }
+
+                // If we get here we have read and sent a packet to libav.
+                break;
+            }
+
+            if (res < 0)
+            {
+                // An irrecoverable error occurred while reading or sending packets.
+                // `result` variable should be set already.
+                break;
+            }
+            
+            // We are ready to try decoding a frame again.
+            continue;
+        }
+        else if (res == AVERROR_EOF)
+        {
+            // The decoder has been fully flushed and will not return any more frames.
+            LogFFMpegError("avcodec_receive_frame", res);
+            result = ReadResult::EOFReached;
+            break;
+        }
+        else
+        {
+            LogFFMpegError("avcodec_receive_frame", res);
+            result = ReadResult::UnknownError;
             break;
         }
 
-        // Bail out if it's not in the right stream.
-        if (packet->stream_index != streamIndex)
-        {
-            continue;
-        }
-
-        LogPacketInfo(packet);
-
-        // Supply the raw packet data as input to the decoder.
-        res = avcodec_send_packet(codecCtx, packet);
-        if (res < 0)
-        {
-            if (res == AVERROR(EAGAIN))
-            {
-                // The decoder's input buffer is full and needs to be drained before we can send more packets.
-                // We shouldn't have called this function in this case.
-                // TODO: read output with avcodec_receive_frame()
-                LogFFMpegError("avcodec_send_packet", res);
-                break;
-            }
-            else if (res == AVERROR_EOF)
-            {
-                // The decoder has been flushed and will not accept any more packets.
-                LogFFMpegError("avcodec_send_packet", res);
-                break;
-            }
-            else
-            {
-                LogFFMpegError("avcodec_send_packet", res);
-                break;
-            }
-        }
-
-        // Get decoded data from the decoder.
-        res = avcodec_receive_frame(codecCtx, frame);
-        if (res < 0)
-        {
-            if (res == AVERROR(EAGAIN))
-            {
-                // The decoder needs more packets before it can produce a frame.
-                // This is normal for codecs with B-frames.
-                continue;
-            }
-            else if (res == AVERROR_EOF)
-            {
-                // The decoder has been fully flushed and will not return any more frames.
-                LogFFMpegError("avcodec_receive_frame", res);
-                break;
-            }
-            else
-            {
-                LogFFMpegError("avcodec_receive_frame", res);
-                break;
-            }
-        }
-
-        // If we get here we have a decoded frame.
-        result = ReadResult::Success;
-        break;
+        // We can't get here.
     }
 
     av_packet_unref(packet);
     return result;
 }
+
 
 
 int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
@@ -1733,6 +1852,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
     vf->Image = bmp;
     vf->Timestamp = mTimestampInfo.CurrentTimestamp;
     mFrameContainer->Add(vf);
+    log->DebugFormat("Stored frame [{0}]", mTimestampInfo.CurrentTimestamp);
 
     return ReadResult::Success;
 
@@ -1972,7 +2092,7 @@ void VideoReaderFFMpeg::StartPreBuffering()
     if (!CanPreBuffer)
         throw gcnew CapabilityNotSupportedException();
 
-    if (m_DecodingMode == VideoDecodingMode::Caching)
+    if (mCachingMode == VideoDecodingMode::Caching)
         return;
 
     if (m_PreBufferingThread != nullptr && m_PreBufferingThread->IsAlive)

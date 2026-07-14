@@ -98,7 +98,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         }
         virtual property VideoDecodingMode DecodingMode {
             VideoDecodingMode get() override { 
-                return	m_DecodingMode; 
+                return	mCachingMode; 
             }
         }
         virtual property bool Loaded {
@@ -109,7 +109,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         }
         virtual property IWorkingZoneFramesContainer^ WorkingZoneFrames {
             IWorkingZoneFramesContainer^ get() override { 
-                if(m_DecodingMode == VideoDecodingMode::Caching)
+                if(mCachingMode == VideoDecodingMode::Caching)
                     return mCache;
                 else 
                     return nullptr;
@@ -121,7 +121,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         }
         virtual property VideoSection PreBufferingSegment {
             VideoSection get() override {
-                if(m_DecodingMode == VideoDecodingMode::PreBuffering)
+                if(mCachingMode == VideoDecodingMode::PreBuffering)
                     return mPreBuffer->Segment;
                 else 
                     return VideoSection::MakeEmpty(); 
@@ -134,7 +134,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         }
         virtual property int Drops {
             int get() override {
-                return m_DecodingMode == VideoDecodingMode::PreBuffering ? mPreBuffer->Drops : 0;
+                return mCachingMode == VideoDecodingMode::PreBuffering ? mPreBuffer->Drops : 0;
             }
         }
         virtual property bool CanDrawUnscaled {
@@ -153,14 +153,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     public:
         
-        /// <summary>
-        /// Open a video file.
-        /// Returns an OpenVideoResult indicating success or failure.
-        /// </summary>
+        /// Open the video and call Load().
         virtual OpenVideoResult Open(String^ _filePath) override;
         
+        /// Unload the video and release unmanaged resources.
         virtual void Close() override;
+
+        /// Open/Load the video, extract a few frames + basic info, close the video.
         virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
+        
+        /// Try to switch to a better caching strategy if possible.
         virtual void PostLoad() override;
 
         // Low level frame requests
@@ -199,7 +201,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         // Decoding mode & working zone.
         int64_t m_timestampOffset = 0;
-        VideoDecodingMode m_DecodingMode;
+        VideoDecodingMode mCachingMode;
         bool m_bIsVeryShort;
         VideoSection mWorkingZone;
         VideoSection m_SectionToPrepend;
@@ -245,16 +247,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Updates mVideoInfo.FramesPerSeconds.
         void GuessFrameRate(AVFormatContext* formatCtx, AVCodecContext* videoCodecCtx, int streamIndex, bool verbose);
 
-        // Decoding size.
-        void ResetDecodingSize();
-        void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);
-        Size FixSize(Size _size, bool sideways);
-
-        /// Read one frame from the video stream and add it to the frame cache.
+        /// Read one frame from the video stream and add it to the active frame container.
         /// Seeks backwards if needed.
         /// 
-        /// If approximate is true, seek to the target and decode one frame, even if
-        /// it's not the target. This is used for thumbnails for example.
+        /// If approximate is true, seek to the target and decode only one frame, 
+        /// even if it's not the target. This is used for thumbnails for example.
         /// 
         /// Otherwise advance as many frames as needed to reach the target timestamp or frame.
         /// targetJumpFrame is relative to the current frame.
@@ -264,11 +261,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Does not decode any frames.
         int SeekTo(int64_t targetTimestamp);
 
-        /// Read packets from the file until one frame is decoded or the end of the stream is reached.
-        /// At the end of this the libav buffer may contain one or more frames ready to be decoded
-        /// without the need to feed more packets to the decoder.
-        ReadResult ReadPacketsUntilFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame);
-        
+        /// Decode the next available frame from libav. 
+        /// Read and feed packets to libav until one frame is decoded or the end of the stream is reached.
+        /// If a frame is already available doesn't read any packet.
+        ReadResult DecodeOneFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame);
+
         /// Convert the libav AVFrame to a .NET Bitmap and store it to the container.
         /// 
         /// Calls rescale and convert to get a new AVFrame in the correct format.
@@ -281,25 +278,30 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Does not release the passed AVFrame.
         ReadResult ConvertAndStoreFrame(AVFrame* decodedFrame);
 
-        /// Get the source format of decoded frames.
-        /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
-        AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
-
-        bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
+        /// Apply the rotation to the .NET bitmap.
+        void ApplyRotation(Bitmap^ bmp, ImageRotation rotation);
         
         /// Convert and scale the decoded frame to the final pixel format and size.
         /// dstFrame must already be allocated.
         bool RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace);
         
-        /// Apply the rotation to the .NET bitmap.
-        void ApplyRotation(Bitmap^ bmp, ImageRotation rotation);
+        /// Get the source format of decoded frames.
+        /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
+        AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
+
+        bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
         
         /// Release the memory allocated by libav for the frame buffer.
         static void DisposeFrame(VideoFrame^ _frame);
         
-        // Decoding mode.
-        void SwitchDecodingMode(VideoDecodingMode _mode);
-        void SwitchToBestAfterCaching();
+        // Decoding size.
+        void ResetDecodingSize();
+        void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);
+        Size FixSize(Size _size, bool sideways);
+
+        // Caching mode.
+        void ChangeCachingMode(VideoDecodingMode wantedMode);
+        void ChangeToBestAfterCaching();
         bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxMemory);
         void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
         
@@ -308,7 +310,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void StopPreBuffering();
         void PreBufferingWorker(Object^ _canceler);
 
-        // Degug dumps.
+        // Logging helpers.
         void LogFileInfo();
         static void LogPacketInfo(AVPacket* packet);
         static void LogFrameInfo(AVFrame* frame);

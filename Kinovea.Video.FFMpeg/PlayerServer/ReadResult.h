@@ -28,8 +28,21 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		FileNotLoaded,
 		FrameContainerNotSet,
 		MemoryNotAllocated,
+
+        // Errors from trying to read packets, feed packets, or decoding frames.
+		/// Generic error while decoding a frame.
+        FrameNotRead,
+        
+        /// end of file was reached while reading packets.
+        EOFReached,
+
+        /// Irrecoverable error while reading packets.
+        UnknownError,
+
+        /// Dev error.
+        InvalidProgram,
+
 		ImageNotConverted,
-		FrameNotRead,
         SeekAfterTarget
 	};
 }}}
