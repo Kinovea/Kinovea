@@ -54,6 +54,7 @@ namespace Kinovea.FileBrowser
         private SessionHistory sessionHistory = new SessionHistory();
         private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
+        private bool isClosing = false;
         
         private List<CameraSummary> cameraSummaries = new List<CameraSummary>();
         private Dictionary<string, int> cameraSummaryMap = new Dictionary<string, int>();
@@ -557,6 +558,7 @@ namespace Kinovea.FileBrowser
         
         public void Closing()
         {
+            isClosing = true;
             if(currentExptreeItem != null)
                 PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentExptreeItem.Path;
         }
@@ -767,7 +769,7 @@ namespace Kinovea.FileBrowser
         private void etShortcuts_ExpTreeNodeSelected(string selectedPath, CShItem item)
         {
             currentShortcutItem = item;
-            if (initializing)
+            if (initializing || isClosing)
                 return;
 
             // The operation that will trigger the thumbnail refresh MUST only be called at the end. 
