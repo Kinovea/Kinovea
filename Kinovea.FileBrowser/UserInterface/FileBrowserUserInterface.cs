@@ -415,7 +415,7 @@ namespace Kinovea.FileBrowser
             
             // We don't update during app start up, because we would most probably
             // end up loading the desktop, and then the saved folder.
-            if(initializing)
+            if(initializing || isClosing)
                 return;
             
             // Figure out which tab we are on to update the right listview.
@@ -565,7 +565,7 @@ namespace Kinovea.FileBrowser
 
         private void Splitters_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            if (initializing)
+            if (initializing || isClosing)
                 return;
 
             WindowManager.ActiveWindow.ExplorerFilesSplitterRatio = (float)splitExplorerFiles.SplitterDistance / splitExplorerFiles.Height;
@@ -694,7 +694,7 @@ namespace Kinovea.FileBrowser
         {
             currentExptreeItem = item;
             
-            if(!expanding && !initializing)
+            if(!expanding && !initializing && !isClosing)
             {
                 // We don't maintain synchronization with the Shortcuts tab. 
                 ResetShortcutList();
