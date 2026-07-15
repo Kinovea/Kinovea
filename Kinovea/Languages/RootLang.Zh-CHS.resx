@@ -629,7 +629,7 @@
     <value>启动流程</value>
   </data>
   <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
-    <value>展示所有语言</value>
+    <value>显示所有语言</value>
   </data>
   <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
     <value>导出绘图</value>
