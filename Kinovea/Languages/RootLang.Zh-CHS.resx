@@ -614,7 +614,7 @@
     <value>默认触发状态：</value>
   </data>
   <data name="prefPanelCapture_Armed" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="prefPanelCapture_Disarmed" xml:space="preserve">
     <value>已解除</value>
@@ -630,5 +630,8 @@
   </data>
   <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
     <value>展示所有语言</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>导出绘图</value>
   </data>
 </root>
