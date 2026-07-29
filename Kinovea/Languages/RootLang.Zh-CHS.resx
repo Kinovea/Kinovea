@@ -634,4 +634,10 @@
   <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
     <value>导出绘图</value>
   </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>预设{0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
 </root>
