@@ -614,7 +614,7 @@
     <value>默认触发状态：</value>
   </data>
   <data name="prefPanelCapture_Armed" xml:space="preserve">
-    <value />
+    <value>已就绪</value>
   </data>
   <data name="prefPanelCapture_Disarmed" xml:space="preserve">
     <value>已解除</value>
@@ -639,5 +639,26 @@
   </data>
   <data name="Name" xml:space="preserve">
     <value>名称</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>启动时</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>屏幕列表</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>导入当前屏幕</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>已保存的窗口</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>已导出的标注</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>导出校准</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>为高速影像启用导数平滑</value>
   </data>
 </root>
