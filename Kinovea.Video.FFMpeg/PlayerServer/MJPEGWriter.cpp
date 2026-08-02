@@ -202,6 +202,13 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
             break;
         }
 
+        // In theory packet duration should always be 1000 but the call to write_header may change 
+        // the requested time base to something else, so we compute it from the actual one.
+        // This does (frame interval in seconds / time base).
+        m_SavingContext->frameDuration = (long long)Math::Round(
+            (m_SavingContext->fFramesInterval * m_SavingContext->pOutputVideoStream->time_base.den) / 
+            (1000.0 * m_SavingContext->pOutputCodecContext->time_base.num));
+
         //------------------------------------------------------
         // Prepare for the conversion/encoding loop.
         //------------------------------------------------------ 
@@ -261,29 +268,29 @@ void MJPEGWriter::SanityCheck(AVFormatContext* s)
         return;
     }
 
-    AVStream* st = s->streams[0];
+    AVStream* pStream = s->streams[0];
     
-    if (st->codecpar->codec_type != AVMEDIA_TYPE_VIDEO)
+    if (pStream->codecpar->codec_type != AVMEDIA_TYPE_VIDEO)
     {
         log->Error("Sanity check failed: not a video codec.");
         return;
     }
 
-    if(st->time_base.num <= 0 || st->time_base.den <= 0)
+    if(pStream->time_base.num <= 0 || pStream->time_base.den <= 0)
         log->Error("MJPEGWriter sanity check failed: time base not set.");
 
-    if(st->codecpar->width <= 0 || st->codecpar->height <= 0)
+    if(pStream->codecpar->width <= 0 || pStream->codecpar->height <= 0)
         log->Error("MJPEGWriter sanity check failed: dimensions not set.");
 
-    if(av_cmp_q(st->sample_aspect_ratio, st->codecpar->sample_aspect_ratio))
+    if(av_cmp_q(pStream->sample_aspect_ratio, pStream->codecpar->sample_aspect_ratio))
     {
         log->Error("MJPEGWriter sanity check failed: Aspect ratio mismatch between encoder and muxer layer.");
-        log->Debug(String::Format("stream SAR={0}:{1}, codec SAR:{2}:{3}", 
-            st->sample_aspect_ratio.num, st->sample_aspect_ratio.den, 
-            st->codecpar->sample_aspect_ratio.num, st->codecpar->sample_aspect_ratio.den));
+        log->Debug(String::Format("pStream SAR={0}:{1}, codec SAR:{2}:{3}", 
+            pStream->sample_aspect_ratio.num, pStream->sample_aspect_ratio.den, 
+            pStream->codecpar->sample_aspect_ratio.num, pStream->codecpar->sample_aspect_ratio.den));
     }
 
-    /*if(s->oformat->flags & AVFMT_GLOBALHEADER && !(st->flags & CODEC_FLAG_GLOBAL_HEADER))
+    /*if(s->oformat->flags & AVFMT_GLOBALHEADER && !(pStream->flags & CODEC_FLAG_GLOBAL_HEADER))
         log->Debug("MJPEGWriter sanity check warning: Codec does not use global headers but container format requires global headers");*/
     
 }
@@ -732,20 +739,16 @@ bool MJPEGWriter::WritePacket(SavingContext^ savingCtx)
     savingCtx->pPacket->stream_index = savingCtx->pOutputVideoStream->index;
     savingCtx->pPacket->flags |= AV_PKT_FLAG_KEY;
 
-    // In theory packet duration should always be 1000 but the call to write_header may have changed the time base to something else, 
-    // so we compute it from the actual time base.
-    double timestampsPerSecond = (double)savingCtx->pOutputCodecContext->time_base.den / savingCtx->pOutputCodecContext->time_base.num;
-    double avgFramerate = 1000.0 / savingCtx->fFramesInterval;
-    long long packetDuration = (long long)Math::Round(timestampsPerSecond / avgFramerate);
-    savingCtx->pPacket->duration = packetDuration;
-    savingCtx->pPacket->pts = savingCtx->frameCounter * packetDuration;
+    // Duration of this packet in stream time base units.
+    // Normally this will be 1000 timestamps.
+    savingCtx->pPacket->duration = m_SavingContext->frameDuration;
     
-    // Convert to muxer timebase. Normally it should also be the same at this point.
-    av_packet_rescale_ts(
-        savingCtx->pPacket,
-        savingCtx->pOutputCodecContext->time_base,
-        savingCtx->pOutputVideoStream->time_base);
-
+    // Presentation timestamp in stream time base units.
+    savingCtx->pPacket->pts = savingCtx->frameCounter * savingCtx->pPacket->duration;
+    
+    // Decoding timestamp in stream time base units.
+    savingCtx->pPacket->dts = savingCtx->pPacket->pts;
+    
     // Takes ownership of the packet reference and leaves packet blank, including on error.
     int ret = av_interleaved_write_frame(savingCtx->pOutputFormatContext, savingCtx->pPacket);
     if (ret < 0) 

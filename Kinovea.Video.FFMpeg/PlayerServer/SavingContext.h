@@ -51,6 +51,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         long long packetDuration;
 
         int frameCounter;						// Count the number of frames encoded.
+        long long frameDuration;                // Duration of a frame in stream time base.
 
 		double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
 		bool bInputWasMpeg2;					
@@ -73,6 +74,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             targetFormat = AV_PIX_FMT_YUV420P;
 
             frameCounter = 0;
+            frameDuration = 1000;
 			bInputWasMpeg2 = false;
 			fFramesInterval = 40;			// Default speed : 25 fps.
 			iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
