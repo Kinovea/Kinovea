@@ -1594,8 +1594,26 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
     IntPtr^ scan0 = gcnew IntPtr((void*)convertedFrame->data[0]);
     Bitmap^ bmp = nullptr;
 
-    // TODO: handle stabilization offsets here.
-    bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, (IntPtr)scan0);
+    if (stabOffsets->ContainsKey(mTimestampInfo.CurrentTimestamp))
+    {
+        // Image stabilization. Paint the image with the offset applied.
+        // Prepare output bitmap.
+        bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, DecodingPixelFormat);
+
+        // Get the decoded frame in a bitmap and paint it over the output.
+        Bitmap^ bmp2 = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, (IntPtr)scan0);
+        Graphics^ g = Graphics::FromImage(bmp);
+        float dx = stabOffsets[mTimestampInfo.CurrentTimestamp]->X;
+        float dy = stabOffsets[mTimestampInfo.CurrentTimestamp]->Y;
+        // TODO: handle scaling (decoding size).
+        g->DrawImageUnscaled(bmp2, (int)(-dx), (int)(-dy));
+        delete g;
+        delete bmp2;
+    }
+    else
+    {
+        bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, (IntPtr)scan0);
+    }
 
     // Store a pointer to the libav allocated buffer inside the Tag of the bitmap.
     // We will have to free this buffer later when the frame is not used anymore.
