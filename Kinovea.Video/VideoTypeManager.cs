@@ -131,6 +131,9 @@ namespace Kinovea.Video
             return reader;
         }
 
+        /// <summary>
+        /// Instanciate the video reader that supports image sequences.
+        /// </summary>
         public static VideoReader GetImageSequenceReader()
         {
             // Ask specifically for the FFMpeg video reader.

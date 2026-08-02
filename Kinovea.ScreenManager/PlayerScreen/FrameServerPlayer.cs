@@ -33,9 +33,8 @@ using Kinovea.Video.FFMpeg;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// FrameServerPlayer encapsulate the video file, meta data and everything 
-    /// needed to render the frame and access file functions.
-    /// PlayerScreenUserInterface is the View, FrameServerPlayer is the Model.
+    /// FrameServerPlayer controls the video reader and the metadata for a single video.
+    /// PlayerScreenUserInterface is the View, FrameServerPlayer is the controller.
     /// </summary>
     public class FrameServerPlayer
     {
@@ -99,7 +98,9 @@ namespace Kinovea.ScreenManager
         #region Public
 
         /// <summary>
-        /// Load a video or replay watcher by path.
+        /// Open and load a video or replay watcher by path.
+        /// Creates an appropriate video reader and assign it to `videoReader`.
+        /// 
         /// `filePath` may be:
         /// - the id of a capture folder.
         /// - a wildcard path like "G:\video\*".

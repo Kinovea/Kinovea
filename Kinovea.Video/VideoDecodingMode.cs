@@ -2,7 +2,7 @@
 namespace Kinovea.Video
 {
     /// <summary>
-    /// The current decoding mode the video reader is in.
+    /// The current caching mode the video reader is in.
     /// </summary>
     public enum VideoDecodingMode
     {

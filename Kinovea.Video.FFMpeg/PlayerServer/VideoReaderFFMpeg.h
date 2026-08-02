@@ -165,11 +165,12 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Try to switch to a better caching strategy if possible.
         virtual void PostLoad() override;
 
-        // Low level frame requests
+        // Frame requests.
         virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
         virtual bool MoveTo(int64_t from, int64_t target) override;
         
-        // Decoding mode, play loop and frame enumeration
+        // Decoding mode, play loop and frame enumeration.
+        // TODO: these should be moved to C#.
         virtual void BeforePlayloop() override;
         virtual void ResetDrops() override;
         virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
@@ -191,6 +192,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     private:
         static const enum AVPixelFormat sConvertPixelFormat = AV_PIX_FMT_BGRA;
         static const int sDecodingQuality = SWS_FAST_BILINEAR;
+        static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
         // General
         VideoCapabilities m_Capabilities;
@@ -223,8 +225,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         AVCodecContext* mVideoCodecCtx;
         TimestampInfo mTimestampInfo;
 
-        
-
         // Others
         Object^ m_Locker;
         bool m_WasPrebuffering;
@@ -233,8 +233,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         ThreadCanceler^ m_PreBufferingThreadCanceler;
         Stopwatch^ m_Stopwatch = gcnew Stopwatch();
         bool mVerbose = true;
-        static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
-
+        
     private:
 
         void DataInit();
@@ -289,8 +288,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
         AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
 
-        bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
-        
         /// Release the memory allocated by libav for the frame buffer.
         static void DisposeFrame(VideoFrame^ _frame);
         
@@ -299,13 +296,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);
         Size FixSize(Size _size, bool sideways);
 
-        // Caching mode.
+        /// Returns how many megabytes the working zone requires to be fully loaded in memory.
+        /// This is for full size frames, not decoding size.
+        double WorkingZoneMemoryRequirement(VideoSection _newZone);
+
+        // DecodeScheduler
+        // The following functions should eventually be refactored and moved to different classes.
+        bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
         void ChangeCachingMode(VideoDecodingMode wantedMode);
         void ChangeToBestAfterCaching();
-        bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxMemory);
         void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
-        
-        // Pre-buffering thread.
         void StartPreBuffering();
         void StopPreBuffering();
         void PreBufferingWorker(Object^ _canceler);
