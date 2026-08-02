@@ -30,9 +30,11 @@ extern "C"
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#include <avformat.h>
 #include <avcodec.h>
-#include <avstring.h>
+#include <avformat.h>
+#include <error.h>
+#include <frame.h>
+#include <imgutils.h>
 #include <swscale.h> 
 }
 
@@ -55,42 +57,58 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 {
     public ref class MJPEGWriter
     {
-    // Construction/Destruction
     public:
+        /// Constructor.
         MJPEGWriter();
+
+        /// Destructor.
         ~MJPEGWriter();
-    protected:
+        
+        /// Finalizer.
         !MJPEGWriter();
 
-    // Public Methods
-    public:
+        /// Create the saving context that stores global parameters we use throughout saving.
+        /// Configure the muxer, stream and codec.
+        /// Configure the scaling context for conversion from source to target pixel format.
+        /// Write the file header.
         SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation);
+        
+        /// Close the saving context and free any allocated resources.
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
+                       
+        /// Encode and write one frame to the file.
         SaveResult SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
-    // Private Methods
     private:
-        double ComputeBitrate(Size outputSize, double frameInterval);
-        bool SetupMuxer(SavingContext^ _SavingContext);
-        bool SetupEncoder(SavingContext^ _SavingContext, Kinovea::Services::ImageFormat _imageFormat);
-        
-        bool EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
-        bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
-        bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
-        bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
-
-        bool WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
-        void SanityCheck(AVFormatContext* s);
-        void LogError(String^ context, int ffmpegError);
-        void LogStats();
         static int GreatestCommonDenominator(int a, int b);
+
+        double ComputeBitrate(Size outputSize, double frameInterval);
+        
+        /// Configure the codec with default parameters.
+        bool SetupEncoder(SavingContext^ _SavingContext, Kinovea::Services::ImageFormat _imageFormat);
+
+        /// Wrap the incoming buffer in a packet and writes it to the file.
+        /// Used when the incoming buffer is already in the target format.
+        bool WrapAndWrite(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+        
+        /// Use the scaling context set up during `OpenSavingContext` to convert from 
+        /// the source format to YUV, encode to JPEG and then write the packet out.
+        bool EncodeAndWrite(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
+        
+        /// Write the encoded packet to the file.
+        bool WritePacket(SavingContext^ savingCtx);
+
+        void SanityCheck(AVFormatContext* s);
+        
+        // Logging utils.
+        void LogFFMpegError(String^ context, int ffmpegError);
+        void LogStats();
 
     // Members
     private :
         SavingContext^ m_SavingContext;
         Stopwatch^ m_swEncoding;
         Stopwatch^ m_swWrite;
-        int m_frame;
         Int64 m_encodingDurationAccumulator;
         Int64 m_writeDurationAccumulator;
         static const double megabyte = 1024 * 1024;

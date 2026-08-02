@@ -33,15 +33,25 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	public:
 
 		// FFMpeg context
-		AVOutputFormat*	pOutputFormat;			// Muxer general infos. (mime, extensions, supported codecs, etc.)
+        const AVOutputFormat* pOutputFormat;    // Muxer general infos. (mime, extensions, supported codecs, etc.)
 		AVFormatContext* pOutputFormatContext;	// Muxer parameters.
-		AVCodec* pOutputCodec;					// Encoder general infos. (codec_id, etc.)
+		const AVCodec* pOutputCodec;			// Encoder general infos. (codec_id, etc.)
 		AVCodecContext* pOutputCodecContext;	// Encoder parameters.
 		AVStream* pOutputVideoStream;			// Ouput stream for frames.
-		AVStream* pOutputDataStream;			// Output stream for meta data.
-		AVFrame* pInputFrame;					// The current incoming frame.
+
+        // Source and target format.
+        AVPixelFormat sourceFormat;		// The pixel format of the incoming frames.
+        AVPixelFormat targetFormat;		// The pixel format of the encoder.
+
+        // Encoding frames, reused for each incoming frame.
+        AVFrame* pSourceFrame;					// The current incoming frame.
+        AVFrame* pConvertedFrame;				// Converted to the encoder format.
+        AVPacket* pPacket;						// Encoded packet to be written to file.
         SwsContext* pScalingContext;            // The scaling context for the RGB -> YUV color conversion.
-		
+        long long packetDuration;
+
+        int frameCounter;						// Count the number of frames encoded.
+
 		double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
 		bool bInputWasMpeg2;					
 		int iSampleAspectRatioNumerator;
@@ -59,6 +69,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
 		SavingContext::SavingContext()
 		{
+            sourceFormat = AV_PIX_FMT_BGRA;
+            targetFormat = AV_PIX_FMT_YUV420P;
+
+            frameCounter = 0;
 			bInputWasMpeg2 = false;
 			fFramesInterval = 40;			// Default speed : 25 fps.
 			iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
