@@ -1688,14 +1688,9 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
                 av_packet_unref(packet);
                 res = av_read_frame(formatCtx, packet);
 
-                if (res == AVERROR_EOF)
-                {
-                    log->DebugFormat("Reached end of file.");
-                    result = ReadResult::EOFReached;
-                    break;
-                }
-
-                if (res < 0)
+                // Don't fail on EOF here. It sends EOF when it reads the last packet,
+                // we should treat it as normal, feed it to the decoder and loop back to decoding.
+                if (res < 0 && res != AVERROR_EOF)
                 {
                     // If not end of file this is unrecoverable.
                     // We don't even know if it's on the right stream.
@@ -1726,7 +1721,6 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
                     else if (res == AVERROR_EOF)
                     {
                         // The decoder has been flushed and will not accept any more packets.
-                        // We should have noticed this when reading the packet.
                         LogFFMpegError("avcodec_send_packet", res);
                         result = ReadResult::EOFReached;
                         break;
@@ -1800,7 +1794,6 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
 
     // Reset the internal codec state. 
     avcodec_flush_buffers(mVideoCodecCtx);
-
 
     mTimestampInfo = TimestampInfo::Empty;
     return res;
