@@ -513,7 +513,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Methods
-        public void ResetToEmptyState()
+        public void ResetToEmptyState() 
         {
             // Called when we load a new video over an already loaded screen.
             // also recalled if the video loaded but the first frame cannot be displayed.
@@ -2325,7 +2325,11 @@ namespace Kinovea.ScreenManager
             string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, timecodeFormat, true);
             lblSelStartSelection.Text = "◢ " + startTimecode;
 
-            duration = (long)Math.Round(duration - m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+            if (m_FrameServer.VideoReader != null)
+            {
+                duration = (long)Math.Round(duration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            }
+
             string durationTimecode = m_FrameServer.TimeStampsToTimecode(duration, TimeType.Duration, timecodeFormat, true);
             int right = lblSelDuration.Right;
             lblSelDuration.Text = "[" + durationTimecode + "]";

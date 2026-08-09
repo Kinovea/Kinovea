@@ -398,108 +398,45 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
 
 void VideoReaderFFMpeg::GuessFrameRate(AVFormatContext* formatCtx, AVCodecContext* videoCodecCtx, int streamIndex, bool verbose)
 {
-    // Average FPS. Based on the following sources:
-    // - libav in stream info.
-    // - libav in container or stream with duration in frames or microseconds (Rarely available but valid if so).
-    // - stream->time_base	(Often KO, like 90000:1, expresses the timestamps unit)
-    // - codec->time_base (Often OK, but not always).
-    // - some ad-hoc special cases.
-
-    double avgFrameRate = 0.0;
-    if (formatCtx->streams[mVideoStreamIndex]->avg_frame_rate.den != 0)
+    AVStream* stream = formatCtx->streams[mVideoStreamIndex];
+    if (stream->avg_frame_rate.den != 0)
     {
-        // We found a valid average frame rate in the stream info, keep it.
-        mVideoInfo.FramesPerSeconds = (double)formatCtx->streams[mVideoStreamIndex]->avg_frame_rate.num / (double)formatCtx->streams[mVideoStreamIndex]->avg_frame_rate.den;
-        if (verbose)
-        {
-            log->Debug("Average Fps estimation method: libav > average frame rate in stream info.");
-        }
-
+        mVideoInfo.FramesPerSeconds = av_q2d(stream->avg_frame_rate);
+        if (verbose) { log->Debug("Framerate estimation: stream average frame rate."); }
         return;
     }
 
-    //AV_CODEC_PROP_FIELDS
-    //int ticksPerFrame = videoCodecCtx->ticks_per_frame;
-    //if (verbose)
-    //{
-    //    log->Debug("Ticks per frame: " + ticksPerFrame);
-    //}
-
-    // Check stream frames and format duration.
-    if ((formatCtx->streams[mVideoStreamIndex]->nb_frames > 0) && (formatCtx->duration > 0))
+    // Check stream frames and duration.
+    if (stream->nb_frames > 0)
     {
-        mVideoInfo.FramesPerSeconds = ((double)formatCtx->streams[mVideoStreamIndex]->nb_frames * (double)AV_TIME_BASE) / (double)formatCtx->duration;
-
-        //if (ticksPerFrame > 1)
-        //    mVideoInfo.FramesPerSeconds /= ticksPerFrame;
-
-        if (verbose)
-            log->Debug("Average Fps estimation method: Durations.");
-    
-        return;
-    }
-    
-
-    // Stream->time_base, consider invalid if >= 1000.
-    mVideoInfo.FramesPerSeconds = (double)formatCtx->streams[mVideoStreamIndex]->time_base.den / (double)formatCtx->streams[mVideoStreamIndex]->time_base.num;
-    if (mVideoInfo.FramesPerSeconds < 1000)
-    {
-        /*if (ticksPerFrame > 1)
-            mVideoInfo.FramesPerSeconds /= ticksPerFrame;*/
-
-        if (verbose)
+        if (stream->duration > 0 && stream->time_base.num != 0 && stream->time_base.den != 0)
         {
-            log->Debug("Average Fps estimation method: Stream timebase.");
+            // Stream duration is expressed in the stream time base.
+            mVideoInfo.FramesPerSeconds = ((double)stream->nb_frames * stream->time_base.den) / (stream->duration * stream->time_base.num);
+            if (verbose) { log->Debug("Framerate estimation: stream frames / stream duration."); }
+            return;
         }
-
-        return;
+        
+        if (formatCtx->duration > 0)
+        {
+            // Container duration is expressed in the canonical time base AV_TIME_BASE = microseconds.
+            mVideoInfo.FramesPerSeconds = ((double)stream->nb_frames * AV_TIME_BASE) / (formatCtx->duration);
+            if (verbose) { log->Debug("Framerate estimation: stream frames / container duration."); }
+            return;
+        }
     }
 
-    // Codec->time_base, consider invalid if >= 1000.
-    mVideoInfo.FramesPerSeconds = (double)videoCodecCtx->time_base.den / (double)videoCodecCtx->time_base.num;
-
-    if (mVideoInfo.FramesPerSeconds < 1000)
+    // Stream "real base framerate", least common multiple of all framerates in the stream.
+    if (stream->r_frame_rate.num != 0 && stream->r_frame_rate.den != 0)
     {
-        //if (ticksPerFrame > 1)
-        //    mVideoInfo.FramesPerSeconds /= ticksPerFrame;
-
-        if (verbose)
-        {
-            log->Debug("Average Fps estimation method: Codec timebase.");
-        }
-
-        return;
-    }
-
-    // Special case detection, seen in the wild.
-    if (mVideoInfo.FramesPerSeconds == 30000)
-    {
-        mVideoInfo.FramesPerSeconds = 29.97;
-        if (verbose)
-        {
-            log->Debug("Average Fps estimation method: special case detection (30000:1 -> 30000:1001).");
-        }
-
-        return;
-    }
-
-    if (mVideoInfo.FramesPerSeconds == 25000)
-    {
-        mVideoInfo.FramesPerSeconds = 24.975;
-        if (verbose)
-        {
-            log->Debug("Average Fps estimation method: special case detection (25000:1 -> 25000:1001).");
-        }
-
+        mVideoInfo.FramesPerSeconds = av_q2d(stream->r_frame_rate);
+        if (verbose) { log->Debug("Framerate estimation: stream r_frame_rate."); }
         return;
     }
 
     // Detection failed. Force to 25fps.
     mVideoInfo.FramesPerSeconds = 25;
-    if (verbose)
-    {
-        log->Debug("Average Fps estimation method: Estimation failed. Fps will be forced to : " + mVideoInfo.FramesPerSeconds);
-    }
+    if (verbose) { log->DebugFormat("Framerate estimation: fallback to {0}", mVideoInfo.FramesPerSeconds); }
 }
 
 
@@ -1966,6 +1903,7 @@ void VideoReaderFFMpeg::LogFileInfo()
     AVStream* stream = mFormatCtx->streams[mVideoStreamIndex];
     log->DebugFormat("[Stream] - Duration (frames): {0}", stream->nb_frames);
     log->DebugFormat("[Stream] - Duration (timestamps): {0}", stream->duration);
+    log->DebugFormat("[Stream] - Average framerate: {0}", av_q2d(stream->avg_frame_rate));
     log->DebugFormat("[Stream] - TimeBase: {0}/{1}", stream->time_base.num, stream->time_base.den);
     log->DebugFormat("[Stream] - PTS wrap bits: {0}", stream->pts_wrap_bits);
     log->DebugFormat("[Stream] - Average timestamps per seconds: {0}", mVideoInfo.AverageTimeStampsPerSeconds);

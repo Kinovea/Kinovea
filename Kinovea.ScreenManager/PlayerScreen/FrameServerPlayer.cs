@@ -378,8 +378,8 @@ namespace Kinovea.ScreenManager
             if (type == TimeType.Duration)
                 fractionalFrames++;
 
-            double milliseconds = fractionalFrames * metadata.BaselineFrameInterval / metadata.HighSpeedFactor;
-            double framerate = 1000.0 / metadata.BaselineFrameInterval * metadata.HighSpeedFactor;
+            double milliseconds = fractionalFrames * videoReader.Info.FrameIntervalMilliseconds / metadata.HighSpeedFactor;
+            double framerate = 1000.0 / videoReader.Info.FrameIntervalMilliseconds * metadata.HighSpeedFactor;
             double durationTimestamps = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
             double totalFrames = durationTimestamps / averageTimestampsPerFrame;
 
