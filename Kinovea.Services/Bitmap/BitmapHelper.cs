@@ -394,6 +394,7 @@ namespace Kinovea.Services
 
         /// <summary>
         /// Copy the whole bitmap into a rectangle in the frame buffer.
+        /// The source is copied unscaled, at the passed location in the buffer.
         /// The source bitmap is expected to be smaller than destination.
         /// </summary>
         public unsafe static void CopyBitmapToBufferRectangle(Bitmap bitmap, Point location, byte[] buffer, int dstStride)
@@ -419,18 +420,25 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Copies the whole bitmap into the frame buffer.
-        /// The source bitmap is expected to be the same size as the frame buffer.
+        /// Copies the passed BGR24 bitmap to a tightly packed byte buffer.
+        /// Removes any padding at the end of rows.
+        /// The destination buffer must be at least width * height * 3.
         /// </summary>
-        public static void CopyBitmapToBuffer(Bitmap bitmap, byte[] buffer)
+        public static void CopyBgr24ToTightBuffer(Bitmap bitmap, byte[] buffer)
         {
             BitmapData bmpData = null;
             try
             {
                 Rectangle bmpRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-                bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, bitmap.PixelFormat);
+                bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
 
-                Marshal.Copy(bmpData.Scan0, buffer, 0, bmpData.Stride * bitmap.Height);
+                // Copy only (width * 3) bytes per row.
+                int stride = bitmap.Width * 3;
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    IntPtr sourceRow = IntPtr.Add(bmpData.Scan0, y * bmpData.Stride);
+                    Marshal.Copy(sourceRow, buffer, y * stride, stride);
+                }
             }
             catch (Exception e)
             {

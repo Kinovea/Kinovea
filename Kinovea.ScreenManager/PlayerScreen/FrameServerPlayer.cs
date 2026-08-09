@@ -451,23 +451,24 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
         {
-            Bitmap output = null;
+            // Use one reusable staging bitmap.
+            Bitmap staging = null;
 
             if (settings.KeyframesOnly)
             {
                 throw new InvalidProgramException("EnumerateImages should not be called with KeyframesOnly, use EnumerateKeyImages instead.");
             }
 
-            int count = 0;
             // Enumerates the raw frames from the video.
+            int count = 0;
             foreach (VideoFrame vf in videoReader.EnumerateFrames(settings.InputIntervalTimestamps))
             {
                 if (vf == null)
                 {
                     log.Error("Working zone enumerator yield null.");
                     
-                    if (output != null)
-                        output.Dispose();
+                    if (staging != null)
+                        staging.Dispose();
 
                     yield break;
                 }
@@ -476,25 +477,29 @@ namespace Kinovea.ScreenManager
                 count++;
 
                 // Initialize the output Bitmap if not done already.
-                if (output == null)
-                    output = new Bitmap(vf.Image.Width, vf.Image.Height, vf.Image.PixelFormat);
+                if (staging == null)
+                {
+                    staging = new Bitmap(vf.Image.Width, vf.Image.Height, settings.PixelFormat);
+                }
                 
                 // Paint the frame + annotations to our bitmap.
-                bool onKeyframe = settings.ImageRetriever(vf, output);
+                bool onKeyframe = settings.ImageRetriever(vf, staging);
 
                 // Store the input timestamp in the bitmap, this may be used by the caller to build a file name for image exports.
-                output.Tag = vf.Timestamp;
+                staging.Tag = vf.Timestamp;
 
                 int repeatCount = (settings.HasDuplicatedKeyframes && onKeyframe) ? settings.DuplicationKeyframes : settings.Duplication;
                 for (int i = 0; i < repeatCount; i++)
                 { 
-                    yield return output;
+                    yield return staging;
                 }
             }
 
             // End of enumeration.
-            if (output != null)
-                output.Dispose();
+            if (staging != null)
+            {
+                staging.Dispose();
+            }
         }
 
         /// <summary>
@@ -504,7 +509,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public IEnumerable<Bitmap> EnumerateKeyImages(SavingSettings settings)
         {
-            Bitmap output = null;
+            // Use one reusable staging bitmap.
+            Bitmap staging = null;
 
             var keyframes = this.metadata.Keyframes;
             long currentTimestamp = settings.Section.Start;
@@ -528,21 +534,25 @@ namespace Kinovea.ScreenManager
                 currentTimestamp = vf.Timestamp;
 
                 // Initialize the output Bitmap if not done already.
-                if (output == null)
-                    output = new Bitmap(vf.Image.Width, vf.Image.Height, vf.Image.PixelFormat);
+                if (staging == null)
+                {
+                    staging = new Bitmap(vf.Image.Width, vf.Image.Height, settings.PixelFormat);
+                }
 
                 // Paint the frame + annotations to our bitmap.
-                settings.ImageRetriever(vf, output);
+                settings.ImageRetriever(vf, staging);
 
                 // Store the input timestamp in the bitmap, this may be used by the caller to build a file name for image exports.
-                output.Tag = vf.Timestamp;
+                staging.Tag = vf.Timestamp;
 
-                yield return output;
+                yield return staging;
             }
 
             // End of enumeration.
-            if (output != null)
-                output.Dispose();
+            if (staging != null)
+            {
+                staging.Dispose();
+            }
         }
 
         public void ReportError(SaveResult saveResult)

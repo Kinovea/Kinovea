@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Kinovea.Services;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -116,39 +117,33 @@ namespace Kinovea.ScreenManager
                 int frameCount = 0;
                 bool hasFrame = true;
 
+                // Staging frame buffer.
                 int frameBufferSize = inputSize.Width * inputSize.Height * 3;
                 byte[] frameBuffer = new byte[frameBufferSize];
 
-                // Use one reusable 24-bit staging bitmap.
-                using (Bitmap stagingBitmap = new Bitmap(inputSize.Width, inputSize.Height, PixelFormat.Format24bppRgb))
-                using (Graphics graphics = Graphics.FromImage(stagingBitmap))
+                Stream ffmpegInput = ffmpeg.StandardInput.BaseStream;
+
+                while (hasFrame)
                 {
-                    Stream ffmpegInput = ffmpeg.StandardInput.BaseStream;
-
-                    while (hasFrame)
+                    if (worker.CancellationPending)
                     {
-                        if (worker.CancellationPending)
-                        {
-                            cancelled = true;
-                            break;
-                        }
-
-                        // TODO: move this to the frame enumerator.
-                        Bitmap source = enumerator.Current;
-                        graphics.DrawImageUnscaled(source, Point.Empty);
-                        CopyBgr24ToTightBuffer(stagingBitmap, frameBuffer);
-
-                        // Synchronous write as this method already runs on a worker thread.
-                        ffmpegInput.Write(frameBuffer, 0, frameBuffer.Length);
-
-                        frameCount++;
-                        worker.ReportProgress(frameCount, settings.TotalFrameCount);
-
-                        hasFrame = enumerator.MoveNext();
+                        cancelled = true;
+                        break;
                     }
 
-                    ffmpegInput.Flush();
+                    // Get the bitmap into a tightly packed byte buffer.
+                    BitmapHelper.CopyBgr24ToTightBuffer(enumerator.Current, frameBuffer);
+
+                    // Synchronous write as this method already runs on a worker thread.
+                    ffmpegInput.Write(frameBuffer, 0, frameBuffer.Length);
+
+                    frameCount++;
+                    worker.ReportProgress(frameCount, settings.TotalFrameCount);
+
+                    hasFrame = enumerator.MoveNext();
                 }
+
+                ffmpegInput.Flush();
 
                 // Closing stdin signals EOF.
                 // FFmpeg then flushes the encoder and writes the MP4/container trailer.
@@ -197,38 +192,6 @@ namespace Kinovea.ScreenManager
                 {
                     EnsureProcessTerminated(ffmpeg);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Copies the input BGR24 bitmap to a tightly packed byte buffer.
-        /// Removes any padding at the end of rows.
-        /// </summary>
-        private static void CopyBgr24ToTightBuffer(Bitmap bitmap, byte[] destination)
-        {
-            int rowBytes = bitmap.Width * 3;
-            int totalBytes = rowBytes * bitmap.Height;
-
-            if (destination.Length < totalBytes)
-            {
-                throw new ArgumentException("The destination frame buffer is too small.", nameof(destination));
-            }
-
-            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-            BitmapData data = bitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-
-            try
-            {
-                // Copy only width * 3 bytes per row.
-                for (int y = 0; y < bitmap.Height; y++)
-                {
-                    IntPtr sourceRow = IntPtr.Add(data.Scan0, y * data.Stride);
-                    Marshal.Copy(sourceRow, destination, y * rowBytes, rowBytes);
-                }
-            }
-            finally
-            {
-                bitmap.UnlockBits(data);
             }
         }
 

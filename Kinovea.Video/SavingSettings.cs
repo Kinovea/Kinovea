@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing.Imaging;
 using Kinovea.Services;
 
 namespace Kinovea.Video
@@ -49,6 +50,13 @@ namespace Kinovea.Video
         /// Larger than zero means we do a timelapse-style export and jump from timestamp to timestamp.
         /// </summary>
         public double InputIntervalTimestamps = 0;
+
+
+        /// <summary>
+        /// Pixel format of the input frames.
+        /// The enumerator must produce this.
+        /// </summary>
+        public PixelFormat PixelFormat = PixelFormat.Format24bppRgb;
 
         //-------------------------------
         // Output parameters
