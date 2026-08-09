@@ -24,7 +24,7 @@ namespace Kinovea.ScreenManager
         /// Runs on the background thread of the worker.
         /// Checks for cancellation and reports progress to the worker.
         /// </summary>
-        public SaveResult Save(SavingSettings settings, string formatString, IEnumerable<Bitmap> images, BackgroundWorker worker)
+        public SaveResult Save(SavingSettings settings, IEnumerable<Bitmap> images, BackgroundWorker worker)
         {
             if (settings == null || images == null || worker == null)
             {
@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
                 Size inputSize = settings.RenderingSize;
                 Size outputSize = settings.RenderingSize;
 
-                string arguments = WriterFFMpegCliHelper.BuildArguments(settings, inputSize, outputSize, formatString);
+                string arguments = WriterFFMpegCliHelper.BuildArguments(settings, inputSize, outputSize);
 
                 log.Debug("FFmpeg commandline:");
                 log.DebugFormat(arguments);

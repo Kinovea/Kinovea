@@ -62,6 +62,8 @@ namespace Kinovea.ScreenManager
             PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(sfd.FileName);
 
             SavingSettings s = new SavingSettings();
+            s.File = sfd.FileName;
+
             Metadata metadata = player1.FrameServer.Metadata;
 
             try
@@ -71,7 +73,7 @@ namespace Kinovea.ScreenManager
                     case VideoExportFormat.Video:
                         {
                             // Show a configuration dialog.
-                            FormConfigureExportVideo fcev = new FormConfigureExportVideo(player1);
+                            FormConfigureExportVideo fcev = new FormConfigureExportVideo(player1, s.File);
                             fcev.StartPosition = FormStartPosition.CenterScreen;
                             if (fcev.ShowDialog() != DialogResult.OK)
                             {
@@ -86,7 +88,6 @@ namespace Kinovea.ScreenManager
 
                             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
                             s.KeyframesOnly = false;
-                            s.File = sfd.FileName;
                             s.ImageRetriever = player1.view.GetFlushedImage;
 
                             // Output framerate.
@@ -109,12 +110,11 @@ namespace Kinovea.ScreenManager
                             exporterVideo.Export(s, player1);
                             break;
                         }
-
                     case VideoExportFormat.VideoSlideShow:
                     case VideoExportFormat.VideoWithPauses:
                         {
                             // Show a configuration dialog.
-                            FormConfigureExportVideoSlideshow fcevs = new FormConfigureExportVideoSlideshow();
+                            FormConfigureExportVideoSlideshow fcevs = new FormConfigureExportVideoSlideshow(s.File);
                             fcevs.StartPosition = FormStartPosition.CenterScreen;
                             if (fcevs.ShowDialog() != DialogResult.OK)
                             {
@@ -124,10 +124,10 @@ namespace Kinovea.ScreenManager
 
                             double slideDurationMilliseconds = fcevs.SlideDurationMilliseconds;
                             s.ExportProfile = fcevs.ExportProfile;
+                            PreferencesManager.PlayerPreferences.ExportProfile = s.ExportProfile;
                             fcevs.Dispose();
 
                             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
-                            s.File = sfd.FileName;
                             s.ImageRetriever = player1.view.GetFlushedImage;
                             s.HasDuplicatedKeyframes = true;
 
@@ -168,19 +168,19 @@ namespace Kinovea.ScreenManager
                     case VideoExportFormat.SideBySide:
                         {
                             // Show a configuration dialog to get the layout.
-                            FormConfigureExportImageSideBySide fceisbs = new FormConfigureExportImageSideBySide();
-                            fceisbs.StartPosition = FormStartPosition.CenterScreen;
-                            if (fceisbs.ShowDialog() != DialogResult.OK)
+                            FormConfigureExportVideoSideBySide fcevsbs = new FormConfigureExportVideoSideBySide(s.File);
+                            fcevsbs.StartPosition = FormStartPosition.CenterScreen;
+                            if (fcevsbs.ShowDialog() != DialogResult.OK)
                             {
-                                fceisbs.Dispose();
+                                fcevsbs.Dispose();
                                 return;
                             }
 
-                            s.Horizontal = fceisbs.Horizontal;
-                            s.ExportProfile = fceisbs.ExportProfile;
-                            fceisbs.Dispose();
+                            s.Horizontal = fcevsbs.Horizontal;
+                            s.ExportProfile = fcevsbs.ExportProfile;
+                            PreferencesManager.PlayerPreferences.ExportProfile = s.ExportProfile;
+                            fcevsbs.Dispose();
 
-                            s.File = sfd.FileName;
                             s.Merged = dualPlayer.View.Merging;
 
                             // Save the new preferred layout.
@@ -207,13 +207,13 @@ namespace Kinovea.ScreenManager
                             break;
                         }
                 }
-
-                
             }
             catch (Exception e)
             {
                 log.ErrorFormat("Exception encountered while exporting video.", e);
             }
+
+            sfd.Dispose();
         }
 
         /// <summary>

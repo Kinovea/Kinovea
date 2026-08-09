@@ -13,21 +13,33 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class FormConfigureExportImageSideBySide : Form
+    public partial class FormConfigureExportVideoSideBySide : Form
     {
         /// <summary>
-        /// Whether we should composite images horizontally or vertically.
+        /// Whether we should composite videos horizontally or vertically.
         /// </summary>
         public bool Horizontal
         {
             get { return rbHorizontal.Checked; }
         }
 
-        public FormConfigureExportImageSideBySide()
+        /// <summary>
+        /// Export profile with encoding options, only used for video export.
+        /// </summary>
+        public ExportProfile ExportProfile
+        {
+            get
+            {
+                return encodingSettings.GetExportProfile();
+            }
+        }
+
+
+        public FormConfigureExportVideoSideBySide(string filename)
         {
             InitializeComponent();
             InitializeCulture();
-            Populate();
+            Populate(filename);
         }
 
         private void InitializeCulture()
@@ -42,12 +54,15 @@ namespace Kinovea.ScreenManager
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
 
-        private void Populate()
+        private void Populate(string filename)
         {
             // Get the default orientation from preferences.
             bool horizontal = PreferencesManager.PlayerPreferences.SideBySideHorizontal;
             rbHorizontal.Checked = horizontal;
             rbVertical.Checked = !horizontal;
+
+            ExportProfile exportProfile = PreferencesManager.PlayerPreferences.ExportProfile;
+            encodingSettings.FillValues(exportProfile, filename);
         }
     }
 }

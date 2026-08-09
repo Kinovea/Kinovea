@@ -1,7 +1,7 @@
 ﻿
 namespace Kinovea.ScreenManager
 {
-    partial class FormConfigureExportVideo
+    partial class FormConfigureExportVideoSideBySide
     {
         /// <summary>
         /// Required designer variable.
@@ -30,11 +30,12 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
       this.grpboxConfig = new System.Windows.Forms.GroupBox();
-      this.checkSlowMotion = new System.Windows.Forms.CheckBox();
+      this.rbVertical = new System.Windows.Forms.RadioButton();
+      this.rbHorizontal = new System.Windows.Forms.RadioButton();
       this.btnOK = new System.Windows.Forms.Button();
       this.btnCancel = new System.Windows.Forms.Button();
-      this.encodingSettings = new Kinovea.ScreenManager.Exporters.Video.ControlEncodingSettings();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.encodingSettings = new Kinovea.ScreenManager.Exporters.Video.ControlEncodingSettings();
       this.grpboxConfig.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
@@ -44,29 +45,43 @@ namespace Kinovea.ScreenManager
       this.grpboxConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.grpboxConfig.BackColor = System.Drawing.Color.White;
-      this.grpboxConfig.Controls.Add(this.checkSlowMotion);
+      this.grpboxConfig.Controls.Add(this.rbVertical);
+      this.grpboxConfig.Controls.Add(this.rbHorizontal);
       this.grpboxConfig.Location = new System.Drawing.Point(12, 12);
       this.grpboxConfig.Name = "grpboxConfig";
-      this.grpboxConfig.Size = new System.Drawing.Size(376, 69);
+      this.grpboxConfig.Size = new System.Drawing.Size(341, 114);
       this.grpboxConfig.TabIndex = 33;
       this.grpboxConfig.TabStop = false;
       this.grpboxConfig.Text = "Configuration";
       // 
-      // checkSlowMotion
+      // rbVertical
       // 
-      this.checkSlowMotion.AutoSize = true;
-      this.checkSlowMotion.Location = new System.Drawing.Point(24, 33);
-      this.checkSlowMotion.Name = "checkSlowMotion";
-      this.checkSlowMotion.Size = new System.Drawing.Size(201, 17);
-      this.checkSlowMotion.TabIndex = 26;
-      this.checkSlowMotion.Text = "dlgSaveAnalysisOrVideo_CheckSlow";
-      this.checkSlowMotion.UseVisualStyleBackColor = true;
+      this.rbVertical.AutoSize = true;
+      this.rbVertical.Location = new System.Drawing.Point(32, 75);
+      this.rbVertical.Name = "rbVertical";
+      this.rbVertical.Size = new System.Drawing.Size(60, 17);
+      this.rbVertical.TabIndex = 1;
+      this.rbVertical.TabStop = true;
+      this.rbVertical.Text = "Vertical";
+      this.rbVertical.UseVisualStyleBackColor = true;
+      // 
+      // rbHorizontal
+      // 
+      this.rbHorizontal.AutoSize = true;
+      this.rbHorizontal.Checked = true;
+      this.rbHorizontal.Location = new System.Drawing.Point(32, 39);
+      this.rbHorizontal.Name = "rbHorizontal";
+      this.rbHorizontal.Size = new System.Drawing.Size(72, 17);
+      this.rbHorizontal.TabIndex = 0;
+      this.rbHorizontal.TabStop = true;
+      this.rbHorizontal.Text = "Horizontal";
+      this.rbHorizontal.UseVisualStyleBackColor = true;
       // 
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(184, 361);
+      this.btnOK.Location = new System.Drawing.Point(150, 407);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 34;
@@ -77,19 +92,12 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(289, 361);
+      this.btnCancel.Location = new System.Drawing.Point(255, 407);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 35;
       this.btnCancel.Text = "Cancel";
       this.btnCancel.UseVisualStyleBackColor = true;
-      // 
-      // encodingSettings
-      // 
-      this.encodingSettings.Location = new System.Drawing.Point(6, 20);
-      this.encodingSettings.Name = "encodingSettings";
-      this.encodingSettings.Size = new System.Drawing.Size(354, 232);
-      this.encodingSettings.TabIndex = 27;
       // 
       // groupBox1
       // 
@@ -97,26 +105,33 @@ namespace Kinovea.ScreenManager
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox1.BackColor = System.Drawing.Color.White;
       this.groupBox1.Controls.Add(this.encodingSettings);
-      this.groupBox1.Location = new System.Drawing.Point(12, 91);
+      this.groupBox1.Location = new System.Drawing.Point(12, 132);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(376, 261);
-      this.groupBox1.TabIndex = 34;
+      this.groupBox1.Size = new System.Drawing.Size(341, 261);
+      this.groupBox1.TabIndex = 38;
       this.groupBox1.TabStop = false;
       // 
-      // FormConfigureExportVideo
+      // encodingSettings
+      // 
+      this.encodingSettings.Location = new System.Drawing.Point(6, 20);
+      this.encodingSettings.Name = "encodingSettings";
+      this.encodingSettings.Size = new System.Drawing.Size(324, 232);
+      this.encodingSettings.TabIndex = 27;
+      // 
+      // FormConfigureExportImageSideBySide
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(400, 397);
+      this.ClientSize = new System.Drawing.Size(366, 443);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
       this.Controls.Add(this.grpboxConfig);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-      this.Name = "FormConfigureExportVideo";
+      this.Name = "FormConfigureExportImageSideBySide";
       this.Text = "FormExportImageSequence";
       this.grpboxConfig.ResumeLayout(false);
       this.grpboxConfig.PerformLayout();
@@ -130,8 +145,9 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.GroupBox grpboxConfig;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.CheckBox checkSlowMotion;
-        private Exporters.Video.ControlEncodingSettings encodingSettings;
+        private System.Windows.Forms.RadioButton rbVertical;
+        private System.Windows.Forms.RadioButton rbHorizontal;
         private System.Windows.Forms.GroupBox groupBox1;
+        private Exporters.Video.ControlEncodingSettings encodingSettings;
     }
 }

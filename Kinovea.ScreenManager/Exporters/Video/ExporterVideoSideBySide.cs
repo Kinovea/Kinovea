@@ -99,8 +99,7 @@ namespace Kinovea.ScreenManager
             s.RenderingSize = bmpComposite.Size;
 
             WriterFFMpegCLI w = new WriterFFMpegCLI();
-            string formatString = FilesystemHelper.GetFormatStringPlayback(s.File);
-            saveResult = w.Save(s, formatString, images, worker);
+            saveResult = w.Save(s, images, worker);
         }
 
         /// <summary>

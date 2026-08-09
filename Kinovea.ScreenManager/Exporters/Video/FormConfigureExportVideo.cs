@@ -36,13 +36,13 @@ namespace Kinovea.ScreenManager
 
         private PlayerScreen player;
 
-        public FormConfigureExportVideo(PlayerScreen player)
+        public FormConfigureExportVideo(PlayerScreen player, string filename)
         {
             this.player = player;
             
             InitializeComponent();
             InitializeCulture();
-            Populate();
+            Populate(filename);
         }
 
         private void InitializeCulture()
@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
 
-        private void Populate()
+        private void Populate(string filename)
         {
             // Note: this is not concerned with the mapping from capture time to file time.
             // That mapping is used to calibrate time display. Here we are only concerned with changing the 
@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
             checkSlowMotion.Enabled = !isNominal;
 
             ExportProfile exportProfile = PreferencesManager.PlayerPreferences.ExportProfile;
-            encodingSettings.FillValues(exportProfile);
+            encodingSettings.FillValues(exportProfile, filename);
         }
     }
 }

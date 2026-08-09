@@ -34,15 +34,18 @@ namespace Kinovea.ScreenManager
       this.grpboxConfig = new System.Windows.Forms.GroupBox();
       this.lblInfosFrequency = new System.Windows.Forms.Label();
       this.trkInterval = new System.Windows.Forms.TrackBar();
+      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.encodingSettings = new Kinovea.ScreenManager.Exporters.Video.ControlEncodingSettings();
       this.grpboxConfig.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkInterval)).BeginInit();
+      this.groupBox1.SuspendLayout();
       this.SuspendLayout();
       // 
       // btnOK
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(218, 161);
+      this.btnOK.Location = new System.Drawing.Point(173, 411);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 34;
@@ -53,7 +56,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(323, 161);
+      this.btnCancel.Location = new System.Drawing.Point(278, 411);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 35;
@@ -62,15 +65,14 @@ namespace Kinovea.ScreenManager
       // 
       // grpboxConfig
       // 
-      this.grpboxConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.grpboxConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.grpboxConfig.BackColor = System.Drawing.Color.White;
       this.grpboxConfig.Controls.Add(this.lblInfosFrequency);
       this.grpboxConfig.Controls.Add(this.trkInterval);
       this.grpboxConfig.Location = new System.Drawing.Point(14, 20);
       this.grpboxConfig.Name = "grpboxConfig";
-      this.grpboxConfig.Size = new System.Drawing.Size(408, 129);
+      this.grpboxConfig.Size = new System.Drawing.Size(363, 112);
       this.grpboxConfig.TabIndex = 36;
       this.grpboxConfig.TabStop = false;
       this.grpboxConfig.Text = "generic_config";
@@ -90,10 +92,29 @@ namespace Kinovea.ScreenManager
             | System.Windows.Forms.AnchorStyles.Right)));
       this.trkInterval.Location = new System.Drawing.Point(27, 59);
       this.trkInterval.Name = "trkInterval";
-      this.trkInterval.Size = new System.Drawing.Size(356, 45);
+      this.trkInterval.Size = new System.Drawing.Size(307, 45);
       this.trkInterval.TabIndex = 5;
       this.trkInterval.TickStyle = System.Windows.Forms.TickStyle.None;
       this.trkInterval.ValueChanged += new System.EventHandler(this.trkInterval_ValueChanged);
+      // 
+      // groupBox1
+      // 
+      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.BackColor = System.Drawing.Color.White;
+      this.groupBox1.Controls.Add(this.encodingSettings);
+      this.groupBox1.Location = new System.Drawing.Point(14, 138);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(363, 261);
+      this.groupBox1.TabIndex = 37;
+      this.groupBox1.TabStop = false;
+      // 
+      // encodingSettings
+      // 
+      this.encodingSettings.Location = new System.Drawing.Point(6, 20);
+      this.encodingSettings.Name = "encodingSettings";
+      this.encodingSettings.Size = new System.Drawing.Size(354, 232);
+      this.encodingSettings.TabIndex = 27;
       // 
       // FormConfigureExportVideoSlideshow
       // 
@@ -102,7 +123,8 @@ namespace Kinovea.ScreenManager
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(434, 197);
+      this.ClientSize = new System.Drawing.Size(389, 447);
+      this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.grpboxConfig);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
@@ -112,6 +134,7 @@ namespace Kinovea.ScreenManager
       this.grpboxConfig.ResumeLayout(false);
       this.grpboxConfig.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkInterval)).EndInit();
+      this.groupBox1.ResumeLayout(false);
       this.ResumeLayout(false);
 
         }
@@ -122,5 +145,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.GroupBox grpboxConfig;
         private System.Windows.Forms.Label lblInfosFrequency;
         private System.Windows.Forms.TrackBar trkInterval;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private Exporters.Video.ControlEncodingSettings encodingSettings;
     }
 }

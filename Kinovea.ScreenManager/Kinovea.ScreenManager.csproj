@@ -334,6 +334,12 @@
       <DependentUpon>ControlEncodingSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Exporters\Video\ExporterVideo.cs" />
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSideBySide.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\FormConfigureExportVideoSideBySide.Designer.cs">
+      <DependentUpon>FormConfigureExportVideoSideBySide.cs</DependentUpon>
+    </Compile>
     <Compile Include="Exporters\Video\WriterFFMpegCliHelper.cs" />
     <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.cs">
       <SubType>Form</SubType>
@@ -1073,6 +1079,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Exporters\Video\ControlEncodingSettings.resx">
       <DependentUpon>ControlEncodingSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideoSideBySide.resx">
+      <DependentUpon>FormConfigureExportVideoSideBySide.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideoSlideshow.resx">
       <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>

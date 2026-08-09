@@ -82,8 +82,7 @@ namespace Kinovea.ScreenManager
 
             // Export loop.
             WriterFFMpegCLI w = new WriterFFMpegCLI();
-            string formatString = FilesystemHelper.GetFormatStringPlayback(s.File);
-            saveResult = w.Save(s, formatString, images, worker);
+            saveResult = w.Save(s, images, worker);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)

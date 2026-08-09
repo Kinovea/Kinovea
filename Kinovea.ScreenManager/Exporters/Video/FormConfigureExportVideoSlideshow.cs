@@ -28,17 +28,17 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public ExportProfile ExportProfile
         {
-            get; set;
+            get
+            {
+                return encodingSettings.GetExportProfile();
+            }
         }
 
-        public FormConfigureExportVideoSlideshow()
+        public FormConfigureExportVideoSlideshow(string filename)
         {
             InitializeComponent();
             InitializeCulture();
-            Populate();
-
-            // TODO: get the profile from the dialog.
-            ExportProfile = ExportProfile.ExportProfiles[0];
+            Populate(filename);
         }
 
         private void InitializeCulture()
@@ -50,13 +50,16 @@ namespace Kinovea.ScreenManager
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
 
-        private void Populate()
+        private void Populate(string filename)
         {
             // trkInterval values in milliseconds.
             trkInterval.Minimum = 40;
             trkInterval.Maximum = 8000;
             trkInterval.Value = 2000;
             trkInterval.TickFrequency = 250;
+
+            ExportProfile exportProfile = PreferencesManager.PlayerPreferences.ExportProfile;
+            encodingSettings.FillValues(exportProfile, filename);
         }
 
         private void trkInterval_ValueChanged(object sender, EventArgs e)

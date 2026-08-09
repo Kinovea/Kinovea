@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager.Exporters.Video
             lblGOPSize.Text = "GOP size:";
         }
 
-        public void FillValues(ExportProfile profile)
+        public void FillValues(ExportProfile profile, string filename = null)
         {
             manualUpdate = true;
 
@@ -84,13 +84,39 @@ namespace Kinovea.ScreenManager.Exporters.Video
                     namedPreset = true;
                 } 
             }
-            
+
             if (!namedPreset)
             {
                 cbPreset.SelectedIndex = ExportProfile.NamedProfilesCount;
             }
 
-            cbContainer.SelectedIndex = (int)profile.Container;
+
+            // If the filename is set we are just coming from the file selection dialog
+            // where the user picked a file with a known extension.
+            // Select the container format that matches the extension.
+            // If we don't have a filename we are changing the preset here and we want to 
+            // follow the preset container format.
+            if (filename != null)
+            {
+                string extension = System.IO.Path.GetExtension(filename).ToLower();
+                if (extension == ".mp4")
+                {
+                    cbContainer.SelectedIndex = (int)VideoContainer.MP4;
+                }
+                else if (extension == ".mkv")
+                {
+                    cbContainer.SelectedIndex = (int)VideoContainer.MKV;
+                }
+                else if (extension == ".avi")
+                {
+                    cbContainer.SelectedIndex = (int)VideoContainer.AVI;
+                }
+            }
+            else 
+            {
+                cbContainer.SelectedIndex = (int)profile.Container;
+            }
+
             cbCodec.SelectedIndex = (int)profile.Codec;
             cbEncodingQuality.SelectedIndex = (int)profile.EncodingQuality;
             cbEncodingSpeed.SelectedIndex = (int)profile.EncodingSpeed;

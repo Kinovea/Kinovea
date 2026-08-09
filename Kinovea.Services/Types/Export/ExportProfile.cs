@@ -72,6 +72,24 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// Mapping from container to ffmpeg format string.
+        /// </summary>
+        public static string GetFormatString(VideoContainer container)
+        {
+            switch (container)
+            {
+                case VideoContainer.MKV: 
+                    return "matroska";
+                case VideoContainer.AVI: 
+                    return "avi";
+                case VideoContainer.MP4:
+                default: 
+                    return "mp4";
+            }
+        }
+
+
+        /// <summary>
         /// Mapping from quality to MJPEG quantizer.
         /// Practical range is 1 through 31. 
         /// Values around 2 through 5 represent high-quality MJPEG.

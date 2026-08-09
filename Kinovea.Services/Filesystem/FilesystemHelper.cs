@@ -526,21 +526,6 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Retrieves a string suitable for FFMpeg av_guess_format function in the context of playback.
-        /// </summary>
-        public static string GetFormatStringPlayback(string filename)
-        {
-            string ext = Path.GetExtension(filename).ToLower().Substring(1);
-
-            switch (ext)
-            {
-                case "mkv": return "matroska";
-                case "avi": return "avi";
-                default: return "mp4";
-            }
-        }
-
-        /// <summary>
         /// Retrieves a string suitable for FFMpeg av_guess_format function in the context of capture.
         /// </summary>
         public static string GetFormatStringCapture(bool uncompressed)
