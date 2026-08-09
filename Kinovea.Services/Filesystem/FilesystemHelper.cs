@@ -156,7 +156,7 @@ namespace Kinovea.Services
         /// <summary>
         /// Returns the 1-based index of the filter corresponding to the passed Video format.
         /// </summary>
-        public static int GetFilterIndex(string filter, KinoveaVideoFormat format)
+        public static int GetFilterIndex(string filter, VideoContainer format)
         {
             int defaultIndex = 1;
             if (string.IsNullOrEmpty(filter))
@@ -166,18 +166,18 @@ namespace Kinovea.Services
             if (splits.Length < 2 || splits.Length % 2 != 0)
                 return defaultIndex;
 
-            Dictionary<KinoveaVideoFormat, int> mapping = new Dictionary<KinoveaVideoFormat, int>();
+            Dictionary<VideoContainer, int> mapping = new Dictionary<VideoContainer, int>();
             for (int i = 1; i < splits.Length; i += 2)
             {
                 // Filter index is 1-based.
                 int index = ((i - 1) / 2) + 1;
 
                 if (splits[i].Contains("*.mkv"))
-                    mapping.Add(KinoveaVideoFormat.MKV, index);
+                    mapping.Add(VideoContainer.MKV, index);
                 else if (splits[i].Contains("*.avi"))
-                    mapping.Add(KinoveaVideoFormat.AVI, index);
+                    mapping.Add(VideoContainer.AVI, index);
                 else if (splits[i].Contains("*.mp4"))
-                    mapping.Add(KinoveaVideoFormat.MP4, index);
+                    mapping.Add(VideoContainer.MP4, index);
             }
 
             return mapping.ContainsKey(format) ? mapping[format] : defaultIndex;
@@ -186,16 +186,16 @@ namespace Kinovea.Services
         /// <summary>
         /// Returns the Video format based on the extension.
         /// </summary>
-        public static KinoveaVideoFormat GetVideoFormat(string filename)
+        public static VideoContainer GetVideoFormat(string filename)
         {
-            KinoveaVideoFormat format = KinoveaVideoFormat.MKV;
+            VideoContainer format = VideoContainer.MKV;
             string extension = Path.GetExtension(filename).ToLower();
             if (extension == ".mkv")
-                format = KinoveaVideoFormat.MKV;
+                format = VideoContainer.MKV;
             else if (extension == ".mp4")
-                format = KinoveaVideoFormat.MP4;
+                format = VideoContainer.MP4;
             else if (extension == ".avi")
-                format = KinoveaVideoFormat.AVI;
+                format = VideoContainer.AVI;
 
             return format;
         }
@@ -558,9 +558,9 @@ namespace Kinovea.Services
             {
                 switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
                 {
-                    case KinoveaVideoFormat.MKV: return "matroska";
-                    case KinoveaVideoFormat.AVI: return "avi";
-                    case KinoveaVideoFormat.MP4:
+                    case VideoContainer.MKV: return "matroska";
+                    case VideoContainer.AVI: return "avi";
+                    case VideoContainer.MP4:
                     default: return "mp4";
                 }
             }
@@ -581,9 +581,9 @@ namespace Kinovea.Services
             {
                 switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
                 {
-                    case KinoveaVideoFormat.MKV: return ".mkv";
-                    case KinoveaVideoFormat.AVI: return ".avi";
-                    case KinoveaVideoFormat.MP4:
+                    case VideoContainer.MKV: return ".mkv";
+                    case VideoContainer.AVI: return ".avi";
+                    case VideoContainer.MP4:
                     default: return ".mp4";
                 }
             }

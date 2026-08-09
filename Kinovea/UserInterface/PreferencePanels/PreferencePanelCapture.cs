@@ -19,7 +19,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -408,7 +407,7 @@ namespace Kinovea.Root
         }
         private void cmbVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            capturePathConfiguration.VideoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
+            capturePathConfiguration.VideoFormat = (VideoContainer)cmbVideoFormat.SelectedIndex;
         }
         private void cmbUncompressedVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
         {

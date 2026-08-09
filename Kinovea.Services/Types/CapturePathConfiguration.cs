@@ -25,7 +25,7 @@ namespace Kinovea.Services
         /// <summary>
         /// Video format to use when capturing videos.
         /// </summary>
-        public KinoveaVideoFormat VideoFormat { get; set; }
+        public VideoContainer VideoFormat { get; set; }
         /// <summary>
         /// Video format to use when capturing uncompressed videos.
         /// </summary>
@@ -57,7 +57,7 @@ namespace Kinovea.Services
             CaptureFolders = new List<CaptureFolder> { captureA, captureB };
             DefaultFileName = "%dateb%-%time%";
             ImageFormat = KinoveaImageFormat.JPG;
-            VideoFormat = KinoveaVideoFormat.MP4;
+            VideoFormat = VideoContainer.MP4;
             UncompressedVideoFormat = KinoveaUncompressedVideoFormat.MKV;
         }
 
@@ -95,7 +95,7 @@ namespace Kinovea.Services
                         ImageFormat = (KinoveaImageFormat)Enum.Parse(typeof(KinoveaImageFormat), r.ReadElementContentAsString());
                         break;
                     case "VideoFormat":
-                        VideoFormat = (KinoveaVideoFormat)Enum.Parse(typeof(KinoveaVideoFormat), r.ReadElementContentAsString());
+                        VideoFormat = (VideoContainer)Enum.Parse(typeof(VideoContainer), r.ReadElementContentAsString());
                         break;
                     case "UncompressedVideoFormat":
                         UncompressedVideoFormat = (KinoveaUncompressedVideoFormat)Enum.Parse(typeof(KinoveaUncompressedVideoFormat), r.ReadElementContentAsString());

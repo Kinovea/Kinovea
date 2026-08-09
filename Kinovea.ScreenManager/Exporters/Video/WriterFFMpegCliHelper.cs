@@ -1,89 +1,176 @@
-﻿using System;
+﻿using Kinovea.Services;
+using Kinovea.Video;
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Converts export settings to command line arguments for ffmpeg.
+    /// </summary>
     public class WriterFFMpegCliHelper
     {
-        public static string BuildArguments(Size inputSize, Size outputSize, double frameRate, string formatString, string outputPath)
+        public static string BuildArguments(SavingSettings settings, Size inputSize, Size outputSize, string formatString)
         {
-            StringBuilder arguments = new StringBuilder();
+            StringBuilder args = new StringBuilder();
 
-            AddArgument(arguments, "-hide_banner");
-            AddArgument(arguments, "-loglevel");
-            AddArgument(arguments, "error");
+            // Prevent the banner from appearing in the console output.
+            Add(args, "-hide_banner");
+            Add(args, "-loglevel");
+            Add(args, "error");
 
             // Overwrite output file without asking.
-            AddArgument(arguments, "-y");
+            Add(args, "-y");
 
-            // Input: headerless raw frames through stdin.
-            AddArgument(arguments, "-f");
-            AddArgument(arguments, "rawvideo");
+            // Input is headerless raw frames through stdin.
+            Add(args, "-f");
+            Add(args, "rawvideo");
 
-            AddArgument(arguments, "-pixel_format");
-            AddArgument(arguments, "bgr24");
+            Add(args, "-pixel_format");
+            Add(args, "bgr24");
 
-            AddArgument(arguments, "-video_size");
-            AddArgument(arguments, string.Format("{0}x{1}", inputSize.Width, inputSize.Height));
+            Add(args, "-video_size");
+            Add(args, string.Format("{0}x{1}", inputSize.Width, inputSize.Height));
 
-            AddArgument(arguments, "-framerate");
-            AddArgument(arguments, frameRate.ToString("0.########", CultureInfo.InvariantCulture));
+            double frameRate = 1000.0 / settings.OutputIntervalMilliseconds;
+            Add(args, "-framerate");
+            Add(args, frameRate.ToString("0.########", CultureInfo.InvariantCulture));
 
-            AddArgument(arguments, "-i");
-            AddArgument(arguments, "pipe:0");
+            Add(args, "-i");
+            Add(args, "pipe:0");
 
             // No audio stream.
-            AddArgument(arguments, "-an");
+            Add(args, "-an");
 
             if (outputSize.Width != inputSize.Width || outputSize.Height != inputSize.Height)
             {
-                AddArgument(arguments, "-vf");
-                AddArgument(arguments, string.Format("scale={0}:{1}:flags=bicubic", outputSize.Width, outputSize.Height));
+                Add(args, "-vf");
+                Add(args, string.Format("scale={0}:{1}:flags=bicubic", outputSize.Width, outputSize.Height));
             }
 
-            AppendVideoEncodingArguments(arguments);
+            AddVideoEncodingArgs(args, settings);
 
-            if (!string.IsNullOrWhiteSpace(formatString))
-            {
-                AddArgument(arguments, "-f");
-                AddArgument(arguments, formatString);
-            }
-
+            Add(args, "-f");
+            Add(args, formatString);
+            
             // The output filename must be the final argument.
-            AddArgument(arguments, outputPath);
+            Add(args, settings.File);
 
-            return arguments.ToString();
+            return args.ToString();
         }
 
-        private static void AppendVideoEncodingArguments(StringBuilder arguments)
+        private static void AddVideoEncodingArgs(StringBuilder args, SavingSettings settings)
         {
-            // TODO: Read from SavingSettings.
-            AddArgument(arguments, "-c:v");
-            AddArgument(arguments, "libx264");
+            ExportProfile p = settings.ExportProfile;
 
-            AddArgument(arguments, "-pix_fmt");
-            AddArgument(arguments, "yuv420p");
-
-            // intra-only frames and no B-frames:
-            // AddArgument(arguments, "-g");
-            // AddArgument(arguments, "1");
-            // AddArgument(arguments, "-bf");
-            // AddArgument(arguments, "0");
-        }
-
-        private static void AddArgument(StringBuilder commandLine, string value)
-        {
-            if (commandLine.Length > 0)
+            switch (p.Codec)
             {
-                commandLine.Append(' ');
+                case VideoCodec.MJPEG:
+                    {
+                        AddMjpegArgs(args, p);
+                        break;
+                    }
+                case VideoCodec.H264:
+                    {
+                        AddH26xArgs(args, p, "libx264");
+                        break;
+                    }
+                case VideoCodec.H265:
+                    {
+                        AddH26xArgs(args, p, "libx265");
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+
+        private static void AddMjpegArgs(StringBuilder args, ExportProfile p)
+        {
+            Add(args, "-c:v");
+            Add(args, "mjpeg");
+
+            Add(args, "-pix_fmt");
+            Add(args, "yuvj420p");
+
+            if (p.UseConstantBitrate)
+            {
+                AddConstantBitrateArgs(args, p);
+            }
+            else
+            {
+                int q = ExportProfile.GetMJPEGQuality(p.EncodingQuality);
+                Add(args, "-q:v");
+                Add(args, q.ToString());
             }
 
-            commandLine.Append(QuoteCommandLineArgument(value));
+            // No preset.
+            // No GOP size since we are always intra-only.
         }
 
-        private static string QuoteCommandLineArgument(string value)
+        private static void AddH26xArgs(StringBuilder args, ExportProfile p, string name)
+        {
+            Add(args, "-c:v");
+            Add(args, name);
+
+            Add(args, "-pix_fmt");
+            Add(args, "yuv420p");
+            
+            // Speed/compression preset.
+            // = Compression effort. Slower preset spends more time seeking better compression.
+            // Does not raise or lower the requested quality.
+            Add(args, "-preset");
+            Add(args, ExportProfile.GetPreset(p.EncodingSpeed));
+
+            if (p.UseConstantBitrate)
+            {
+                AddConstantBitrateArgs(args, p);
+            }
+            else
+            {
+                int crf = ExportProfile.GetCRF(p.EncodingQuality, p.Codec);
+                Add(args, "-crf");
+                Add(args, crf.ToString());
+            }
+
+            // GOP size.
+            // 0: encoder default, 1: intra-only.
+            if (p.GOPSize > 0)
+            {
+                Add(args, "-g");
+                Add(args, p.GOPSize.ToString());
+            }
+        }
+
+        private static void AddConstantBitrateArgs(StringBuilder args, ExportProfile p)
+        {
+            Add(args, "-b:v");
+            Add(args, p.Bitrate.ToString());
+
+            Add(args, "-minrate");
+            Add(args, p.MinBitrate.ToString());
+
+            Add(args, "-maxrate");
+            Add(args, p.MaxBitrate.ToString());
+
+            // Two-second buffer.
+            Add(args, "-bufsize");
+            Add(args, (p.Bitrate * 2).ToString());
+        }
+
+        private static void Add(StringBuilder args, string value)
+        {
+            if (args.Length > 0)
+            {
+                args.Append(' ');
+            }
+
+            args.Append(QuoteArg(value));
+        }
+
+        private static string QuoteArg(string value)
         {
             if (value == null)
             {

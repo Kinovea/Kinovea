@@ -106,6 +106,12 @@ namespace Kinovea.Video
         public double OutputIntervalMilliseconds = 0.4;
 
         /// <summary>
+        /// Collection of settings passed to ffmpeg for encoding.
+        /// Controls the codec, encoding quality and speed.
+        /// </summary>
+        public ExportProfile ExportProfile = null;
+
+        /// <summary>
         /// Layout for side by side export.
         /// </summary>
         public bool Horizontal = true;

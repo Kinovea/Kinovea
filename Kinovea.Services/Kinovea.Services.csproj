@@ -220,6 +220,10 @@
     <Compile Include="Filesystem\FolderNavigationType.cs" />
     <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Bitmap\BitmapHelper.cs" />
+    <Compile Include="Types\Export\EncodingSpeed.cs" />
+    <Compile Include="Types\Export\VideoCodec.cs" />
+    <Compile Include="Types\Export\EncodingQuality.cs" />
+    <Compile Include="Types\Export\ExportProfile.cs" />
     <Compile Include="Types\WindowContent.cs" />
     <Compile Include="Types\UserCommand.cs" />
     <Compile Include="Preferences\PreferencesHelper.cs" />
@@ -326,7 +330,7 @@
     <Compile Include="Types\BrowserContentType.cs" />
     <Compile Include="Types\ExplorerThumbSize.cs" />
     <Compile Include="Types\KinoveaImageFormat.cs" />
-    <Compile Include="Types\KinoveaVideoFormat.cs" />
+    <Compile Include="Types\Export\VideoContainer.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
     <Compile Include="Types\ShortcutFolder.cs" />
     <Compile Include="Types\Units\SpeedUnit.cs" />

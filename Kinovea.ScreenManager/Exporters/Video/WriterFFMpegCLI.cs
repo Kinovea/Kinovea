@@ -71,8 +71,10 @@ namespace Kinovea.ScreenManager
                     return SaveResult.InputError;
                 }
 
-                double frameRate = 1000.0 / settings.OutputIntervalMilliseconds;
-                string arguments = WriterFFMpegCliHelper.BuildArguments(inputSize, outputSize, frameRate, formatString, settings.File);
+                string arguments = WriterFFMpegCliHelper.BuildArguments(settings, inputSize, outputSize, formatString);
+
+                log.Debug("FFmpeg commandline:");
+                log.DebugFormat(arguments);
 
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {

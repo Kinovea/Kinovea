@@ -86,6 +86,9 @@ namespace Kinovea.ScreenManager
                             s.KeyframesOnly = false;
                             s.File = sfd.FileName;
                             s.ImageRetriever = player1.view.GetFlushedImage;
+
+                            // TODO: get the profile from the dialog.
+                            s.ExportProfile = ExportProfile.ExportProfiles["web"];
                         
                             // Output framerate.
                             double frameInterval = useSlowMotion ? player1.view.PlaybackFrameInterval : metadata.BaselineFrameInterval;
@@ -127,6 +130,9 @@ namespace Kinovea.ScreenManager
                             s.File = sfd.FileName;
                             s.ImageRetriever = player1.view.GetFlushedImage;
                             s.HasDuplicatedKeyframes = true;
+
+                            // TODO: get the profile from the dialog.
+                            s.ExportProfile = ExportProfile.ExportProfiles["web"];
 
                             if (format == VideoExportFormat.VideoSlideShow)
                             {
@@ -176,6 +182,9 @@ namespace Kinovea.ScreenManager
                             s.File = sfd.FileName;
                             s.Horizontal = fceisbs.Horizontal;
                             s.Merged = dualPlayer.View.Merging;
+
+                            // TODO: get the profile from the dialog.
+                            s.ExportProfile = ExportProfile.ExportProfiles["web"];
 
                             // Save the new preferred layout.
                             PreferencesManager.PlayerPreferences.SideBySideHorizontal = s.Horizontal;

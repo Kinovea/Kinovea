@@ -165,7 +165,7 @@ namespace Kinovea.Services
             get { BeforeRead(); return imageFormat; }
             set { imageFormat = value; Save(); }
         }
-        public KinoveaVideoFormat VideoFormat
+        public VideoContainer VideoFormat
         {
             get { BeforeRead(); return videoFormat; }
             set { videoFormat = value; Save(); }
@@ -274,7 +274,7 @@ namespace Kinovea.Services
         private bool syncLockSpeed = true;
         private bool syncByMotion = false;
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
-        private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
+        private VideoContainer videoFormat = VideoContainer.MKV;
         private TrackingParameters trackingParameters = new TrackingParameters();
         private bool enableFiltering = true;
         private bool enableHighSpeedDerivativesSmoothing = true;
@@ -462,7 +462,7 @@ namespace Kinovea.Services
                         imageFormat = (KinoveaImageFormat)Enum.Parse(typeof(KinoveaImageFormat), reader.ReadElementContentAsString());
                         break;
                     case "VideoFormat":
-                        videoFormat = (KinoveaVideoFormat)Enum.Parse(typeof(KinoveaVideoFormat), reader.ReadElementContentAsString());
+                        videoFormat = (VideoContainer)Enum.Parse(typeof(VideoContainer), reader.ReadElementContentAsString());
                         break;
                     case "InfoFading":
                         defaultFading.ReadXml(reader);
