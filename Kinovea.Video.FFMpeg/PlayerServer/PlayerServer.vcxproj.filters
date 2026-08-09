@@ -7,7 +7,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoReaderFFMpeg.cpp" />
-    <ClCompile Include="VideoFileWriter.cpp" />
     <ClCompile Include="MJPEGWriter.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
   </ItemGroup>
@@ -43,7 +42,6 @@
       <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="VideoReaderFFMpeg.h" />
-    <ClInclude Include="VideoFileWriter.h" />
     <ClInclude Include="TimestampInfo.h" />
     <ClInclude Include="SavingContext.h" />
     <ClInclude Include="MJPEGWriter.h" />

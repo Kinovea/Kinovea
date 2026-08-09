@@ -194,8 +194,6 @@ namespace Kinovea.ScreenManager
         {
             // This will set worker.CancellationPending to true, which we check periodically in the saving loop.
             // This will also end the worker immediately, maybe before we check for the cancellation in the other thread. 
-            //videoFileWriter.CloseSavingContext(false);
-            //cancelled = true;
             worker.CancelAsync();
         }
 

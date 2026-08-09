@@ -211,7 +211,6 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="MJPEGWriter.cpp" />
-    <ClCompile Include="VideoFileWriter.cpp" />
     <ClCompile Include="VideoReaderFFMpeg.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -229,7 +228,6 @@
     <ClInclude Include="MJPEGWriter.h" />
     <ClInclude Include="SavingContext.h" />
     <ClInclude Include="TimestampInfo.h" />
-    <ClInclude Include="VideoFileWriter.h" />
     <ClInclude Include="VideoReaderFFMpeg.h" />
   </ItemGroup>
   <ItemGroup>
