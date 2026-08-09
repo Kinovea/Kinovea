@@ -65,6 +65,7 @@ namespace Kinovea.Video.Bitmap
         #region Members
         private IFrameGenerator generator;
         private bool initialized;
+        private bool firstFrame = true;
         private VideoFrame current = new VideoFrame();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
@@ -78,7 +79,9 @@ namespace Kinovea.Video.Bitmap
                 return res;
             
             SetupVideoInfo(filePath);
-            workingZone = new VideoSection(0, videoInfo.DurationTimeStamps);
+            workingZone = new VideoSection(
+                0, 
+                (long)(videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame));
             
             return res;
         }
@@ -119,7 +122,16 @@ namespace Kinovea.Video.Bitmap
         public override void PostLoad(){}
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
-            return UpdateCurrent((long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame));
+            long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            
+            // If this is the very first frame we are asked then "next" is the frame at timestamp 0.
+            if (firstFrame)
+            {
+                target = 0;
+                firstFrame = false;
+            }
+
+            return UpdateCurrent(target);
         }
         public override bool MoveTo(long from, long target)
         {
@@ -174,7 +186,7 @@ namespace Kinovea.Video.Bitmap
             videoInfo.FirstTimeStamp = 0;
             videoInfo.AverageTimeStampsPerFrame = 1;
             videoInfo.FramesPerSeconds = 25;
-            videoInfo.DurationTimeStamps = 251;
+            videoInfo.DurationTimeStamps = 250;
             videoInfo.FrameIntervalMilliseconds = 1000 / videoInfo.FramesPerSeconds;
             videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
 
@@ -203,7 +215,9 @@ namespace Kinovea.Video.Bitmap
             SystemBitmap bmp = generator.Generate(timestamp);
             current.Image = bmp;
             current.Timestamp = timestamp;
-            return true;
+
+            bool hasMore = workingZone.Contains(timestamp + (long)videoInfo.AverageTimeStampsPerFrame);
+            return hasMore;
         }
         #endregion
     }
