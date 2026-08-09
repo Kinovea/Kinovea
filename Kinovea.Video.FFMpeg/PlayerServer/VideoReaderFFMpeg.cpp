@@ -136,7 +136,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
     summary->ImageSize = mVideoInfo.ReferenceSize;
     summary->Framerate = mVideoInfo.FramesPerSeconds;
 
-    log->DebugFormat("ExtractSummary {0}. After load: {1} ms.", filePath, m_Stopwatch->ElapsedMilliseconds);
+    //log->DebugFormat("ExtractSummary {0}. After load: {1} ms.", filePath, m_Stopwatch->ElapsedMilliseconds);
     
     // Read some frames (directly decode at small size).
     float stretch = (float)mVideoInfo.OriginalSize.Width / maxSize.Width;
@@ -151,7 +151,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         index++;
         ReadResult read = ReadFrame(ts == 0 ? -1 : ts, 1, true);
         
-        log->DebugFormat("After ReadFrame #{0} [{1}]: {2} ms.", index, mTimestampInfo.CurrentTimestamp, m_Stopwatch->ElapsedMilliseconds);
+        //log->DebugFormat("After ReadFrame #{0} [{1}]: {2} ms.", index, mTimestampInfo.CurrentTimestamp, m_Stopwatch->ElapsedMilliseconds);
 
         if (read == ReadResult::Success &&
             mFrameContainer->CurrentFrame != nullptr &&
@@ -1285,7 +1285,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     if (seeking)
     {
         framesToDecode = 1;
-        log->DebugFormat("Seeking to {0}", targetTimestamp);
+        //log->DebugFormat("Seeking to {0}", targetTimestamp);
         res = SeekTo(targetTimestamp);
         if (res < 0)
         {
@@ -1307,7 +1307,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     }
 
     framesDecoded = 1;
-    LogFrameInfo(frame);
+    //LogFrameInfo(frame);
 
     // Check if seeking landed beyond the target.
     // TODO: seek back further.
@@ -1353,7 +1353,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
                 return result;
             }
 
-            LogFrameInfo(frame);
+            //LogFrameInfo(frame);
             framesDecoded++;
             mTimestampInfo.CurrentTimestamp = frame->best_effort_timestamp;
         
@@ -1376,7 +1376,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
         if (framesToDecode == 1)
         {
             // We are done.
-            log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
+            //log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
             result = ConvertAndStoreFrame(frame);
             av_frame_free(&frame);
             return result;
@@ -1393,14 +1393,14 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
                 return result;
             }
 
-            LogFrameInfo(frame);
+            //LogFrameInfo(frame);
             framesDecoded++;
             mTimestampInfo.CurrentTimestamp = frame->best_effort_timestamp;
 
             if (framesDecoded >= framesToDecode)
             {
                 // We are done.
-                log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
+                //log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
                 result = ConvertAndStoreFrame(frame);
                 av_frame_free(&frame);
                 break;
@@ -1632,7 +1632,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
     // If we are in mode prebuffer, we are in a background thread and this will potentially block if the 
     // cache is full. 
     mFrameContainer->Add(vf);
-    log->DebugFormat("Stored frame [{0}]", mTimestampInfo.CurrentTimestamp);
+    //log->DebugFormat("Stored frame [{0}]", mTimestampInfo.CurrentTimestamp);
 
     return ReadResult::Success;
 }
@@ -1816,7 +1816,7 @@ void VideoReaderFFMpeg::ApplyRotation(Bitmap^ bmp, ImageRotation rotation)
 
 void VideoReaderFFMpeg::DisposeFrame(VideoFrame^ videoFrame)
 {
-    log->DebugFormat("Disposing frame [{0}].", videoFrame->Timestamp);
+    //log->DebugFormat("Disposing frame [{0}].", videoFrame->Timestamp);
 
     // Dispose the Bitmap and the native buffer.
     // The pointer to the native buffer was stored in the Tag property.
