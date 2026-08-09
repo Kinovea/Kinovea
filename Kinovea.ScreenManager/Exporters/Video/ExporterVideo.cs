@@ -63,11 +63,12 @@ namespace Kinovea.ScreenManager
             // Get the image enumerator.
             player.FrameServer.VideoReader.BeforeFrameEnumeration();
             IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
+            Size inputSize = player.FrameServer.VideoReader.Info.ReferenceSize;
 
             // Export loop.
             WriterFFMpegCLI w = new WriterFFMpegCLI();
             string formatString = FilesystemHelper.GetFormatStringPlayback(s.File);
-            saveResult = w.Save(s, player.FrameServer.VideoReader.Info, formatString, images, worker);
+            saveResult = w.Save(s, inputSize, formatString, images, worker);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -90,7 +91,9 @@ namespace Kinovea.ScreenManager
             player.FrameServer.AfterSave();
 
             if (saveResult != SaveResult.Success)
+            {
                 player.FrameServer.ReportError(saveResult);
+            }
         }
 
         private void FormProgressBar_CancelAsked(object sender, EventArgs e)

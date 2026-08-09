@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using Kinovea.Video;
@@ -162,8 +158,8 @@ namespace Kinovea.ScreenManager
                                 s.TotalFrameCount += (metadata.Keyframes.Count * s.DuplicationKeyframes);
                             }
 
-                            ExporterVideo exporterVideoSlideshow = new ExporterVideo();
-                            exporterVideoSlideshow.Export(s, player1);
+                            ExporterVideo exporterVideo = new ExporterVideo();
+                            exporterVideo.Export(s, player1);
                             break;
                         }
                     case VideoExportFormat.SideBySide:
@@ -177,15 +173,32 @@ namespace Kinovea.ScreenManager
                                 return;
                             }
 
-                            bool horizontal = fceisbs.Horizontal;
+                            s.File = sfd.FileName;
+                            s.Horizontal = fceisbs.Horizontal;
+                            s.Merged = dualPlayer.View.Merging;
+
+                            // Save the new preferred layout.
+                            PreferencesManager.PlayerPreferences.SideBySideHorizontal = s.Horizontal;
+
+                            // During saving we move through the common timeline by steps of commonTimeline.FrameTime
+                            // a time unit based on the framerate and high speed factor,
+                            // not based on user custom slow motion factor.
+                            //
+                            // For the framerate saved in the file metadata we take user custom slow motion
+                            // into account and not high speed factor.
+                            double fileFrameInterval = Math.Max(player1.PlaybackFrameInterval, player2.PlaybackFrameInterval);
+                            s.OutputIntervalMilliseconds = fileFrameInterval;
+
                             fceisbs.Dispose();
 
-                            // Save this as the new preferred layout.
-                            PreferencesManager.PlayerPreferences.SideBySideHorizontal = horizontal;
+                            // Total frame count is unknown at this point, as we pull frames by moving the playhead.
+                            // This is only used to compute the progress percentage, which will be computed 
+                            // by time for this task.
+                            s.TotalFrameCount = 0;
 
                             // Export the video.
                             ExporterVideoSideBySide exporterVideoDual = new ExporterVideoSideBySide();
-                            exporterVideoDual.Export(player1, player2, sfd.FileName, horizontal, dualPlayer);
+                            exporterVideoDual.Export(s, player1, player2, dualPlayer);
 
                             break;
                         }

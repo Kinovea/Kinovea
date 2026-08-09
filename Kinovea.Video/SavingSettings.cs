@@ -105,6 +105,16 @@ namespace Kinovea.Video
         /// </summary>
         public double OutputIntervalMilliseconds = 0.4;
 
+        /// <summary>
+        /// Layout for side by side export.
+        /// </summary>
+        public bool Horizontal = true;
+
+        /// <summary>
+        /// Whether the side by side layout is merged into the left image.
+        /// </summary>
+        public bool Merged = false;
+
         //-------------------------------
         // Helpers
         //-------------------------------

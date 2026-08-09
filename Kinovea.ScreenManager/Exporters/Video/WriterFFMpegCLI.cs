@@ -24,7 +24,7 @@ namespace Kinovea.ScreenManager
         /// Runs on the background thread of the worker.
         /// Checks for cancellation and reports progress to the worker.
         /// </summary>
-        public SaveResult Save(SavingSettings settings, VideoInfo videoInfo, string formatString, IEnumerable<Bitmap> images, BackgroundWorker worker)
+        public SaveResult Save(SavingSettings settings, Size inputSize, string formatString, IEnumerable<Bitmap> images, BackgroundWorker worker)
         {
             if (settings == null || images == null || worker == null)
             {
@@ -60,7 +60,6 @@ namespace Kinovea.ScreenManager
 
                 // Get the first frame outside the loop to setup the saving context.
                 Bitmap firstFrame = enumerator.Current;
-                Size inputSize = videoInfo.ReferenceSize;
 
                 // TODO: take from saving settings.
                 Size outputSize = inputSize;
