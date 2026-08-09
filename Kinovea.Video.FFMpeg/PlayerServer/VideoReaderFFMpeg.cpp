@@ -262,6 +262,9 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     //-----------------------------------------------------
     // Time info
     //-----------------------------------------------------
+    // videoStream->nb_frames == 0 can happen.
+    // videoStream->duration <= 0 can happen.
+
     mVideoInfo.AverageTimeStampsPerSeconds = (double)videoStream->time_base.den / (double)videoStream->time_base.num;
 
     // This may be updated after the first actual decoding.
@@ -269,20 +272,14 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     long firstTimestamp = (long)Math::Round(startSeconds * mVideoInfo.AverageTimeStampsPerSeconds);
     mVideoInfo.FirstTimeStamp = Math::Max(firstTimestamp, 0);
 
-    // In case of negative start time, we still want to expose 0-based timestamps to the outside.
-    // We keep the offset around and add/remove it to low-level ffmpeg calls.
-    // TODO: there are options in the demuxer to automatically handle negative timestamps.
-    if (firstTimestamp < 0)
-    {
-        m_timestampOffset = firstTimestamp - 1;
-        if (!forSummary)
-        {
-            log->WarnFormat("Negative start time. Applying timestamp offset of {0}.", m_timestampOffset);
-        }
-    }
+    // Ignore negative start time.
 
     mVideoInfo.DurationTimeStamps = 0;
-    if (formatCtx->duration > 0)
+    if (videoStream->duration > 0)
+    {
+        mVideoInfo.DurationTimeStamps = videoStream->duration;
+    }
+    else if (formatCtx->duration > 0)
     {
         double durationSeconds = (double)formatCtx->duration / (double)AV_TIME_BASE;
         mVideoInfo.DurationTimeStamps = (int64_t)Math::Round(durationSeconds * mVideoInfo.AverageTimeStampsPerSeconds);
@@ -1465,7 +1462,15 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
                 // Keep reading if it's not in the right stream.
                 if (packet->stream_index != streamIndex)
                 {
-                    continue;
+                    if (res == AVERROR_EOF)
+                    {
+                        result = ReadResult::EOFReached;
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
 
                 // Supply the raw packet data as input to the decoder.
@@ -1913,7 +1918,7 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
         }
 
         // Check if we hit the end of the zone.
-        if (mTimestampInfo.CurrentTimestamp > mWorkingZone.End)
+        if (mTimestampInfo.CurrentTimestamp > mWorkingZone.End || res == ReadResult::EOFReached)
         {
             if (mVerbose)
                 log->DebugFormat("Average prebuffering loop time: {0:0.000}ms. (Budget: {1:0.000}ms).", m_LoopWatcher->Average, mVideoInfo.FrameIntervalMilliseconds);
@@ -1960,8 +1965,9 @@ void VideoReaderFFMpeg::LogFileInfo()
 
     AVStream* stream = mFormatCtx->streams[mVideoStreamIndex];
     log->DebugFormat("[Stream] - Duration (frames): {0}", stream->nb_frames);
-    log->DebugFormat("[Stream] - PTS wrap bits: {0}", stream->pts_wrap_bits);
+    log->DebugFormat("[Stream] - Duration (timestamps): {0}", stream->duration);
     log->DebugFormat("[Stream] - TimeBase: {0}/{1}", stream->time_base.num, stream->time_base.den);
+    log->DebugFormat("[Stream] - PTS wrap bits: {0}", stream->pts_wrap_bits);
     log->DebugFormat("[Stream] - Average timestamps per seconds: {0}", mVideoInfo.AverageTimeStampsPerSeconds);
 
     // Codec
@@ -1973,7 +1979,7 @@ void VideoReaderFFMpeg::LogFileInfo()
     log->DebugFormat("[Codec] - Height (pixels): {0}", mVideoCodecCtx->height);
 
     // Calculated values
-    log->Debug("Duration in timestamps: " + mVideoInfo.DurationTimeStamps);
+    log->Debug("Duration (timestamps): " + mVideoInfo.DurationTimeStamps);
     log->Debug("Average Fps: " + mVideoInfo.FramesPerSeconds);
     log->Debug("Average Frame Interval (ms): " + mVideoInfo.FrameIntervalMilliseconds);
     log->Debug("Average Timestamps per frame: " + mVideoInfo.AverageTimeStampsPerFrame);
