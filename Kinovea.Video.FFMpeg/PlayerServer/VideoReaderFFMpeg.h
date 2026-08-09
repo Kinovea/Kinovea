@@ -58,9 +58,10 @@ extern "C" {
 #include "avfilter.h"
 #include "avformat.h"
 #include "avutil.h"
+#include "display.h"
+#include "imgutils.h"
 #include "swresample.h"
 #include "swscale.h"
-#include "imgutils.h"
 }
 
 #include "ReadResult.h"

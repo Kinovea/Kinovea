@@ -307,20 +307,24 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     // Image size info
     //-----------------------------------------------------
 
-    // Image rotation
+    // Image rotation.
     mVideoInfo.ImageRotation = ImageRotation::Rotate0;
-    AVDictionaryEntry* rotationTag = av_dict_get(videoStream->metadata, "rotate", nullptr, 0);
-    if (rotationTag != nullptr)
+    const AVPacketSideData* displaymatrix = av_packet_side_data_get(videoStream->codecpar->coded_side_data, videoStream->codecpar->nb_coded_side_data, AV_PKT_DATA_DISPLAYMATRIX);
+    if (displaymatrix)
     {
-        String^ value = gcnew String(rotationTag->value);
-        if (value == "90")
+        // Get rotation as a double in [-180..+180].
+        double rotation = Math::Round(av_display_rotation_get((const int32_t*)displaymatrix->data));
+        // Map to 0..360 range.
+        // Ignore rotations that aren't multiples of 90.
+        rotation = ((int)-rotation + 360) % 360;
+        if (rotation == 90)
             mVideoInfo.ImageRotation = ImageRotation::Rotate90;
-        else if (value == "180")
+        else if (rotation == 180)
             mVideoInfo.ImageRotation = ImageRotation::Rotate180;
-        else if (value == "270")
+        else if (rotation == 270)
             mVideoInfo.ImageRotation = ImageRotation::Rotate270;
     }
-
+    
     // Remember if the codec is MPEG2. 
     // We use this to detect a specific behavior related to sample aspect ratio.
     mVideoInfo.IsCodecMpeg2 = (videoCodecId == AV_CODEC_ID_MPEG2VIDEO);
