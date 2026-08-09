@@ -10,34 +10,32 @@ namespace Kinovea.Services
         #region Properties
         public string Name { get; set; } = "Default";
 
+        /// <summary>
+        /// The video container format to use.
+        /// </summary>
         public VideoContainer Container { get; set; } = VideoContainer.MP4;
 
+        /// <summary>
+        /// The video codec to use for encoding.
+        /// </summary>
         public VideoCodec Codec { get; set; } = VideoCodec.H264;
 
         /// <summary>
-        /// If true, use constant bitrate mode, otherwise use constant quality mode.
-        /// </summary>
-        public bool UseConstantBitrate { get; set; } = false;
-
-        /// <summary>
         /// Quality setting.
-        /// Either constant bitrate or 
         /// </summary>
         public EncodingQuality EncodingQuality { get; set; } = EncodingQuality.High;
 
-        public EncodingSpeed EncodingSpeed { get; set; } = EncodingSpeed.Medium;
-
         /// <summary>
-        /// Bitrate in kbits/s for constant bitrate mode.
+        /// Encoding speed/compression tradeoff.
+        /// Slower = better compression, does not change the target quality.
         /// </summary>
-        public long Bitrate { get; set; } = 6000;
-        public long MinBitrate { get; set; } = 0;
-        public long MaxBitrate { get; set; } = 9000;
+        public EncodingSpeed EncodingSpeed { get; set; } = EncodingSpeed.Medium;
 
         public int GOPSize { get; set; } = 12;
         #endregion
 
         public static List<ExportProfile> ExportProfiles { get; } = new List<ExportProfile>();
+        public static int NamedProfilesCount = 0;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         static ExportProfile()
@@ -45,30 +43,32 @@ namespace Kinovea.Services
             ExportProfiles.Clear();
             ExportProfiles.Add(new ExportProfile()
             {
-                Name = "Web",
+                Name = "General",
                 Codec = VideoCodec.H264,
-                UseConstantBitrate = false,
                 EncodingQuality = EncodingQuality.High,
                 EncodingSpeed = EncodingSpeed.Medium,
-                Bitrate = 6000,
-                MinBitrate = 0,
-                MaxBitrate = 9000,
                 GOPSize = 12,
-            }
-            );
+            });
 
             ExportProfiles.Add(new ExportProfile() 
             {
                 Name = "Frame by frame",
                 Codec = VideoCodec.MJPEG,
-                UseConstantBitrate = false,
                 EncodingQuality = EncodingQuality.High,
                 EncodingSpeed = EncodingSpeed.Medium,
-                Bitrate = 6000,
-                MinBitrate = 0,
-                MaxBitrate = 9000,
                 GOPSize = 1,
             });
+
+            ExportProfiles.Add(new ExportProfile()
+            {
+                Name = "Archival",
+                Codec = VideoCodec.MJPEG,
+                EncodingQuality = EncodingQuality.PerceptuallyLossless,
+                EncodingSpeed = EncodingSpeed.Slow,
+                GOPSize = 1,
+            });
+
+            NamedProfilesCount = ExportProfiles.Count;
         }
 
         /// <summary>
@@ -165,23 +165,11 @@ namespace Kinovea.Services
                     case "Codec":
                         Codec = XmlHelper.ParseEnum<VideoCodec>(r.ReadElementContentAsString(), VideoCodec.H264);
                         break;
-                    case "UseConstantBitrate":
-                        UseConstantBitrate = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
                     case "EncodingQuality":
                         EncodingQuality = XmlHelper.ParseEnum<EncodingQuality>(r.ReadElementContentAsString(), EncodingQuality.High);
                         break;
                     case "EncodingSpeed":
                         EncodingSpeed = XmlHelper.ParseEnum<EncodingSpeed>(r.ReadElementContentAsString(), EncodingSpeed.Medium);
-                        break;
-                    case "Bitrate":
-                        Bitrate = long.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
-                        break;
-                    case "MinBitrate":
-                        MinBitrate = long.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
-                        break;
-                    case "MaxBitrate":
-                        MaxBitrate = long.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
                         break;
                     case "GOPSize":
                         GOPSize = int.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
@@ -201,12 +189,8 @@ namespace Kinovea.Services
             w.WriteElementString("Name", Name);
             w.WriteElementString("Container", Container.ToString());
             w.WriteElementString("Codec", Codec.ToString());
-            w.WriteElementString("UseConstantBitrate", XmlHelper.WriteBoolean(UseConstantBitrate));
             w.WriteElementString("EncodingQuality", EncodingQuality.ToString());
             w.WriteElementString("EncodingSpeed", EncodingSpeed.ToString());
-            w.WriteElementString("Bitrate", Bitrate.ToString(CultureInfo.InvariantCulture));
-            w.WriteElementString("MinBitrate", MinBitrate.ToString(CultureInfo.InvariantCulture));
-            w.WriteElementString("MaxBitrate", MaxBitrate.ToString(CultureInfo.InvariantCulture));
             w.WriteElementString("GOPSize", GOPSize.ToString(CultureInfo.InvariantCulture));
         }
         #endregion

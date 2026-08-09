@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
       this.grpboxConfig.Controls.Add(this.checkSlowMotion);
       this.grpboxConfig.Location = new System.Drawing.Point(12, 12);
       this.grpboxConfig.Name = "grpboxConfig";
-      this.grpboxConfig.Size = new System.Drawing.Size(376, 438);
+      this.grpboxConfig.Size = new System.Drawing.Size(376, 312);
       this.grpboxConfig.TabIndex = 33;
       this.grpboxConfig.TabStop = false;
       this.grpboxConfig.Text = "Configuration";
@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
       // 
       this.encodingSettings.Location = new System.Drawing.Point(6, 68);
       this.encodingSettings.Name = "encodingSettings";
-      this.encodingSettings.Size = new System.Drawing.Size(354, 354);
+      this.encodingSettings.Size = new System.Drawing.Size(354, 232);
       this.encodingSettings.TabIndex = 27;
       // 
       // checkSlowMotion
@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnOK.Location = new System.Drawing.Point(184, 462);
+      this.btnOK.Location = new System.Drawing.Point(184, 330);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(99, 24);
       this.btnOK.TabIndex = 34;
@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(289, 462);
+      this.btnCancel.Location = new System.Drawing.Point(289, 330);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.Size = new System.Drawing.Size(99, 24);
       this.btnCancel.TabIndex = 35;
@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(400, 498);
+      this.ClientSize = new System.Drawing.Size(400, 366);
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
       this.Controls.Add(this.grpboxConfig);

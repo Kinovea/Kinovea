@@ -95,16 +95,9 @@ namespace Kinovea.ScreenManager
             Add(args, "-pix_fmt");
             Add(args, "yuvj420p");
 
-            if (p.UseConstantBitrate)
-            {
-                AddConstantBitrateArgs(args, p);
-            }
-            else
-            {
-                int q = ExportProfile.GetMJPEGQuality(p.EncodingQuality);
-                Add(args, "-q:v");
-                Add(args, q.ToString());
-            }
+            int q = ExportProfile.GetMJPEGQuality(p.EncodingQuality);
+            Add(args, "-q:v");
+            Add(args, q.ToString());
 
             // No preset.
             // No GOP size since we are always intra-only.
@@ -124,16 +117,9 @@ namespace Kinovea.ScreenManager
             Add(args, "-preset");
             Add(args, ExportProfile.GetEncodingSpeedPreset(p.EncodingSpeed));
 
-            if (p.UseConstantBitrate)
-            {
-                AddConstantBitrateArgs(args, p);
-            }
-            else
-            {
-                int crf = ExportProfile.GetCRF(p.EncodingQuality, p.Codec);
-                Add(args, "-crf");
-                Add(args, crf.ToString());
-            }
+            int crf = ExportProfile.GetCRF(p.EncodingQuality, p.Codec);
+            Add(args, "-crf");
+            Add(args, crf.ToString());
 
             // GOP size.
             // 0: encoder default, 1: intra-only.
@@ -142,22 +128,6 @@ namespace Kinovea.ScreenManager
                 Add(args, "-g");
                 Add(args, p.GOPSize.ToString());
             }
-        }
-
-        private static void AddConstantBitrateArgs(StringBuilder args, ExportProfile p)
-        {
-            Add(args, "-b:v");
-            Add(args, p.Bitrate.ToString());
-
-            Add(args, "-minrate");
-            Add(args, p.MinBitrate.ToString());
-
-            Add(args, "-maxrate");
-            Add(args, p.MaxBitrate.ToString());
-
-            // Two-second buffer.
-            Add(args, "-bufsize");
-            Add(args, (p.Bitrate * 2).ToString());
         }
 
         private static void Add(StringBuilder args, string value)

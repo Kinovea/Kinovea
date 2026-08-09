@@ -24,23 +24,22 @@ namespace Kinovea.ScreenManager.Exporters.Video
             Initialize();
             manualUpdate = false;
 
-            NudHelper.FixNudScroll(nudBitrate);
-            NudHelper.FixNudScroll(nudMaxBitrate);
-            NudHelper.FixNudScroll(nudMinBitrate);
             NudHelper.FixNudScroll(nudGOPSize);
         }
 
         private void Initialize()
         {
             // TODO: Populate the list of presets.
-            lblPreset.Text = "Export preset:";
-            cbPreset.Items.Add("Web");
-            cbPreset.Items.Add("Frame by frame");
+            lblPreset.Text = "Preset:";
+            for (int i = 0; i < ExportProfile.NamedProfilesCount; i++)
+            {
+                cbPreset.Items.Add(ExportProfile.ExportProfiles[i].Name);
+            }
             cbPreset.Items.Add("Custom");
             cbPreset.SelectedIndex = 0;
 
             // Video containers.
-            lblContainer.Text = "Video container:";
+            lblContainer.Text = "Format:";
             cbContainer.Items.Add("MP4");
             cbContainer.Items.Add("MKV");
             cbContainer.Items.Add("AVI");
@@ -52,12 +51,6 @@ namespace Kinovea.ScreenManager.Exporters.Video
             cbCodec.Items.Add("H.264");
             cbCodec.Items.Add("H.265");
             cbCodec.SelectedIndex = 0;
-
-            // Quality control.
-            lblQualityControl.Text = "Quality control:";
-            cbQualityControl.Items.Add("Constant quality");
-            cbQualityControl.Items.Add("Constant bitrate");
-            cbQualityControl.SelectedIndex = 0;
 
             // Encoding Quality
             lblEncodingQuality.Text = "Encoding quality:";
@@ -73,6 +66,8 @@ namespace Kinovea.ScreenManager.Exporters.Video
             cbEncodingSpeed.Items.Add("Medium");
             cbEncodingSpeed.Items.Add("Slow");
             cbEncodingSpeed.SelectedIndex = 1;
+
+            lblGOPSize.Text = "GOP size:";
         }
 
         public void FillValues(ExportProfile profile)
@@ -81,31 +76,28 @@ namespace Kinovea.ScreenManager.Exporters.Video
 
             // Preset name.
             bool namedPreset = false;
-            for (int i = 0; i < ExportProfile.ExportProfiles.Count; i++)
+            for (int i = 0; i < ExportProfile.NamedProfilesCount; i++)
             {
                 if (profile.Name == ExportProfile.ExportProfiles[i].Name)
                 {
                     cbPreset.SelectedIndex = i;
                     namedPreset = true;
-                }
+                } 
             }
             
             if (!namedPreset)
             {
-                cbPreset.SelectedIndex = ExportProfile.ExportProfiles.Count;
+                cbPreset.SelectedIndex = ExportProfile.NamedProfilesCount;
             }
 
             cbContainer.SelectedIndex = (int)profile.Container;
             cbCodec.SelectedIndex = (int)profile.Codec;
-            cbQualityControl.SelectedIndex = profile.UseConstantBitrate ? 1 : 0;
             cbEncodingQuality.SelectedIndex = (int)profile.EncodingQuality;
             cbEncodingSpeed.SelectedIndex = (int)profile.EncodingSpeed;
-            nudBitrate.Value = profile.Bitrate;
-            nudMaxBitrate.Value = profile.MaxBitrate;
-            nudMinBitrate.Value = profile.MinBitrate;
             nudGOPSize.Value = profile.GOPSize;
-            UpdateBitrateEnable();
             manualUpdate = false;
+
+            UpdateEnabled();
         }
 
         public ExportProfile GetExportProfile()
@@ -115,12 +107,8 @@ namespace Kinovea.ScreenManager.Exporters.Video
             profile.Name = presetName;
             profile.Container = (VideoContainer)cbContainer.SelectedIndex;
             profile.Codec = (VideoCodec)cbCodec.SelectedIndex;
-            profile.UseConstantBitrate = cbQualityControl.SelectedIndex == 1;
             profile.EncodingQuality = (EncodingQuality)cbEncodingQuality.SelectedIndex;
             profile.EncodingSpeed = (EncodingSpeed)cbEncodingSpeed.SelectedIndex;
-            profile.Bitrate = (long)nudBitrate.Value;
-            profile.MaxBitrate = (long)nudMaxBitrate.Value;
-            profile.MinBitrate = (long)nudMinBitrate.Value;
             profile.GOPSize = (int)nudGOPSize.Value;
             return profile;
         }
@@ -133,7 +121,7 @@ namespace Kinovea.ScreenManager.Exporters.Video
             }
 
             int index = cbPreset.SelectedIndex;
-            if (index < ExportProfile.ExportProfiles.Count)
+            if (index < ExportProfile.NamedProfilesCount)
             {
                 FillValues(ExportProfile.ExportProfiles[index]);
                 presetName = ExportProfile.ExportProfiles[index].Name;
@@ -143,6 +131,8 @@ namespace Kinovea.ScreenManager.Exporters.Video
                 // Custom preset, do nothing.
                 presetName = "Custom";
             }
+
+            UpdateEnabled();
         }
 
         private void any_Changed(object sender, EventArgs e)
@@ -152,25 +142,22 @@ namespace Kinovea.ScreenManager.Exporters.Video
                 return;
             }
 
-            UpdateBitrateEnable();
+            UpdateEnabled();
             SetCustom();
+        }
+
+        private void UpdateEnabled()
+        {
+            nudGOPSize.Enabled = cbCodec.SelectedIndex != (int)VideoCodec.MJPEG;
         }
 
         private void SetCustom()
         {
             // Mark the preset as custom if the user changed any value.
-            if (cbPreset.SelectedIndex != 2)
+            if (cbPreset.SelectedIndex != ExportProfile.NamedProfilesCount)
             {
-                cbPreset.SelectedIndex = 2;
+                cbPreset.SelectedIndex = ExportProfile.NamedProfilesCount;
             }
-        }
-
-        private void UpdateBitrateEnable()
-        {
-            bool useConstantBitrate = cbQualityControl.SelectedIndex == 1;
-            nudBitrate.Enabled = useConstantBitrate;
-            nudMaxBitrate.Enabled = useConstantBitrate;
-            nudMinBitrate.Enabled = useConstantBitrate;
         }
     }
 }
