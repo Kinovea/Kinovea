@@ -479,7 +479,7 @@ namespace Kinovea.ScreenManager
                 // Initialize the output Bitmap if not done already.
                 if (staging == null)
                 {
-                    staging = new Bitmap(vf.Image.Width, vf.Image.Height, settings.PixelFormat);
+                    staging = new Bitmap(settings.RenderingSize.Width, settings.RenderingSize.Height, settings.PixelFormat);
                 }
                 
                 // Paint the frame + annotations to our bitmap.

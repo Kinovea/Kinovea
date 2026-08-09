@@ -23,11 +23,23 @@ namespace Kinovea.ScreenManager
             get { return rbHorizontal.Checked; }
         }
 
+        /// <summary>
+        /// Export profile with encoding options, only used for video export.
+        /// </summary>
+        public ExportProfile ExportProfile
+        {
+            get; set;
+        }
+
+
         public FormConfigureExportImageSideBySide()
         {
             InitializeComponent();
             InitializeCulture();
             Populate();
+
+            // TODO: get the profile from the dialog.
+            ExportProfile = ExportProfile.ExportProfiles["web"];
         }
 
         private void InitializeCulture()

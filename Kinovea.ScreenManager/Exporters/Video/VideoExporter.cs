@@ -80,6 +80,7 @@ namespace Kinovea.ScreenManager
                             }
 
                             bool useSlowMotion = fcev.UseSlowMotion;
+                            s.ExportProfile = fcev.ExportProfile;
                             fcev.Dispose();
 
                             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
@@ -87,9 +88,6 @@ namespace Kinovea.ScreenManager
                             s.File = sfd.FileName;
                             s.ImageRetriever = player1.view.GetFlushedImage;
 
-                            // TODO: get the profile from the dialog.
-                            s.ExportProfile = ExportProfile.ExportProfiles["web"];
-                        
                             // Output framerate.
                             double frameInterval = useSlowMotion ? player1.view.PlaybackFrameInterval : metadata.BaselineFrameInterval;
                             s.OutputIntervalMilliseconds = frameInterval;
@@ -124,15 +122,13 @@ namespace Kinovea.ScreenManager
                             }
 
                             double slideDurationMilliseconds = fcevs.SlideDurationMilliseconds;
+                            s.ExportProfile = fcevs.ExportProfile;
                             fcevs.Dispose();
 
                             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
                             s.File = sfd.FileName;
                             s.ImageRetriever = player1.view.GetFlushedImage;
                             s.HasDuplicatedKeyframes = true;
-
-                            // TODO: get the profile from the dialog.
-                            s.ExportProfile = ExportProfile.ExportProfiles["web"];
 
                             if (format == VideoExportFormat.VideoSlideShow)
                             {
@@ -179,12 +175,12 @@ namespace Kinovea.ScreenManager
                                 return;
                             }
 
-                            s.File = sfd.FileName;
                             s.Horizontal = fceisbs.Horizontal;
-                            s.Merged = dualPlayer.View.Merging;
+                            s.ExportProfile = fceisbs.ExportProfile;
+                            fceisbs.Dispose();
 
-                            // TODO: get the profile from the dialog.
-                            s.ExportProfile = ExportProfile.ExportProfiles["web"];
+                            s.File = sfd.FileName;
+                            s.Merged = dualPlayer.View.Merging;
 
                             // Save the new preferred layout.
                             PreferencesManager.PlayerPreferences.SideBySideHorizontal = s.Horizontal;
@@ -197,8 +193,6 @@ namespace Kinovea.ScreenManager
                             // into account and not high speed factor.
                             double fileFrameInterval = Math.Max(player1.PlaybackFrameInterval, player2.PlaybackFrameInterval);
                             s.OutputIntervalMilliseconds = fileFrameInterval;
-
-                            fceisbs.Dispose();
 
                             // Total frame count is unknown at this point, as we pull frames by moving the playhead.
                             // This is only used to compute the progress percentage, which will be computed 

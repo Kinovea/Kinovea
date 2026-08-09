@@ -95,11 +95,12 @@ namespace Kinovea.ScreenManager
             // We are not doing a frame enumeration, we are moving the playhead.
             // We can keep pre-buffering.
             IEnumerable<Bitmap> images = EnumerateComposite(s);
-            Size inputSize = bmpComposite.Size;
+
+            s.RenderingSize = bmpComposite.Size;
 
             WriterFFMpegCLI w = new WriterFFMpegCLI();
             string formatString = FilesystemHelper.GetFormatStringPlayback(s.File);
-            saveResult = w.Save(s, inputSize, formatString, images, worker);
+            saveResult = w.Save(s, formatString, images, worker);
         }
 
         /// <summary>

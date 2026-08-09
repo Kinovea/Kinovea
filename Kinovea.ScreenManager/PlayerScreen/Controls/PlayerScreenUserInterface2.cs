@@ -6029,9 +6029,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool GetFlushedImage(VideoFrame vf, Bitmap output)
         {
-            if (vf.Image.Size != output.Size)
+            if (vf.Image.Size.Width > output.Size.Width || vf.Image.Size.Height > output.Size.Height)
             {
-                log.ErrorFormat("Exporting unscaled images: passed bitmap has the wrong size.");
+                log.ErrorFormat("Exporting unscaled images: passed bitmap is too small.");
                 return false;
             }
 

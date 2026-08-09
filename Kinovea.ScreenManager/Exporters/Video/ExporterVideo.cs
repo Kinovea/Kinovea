@@ -62,13 +62,28 @@ namespace Kinovea.ScreenManager
 
             // Get the image enumerator.
             player.FrameServer.VideoReader.BeforeFrameEnumeration();
+            
+            // Enforce input width being a multiple of 4 and height a multiple of 2.
+            // This avoids scaling the image on the way out,
+            // at the cost of having an empty columns/rows of pixels on the side.
+            // We won't stretch the source image, just paint it unscaled on a sligthly enlarged canvas.
+            // This doesn't change drawings location either.
+            Size renderingSize = player.FrameServer.VideoReader.Info.ReferenceSize;
+
+            if (renderingSize.Width % 4 != 0)
+                renderingSize.Width += 4 - (renderingSize.Width % 4);
+
+            if (renderingSize.Height % 2 != 0)
+                renderingSize.Height++;
+
+            s.RenderingSize = renderingSize;
+
             IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
-            Size inputSize = player.FrameServer.VideoReader.Info.ReferenceSize;
 
             // Export loop.
             WriterFFMpegCLI w = new WriterFFMpegCLI();
             string formatString = FilesystemHelper.GetFormatStringPlayback(s.File);
-            saveResult = w.Save(s, inputSize, formatString, images, worker);
+            saveResult = w.Save(s, formatString, images, worker);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)

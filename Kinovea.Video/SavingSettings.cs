@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using Kinovea.Services;
 
@@ -110,6 +111,13 @@ namespace Kinovea.Video
         /// Controls the codec, encoding quality and speed.
         /// </summary>
         public ExportProfile ExportProfile = null;
+
+
+        /// <summary>
+        /// Size at which we render the video frames.
+        /// Should be the same as the reference size, possibly increased by 1-3 pixels.
+        /// </summary>
+        public Size RenderingSize;
 
         /// <summary>
         /// Layout for side by side export.

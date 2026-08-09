@@ -24,7 +24,7 @@ namespace Kinovea.ScreenManager
         /// Runs on the background thread of the worker.
         /// Checks for cancellation and reports progress to the worker.
         /// </summary>
-        public SaveResult Save(SavingSettings settings, Size inputSize, string formatString, IEnumerable<Bitmap> images, BackgroundWorker worker)
+        public SaveResult Save(SavingSettings settings, string formatString, IEnumerable<Bitmap> images, BackgroundWorker worker)
         {
             if (settings == null || images == null || worker == null)
             {
@@ -58,18 +58,9 @@ namespace Kinovea.ScreenManager
                     return SaveResult.InputError;
                 }
 
-                // Get the first frame outside the loop to setup the saving context.
-                Bitmap firstFrame = enumerator.Current;
-
-                // TODO: take from saving settings.
-                Size outputSize = inputSize;
-
-                // YUV420p Requires even dimensions.
-                if ((outputSize.Width & 1) != 0 || (outputSize.Height & 1) != 0)
-                {
-                    log.ErrorFormat("Image size must be even. Requested: {0}x{1}.", outputSize.Width, outputSize.Height);
-                    return SaveResult.InputError;
-                }
+                // TODO: get output size from user.
+                Size inputSize = settings.RenderingSize;
+                Size outputSize = settings.RenderingSize;
 
                 string arguments = WriterFFMpegCliHelper.BuildArguments(settings, inputSize, outputSize, formatString);
 

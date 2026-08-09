@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -22,11 +23,22 @@ namespace Kinovea.ScreenManager
             get { return trkInterval.Value; }
         }
 
+        /// <summary>
+        /// Export profile with encoding options.
+        /// </summary>
+        public ExportProfile ExportProfile
+        {
+            get; set;
+        }
+
         public FormConfigureExportVideoSlideshow()
         {
             InitializeComponent();
             InitializeCulture();
             Populate();
+
+            // TODO: get the profile from the dialog.
+            ExportProfile = ExportProfile.ExportProfiles["web"];
         }
 
         private void InitializeCulture()
