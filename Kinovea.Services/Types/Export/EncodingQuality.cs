@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kinovea.Services.Types.Export
+namespace Kinovea.Services
 {
     public enum EncodingQuality
     {

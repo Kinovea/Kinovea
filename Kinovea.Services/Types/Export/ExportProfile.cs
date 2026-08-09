@@ -1,10 +1,7 @@
-﻿using Kinovea.Services.Types.Export;
-using Microsoft.VisualBasic.Logging;
-using System;
+﻿using Microsoft.VisualBasic.Logging;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
+using System.Xml;
 
 namespace Kinovea.Services
 {
@@ -40,33 +37,42 @@ namespace Kinovea.Services
         public int GOPSize { get; set; } = 12;
         #endregion
 
-        public static Dictionary<string, ExportProfile> ExportProfiles { get; } = new Dictionary<string, ExportProfile>();
+        public static List<ExportProfile> ExportProfiles { get; } = new List<ExportProfile>();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         static ExportProfile()
         {
             ExportProfiles.Clear();
-            ExportProfiles.Add("web", new ExportProfile()
+            ExportProfiles.Add(new ExportProfile()
             {
                 Name = "Web",
                 Codec = VideoCodec.H264,
                 UseConstantBitrate = false,
                 EncodingQuality = EncodingQuality.High,
                 EncodingSpeed = EncodingSpeed.Medium,
+                Bitrate = 6000,
+                MinBitrate = 0,
+                MaxBitrate = 9000,
                 GOPSize = 12,
             }
             );
 
-            ExportProfiles.Add("fbf", new ExportProfile() 
+            ExportProfiles.Add(new ExportProfile() 
             {
                 Name = "Frame by frame",
                 Codec = VideoCodec.MJPEG,
                 UseConstantBitrate = false,
                 EncodingQuality = EncodingQuality.High,
+                EncodingSpeed = EncodingSpeed.Medium,
+                Bitrate = 6000,
+                MinBitrate = 0,
+                MaxBitrate = 9000,
+                GOPSize = 1,
             });
         }
 
         /// <summary>
-        /// Mapping from user-friendly quality setting to MJPEG quantizer.
+        /// Mapping from quality to MJPEG quantizer.
         /// Practical range is 1 through 31. 
         /// Values around 2 through 5 represent high-quality MJPEG.
         /// </summary>
@@ -96,7 +102,7 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Mapping from user friendly name to CRF value for H.264 and H.265.
+        /// Mapping from quality to CRF value for H.264 and H.265.
         /// See: https://trac.ffmpeg.org/wiki/Encode/H.264
         /// CRF = Constant Rate Factor = constant quality, as opposed to constant bitrate.
         /// CRF scale is 0–51, default = 23 for H.264, 28 for H.265.
@@ -126,7 +132,7 @@ namespace Kinovea.Services
             }
         }
 
-        public static string GetPreset(EncodingSpeed speed)
+        public static string GetEncodingSpeedPreset(EncodingSpeed speed)
         {
             switch (speed)
             {
@@ -140,5 +146,69 @@ namespace Kinovea.Services
                     return "medium";
             }
         }
+
+        #region Serialization
+        public void ReadXml(XmlReader r)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "Name":
+                        Name = r.ReadElementContentAsString();
+                        break;
+                    case "Container":
+                        Container = XmlHelper.ParseEnum<VideoContainer>(r.ReadElementContentAsString(), VideoContainer.MP4);
+                        break;
+                    case "Codec":
+                        Codec = XmlHelper.ParseEnum<VideoCodec>(r.ReadElementContentAsString(), VideoCodec.H264);
+                        break;
+                    case "UseConstantBitrate":
+                        UseConstantBitrate = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "EncodingQuality":
+                        EncodingQuality = XmlHelper.ParseEnum<EncodingQuality>(r.ReadElementContentAsString(), EncodingQuality.High);
+                        break;
+                    case "EncodingSpeed":
+                        EncodingSpeed = XmlHelper.ParseEnum<EncodingSpeed>(r.ReadElementContentAsString(), EncodingSpeed.Medium);
+                        break;
+                    case "Bitrate":
+                        Bitrate = long.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    case "MinBitrate":
+                        MinBitrate = long.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    case "MaxBitrate":
+                        MaxBitrate = long.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    case "GOPSize":
+                        GOPSize = int.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    default:
+                        string outerXml = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("Name", Name);
+            w.WriteElementString("Container", Container.ToString());
+            w.WriteElementString("Codec", Codec.ToString());
+            w.WriteElementString("UseConstantBitrate", XmlHelper.WriteBoolean(UseConstantBitrate));
+            w.WriteElementString("EncodingQuality", EncodingQuality.ToString());
+            w.WriteElementString("EncodingSpeed", EncodingSpeed.ToString());
+            w.WriteElementString("Bitrate", Bitrate.ToString(CultureInfo.InvariantCulture));
+            w.WriteElementString("MinBitrate", MinBitrate.ToString(CultureInfo.InvariantCulture));
+            w.WriteElementString("MaxBitrate", MaxBitrate.ToString(CultureInfo.InvariantCulture));
+            w.WriteElementString("GOPSize", GOPSize.ToString(CultureInfo.InvariantCulture));
+        }
+        #endregion
     }
 }

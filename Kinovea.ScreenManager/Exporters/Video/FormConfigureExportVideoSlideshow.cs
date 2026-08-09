@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
             Populate();
 
             // TODO: get the profile from the dialog.
-            ExportProfile = ExportProfile.ExportProfiles["web"];
+            ExportProfile = ExportProfile.ExportProfiles[0];
         }
 
         private void InitializeCulture()

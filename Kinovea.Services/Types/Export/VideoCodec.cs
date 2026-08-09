@@ -9,7 +9,6 @@ namespace Kinovea.Services
     public enum VideoCodec
     {
         MJPEG,
-        RAW,
         H264,
         H265,
     }

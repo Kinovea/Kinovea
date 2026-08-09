@@ -473,7 +473,7 @@ namespace Kinovea.ScreenManager
                     yield break;
                 }
 
-                log.DebugFormat("Enumerated frame [{0}]: {1}", count, vf.Timestamp);
+                //log.DebugFormat("Enumerated frame [{0}]: {1}", count, vf.Timestamp);
                 count++;
 
                 // Initialize the output Bitmap if not done already.

@@ -327,6 +327,12 @@
     <Compile Include="Exporters\Images\ExporterImageSequence.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterCSVChrono.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterTXTTrajectory.cs" />
+    <Compile Include="Exporters\Video\ControlEncodingSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Exporters\Video\ControlEncodingSettings.Designer.cs">
+      <DependentUpon>ControlEncodingSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Exporters\Video\ExporterVideo.cs" />
     <Compile Include="Exporters\Video\WriterFFMpegCliHelper.cs" />
     <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.cs">
@@ -1064,6 +1070,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exporters\Video\ControlEncodingSettings.resx">
+      <DependentUpon>ControlEncodingSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Exporters\Video\FormConfigureExportVideoSlideshow.resx">
       <DependentUpon>FormConfigureExportVideoSlideshow.cs</DependentUpon>

@@ -210,6 +210,12 @@ namespace Kinovea.Services
             get { BeforeRead(); return playbackKVA; }
             set { playbackKVA = value; Save(); }
         }
+        public ExportProfile ExportProfile
+        {
+            get { BeforeRead(); return exportProfile; }
+            set { exportProfile = value; Save(); }
+        }
+
         public KinogramParameters Kinogram
         {
             get { BeforeRead(); return kinogramParameters.Clone(); }
@@ -283,6 +289,7 @@ namespace Kinovea.Services
         private bool detectImageSequences = true;
         private int preloadKeyframes = 20;
         private string playbackKVA;
+        private ExportProfile exportProfile = new ExportProfile();
         private KinogramParameters kinogramParameters = new KinogramParameters();
         private LensCalibrationParameters lensCalibrationParameters = new LensCalibrationParameters();
         private CameraMotionParameters cameraMotionParameters = new CameraMotionParameters();
@@ -369,6 +376,10 @@ namespace Kinovea.Services
             writer.WriteElementString("DetectImageSequences", XmlHelper.WriteBoolean(detectImageSequences));
             writer.WriteElementString("PreloadKeyframes", preloadKeyframes.ToString());
             writer.WriteElementString("PlaybackKVA", playbackKVA);
+
+            writer.WriteStartElement("ExportProfile");
+            exportProfile.WriteXml(writer);
+            writer.WriteEndElement();
 
             writer.WriteStartElement("Kinogram");
             kinogramParameters.WriteXml(writer);
@@ -500,6 +511,9 @@ namespace Kinovea.Services
                         break;
                     case "PlaybackKVA":
                         playbackKVA = reader.ReadElementContentAsString();
+                        break;
+                    case "ExportProfile":
+                        exportProfile.ReadXml(reader);
                         break;
                     case "Kinogram":
                         kinogramParameters.ReadXml(reader);

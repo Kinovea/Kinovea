@@ -122,7 +122,7 @@ namespace Kinovea.ScreenManager
             // = Compression effort. Slower preset spends more time seeking better compression.
             // Does not raise or lower the requested quality.
             Add(args, "-preset");
-            Add(args, ExportProfile.GetPreset(p.EncodingSpeed));
+            Add(args, ExportProfile.GetEncodingSpeedPreset(p.EncodingSpeed));
 
             if (p.UseConstantBitrate)
             {

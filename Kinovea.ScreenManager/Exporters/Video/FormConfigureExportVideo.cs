@@ -28,7 +28,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public ExportProfile ExportProfile
         {
-            get; set;
+            get 
+            { 
+                return encodingSettings.GetExportProfile(); 
+            }
         }
 
         private PlayerScreen player;
@@ -40,9 +43,6 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             InitializeCulture();
             Populate();
-
-            // TODO: get the profile from the dialog.
-            ExportProfile = ExportProfile.ExportProfiles["web"];
         }
 
         private void InitializeCulture()
@@ -70,6 +70,9 @@ namespace Kinovea.ScreenManager
             bool isNominal = player.view.SpeedPercentage == 100;
             checkSlowMotion.Checked = isNominal;
             checkSlowMotion.Enabled = !isNominal;
+
+            ExportProfile exportProfile = PreferencesManager.PlayerPreferences.ExportProfile;
+            encodingSettings.FillValues(exportProfile);
         }
     }
 }

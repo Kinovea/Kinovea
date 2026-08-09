@@ -81,6 +81,7 @@ namespace Kinovea.ScreenManager
 
                             bool useSlowMotion = fcev.UseSlowMotion;
                             s.ExportProfile = fcev.ExportProfile;
+                            PreferencesManager.PlayerPreferences.ExportProfile = s.ExportProfile;
                             fcev.Dispose();
 
                             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
