@@ -1635,39 +1635,6 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
     log->DebugFormat("Stored frame [{0}]", mTimestampInfo.CurrentTimestamp);
 
     return ReadResult::Success;
-
-
-         
-    //try
-        
-        //            if (stabOffsets->ContainsKey(mTimestampInfo.CurrentTimestamp))
-        //            {
-        //                // Image stabilization. Paint the image with the offset applied.
-        //                // Prepare output bitmap.
-        //                bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, DecodingPixelFormat);
-
-        //                // Get the decoded frame in a bitmap and paint it over the output.
-        //                Bitmap^ bmp2 = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, scan0);
-        //                Graphics^ g = Graphics::FromImage(bmp);
-        //                float dx = stabOffsets[mTimestampInfo.CurrentTimestamp]->X;
-        //                float dy = stabOffsets[mTimestampInfo.CurrentTimestamp]->Y;
-        //                // TODO: handle scaling (decoding size).
-        //                g->DrawImageUnscaled(bmp2, (int)(-dx), (int)(-dy));
-        //                delete g;
-        //                delete bmp2;
-        //            }
-        //            else
-        //            {
-        //                bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, scan0);
-        //            }
-
-        //        catch (Exception^ exp)
-        //        {
-        //            delete[] pBuffer;
-        //            result = ReadResult::ImageNotConverted;
-        //            log->Error("Error while converting AVFrame to Bitmap.");
-        //            log->Error(exp);
-        //        }
 }
 
 
