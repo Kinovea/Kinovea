@@ -567,7 +567,7 @@ namespace Kinovea.ScreenManager
                 case SaveResult.MuxerParametersNotAllocated:
                 case SaveResult.MuxerParametersNotSet:
                 case SaveResult.VideoStreamNotCreated:
-                case SaveResult.ReadingError:
+                case SaveResult.InputError:
                 case SaveResult.UnknownError:
                 default:
                     DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_LowLevelError);

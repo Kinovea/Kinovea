@@ -75,10 +75,20 @@ namespace Kinovea.Video
         InputFrameNotAllocated,
         MetadataStreamNotCreated,
         MetadataNotWritten,
-        ReadingError,
+
+        /// <summary>
+        /// Error with the input frames or enumerator.
+        /// </summary>
+        InputError,
+
         UnknownError,
         MovieNotLoaded,
         TranscodeNotFinished,
-        Cancelled
+        Cancelled,
+
+        // Specific to FFMpeg CLI.
+        FFMpegNotFound,
+        FFMpegNotStarted,
+        FFMpegError,
     }
 }

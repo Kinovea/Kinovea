@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Kinovea.Video;
 using Kinovea.Services;
-using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
@@ -66,7 +65,7 @@ namespace Kinovea.ScreenManager
             IEnumerable<Bitmap> images = player.FrameServer.EnumerateImages(s);
 
             // Export loop.
-            VideoFileWriter w = new VideoFileWriter();
+            WriterFFMpegCLI w = new WriterFFMpegCLI();
             string formatString = FilesystemHelper.GetFormatStringPlayback(s.File);
             saveResult = w.Save(s, player.FrameServer.VideoReader.Info, formatString, images, worker);
         }

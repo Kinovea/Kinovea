@@ -328,6 +328,7 @@
     <Compile Include="Exporters\Spreadsheet\ExporterCSVChrono.cs" />
     <Compile Include="Exporters\Spreadsheet\ExporterTXTTrajectory.cs" />
     <Compile Include="Exporters\Video\ExporterVideo.cs" />
+    <Compile Include="Exporters\Video\WriterFFMpegCliHelper.cs" />
     <Compile Include="Exporters\Video\FormConfigureExportVideoSlideshow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -355,6 +356,7 @@
     <Compile Include="Exporters\Images\ImageExporter.cs" />
     <Compile Include="Exporters\Images\ImageExportFormat.cs" />
     <Compile Include="Exporters\Video\VideoExporter.cs" />
+    <Compile Include="Exporters\Video\WriterFFMpegCLI.cs" />
     <Compile Include="Exporters\Video\VideoExportFormat.cs" />
     <Compile Include="Metadata\Interfaces\ICalibratable.cs" />
     <Compile Include="PlayerScreen\Forms\FormConfigureDrawingName.cs">
