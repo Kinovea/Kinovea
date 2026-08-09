@@ -131,7 +131,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
     ChangeCachingMode(VideoDecodingMode::OnDemand);
 
     summary->IsImage = mVideoInfo.DurationTimeStamps == 1;
-    double durationSeconds = (mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame) / mVideoInfo.AverageTimeStampsPerSeconds;
+    double durationSeconds = mVideoInfo.DurationTimeStamps / mVideoInfo.AverageTimeStampsPerSeconds;
     summary->DurationMilliseconds = (int64_t)Math::Round(durationSeconds * 1000.0);
     summary->ImageSize = mVideoInfo.ReferenceSize;
     summary->Framerate = mVideoInfo.FramesPerSeconds;
@@ -265,7 +265,8 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mVideoInfo.AverageTimeStampsPerSeconds = (double)videoStream->time_base.den / (double)videoStream->time_base.num;
 
     // This may be updated after the first actual decoding.
-    long firstTimestamp = (long)((double)((double)formatCtx->start_time / (double)AV_TIME_BASE) * mVideoInfo.AverageTimeStampsPerSeconds);
+    double startSeconds = (double)formatCtx->start_time / AV_TIME_BASE;
+    long firstTimestamp = (long)Math::Round(startSeconds * mVideoInfo.AverageTimeStampsPerSeconds);
     mVideoInfo.FirstTimeStamp = Math::Max(firstTimestamp, 0);
 
     // In case of negative start time, we still want to expose 0-based timestamps to the outside.
@@ -280,13 +281,11 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         }
     }
 
+    mVideoInfo.DurationTimeStamps = 0;
     if (formatCtx->duration > 0)
     {
-        mVideoInfo.DurationTimeStamps = (int64_t)((double)((double)formatCtx->duration / (double)AV_TIME_BASE) * mVideoInfo.AverageTimeStampsPerSeconds);
-    }
-    else
-    {
-        mVideoInfo.DurationTimeStamps = 0;
+        double durationSeconds = (double)formatCtx->duration / (double)AV_TIME_BASE;
+        mVideoInfo.DurationTimeStamps = (int64_t)Math::Round(durationSeconds * mVideoInfo.AverageTimeStampsPerSeconds);
     }
 
     if (mVideoInfo.DurationTimeStamps <= 0)
@@ -1953,7 +1952,7 @@ void VideoReaderFFMpeg::LogFileInfo()
     
     // Format
     log->DebugFormat("[Format] - Format name: {0} ({1})", gcnew String(mFormatCtx->iformat->name), gcnew String(mFormatCtx->iformat->long_name));
-    log->DebugFormat("[Format] - Duration (s): {0}", (double)mFormatCtx->duration / 1000000);
+    log->DebugFormat("[Format] - Duration (s): {0}", (double)mFormatCtx->duration / AV_TIME_BASE);
     log->DebugFormat("[Format] - Bit rate (bit/s): {0}", mFormatCtx->bit_rate);
     log->DebugFormat("[Format] - Start time (microseconds): {0}", mFormatCtx->start_time);
     log->DebugFormat("[Format] - Start timestamp: {0} ({1})", mVideoInfo.FirstTimeStamp, m_timestampOffset);
@@ -1975,7 +1974,6 @@ void VideoReaderFFMpeg::LogFileInfo()
 
     // Calculated values
     log->Debug("Duration in timestamps: " + mVideoInfo.DurationTimeStamps);
-    log->Debug("Duration in seconds (computed): " + (double)mVideoInfo.DurationTimeStamps / (double)mVideoInfo.AverageTimeStampsPerSeconds);
     log->Debug("Average Fps: " + mVideoInfo.FramesPerSeconds);
     log->Debug("Average Frame Interval (ms): " + mVideoInfo.FrameIntervalMilliseconds);
     log->Debug("Average Timestamps per frame: " + mVideoInfo.AverageTimeStampsPerFrame);
