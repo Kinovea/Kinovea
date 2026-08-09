@@ -264,7 +264,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     //-----------------------------------------------------
     // videoStream->nb_frames == 0 can happen.
     // videoStream->duration <= 0 can happen.
-
+    bool verbose = !forSummary;
     mVideoInfo.AverageTimeStampsPerSeconds = (double)videoStream->time_base.den / (double)videoStream->time_base.num;
 
     // This may be updated after the first actual decoding.
@@ -290,8 +290,6 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         log->Error("Duration info not found.");
         return OpenVideoResult::StreamInfoNotFound;
     }
-
-    bool verbose = !forSummary;
         
     mVideoInfo.FramesPerSeconds = 0;
     GuessFrameRate(formatCtx, videoCodecCtx, mVideoStreamIndex, verbose);
@@ -299,6 +297,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mVideoInfo.FrameIntervalMilliseconds = 1000.0 / mVideoInfo.FramesPerSeconds;
     mVideoInfo.AverageTimeStampsPerFrame = mVideoInfo.AverageTimeStampsPerSeconds / mVideoInfo.FramesPerSeconds;
 
+    // Working zone representing the whole video.
     mWorkingZone = VideoSection(
         mVideoInfo.FirstTimeStamp,
         (int64_t)Math::Round(mVideoInfo.FirstTimeStamp + mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame));
@@ -1246,15 +1245,17 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     framesDecoded = 1;
     //LogFrameInfo(frame);
 
-    // Check if seeking landed beyond the target.
-    // TODO: seek back further.
+    // Log but don't fail if seeking landed beyond the target.
+    // Might happen if the very first packet is not a keyframe, 
+    // possibly from cut-off stream or corrupted file.
     if (seeking && !approximate && frame->best_effort_timestamp > targetTimestamp)
     {
-        log->ErrorFormat("Seek or decode landed after target.");
-        av_frame_free(&frame);
-        return ReadResult::SeekAfterTarget;
+        log->WarnFormat("Seek({0}) landed at {1}. Frame type: {2}",
+            targetTimestamp,
+            frame->best_effort_timestamp,
+            GetFrameTypeString(frame->pict_type));
     }
-
+    
     // At this point we have decoded one frame.
     // Depending on the call we may be done or need to keep decoding.
 
@@ -1483,16 +1484,22 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
 {
     // Seek to the first I-Frame before the target.
     // Does not decode any frame.
-    
-    // OLD Code was allowing to go further than the target and before zero.
-    //int64_t minTs = m_timestampOffset;
-    //int64_t ts = _target + m_timestampOffset;
-    //int64_t maxTs = (int64_t)(_target + m_timestampOffset + mVideoInfo.AverageTimeStampsPerSeconds);
-
     int64_t minTs = 0;
     int64_t ts = targetTimestamp;
     int64_t maxTs = targetTimestamp;
 
+    // Special case for jumping to the start of the file while non-zero start time.
+    // Sometimes the first decode after the seek returns EAGAIN as if we were in the middle 
+    // of a GOP. When this happens the first actual frame we get is beyond the seek and this
+    // messes up everything.
+    // To avoid this we make sure the seek goes to the absolute start of the file.
+    if (targetTimestamp == mVideoInfo.FirstTimeStamp && mVideoInfo.FirstTimeStamp > 0)
+    {
+        minTs = 0;
+        ts = 0;
+        maxTs = 0;
+    }
+    
     int res = avformat_seek_file(
         mFormatCtx,
         mVideoStreamIndex,
@@ -1500,7 +1507,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
         ts,
         maxTs,
         AVSEEK_FLAG_BACKWARD);
-
+    
     // Reset the internal codec state. 
     avcodec_flush_buffers(mVideoCodecCtx);
 
