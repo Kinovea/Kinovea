@@ -355,32 +355,32 @@ Public Class ExpTree
 
             'm_Stopwatch.Restart()
 
-            log.DebugFormat("Looking for ancestor node at level {0} (PIDL count {1})", CShItem.PidlCount(baseNode.Tag.pidl) + 1, CShItem.PidlCount(newItem.PIDL))
+            'log.DebugFormat("Looking for ancestor node at level {0} (PIDL count {1})", CShItem.PidlCount(baseNode.Tag.pidl) + 1, CShItem.PidlCount(newItem.PIDL))
 
             For Each testNode In baseNode.Nodes
 
-                log.DebugFormat("Testing node: {0} (PIDL count {1})", testNode.Tag.DisplayName, CShItem.PidlCount(testNode.Tag.PIDL))
+                'log.DebugFormat("Testing node: {0} (PIDL count {1})", testNode.Tag.DisplayName, CShItem.PidlCount(testNode.Tag.PIDL))
 
                 If CShItem.IsAncestorOf(testNode.Tag, newItem, False) Then
 
-                    log.DebugFormat("Found ancestor node: {0} (PIDL count {1})", testNode.Tag.DisplayName, CShItem.PidlCount(testNode.Tag.PIDL))
+                    'log.DebugFormat("Found ancestor node: {0} (PIDL count {1})", testNode.Tag.DisplayName, CShItem.PidlCount(testNode.Tag.PIDL))
 
                     baseNode = testNode
                     RefreshNode(baseNode)   'ensure up-to-date
 
-                    log.DebugFormat("Node refreshed: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
+                    'log.DebugFormat("Node refreshed: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
                     'log.DebugFormat("Node refreshed: {0} (PIDL count {1}), time taken: {2} ms", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL), m_Stopwatch.ElapsedMilliseconds)
 
                     ' Kinovea: raise an event to allow filtering.
                     Dim args As New TreeViewEventArgs(baseNode, TreeViewAction.Expand)
                     RaiseEvent TreeViewBeforeExpand(Me, args)
 
-                    log.DebugFormat("After event raised.")
+                    'log.DebugFormat("After event raised.")
 
 
                     baseNode.Expand()
 
-                    log.DebugFormat("Node expanded: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
+                    'log.DebugFormat("Node expanded: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
 
                     lim -= 1
                     GoTo NEXLEV
@@ -391,7 +391,7 @@ Public Class ExpTree
 NEXLEV: Loop
         'after falling thru here, we have found & expanded the node
 
-        log.DebugFormat("Node expanded: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
+        'log.DebugFormat("Node expanded: {0} (PIDL count {1})", baseNode.Tag.DisplayName, CShItem.PidlCount(baseNode.Tag.PIDL))
 
         Me.tv1.HideSelection = False
         Me.Select()
@@ -456,8 +456,8 @@ XIT:    tv1.EndUpdate()
             Root.SelectedImageIndex = Root.ImageIndex
             Root.Tag = rootItem
 
-            log.DebugFormat("Shortcuts tree view: building tree")
-            log.DebugFormat("{0} shortcuts to add.", m_shortcuts.Count)
+            'log.DebugFormat("Shortcuts tree view: building tree")
+            'log.DebugFormat("{0} shortcuts to add.", m_shortcuts.Count)
 
             ' Add the shortcuts as direct children of the root.
             Dim CSI As CShItem
@@ -629,7 +629,7 @@ XIT:    tv1.EndUpdate()
         Else
             'Debug.WriteLine("In RefreshNode: Node = " & thisRoot.Tag.path & " -- " & thisRoot.Tag.displayname)
 
-            log.DebugFormat("Refreshing node: {0} (PIDL count {1}) --------------------", thisRoot.Tag.DisplayName, CShItem.PidlCount(thisRoot.Tag.PIDL))
+            'log.DebugFormat("Refreshing node: {0} (PIDL count {1}) --------------------", thisRoot.Tag.DisplayName, CShItem.PidlCount(thisRoot.Tag.PIDL))
 
             If Not (thisRoot.Nodes.Count = 1 AndAlso thisRoot.Nodes(0).Text.Equals(" : ")) Then
                 Dim thisItem As CShItem = thisRoot.Tag
@@ -651,7 +651,7 @@ NXTOLD:             Next
 
                     If nodesToDelete.Count + directoriesToAdd.Count > 0 Then  'had changes
 
-                        log.DebugFormat("Node {0} children have changed: {1} nodes to delete, {2} directories to add", thisRoot.Tag.DisplayName, nodesToDelete.Count, directoriesToAdd.Count)
+                        'log.DebugFormat("Node {0} children have changed: {1} nodes to delete, {2} directories to add", thisRoot.Tag.DisplayName, nodesToDelete.Count, directoriesToAdd.Count)
                         m_Stopwatch.Restart()
 
                         Try
@@ -662,7 +662,7 @@ NXTOLD:             Next
                                 thisRoot.Nodes.Remove(node)
                             Next
 
-                            log.DebugFormat("Deleted nodes: {0}, time: {1} ms", nodesToDelete.Count, m_Stopwatch.ElapsedMilliseconds)
+                            'log.DebugFormat("Deleted nodes: {0}, time: {1} ms", nodesToDelete.Count, m_Stopwatch.ElapsedMilliseconds)
 
                             ' Add directories that are new
                             Dim csi As CShItem
@@ -672,7 +672,7 @@ NXTOLD:             Next
                                 End If
                             Next
 
-                            log.DebugFormat("Added nodes: {0}, time: {1} ms", directoriesToAdd.Count, m_Stopwatch.ElapsedMilliseconds)
+                            'log.DebugFormat("Added nodes: {0}, time: {1} ms", directoriesToAdd.Count, m_Stopwatch.ElapsedMilliseconds)
 
                             'we only need to resort if we added
                             'sort is based on CShItem in .Tag
@@ -684,7 +684,7 @@ NXTOLD:             Next
                                 thisRoot.Nodes.AddRange(tmpA)
                             End If
 
-                            log.DebugFormat("Sorted nodes: {0}, time: {1} ms", thisRoot.Nodes.Count, m_Stopwatch.ElapsedMilliseconds)
+                            'log.DebugFormat("Sorted nodes: {0}, time: {1} ms", thisRoot.Nodes.Count, m_Stopwatch.ElapsedMilliseconds)
 
 
                         Catch ex As Exception

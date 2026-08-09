@@ -64,7 +64,7 @@ namespace Kinovea.FileBrowser
             }
 
             index = history.Count - 1;
-            DumpSessionHistory();
+            //DumpSessionHistory();
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Kinovea.FileBrowser
 
             index--;
             navigating = true;
-            DumpSessionHistory();
+            //DumpSessionHistory();
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Kinovea.FileBrowser
 
             index++;
             navigating = true;
-            DumpSessionHistory();
+            //DumpSessionHistory();
         }
 
         private void DumpSessionHistory()
