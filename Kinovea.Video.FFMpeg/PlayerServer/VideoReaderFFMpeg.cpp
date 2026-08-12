@@ -253,6 +253,22 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         return OpenVideoResult::CodecNotOpened;
     }
     
+
+    // Enable multithreading.
+    videoCodecCtx->thread_count = 0;
+    if (videoCodec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
+    {
+        videoCodecCtx->thread_type = FF_THREAD_FRAME;
+    }
+    else if (videoCodec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
+    {
+        videoCodecCtx->thread_type = FF_THREAD_SLICE;
+    }
+    else
+    {
+        videoCodecCtx->thread_count = 1; 
+    }
+
     res = avcodec_open2(videoCodecCtx, videoCodec, nullptr);
     if (res < 0) 
     {
