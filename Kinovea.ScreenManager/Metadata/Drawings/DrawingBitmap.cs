@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
         {
             if (bmp != null)
             {
-                bitmap = BitmapHelper.CopyByRows(bmp);
+                bitmap = BitmapHelper.CopyBgr32Rows(bmp);
             }
 
             valid = bitmap != null;

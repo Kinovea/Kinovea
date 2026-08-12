@@ -33,12 +33,12 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Allocates a new bitmap and copy the source into it, row by row.
+        /// Allocates a new bitmap and copy the source to it, row by row.
         /// Input bitmap must be BGRA.
         /// Ignores any extra padding in the source.
         /// This should be used to copy frames read by the video reader.
         /// </summary>
-        public unsafe static Bitmap CopyByRows(Bitmap src)
+        public unsafe static Bitmap CopyBgr32Rows(Bitmap src)
         {
             if (src.PixelFormat != PixelFormat.Format32bppPArgb)
             {
@@ -103,7 +103,7 @@ namespace Kinovea.Services
 
             if (src.Width != dst.Width || src.Height != dst.Height)
             {
-                log.Error("Source and destination bitmaps must have the same size and pixel format.");
+                log.Error("Source and destination bitmaps must have the same size.");
                 return;
             }
 
@@ -503,7 +503,7 @@ namespace Kinovea.Services
         /// Removes any padding at the end of rows.
         /// The destination buffer must be at least width * height * 3.
         /// </summary>
-        public static void CopyBgr24ToTightBuffer(Bitmap bitmap, byte[] buffer)
+        public static void CopyBgr24ToPackedBuffer(Bitmap bitmap, byte[] buffer)
         {
             BitmapData bmpData = null;
             try

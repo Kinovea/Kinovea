@@ -243,7 +243,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         AVPixelFormat mFilterSrcFormat = AV_PIX_FMT_NONE;
         int mFilterDstWidth = 0;
         int mFilterDstHeight = 0;
-        AVPixelFormat mFilterDstFormat = AV_PIX_FMT_NONE;
         bool mFilterDeinterlace = false;
 
         // Others
@@ -310,7 +309,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Should only be called when the parameters change.
         bool CreateVideoFilterGraph(
             int srcWidth, int srcHeight, AVPixelFormat srcPixelFormat,
-            int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat,
+            int dstWidth, int dstHeight,
             bool deinterlace, AVRational sar);
 
         void FreeVideoFilterGraph();

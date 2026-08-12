@@ -157,7 +157,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
             mFrameContainer->CurrentFrame != nullptr &&
             mTimestampInfo.CurrentTimestamp > previousFrameTimestamp)
         {
-            Bitmap^ bmp = BitmapHelper::CopyByRows(mFrameContainer->CurrentFrame->Image);
+            Bitmap^ bmp = BitmapHelper::CopyBgr32Rows(mFrameContainer->CurrentFrame->Image);
             summary->Thumbs->Add(bmp);
             previousFrameTimestamp = mTimestampInfo.CurrentTimestamp;
         }
@@ -1532,17 +1532,18 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
     // which is then copied into the final converted AVFrame, or extracted directly
     // into the final converted AVFrame.
     // 
-    // The copy is not strictly necessary, we can use the AVFrame out of the sink filter. 
-    // The problem is that this AVFrame has row padding and this seems to break a number 
-    // of assumptions in other parts of the code.
+    // In theory the copy shouldn't be necessary. The problem is that this AVFrame has row padding 
+    // and this seems to break a number of assumptions in other parts of the code.
     // 
     // We wrap the padded buffer into the Bitmap so anything handling these Bitmaps
     // now needs to be careful about stride being different than width*4.
     // 
-    // The Bitmap Copy helpers have been updated to copy row by row but the template tracking
-    // seems to still have an issue, maybe because we send this Bitmap to OpenCV and it's not 
-    // clear what assumptions this holds. It doesn't crash but the tracking doesn't work
-    // correctly sometimes.
+    // The Bitmap Copy helpers have been updated to copy row by row but the features involving 
+    // OpenCV aren't working correctly, most likely due to OpenCvSharp.Extensions.BitmapConverter.ToMat.
+    // This seems to copy the padded buffer into a packed Mat.
+    // It doesn't crash but the tracking doesn't work correctly.
+    // One way to fix it is to make an extra packed copy before passing to OpenCV.
+    // For simplicity we make the extra copy here.
     //-------------------------------------
     
     AVFrame* convertedFrame = av_frame_alloc();
@@ -1578,60 +1579,58 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
     }
 
     // Wrap the data buffer in a Bitmap.
-    int imageStride = convertedFrame->linesize[0];
+    int stride = convertedFrame->linesize[0];
     IntPtr data = IntPtr(convertedFrame->data[0]);
     Bitmap^ bmp = nullptr;
 
     if (stabOffsets->ContainsKey(mTimestampInfo.CurrentTimestamp))
     {
-        // Image stabilization. Paint the image with the offset applied.
-        // Prepare output bitmap.
-        bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, DecodingPixelFormat);
+        // Image stabilization. 
 
-        // Get the decoded frame in a bitmap and paint it over the output.
+        // Wrap the native AVFrame in a bitmap.
         Bitmap^ bmp2 = gcnew Bitmap(
             m_DecodingSize.Width,
             m_DecodingSize.Height,
-            imageStride,
+            stride,
             DecodingPixelFormat,
             data);
 
+        bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, DecodingPixelFormat);
         Graphics^ g = Graphics::FromImage(bmp);
         float dx = stabOffsets[mTimestampInfo.CurrentTimestamp]->X;
         float dy = stabOffsets[mTimestampInfo.CurrentTimestamp]->Y;
+        
+        // Paint the image with the offset applied into a new bitmap.
         // TODO: handle scaling (decoding size).
         g->DrawImageUnscaled(bmp2, (int)(-dx), (int)(-dy));
         delete g;
         
-        // TODO: proper dispose of the native buffer.
+        // In this case we will save the pointer to the native buffer in the new Bitmap .Tag. 
+        // We could destroy it right now since the bitmap is an independent copy but 
+        // we keep a single flow for simplicity.
+        // We put the copy bitmap in the frame container and when that is evicted 
+        // the buffer will be released.
         delete bmp2;
     }
     else
     {
+        // Normal case, just wrap the native AVFrame in the Bitmap.
         bmp = gcnew Bitmap(
             m_DecodingSize.Width, 
             m_DecodingSize.Height, 
-            imageStride, 
+            stride, 
             DecodingPixelFormat, 
             data);
     }
 
-    // Store a pointer to the libav allocated buffer inside the Tag of the bitmap.
-    // We will free this buffer later when the frame is not used anymore.
-    if (mCopyFilteredFrame)
-    {
-        bmp->Tag = data;
-    }
-    else
-    {
-        // Find the AVBufferRef that owns data[0], and create our own reference 
-        // that will stay alive after we free the AVFrame.
-        AVBufferRef* planeBuffer = av_frame_get_plane_buffer(convertedFrame, 0);
-        AVBufferRef* bitmapBuffer = av_buffer_ref(planeBuffer);
-        bmp->Tag = IntPtr(bitmapBuffer);
-        av_frame_free(&convertedFrame);
-    }
-    
+    // Find the AVBufferRef that owns data[0], and create our own reference 
+    // that will stay alive after we free the AVFrame.
+    // Store that in the .Tag of the bitmap for later release.
+    AVBufferRef* planeBuffer = av_frame_get_plane_buffer(convertedFrame, 0);
+    AVBufferRef* bitmapBuffer = av_buffer_ref(planeBuffer);
+    bmp->Tag = IntPtr(bitmapBuffer);
+    av_frame_free(&convertedFrame);
+
     // Note: rotation doesn't change the size of the buffer.
     ApplyRotation(bmp, mVideoInfo.ImageRotation);
 
@@ -1683,13 +1682,13 @@ bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, 
     // Recreate the graph if needed.
     if (!mFilterGraph ||
         mFilterSrcWidth != srcWidth || mFilterSrcHeight != srcHeight || mFilterSrcFormat != srcPixelFormat ||
-        mFilterDstWidth != dstWidth || mFilterDstHeight != dstHeight || mFilterDstFormat != dstPixelFormat ||
+        mFilterDstWidth != dstWidth || mFilterDstHeight != dstHeight ||
         mFilterDeinterlace != deinterlace)
     {
         AVRational sar = srcFrame->sample_aspect_ratio;
         bool created = CreateVideoFilterGraph(
             srcWidth, srcHeight, srcPixelFormat,
-            dstWidth, dstHeight, dstPixelFormat,
+            dstWidth, dstHeight,
             deinterlace, sar);
 
         if (!created)
@@ -1796,13 +1795,12 @@ void VideoReaderFFMpeg::FreeVideoFilterGraph()
 
     mFilterDstWidth = 0;
     mFilterDstHeight = 0;
-    mFilterDstFormat = AV_PIX_FMT_NONE;
 }
 
 
 bool VideoReaderFFMpeg::CreateVideoFilterGraph(
     int srcWidth, int srcHeight, AVPixelFormat srcPixelFormat,
-    int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat,
+    int dstWidth, int dstHeight,
     bool deinterlace, AVRational sar)
 {
     FreeVideoFilterGraph();
@@ -1914,19 +1912,10 @@ bool VideoReaderFFMpeg::CreateVideoFilterGraph(
 
     //------------------------------
     // Pixel format conversion
+    // bgra = AV_PIX_FMT_BGRA.
     //------------------------------
     AVFilterContext* formatCtx = nullptr;
-
-    const char* pixelFormatName = av_get_pix_fmt_name(dstPixelFormat);
-    if (!pixelFormatName)
-    {
-        log->ErrorFormat("Failed to get pixel format name for {0}.", GetFrameFormatString(dstPixelFormat));
-        FreeVideoFilterGraph();
-        return false;
-    }
-
-    snprintf(args, sizeof(args), "pix_fmts=%s", pixelFormatName); 
-    ret = avfilter_graph_create_filter(&formatCtx, formatFilter, "format", args, nullptr, mFilterGraph);
+    ret = avfilter_graph_create_filter(&formatCtx, formatFilter, "format", "pix_fmts=bgra", nullptr, mFilterGraph);
     if (ret < 0)
     {
         LogFFMpegError("Failed to create format filter.", ret);
@@ -1991,7 +1980,6 @@ bool VideoReaderFFMpeg::CreateVideoFilterGraph(
     mFilterSrcFormat = srcPixelFormat;
     mFilterDstWidth = dstWidth;
     mFilterDstHeight = dstHeight;
-    mFilterDstFormat = dstPixelFormat;
     mFilterDeinterlace = deinterlace;
     return true;
 }
@@ -2020,36 +2008,20 @@ void VideoReaderFFMpeg::DisposeFrame(VideoFrame^ videoFrame)
 {
     //log->DebugFormat("Disposing frame [{0}].", videoFrame->Timestamp);
     // Dispose the Bitmap and the native buffer.
-    
-    if (mCopyFilteredFrame)
+    IntPtr bufferPtr = IntPtr::Zero;
+    if (videoFrame->Image->Tag != nullptr)
     {
-        IntPtr^ ptr = dynamic_cast<IntPtr^>(videoFrame->Image->Tag);
-        delete videoFrame->Image;
-        videoFrame->Image = nullptr;
-    
-        if (ptr != nullptr)
-        {
-            void* pBuf = ptr->ToPointer();
-            av_freep(&pBuf);
-        }
+        bufferPtr = safe_cast<IntPtr>(videoFrame->Image->Tag);
+        videoFrame->Image->Tag = nullptr;
     }
-    else
+
+    delete videoFrame->Image;
+    videoFrame->Image = nullptr;
+
+    if (bufferPtr != IntPtr::Zero)
     {
-        IntPtr bufferPtr = IntPtr::Zero;
-        if (videoFrame->Image->Tag != nullptr)
-        {
-            bufferPtr = safe_cast<IntPtr>(videoFrame->Image->Tag);
-            videoFrame->Image->Tag = nullptr;
-        }
-
-        delete videoFrame->Image;
-        videoFrame->Image = nullptr;
-
-        if (bufferPtr != IntPtr::Zero)
-        {
-            AVBufferRef* bufferRef = static_cast<AVBufferRef*>(bufferPtr.ToPointer());
-            av_buffer_unref(&bufferRef);
-        }
+        AVBufferRef* bufferRef = static_cast<AVBufferRef*>(bufferPtr.ToPointer());
+        av_buffer_unref(&bufferRef);
     }
 }
 

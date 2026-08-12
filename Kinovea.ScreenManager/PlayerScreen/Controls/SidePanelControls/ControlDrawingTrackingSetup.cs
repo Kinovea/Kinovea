@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
         public void UpdateContent()
         {
             metadataManipulator.SetFixedTimestamp(hostView.CurrentTimestamp);
-            Bitmap bitmap = BitmapHelper.CopyByRows(hostView.CurrentImage);
+            Bitmap bitmap = BitmapHelper.CopyBgr32Rows(hostView.CurrentImage);
             viewportController.Bitmap = bitmap;
             viewportController.Timestamp = hostView.CurrentTimestamp;
 

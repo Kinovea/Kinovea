@@ -393,7 +393,7 @@ namespace Kinovea.ScreenManager
             if (bitmap == null)
                 return;
 
-            frozenBitmap = BitmapHelper.CopyByRows(bitmap);
+            frozenBitmap = BitmapHelper.CopyBgr32Rows(bitmap);
             frozen = true;
         }
 

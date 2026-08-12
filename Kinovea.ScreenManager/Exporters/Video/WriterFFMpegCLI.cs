@@ -124,7 +124,7 @@ namespace Kinovea.ScreenManager
                     }
 
                     // Get the bitmap into a tightly packed byte buffer.
-                    BitmapHelper.CopyBgr24ToTightBuffer(enumerator.Current, frameBuffer);
+                    BitmapHelper.CopyBgr24ToPackedBuffer(enumerator.Current, frameBuffer);
 
                     // Synchronous write as this method already runs on a worker thread.
                     ffmpegInput.Write(frameBuffer, 0, frameBuffer.Length);
