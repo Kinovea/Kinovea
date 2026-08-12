@@ -30,6 +30,7 @@ using namespace System::Drawing::Imaging;
 using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 using namespace System::Collections::Generic;
+using namespace System::Text;
 using namespace System::Threading;
 using namespace msclr;
 
@@ -195,21 +196,21 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         Options = Options->Default;
     }
 
-    // Libav expects the filename in the computer default codepage.
-    // FIXME: this breaks especially on Korean Windows.
-    String^ encFilePath = System::Text::Encoding::Default->GetString(System::Text::Encoding::UTF8->GetBytes(filePath));
-    char* pszFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(encFilePath).ToPointer());
-        
-    // Open format.
-    // TODO: muxer options.
     AVFormatContext* formatCtx = nullptr;
-    if (avformat_open_input(&formatCtx, pszFilePath, NULL, NULL) != 0)
+    
+    // FFmpeg expects filenames as UTF-8, .NET strings are UTF-16.
+    // On Windows, FFmpeg converts UTF-8 file paths back to UTF-16 internally.
+    int byteCount = Encoding::UTF8->GetByteCount(filePath);
+    array<Byte>^ utf8Path = gcnew array<Byte>(byteCount + 1);
+    Encoding::UTF8->GetBytes(filePath, 0, filePath->Length, utf8Path, 0);
+    pin_ptr<Byte> pinnedPath = &utf8Path[0];
+    const char* pszFilePath = reinterpret_cast<const char*>(pinnedPath);
+    
+    if (avformat_open_input(&formatCtx, pszFilePath, nullptr, nullptr) != 0)
     {
         log->ErrorFormat("The file {0} could not be openned. (Wrong path or not a video/image.)", filePath);
         return OpenVideoResult::FileNotOpenned;
     }
-
-    Marshal::FreeHGlobal(safe_cast<IntPtr>(pszFilePath));
 
     // Get stream info.
     int res = avformat_find_stream_info(formatCtx, nullptr);
