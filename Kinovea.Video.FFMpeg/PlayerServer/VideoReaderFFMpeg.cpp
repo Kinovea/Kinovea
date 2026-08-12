@@ -727,9 +727,9 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
 
                 /*C# (including ImportWorkingZoneToCache)
                 _workerFn((s,e) => {
-                bool success = ReadManyToCache((BackgroundWorker)s, sectionToCache, prepend));
-                if(!success)
-                ExitCaching();
+                    bool success = ReadManyToCache((BackgroundWorker)s, sectionToCache, prepend));
+                    if(!success)
+                        ExitCaching();
                 }*/
             }
         }
@@ -833,13 +833,19 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
 
     bool success = true;
     if (!mSectionToPrepend.IsEmpty)
+    {
         success = ReadManyToCache(worker, mSectionToPrepend, true);
+    }
 
     if (success && !mSectionToAppend.IsEmpty)
+    {
         success = ReadManyToCache(worker, mSectionToAppend, false);
+    }
 
     if (!success)
+    {
         ChangeToBestAfterCaching();
+    }
 }
 
 #pragma endregion
@@ -1081,107 +1087,100 @@ Size VideoReaderFFMpeg::FixSize(Size _size, bool sideways)
 
 #pragma region Low level frame reading
 
-bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend)
+bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection section, bool isPrepend)
 {
     // Load the asked section to cache (doesn't move the playhead).
     // Called when filling the cache with the Working Zone.
-    // Might also be called internally when loading a very short video or single image.
+    // This method is always called on a background thread.
+    // Note: the passed section only represents what we need to prepend or append, not the full target section.
 
+    if (bgWorker == nullptr)
+    {
+        throw gcnew InvalidProgramException("ReadManyToCache must be called on a background thread.");
+    }
+        
     if (!CanCache || mCachingMode != VideoDecodingMode::Caching)
+    {
         throw gcnew CapabilityNotSupportedException("Importing to cache is not supported for the video.");
+    }
 
-    if (_bgWorker != nullptr)
-        Thread::CurrentThread->Name = "CacheFilling";
-
+    Thread::CurrentThread->Name = "CacheFilling";
+    
     if (mVerbose)
-        log->DebugFormat("Requested section to cache: {0}. Prepend:{1}", _section, _prepend);
+    {
+        log->DebugFormat("Requested section to cache: {0}. Prepend:{1}", section, isPrepend);
+    }
 
-    mCache->SetPrependBlock(_prepend);
+    mCache->SetPrepending(isPrepend);
 
     bool success = true;
     int read = 0;
 
-    // Note: the passed section only represents what we need to prepend or append, not the target section.
     // Realign the requested section on real timestamps.
     if (!mCache->WorkingZone.IsEmpty)
     {
-        if (_prepend && 
-           (mCache->WorkingZone.Start - _section.Start < mVideoInfo.AverageTimeStampsPerFrame))
+        if (isPrepend && (mCache->WorkingZone.Start - section.Start < mVideoInfo.AverageTimeStampsPerFrame))
         {
             // Start target is less than one frame before the current start.
-            _section = VideoSection(mCache->WorkingZone.Start, _section.End);
+            section = VideoSection(mCache->WorkingZone.Start, section.End);
         }
-        else if (!_prepend && 
-            (_section.End - mCache->WorkingZone.End < mVideoInfo.AverageTimeStampsPerFrame))
+        else if (!isPrepend && (section.End - mCache->WorkingZone.End < mVideoInfo.AverageTimeStampsPerFrame))
         {
-            // End target is less than one frame beyond the current end.
-            _section = VideoSection(_section.Start, mCache->WorkingZone.End);
+            // End target is less than one frame after the current end.
+            section = VideoSection(section.Start, mCache->WorkingZone.End);
         }
 
-        log->DebugFormat("Aligned requested section to cache: {0}", _section);
+        log->DebugFormat("Aligned requested section to cache: {0}", section);
     }
 
-    double end = _section.End + (mVideoInfo.AverageTimeStampsPerFrame * 0.5);
-    double frames = (end - _section.Start) / mVideoInfo.AverageTimeStampsPerFrame;
-    int total = (int)Math::Floor(frames);
-
-    log->DebugFormat("Frames to cache: {0}", total);
+    double end = section.End + (mVideoInfo.AverageTimeStampsPerFrame * 0.5);
+    int totalFrames = (int)Math::Floor((end - section.Start) / mVideoInfo.AverageTimeStampsPerFrame);
+    log->DebugFormat("Frames to cache: {0}", totalFrames);
 
     // Bail out if re-alignment revealed we don't need to cache anything new.
-    if (total == 0)
+    if (totalFrames == 0)
+    {
         return true;
+    }
 
-    // If the video is very short this call can only happen when opening the video.
-    // We avoid a useless seek in this case. Prevent problems with non seekable files like single images.
-    ReadResult res;
-    if (mIsVeryShort)
-        res = ReadFrame(-1, 1, false);
-    else
-        res = ReadFrame(_section.Start, 1, false);
-
+    // Read the first frame with seek.
+    ReadResult res = ReadFrame(section.Start, 1, false);
     success = (res == ReadResult::Success);
 
-
-
-
-    // Continue reading frames until we have the right number or we are past the target.
-    while ((mTimestampInfo.CurrentTimestamp < _section.End) &&
-           (read < total) && 
+    // Continue reading frames until we have the right number, we are past the target, or EOF.
+    while ((mTimestampInfo.CurrentTimestamp < section.End) &&
+           (read < totalFrames) && 
            (res == ReadResult::Success))
     {
-        if (_bgWorker != nullptr && _bgWorker->CancellationPending)
+        if (bgWorker->CancellationPending)
         {
             if (mVerbose)
+            {
                 log->DebugFormat("Cancellation at frame [{0}]", mTimestampInfo.CurrentTimestamp);
+            }
 
             mCache->Clear();
             success = false;
             break;
         }
 
-        // Read one frame.
+        // Read the next frame.
         res = ReadFrame(-1, 1, false);
         success = (res == ReadResult::Success);
 
-        if (_bgWorker != nullptr)
-            _bgWorker->ReportProgress(read++, total);
-    }
-
-    mWorkingZone = mCache->WorkingZone;
-    mCache->SetPrependBlock(false);
-
-    // Sometimes a few frames at the end can't be read.
-    if (mTimestampInfo.CurrentTimestamp < _section.End && read < total)
-    {
-        log->ErrorFormat("Caching section: could only read {0} out of {1} frames.", read, total);
-    
-        if (read >= (total - 1) * 0.95)
+        if (success)
         {
-            mWorkingZone = mCache->WorkingZone;
-            success = true;
+            read = read + 1;
+            bgWorker->ReportProgress(read, totalFrames);
         }
     }
 
+    if (!bgWorker->CancellationPending)
+    {
+        mWorkingZone = mCache->WorkingZone;
+    }
+
+    mCache->SetPrepending(false);
     return success;
 }
 

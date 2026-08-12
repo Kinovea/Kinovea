@@ -209,7 +209,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Decoding mode & working zone.
         int64_t mTimestampOffset = 0;
         VideoDecodingMode mCachingMode;
-        bool mIsVeryShort;
         VideoSection mWorkingZone;
         VideoSection mSectionToPrepend;
         VideoSection mSectionToAppend;

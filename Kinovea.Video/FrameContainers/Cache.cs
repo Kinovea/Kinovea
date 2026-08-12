@@ -165,9 +165,9 @@ namespace Kinovea.Video
         /// This can be used to add many images in front of the existing range of cached frames.
         /// (Only the first Add is actually a prepend, subsequent Add are inserted before the old first frame)
         /// </summary>
-        public void SetPrependBlock(bool _enablePrepend)
+        public void SetPrepending(bool isPrepending)
         {
-            m_PrependingBlock = _enablePrepend;
+            m_PrependingBlock = isPrepending;
             
             // The insertion index is initialized to 0 and will be updated on each Add.
             m_InsertIndex = 0;
