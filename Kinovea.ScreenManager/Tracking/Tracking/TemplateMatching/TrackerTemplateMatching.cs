@@ -224,7 +224,7 @@ namespace Kinovea.ScreenManager
                 {
                     // In theory we shouldn't need to copy the template here.
                     // Keep just the reference ones in a timeline structure.
-                    bmpTemplate = BitmapHelper.Copy(prevTemplate.Template);
+                    bmpTemplate = BitmapHelper.CopyBasic(prevTemplate.Template);
                     TrackingSource source = TrackingSource.Auto;
                     trackingTemplate = new TrackingTemplate(time, point, similarity, bmpTemplate, source);
 
@@ -249,7 +249,7 @@ namespace Kinovea.ScreenManager
                 int height = Math.Min(bmpTemplate.Height, cvImage.Height - startY);
                 var cvROI = cvImage[startY, startY + height, startX, startX + width];
                 Bitmap bmpROI = cvROI.ToBitmap();
-                BitmapHelper.Copy(bmpROI, bmpTemplate, new Rectangle(0, 0, bmpROI.Width, bmpROI.Height));
+                BitmapHelper.Copy(bmpROI, bmpTemplate);
 
                 TrackingSource source = TrackingSource.Auto;
                 trackingTemplate = new TrackingTemplate(time, point, (float)similarity, bmpTemplate, source);
@@ -284,7 +284,7 @@ namespace Kinovea.ScreenManager
             int height = Math.Min(bmpTemplate.Height, cvImage.Height - startY);
             var cvROI = cvImage[startY, startY + height, startX, startX + width];
             Bitmap bmpROI = cvROI.ToBitmap();
-            BitmapHelper.Copy(bmpROI, bmpTemplate, new Rectangle(0, 0, bmpROI.Width, bmpROI.Height));
+            BitmapHelper.Copy(bmpROI, bmpTemplate);
 
             // Store the template to tracker state.
             TrackingSource source = TrackingSource.Manual;

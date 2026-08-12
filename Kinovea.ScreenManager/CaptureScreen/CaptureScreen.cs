@@ -1339,7 +1339,9 @@ namespace Kinovea.ScreenManager
             }
             
             if (recording && recordingThumbnail == null && displayFrame != null)
-                recordingThumbnail = BitmapHelper.Copy(displayFrame);
+            {
+                recordingThumbnail = BitmapHelper.CopyBasic(displayFrame);
+            }
 
             if (recording && maxRecordingSeconds > 0)
             {
@@ -2117,7 +2119,9 @@ namespace Kinovea.ScreenManager
                 {
                     Bitmap delayed = delayer.GetWeak(age, ImageRotation, Mirrored, out _);
                     if (delayed != null)
-                        recordingThumbnail = BitmapHelper.Copy(delayed);
+                    { 
+                        recordingThumbnail = BitmapHelper.CopyBasic(delayed);
+                    }
                 }
 
                 bool copied = delayer.GetStrong(age, delayedFrame);

@@ -15,33 +15,112 @@ namespace Kinovea.Services
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Copy a bitmap into another
+
         /// <summary>
-        /// Allocate a new bitmap and copy the passed bitmap into it.
+        /// Allocates a new Bitmap and copy the source into it.
+        /// Assumes the source rows have no padding.
         /// </summary>
-        public static Bitmap Copy(Bitmap src)
+        public static Bitmap CopyBasic(Bitmap src)
         {
-            if (src is null)
+            if (src == null)
+            {
                 return null;
+            }
 
             Bitmap dst = new Bitmap(src.Width, src.Height, src.PixelFormat);
-            Rectangle rect = new Rectangle(0, 0, src.Width, src.Height);
-
-            Copy(src, dst, rect);
-            
+            Copy(src, dst);
             return dst;
         }
 
         /// <summary>
-        /// Copy a bitmap into another. Destination bitmap is assumed to already be allocated and at the proper size/pixel format.
+        /// Allocates a new bitmap and copy the source into it, row by row.
+        /// Input bitmap must be BGRA.
+        /// Ignores any extra padding in the source.
+        /// This should be used to copy frames read by the video reader.
         /// </summary>
-        public unsafe static void Copy(Bitmap src, Bitmap dst, Rectangle rect)
+        public unsafe static Bitmap CopyByRows(Bitmap src)
         {
+            if (src.PixelFormat != PixelFormat.Format32bppPArgb)
+            {
+                return null;
+            }
+
+            Bitmap dst = new Bitmap(src.Width, src.Height, src.PixelFormat);
+            Rectangle rect = new Rectangle(0, 0, src.Width, src.Height);
+
             BitmapData srcData = null;
             BitmapData dstData = null;
+
             try
             {
                 srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
                 dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
+
+                if (srcData.Stride != src.Width * 4)
+                {
+                    log.DebugFormat("Source bitmap stride {0}, width*4={1}.", srcData.Stride, src.Width * 4);
+                }
+
+                int rowBytes = src.Width * 4; // BGRA = 4 bytes/pixel
+                byte* srcRow = (byte*)srcData.Scan0.ToPointer();
+                byte* dstRow = (byte*)dstData.Scan0.ToPointer();
+
+                for (int y = 0; y < src.Height; y++)
+                {
+                    NativeMethods.memcpy(dstRow, srcRow, rowBytes);
+                    srcRow += srcData.Stride;
+                    dstRow += dstData.Stride;
+                }
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while copying bitmap to buffer. {0}", e.Message);
+            }
+            finally
+            {
+                if (srcData != null)
+                    src.UnlockBits(srcData);
+
+                if (dstData != null)
+                    dst.UnlockBits(dstData);
+            }
+
+            return dst;
+        }
+
+        /// <summary>
+        /// Copy a bitmap into another. 
+        /// Destination bitmap is assumed to already be allocated.
+        /// Destination must be exactly the same size and stride as source.
+        /// Pixel formats must be compatible, like Format32bppPArgb and Format32bppArgb.
+        /// </summary>
+        public unsafe static void Copy(Bitmap src, Bitmap dst)
+        {
+            if (dst == null || src == null)
+            {
+                return;
+            }
+
+            if (src.Width != dst.Width || src.Height != dst.Height)
+            {
+                log.Error("Source and destination bitmaps must have the same size and pixel format.");
+                return;
+            }
+
+            BitmapData srcData = null;
+            BitmapData dstData = null;
+            try
+            {
+                Rectangle rect = new Rectangle(0, 0, src.Width, src.Height);
+                srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
+                dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
+
+                if (srcData.Stride != dstData.Stride)
+                {
+                    log.Error("Source and destination bitmaps must have the same stride.");
+                    return;
+                }
+
                 NativeMethods.memcpy(dstData.Scan0.ToPointer(), srcData.Scan0.ToPointer(), srcData.Height * srcData.Stride);
             }
             catch (Exception e)

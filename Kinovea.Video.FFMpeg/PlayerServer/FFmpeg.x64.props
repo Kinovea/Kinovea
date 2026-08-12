@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\8.1.2\include\;..\..\Refs\FFmpeg\8.1.2\include\libavcodec;..\..\Refs\FFmpeg\8.1.2\include\libavdevice;..\..\Refs\FFmpeg\8.1.2\include\libavfilter;..\..\Refs\FFmpeg\8.1.2\include\libavformat;..\..\Refs\FFmpeg\8.1.2\include\libavutil;..\..\Refs\FFmpeg\8.1.2\include\libswresample;..\..\Refs\FFmpeg\8.1.2\include\libswscale;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\8.1.2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>

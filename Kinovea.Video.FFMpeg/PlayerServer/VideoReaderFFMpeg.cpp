@@ -96,16 +96,16 @@ void VideoReaderFFMpeg::Close()
 
     if (mVideoCodecCtx != nullptr)
     {
-        AVCodecContext* pin = mVideoCodecCtx;
-        avcodec_free_context(&pin);
-        mVideoCodecCtx = pin;
+        AVCodecContext* pVideoCodecCtx = mVideoCodecCtx;
+        avcodec_free_context(&pVideoCodecCtx);
+        mVideoCodecCtx = nullptr;
     }
 
     if (mFormatCtx != nullptr)
     {
-        AVFormatContext* pin = mFormatCtx;
-        avformat_close_input(&pin);
-        mFormatCtx = pin;
+        AVFormatContext* pFormatCtx = mFormatCtx;
+        avformat_close_input(&pFormatCtx);
+        mFormatCtx = nullptr;
     }
 }
 
@@ -157,7 +157,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
             mFrameContainer->CurrentFrame != nullptr &&
             mTimestampInfo.CurrentTimestamp > previousFrameTimestamp)
         {
-            Bitmap^ bmp = BitmapHelper::Copy(mFrameContainer->CurrentFrame->Image);
+            Bitmap^ bmp = BitmapHelper::CopyByRows(mFrameContainer->CurrentFrame->Image);
             summary->Thumbs->Add(bmp);
             previousFrameTimestamp = mTimestampInfo.CurrentTimestamp;
         }
@@ -1518,32 +1518,68 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
 
 ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
 {
-    // Convert the frame from the source format to our working format AV_PIX_FMT_BGRA and store it in a Bitmap.
+    //-------------------------------------
+    // Convert the decoded frame to the final frame, wrap it in a Bitmap, 
+    // keep track of the native buffer through the .Tag of the Bitmap and
+    // store the Bitmap in the active frame container.
+    //--------------------------------------
     
-    // Prepare a new AVFrame to hold the converted frame.
+    //--------------------------------------
+    // The frame goes through an ffmpeg filter graph with optional deinterlace,
+    // scaling and pixel format conversion.
+    // 
+    // The graph sink is either retrieved into a reusable staging AVFrame (mFilteredFrame),
+    // which is then copied into the final converted AVFrame, or extracted directly
+    // into the final converted AVFrame.
+    // 
+    // The copy is not strictly necessary, we can use the AVFrame out of the sink filter. 
+    // The problem is that this AVFrame has row padding and this seems to break a number 
+    // of assumptions in other parts of the code.
+    // 
+    // We wrap the padded buffer into the Bitmap so anything handling these Bitmaps
+    // now needs to be careful about stride being different than width*4.
+    // 
+    // The Bitmap Copy helpers have been updated to copy row by row but the template tracking
+    // seems to still have an issue, maybe because we send this Bitmap to OpenCV and it's not 
+    // clear what assumptions this holds. It doesn't crash but the tracking doesn't work
+    // correctly sometimes.
+    //-------------------------------------
+    
     AVFrame* convertedFrame = av_frame_alloc();
-    convertedFrame->format = AV_PIX_FMT_BGRA;
-    convertedFrame->width = m_DecodingSize.Width;
-    convertedFrame->height = m_DecodingSize.Height;
-    int res = av_frame_get_buffer(convertedFrame, 1);
-    if (res < 0)
+    
+    if (mCopyFilteredFrame)
     {
-        LogFFMpegError("av_frame_get_buffer", res);
-        av_frame_free(&convertedFrame);
-        return ReadResult::MemoryNotAllocated;
+        // Preallocate buffers with packed alignment.
+        convertedFrame->format = sConvertPixelFormat;
+        convertedFrame->width = m_DecodingSize.Width;
+        convertedFrame->height = m_DecodingSize.Height;
+        int res = av_frame_get_buffer(convertedFrame, 1);
+        if (res < 0)
+        {
+            LogFFMpegError("av_frame_get_buffer", res);
+            av_frame_free(&convertedFrame);
+            return ReadResult::MemoryNotAllocated;
+        }
     }
 
-    // Convert the decoded AVFrame to the correct format and size.
-    bool converted = RescaleAndConvert(decodedFrame, convertedFrame, m_DecodingSize.Width, m_DecodingSize.Height, sConvertPixelFormat, Options->Deinterlace);
+    // Deinterlace, Scale and Convert the decoded AVFrame.
+    bool converted = RescaleAndConvert(
+        decodedFrame, 
+        convertedFrame, 
+        m_DecodingSize.Width, 
+        m_DecodingSize.Height, 
+        sConvertPixelFormat, 
+        Options->Deinterlace);
+
     if (!converted)
     {
         av_frame_free(&convertedFrame);
         return ReadResult::ImageNotConverted;
     }
 
-    // Prepare the Bitmap
+    // Wrap the data buffer in a Bitmap.
     int imageStride = convertedFrame->linesize[0];
-    IntPtr^ scan0 = gcnew IntPtr((void*)convertedFrame->data[0]);
+    IntPtr data = IntPtr(convertedFrame->data[0]);
     Bitmap^ bmp = nullptr;
 
     if (stabOffsets->ContainsKey(mTimestampInfo.CurrentTimestamp))
@@ -1553,24 +1589,49 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
         bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, DecodingPixelFormat);
 
         // Get the decoded frame in a bitmap and paint it over the output.
-        Bitmap^ bmp2 = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, (IntPtr)scan0);
+        Bitmap^ bmp2 = gcnew Bitmap(
+            m_DecodingSize.Width,
+            m_DecodingSize.Height,
+            imageStride,
+            DecodingPixelFormat,
+            data);
+
         Graphics^ g = Graphics::FromImage(bmp);
         float dx = stabOffsets[mTimestampInfo.CurrentTimestamp]->X;
         float dy = stabOffsets[mTimestampInfo.CurrentTimestamp]->Y;
         // TODO: handle scaling (decoding size).
         g->DrawImageUnscaled(bmp2, (int)(-dx), (int)(-dy));
         delete g;
+        
+        // TODO: proper dispose of the native buffer.
         delete bmp2;
     }
     else
     {
-        bmp = gcnew Bitmap(m_DecodingSize.Width, m_DecodingSize.Height, imageStride, DecodingPixelFormat, (IntPtr)scan0);
+        bmp = gcnew Bitmap(
+            m_DecodingSize.Width, 
+            m_DecodingSize.Height, 
+            imageStride, 
+            DecodingPixelFormat, 
+            data);
     }
 
     // Store a pointer to the libav allocated buffer inside the Tag of the bitmap.
-    // We will have to free this buffer later when the frame is not used anymore.
-    bmp->Tag = scan0;
-
+    // We will free this buffer later when the frame is not used anymore.
+    if (mCopyFilteredFrame)
+    {
+        bmp->Tag = data;
+    }
+    else
+    {
+        // Find the AVBufferRef that owns data[0], and create our own reference 
+        // that will stay alive after we free the AVFrame.
+        AVBufferRef* planeBuffer = av_frame_get_plane_buffer(convertedFrame, 0);
+        AVBufferRef* bitmapBuffer = av_buffer_ref(planeBuffer);
+        bmp->Tag = IntPtr(bitmapBuffer);
+        av_frame_free(&convertedFrame);
+    }
+    
     // Note: rotation doesn't change the size of the buffer.
     ApplyRotation(bmp, mVideoInfo.ImageRotation);
 
@@ -1584,7 +1645,6 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
     // If we are in mode prebuffer, we are in a background thread and this will potentially block if the 
     // cache is full. 
     mFrameContainer->Add(vf);
-    //log->DebugFormat("Stored frame [{0}]", mTimestampInfo.CurrentTimestamp);
 
     return ReadResult::Success;
 }
@@ -1613,139 +1673,329 @@ AVPixelFormat VideoReaderFFMpeg::GetSourceFormat(AVCodecContext* videoCodecCtx)
     }
 }
 
+
 bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace)
 {
-    // todo: sws_getContext could be done only once.
-    bool result = true;
-    AVPixelFormat srcFormat = GetSourceFormat(mVideoCodecCtx);
-
-    int flags = SWS_BILINEAR;
-    // SWS_FAST_BILINEAR
-    // SWS_POINT
-
-    // By this point the converted frame is already allocated.
-
-
-    // Using old API.
-    SwsContext* scalingCtx = sws_getContext(
-        mVideoCodecCtx->width, mVideoCodecCtx->height, srcFormat,
-        dstWidth, dstHeight, dstPixelFormat,
-        flags, NULL, 
-        NULL, NULL);
-
-
-    //const uint8_t* const srcSlice[]
-    //const int srcStride[]
-    //int srcSliceY
-    //int srcSliceH,
-    //uint8_t* const dst[]
-    //const int dstStride[]
-    const uint8_t* const* srcSlice = srcFrame->data;
-    int* srcStride = srcFrame->linesize;
-    int srcSliceY = 0;
-    int srcSliceH = mVideoCodecCtx->height;
-    uint8_t** dst = dstFrame->data;
-    int* dstStride = dstFrame->linesize;
-
-    try
+    int srcWidth = srcFrame->width;
+    int srcHeight = srcFrame->height;
+    const AVPixelFormat srcPixelFormat = static_cast<AVPixelFormat>(srcFrame->format);
+    
+    // Recreate the graph if needed.
+    if (!mFilterGraph ||
+        mFilterSrcWidth != srcWidth || mFilterSrcHeight != srcHeight || mFilterSrcFormat != srcPixelFormat ||
+        mFilterDstWidth != dstWidth || mFilterDstHeight != dstHeight || mFilterDstFormat != dstPixelFormat ||
+        mFilterDeinterlace != deinterlace)
     {
-        sws_scale(scalingCtx, srcSlice, srcStride, srcSliceY, srcSliceH, dst, dstStride);
-    }
-    catch (Exception^)
-    {
-        result = false;
-        log->Error("RescaleAndConvert Error : sws_scale failed.");
+        AVRational sar = srcFrame->sample_aspect_ratio;
+        bool created = CreateVideoFilterGraph(
+            srcWidth, srcHeight, srcPixelFormat,
+            dstWidth, dstHeight, dstPixelFormat,
+            deinterlace, sar);
+
+        if (!created)
+        {
+            log->Error("RescaleAndConvert: CreateVideoFilterGraph failed.");
+            return false;
+        }
     }
 
-    sws_freeContext(scalingCtx);
-
-    return result;
-
-
-
-    // TODO: use new API.
-    /*SwsContext* scalingCtx = sws_alloc_context();
-    if (!scalingCtx)
+    // Feed the decoded frame to libavfilter.
+    int ret = av_buffersrc_add_frame_flags(mFilterSource, srcFrame, AV_BUFFERSRC_FLAG_KEEP_REF);
+    if (ret < 0)
     {
+        LogFFMpegError("av_buffersrc_add_frame_flags", ret);
         return false;
     }
-    scalingCtx->flags = SWS_FAST_BILINEAR;*/
-    //sws_scale_frame(scalingCtx, convertedFrame, decodedFrame);
 
+    //-------------------------------------
+    // Retrieve the processed frame.
+    // Here we decide if we can use the AVFrame from the sink filter directly as 
+    // the result or if we make an extra copy into a preallocated destination.
+    // This is used to control the buffer alignment of the final frame.
+    // 
+    // For the copy scenario we first extract the frame into a staging AVFrame.
+    //-------------------------------------
 
-    //av_freep(&src_data[0]);
-    //av_freep(&dst_data[0]);
-    //sws_freeContext(scalingCtx);
+    if (mCopyFilteredFrame)
+    {
+        av_frame_unref(mFilteredFrame);
+        ret = av_buffersink_get_frame(mFilterSink, mFilteredFrame);
+    }
+    else
+    {
+        ret = av_buffersink_get_frame(mFilterSink, dstFrame);
+    }
 
+    if (ret == AVERROR(EAGAIN))
+    {
+        // This can happen when YADIF needs another input frame before it can produce this output frame.
+        log->Error("av_buffersink_get_frame returned EAGAIN.");
+        return false;
+    }
+    else if (ret < 0)
+    {
+        LogFFMpegError("av_buffersink_get_frame", ret);
+        return false;
+    }
+    
+    // Copy the filtered frame into the destination if needed.
+    // This will get rid of any padding and conform it to 
+    // the alignment of the passed destination AVFrame.
+    if (mCopyFilteredFrame)
+    {
+        ret = av_frame_make_writable(dstFrame);
+        if (ret < 0)
+        {
+            LogFFMpegError("av_frame_make_writable", ret);
+            av_frame_unref(mFilteredFrame);
+            return false;
+        }
 
-    //SwsContext* c = sws_getContext(
-    //    mVideoCodecCtx->width, mVideoCodecCtx->height, srcFormat,
-    //    _decodingWidth, _decodingHeight, (AVPixelFormat)_outputFmt,
-    //    sDecodingQuality,
-    //    nullptr, nullptr, nullptr);
+        ret = av_frame_copy(dstFrame, mFilteredFrame);
+        if (ret < 0)
+        {
+            LogFFMpegError("av_frame_copy", ret);
+            av_frame_unref(mFilteredFrame);
+            return false;
+        }
 
-    //uint8_t** srcSlice = nullptr;               // Array containing pointers to planes of source slice.
-    //int* srcStride = nullptr;                   // Array containing strides for each plane of the source image. 
-    //int srcSliceY = 0;                          // the position in the source image of the slice to process, 
-    //                                            // that is the number(counted starting from zero) in the image 
-    //                                            // of the first row of the slice
-    //int srcSliceH = mVideoCodecCtx->height;        // the height of the source slice, that is the number of rows in the slice.
-    //uint8_t** dst = _pOutputFrame->data;        // the array containing the pointers to the planes of the destination image.
-    //int* dstStride = _pOutputFrame->linesize;   // the array containing the strides for each plane of the destination image.
-
-    //uint8_t* pDeinterlaceBuffer = nullptr;
-    //if (_deinterlace)
-    //{
-    //    AVPicture* pDeinterlacingFrame;
-    //    AVPicture	tmpPicture;
-
-    //    // Deinterlacing happens before resizing.
-    //    int iSizeDeinterlaced = avpicture_get_size(mVideoCodecCtx->pix_fmt, mVideoCodecCtx->width, mVideoCodecCtx->height);
-
-    //    pDeinterlaceBuffer = new uint8_t[iSizeDeinterlaced];
-    //    pDeinterlacingFrame = &tmpPicture;
-    //    avpicture_fill(pDeinterlacingFrame, pDeinterlaceBuffer, mVideoCodecCtx->pix_fmt, mVideoCodecCtx->width, mVideoCodecCtx->height);
-
-    //    int resDeint = avpicture_deinterlace(pDeinterlacingFrame, (AVPicture*)_pInputFrame, mVideoCodecCtx->pix_fmt, mVideoCodecCtx->width, mVideoCodecCtx->height);
-
-    //    if (resDeint < 0)
-    //    {
-    //        // Deinterlacing failed, use original image.
-    //        log->Debug("Deinterlacing failed, use original image.");
-    //        srcSlice = _pInputFrame->data;
-    //        srcStride = _pInputFrame->linesize;
-    //    }
-    //    else
-    //    {
-    //        // Use deinterlaced image.
-    //        srcSlice = pDeinterlacingFrame->data;
-    //        srcStride = pDeinterlacingFrame->linesize;
-    //    }
-    //}
-    //else
-    //{
-    //    srcSlice = _pInputFrame->data;
-    //    srcStride = _pInputFrame->linesize;
-    //}
-
-    //try
-    //{
-    //    sws_scale(c, srcSlice, srcStride, srcSliceY, srcSliceH, dst, dstStride);
-    //}
-    //catch (Exception^)
-    //{
-    //    bSuccess = false;
-    //    log->Error("RescaleAndConvert Error : sws_scale failed.");
-    //}
-
-    //// Clean Up.
-    //sws_freeContext(c);
-
-    //if (pDeinterlaceBuffer != nullptr)
-    //    delete[] pDeinterlaceBuffer;
-
-    //return bSuccess;
+        // Propagate PTS, color metadata, aspect ratio, side data, etc.
+        ret = av_frame_copy_props(dstFrame, mFilteredFrame);
+        av_frame_unref(mFilteredFrame);
+    }
+    
+    return ret >= 0;
 }
+
+
+void VideoReaderFFMpeg::FreeVideoFilterGraph()
+{
+    // Note: the member variables are on managed-heap and can be moved by the GC.
+    // The CLR is allowed to move the whole VideoReaderFFMpeg object, 
+    // and the memory of say, mFilteredFrame can change, so we can't directly pass their address.
+    // &mFilteredFrame has type interior_ptr<AVFrame*>, not AVFrame**. 
+    // We can either use a pin_ptr or a temporary variable.
+
+    if (mCopyFilteredFrame)
+    {
+        AVFrame* pFilteredFrame = mFilteredFrame;
+        av_frame_free(&pFilteredFrame);
+        mFilteredFrame = nullptr;
+    }
+
+    AVFilterGraph* pFilterGraph = mFilterGraph;
+    avfilter_graph_free(&pFilterGraph);
+    mFilterGraph = nullptr;
+
+    mFilterSource = nullptr;
+    mFilterSink = nullptr;
+
+    mFilterSrcWidth = 0;
+    mFilterSrcHeight = 0;
+    mFilterSrcFormat = AV_PIX_FMT_NONE;
+
+    mFilterDstWidth = 0;
+    mFilterDstHeight = 0;
+    mFilterDstFormat = AV_PIX_FMT_NONE;
+}
+
+
+bool VideoReaderFFMpeg::CreateVideoFilterGraph(
+    int srcWidth, int srcHeight, AVPixelFormat srcPixelFormat,
+    int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat,
+    bool deinterlace, AVRational sar)
+{
+    FreeVideoFilterGraph();
+
+    //----------------------------------------------------
+    // Build the following filter graph:
+    // buffer -> [yadif] -> scale -> format -> buffersink.
+    //----------------------------------------------------
+
+    const AVFilter* bufferFilter = avfilter_get_by_name("buffer");
+    const AVFilter* yadifFilter = deinterlace ? avfilter_get_by_name("yadif") : nullptr;
+    const AVFilter* scaleFilter = avfilter_get_by_name("scale");
+    const AVFilter* formatFilter = avfilter_get_by_name("format");
+    const AVFilter* bufferSinkFilter = avfilter_get_by_name("buffersink");
+
+    if (!bufferFilter || (deinterlace && !yadifFilter) || !scaleFilter || !formatFilter || !bufferSinkFilter)
+    {
+        log->Error("Failed to get one or more filters.");
+        return false;
+    }
+
+    mFilterGraph = avfilter_graph_alloc();
+    if (!mFilterGraph)
+    {
+        log->Error("Failed to allocate filter graph.");
+        return false;
+    }
+
+    //------------------------------
+    // Buffer
+    //------------------------------
+    AVRational timebase = mFormatCtx->streams[mVideoStreamIndex]->time_base;
+    if (sar.num <= 0 || sar.den <= 0)
+    {
+        sar = av_make_q(1, 1);
+    }
+
+    char args[512];
+    snprintf(args, sizeof(args), 
+        "video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
+        srcWidth, srcHeight, srcPixelFormat,
+        timebase.num, timebase.den,
+        sar.num, sar.den);
+
+    AVFilterContext* filterSourceCtx = nullptr;
+    int ret = avfilter_graph_create_filter(&filterSourceCtx, bufferFilter, "source", args, nullptr, mFilterGraph);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to create buffer filter.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    mFilterSource = filterSourceCtx;
+    AVFilterContext* previousCtx = mFilterSource;
+
+    //------------------------------
+    // Yadif (deinterlacing)
+    //------------------------------
+    if (deinterlace)
+    {
+        // Configuration
+        // One output frame per input frame rather than one per field, 
+        // automatically determine field parity, 
+        // deinterlace every frame.
+        AVFilterContext* yadifCtx = nullptr;
+        ret = avfilter_graph_create_filter(&yadifCtx, yadifFilter, "yadif", "mode=send_frame:parity=auto:deint=all", nullptr, mFilterGraph);
+        if (ret < 0)
+        {
+            LogFFMpegError("Failed to create yadif filter.", ret);
+            FreeVideoFilterGraph();
+            return false;
+        }
+
+        ret = avfilter_link(previousCtx, 0, yadifCtx, 0);
+        if (ret < 0)
+        {
+            LogFFMpegError("Failed to link yadif filter.", ret);
+            FreeVideoFilterGraph();
+            return false;
+        }
+            
+        previousCtx = yadifCtx;
+    }
+
+    //------------------------------
+    // Scaling
+    //------------------------------
+    // fast-bilinear is speed over quality, not needed for the use case.
+    AVFilterContext* scaleCtx = nullptr;
+    snprintf(args, sizeof(args), "w=%d:h=%d:flags=bilinear", dstWidth, dstHeight);
+    ret = avfilter_graph_create_filter(&scaleCtx, scaleFilter, "scale", args, nullptr, mFilterGraph);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to create scale filter.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    ret = avfilter_link(previousCtx, 0, scaleCtx, 0);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to link scale filter.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    previousCtx = scaleCtx;
+
+    //------------------------------
+    // Pixel format conversion
+    //------------------------------
+    AVFilterContext* formatCtx = nullptr;
+
+    const char* pixelFormatName = av_get_pix_fmt_name(dstPixelFormat);
+    if (!pixelFormatName)
+    {
+        log->ErrorFormat("Failed to get pixel format name for {0}.", GetFrameFormatString(dstPixelFormat));
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    snprintf(args, sizeof(args), "pix_fmts=%s", pixelFormatName); 
+    ret = avfilter_graph_create_filter(&formatCtx, formatFilter, "format", args, nullptr, mFilterGraph);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to create format filter.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    ret = avfilter_link(previousCtx, 0, formatCtx, 0);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to link format filter.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    previousCtx = formatCtx;
+
+    //------------------------------
+    // Buffersink
+    //------------------------------
+    AVFilterContext* filterSinkCtx = nullptr;
+    ret = avfilter_graph_create_filter(&filterSinkCtx, bufferSinkFilter, "sink", nullptr, nullptr, mFilterGraph);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to create buffersink filter.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    mFilterSink = filterSinkCtx;
+
+    ret = avfilter_link(previousCtx, 0, mFilterSink, 0);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to link buffersink filter.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    ret = avfilter_graph_config(mFilterGraph, nullptr);
+    if (ret < 0)
+    {
+        LogFFMpegError("Failed to configure filter graph.", ret);
+        FreeVideoFilterGraph();
+        return false;
+    }
+
+    if (mCopyFilteredFrame)
+    {
+        mFilteredFrame = av_frame_alloc();
+        if (!mFilteredFrame)
+        {
+            log->Error("Failed to allocate filtered frame.");
+            FreeVideoFilterGraph();
+            return false;
+        }
+    }
+    
+    // Recall the parameters so we can check if the filter graph needs to be rebuilt.
+    mFilterSrcWidth = srcWidth;
+    mFilterSrcHeight = srcHeight;
+    mFilterSrcFormat = srcPixelFormat;
+    mFilterDstWidth = dstWidth;
+    mFilterDstHeight = dstHeight;
+    mFilterDstFormat = dstPixelFormat;
+    mFilterDeinterlace = deinterlace;
+    return true;
+}
+
 
 void VideoReaderFFMpeg::ApplyRotation(Bitmap^ bmp, ImageRotation rotation)
 {
@@ -1769,16 +2019,37 @@ void VideoReaderFFMpeg::ApplyRotation(Bitmap^ bmp, ImageRotation rotation)
 void VideoReaderFFMpeg::DisposeFrame(VideoFrame^ videoFrame)
 {
     //log->DebugFormat("Disposing frame [{0}].", videoFrame->Timestamp);
-
     // Dispose the Bitmap and the native buffer.
-    // The pointer to the native buffer was stored in the Tag property.
-    IntPtr^ ptr = dynamic_cast<IntPtr^>(videoFrame->Image->Tag);
-    delete videoFrame->Image;
-
-    if (ptr != nullptr)
+    
+    if (mCopyFilteredFrame)
     {
-        void* pBuf = ptr->ToPointer();
-        av_freep(&pBuf);
+        IntPtr^ ptr = dynamic_cast<IntPtr^>(videoFrame->Image->Tag);
+        delete videoFrame->Image;
+        videoFrame->Image = nullptr;
+    
+        if (ptr != nullptr)
+        {
+            void* pBuf = ptr->ToPointer();
+            av_freep(&pBuf);
+        }
+    }
+    else
+    {
+        IntPtr bufferPtr = IntPtr::Zero;
+        if (videoFrame->Image->Tag != nullptr)
+        {
+            bufferPtr = safe_cast<IntPtr>(videoFrame->Image->Tag);
+            videoFrame->Image->Tag = nullptr;
+        }
+
+        delete videoFrame->Image;
+        videoFrame->Image = nullptr;
+
+        if (bufferPtr != IntPtr::Zero)
+        {
+            AVBufferRef* bufferRef = static_cast<AVBufferRef*>(bufferPtr.ToPointer());
+            av_buffer_unref(&bufferRef);
+        }
     }
 }
 
@@ -1954,7 +2225,7 @@ void VideoReaderFFMpeg::LogFrameInfo(AVFrame* frame)
 {
     log->DebugFormat("Frame info. Type:{0}, Format:{1}, PTS:{2}, Packet DTS:{3}, BETS:{4}, Dur:{5}, Flags:{6}, Size:{7}x{8} px.",
         GetFrameTypeString(frame->pict_type),
-        GetFrameFormatString(frame->format),
+        GetFrameFormatString((AVPixelFormat)frame->format),
         frame->pts,
         frame->pkt_dts,
         frame->best_effort_timestamp,
@@ -2037,10 +2308,9 @@ String^ VideoReaderFFMpeg::GetFrameTypeString(int type)
     }
 }
 
-String^ VideoReaderFFMpeg::GetFrameFormatString(int format)
+String^ VideoReaderFFMpeg::GetFrameFormatString(AVPixelFormat format)
 {
-    AVPixelFormat pixFmt = (AVPixelFormat)format;
-    switch (pixFmt)
+    switch (format)
     {
     case AV_PIX_FMT_YUV420P:
         return "AV_PIX_FMT_YUV420P";
@@ -2049,7 +2319,7 @@ String^ VideoReaderFFMpeg::GetFrameFormatString(int format)
     case AV_PIX_FMT_YUV411P:
         return "AV_PIX_FMT_YUV411P";
     default:
-        return format.ToString();
+        return ((int)format).ToString();
     }
 }
 #pragma endregion

@@ -101,13 +101,17 @@ namespace Kinovea.ScreenManager
                 try
                 {
                     if(string.IsNullOrEmpty(filename))
+                    {
                        continue;
+                    }
                     
                     string extension = Path.GetExtension(filename);
                     VideoReader reader = VideoTypeManager.GetVideoReader(extension);
 
         			if(reader != null)
+                    {
                         summary = reader.ExtractSummary(filename, thumbnailsToExtract, maxImageSize);
+                    }
                 }
                 catch(Exception exp)
                 {

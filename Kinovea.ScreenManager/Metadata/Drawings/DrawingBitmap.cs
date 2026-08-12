@@ -109,7 +109,9 @@ namespace Kinovea.ScreenManager
         public DrawingBitmap(long timestamp, double averageTimeStampsPerFrame, Bitmap bmp)
         {
             if (bmp != null)
-                bitmap = BitmapHelper.Copy(bmp);
+            {
+                bitmap = BitmapHelper.CopyByRows(bmp);
+            }
 
             valid = bitmap != null;
             Initialize(timestamp, averageTimeStampsPerFrame);

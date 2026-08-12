@@ -30,12 +30,12 @@ extern "C"
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#include <avcodec.h>
-#include <avformat.h>
-#include <error.h>
-#include <frame.h>
-#include <imgutils.h>
-#include <swscale.h> 
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavutil/error.h"
+#include "libavutil/frame.h"
+#include "libavutil/imgutils.h"
+#include "libswscale/swscale.h" 
 }
 
 #include "SavingContext.h"

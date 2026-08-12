@@ -53,15 +53,19 @@ extern "C" {
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
-#include "avcodec.h"
-#include "avdevice.h"
-#include "avfilter.h"
-#include "avformat.h"
-#include "avutil.h"
-#include "display.h"
-#include "imgutils.h"
-#include "swresample.h"
-#include "swscale.h"
+#include "libavcodec/avcodec.h"
+#include "libavdevice/avdevice.h"
+#include "libavfilter/avfilter.h"
+#include "libavfilter/buffersink.h"
+#include "libavfilter/buffersrc.h"
+#include "libavformat/avformat.h"
+#include "libavutil/avutil.h"
+#include "libavutil/frame.h"
+#include "libavutil/imgutils.h"
+#include "libavutil/pixdesc.h"
+#include "libavutil/display.h"
+#include "libswresample/swresample.h"
+#include "libswscale/swscale.h"
 }
 
 #include "ReadResult.h"
@@ -192,7 +196,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     // Members
     private:
         static const enum AVPixelFormat sConvertPixelFormat = AV_PIX_FMT_BGRA;
-        static const int sDecodingQuality = SWS_FAST_BILINEAR;
+        static const int sDecodingQuality = SWS_BILINEAR;
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
         // General
@@ -225,6 +229,22 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         AVFormatContext* mFormatCtx;
         AVCodecContext* mVideoCodecCtx;
         TimestampInfo mTimestampInfo;
+
+        // FFmpeg filter graph.
+        AVFilterGraph* mFilterGraph = nullptr;
+        AVFilterContext* mFilterSource = nullptr;
+        AVFilterContext* mFilterSink = nullptr;
+        AVFrame* mFilteredFrame = nullptr;
+        static bool mCopyFilteredFrame = true;
+
+        // Configuration of the graph.
+        int mFilterSrcWidth = 0;
+        int mFilterSrcHeight = 0;
+        AVPixelFormat mFilterSrcFormat = AV_PIX_FMT_NONE;
+        int mFilterDstWidth = 0;
+        int mFilterDstHeight = 0;
+        AVPixelFormat mFilterDstFormat = AV_PIX_FMT_NONE;
+        bool mFilterDeinterlace = false;
 
         // Others
         Object^ m_Locker;
@@ -285,6 +305,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// dstFrame must already be allocated.
         bool RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace);
         
+        /// Create the filter graph.
+        /// buffer -> [yadif] -> scale -> format -> buffersink.
+        /// Should only be called when the parameters change.
+        bool CreateVideoFilterGraph(
+            int srcWidth, int srcHeight, AVPixelFormat srcPixelFormat,
+            int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat,
+            bool deinterlace, AVRational sar);
+
+        void FreeVideoFilterGraph();
+
         /// Get the source format of decoded frames.
         /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
         AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
@@ -318,6 +348,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         static void LogFFMpegError(String^ context, int errorCode);
         static void LogStreamList(AVFormatContext* formatCtx);
         static String^ GetFrameTypeString(int type);
-        static String^ GetFrameFormatString(int format);
+        static String^ GetFrameFormatString(AVPixelFormat format);
     };
 }}}
