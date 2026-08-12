@@ -153,7 +153,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswresample;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -165,9 +165,9 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <Link>
-      <AdditionalDependencies>avformat.lib;avdevice.lib;avcodec.lib;avfilter.lib;avutil.lib;swscale.lib;swresample.lib;postproc.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)Kinovea.Video.FFMpeg.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Refs\FFmpeg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
