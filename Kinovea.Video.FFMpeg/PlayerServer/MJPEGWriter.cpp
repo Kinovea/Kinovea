@@ -25,6 +25,7 @@ using namespace System::Drawing;
 using namespace System::Drawing::Drawing2D;
 using namespace System::IO;
 using namespace System::Runtime::InteropServices;
+using namespace System::Text;
 
 using namespace Kinovea::Video;
 using namespace Kinovea::Video::FFMpeg;
@@ -62,8 +63,8 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
     
     m_SavingContext = gcnew SavingContext();
 
-    m_SavingContext->pFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(_filePath).ToPointer());
     
+
     // Apparently not all output size are ok, some crash sws_scale.
     // We will keep the input size and use the input pixel aspect ratio for maximum compatibility.
     // [2011-08-21] - Check if the issue with output size is related to odd number of rows.
@@ -83,6 +84,8 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
     do
     {
         // Muxer selection.
+
+        // StringToHGlobalAnsi is harmless here as we know the format string is ASCII.
         char* pFormatString = static_cast<char*>(Marshal::StringToHGlobalAnsi(_formatString).ToPointer());
         const AVOutputFormat* format = av_guess_format(pFormatString, nullptr, nullptr);
         if (format == nullptr) 
@@ -183,7 +186,13 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         m_SavingContext->pOutputVideoStream->time_base = m_SavingContext->pOutputCodecContext->time_base;
 
         // Open the file.
-        averror = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, m_SavingContext->pFilePath, AVIO_FLAG_WRITE);
+        // Temporary pinned UTF-8 buffer.
+        int byteCount = System::Text::Encoding::UTF8->GetByteCount(_filePath);
+        array<Byte>^ utf8Path = gcnew array<Byte>(byteCount + 1);
+        Encoding::UTF8->GetBytes(_filePath, 0, _filePath->Length, utf8Path, 0);
+        pin_ptr<Byte> pinnedPath = &utf8Path[0];
+        const char* pszFilePath = reinterpret_cast<const char*>(pinnedPath);
+        averror = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, pszFilePath, AVIO_FLAG_WRITE);
         if (averror < 0) 
         {
             result = SaveResult::FileNotOpened;
@@ -316,8 +325,6 @@ SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
         av_free(m_SavingContext->pSourceFrame);
     }
         
-    Marshal::FreeHGlobal(safe_cast<IntPtr>(m_SavingContext->pFilePath));
-    
     // Stream release (equivalent to freeing pOutputCodec + pOutputVideoStream)
     for(int i = 0; i < (int)m_SavingContext->pOutputFormatContext->nb_streams; i++) 
     {

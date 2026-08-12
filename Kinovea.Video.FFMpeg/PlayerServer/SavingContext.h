@@ -59,7 +59,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		int iSampleAspectRatioDenominator;
 
 		// User parameters
-		char* pFilePath;
 		double fFramesInterval;				
 		int iBitrate;				
 		Size outputSize;
