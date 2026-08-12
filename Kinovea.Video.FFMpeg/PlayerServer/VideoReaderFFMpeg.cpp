@@ -120,7 +120,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
     // Allocate 100 ms to this task. 
     // Always get at least one image but after that if we run out of time we cancel.
     int64_t timeout = 100;
-    mStopwatch->Restart();
+    mStopwatchRead->Restart();
 
     OpenVideoResult loaded = Load(filePath, true);
 
@@ -168,10 +168,10 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
             break;
         }
 
-        if (mStopwatch->ElapsedMilliseconds > timeout)
+        if (mStopwatchRead->ElapsedMilliseconds > timeout)
         {
             log->WarnFormat("Thumbnail out of budget after {0} frames in {1} ms. {2}.", 
-                index, mStopwatch->ElapsedMilliseconds, Path::GetFileName(filePath));
+                index, mStopwatchRead->ElapsedMilliseconds, Path::GetFileName(filePath));
             break;
         }
     }
@@ -252,7 +252,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         log->ErrorFormat("avcodec_parameters_to_context failed. Error: {0}", res);
         return OpenVideoResult::CodecNotOpened;
     }
-    
+
 
     // Enable multithreading.
     videoCodecCtx->thread_count = 0;
@@ -487,7 +487,9 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
 
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
+        mStopwatchRead->Restart();
         ReadResult res = ReadFrame(-1, _skip + 1, false);
+        log->DebugFormat("MoveNext. Read frame in {0} ms.", mStopwatchRead->ElapsedMilliseconds);
         moved = res == ReadResult::Success;
     }
     else if (mCachingMode == VideoDecodingMode::Caching)
@@ -563,22 +565,30 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
             }
 
             // This is done on the UI thread but the decoding thread has just been put to sleep.
-            mStopwatch->Restart();
+
+            mStopwatchRead->Restart();
+
             ReadResult res = ReadFrame(target, 1, false);
-            //ReadResult res = ReadFrame(target, 1, true);
+
             if (mVerbose)
-                log->DebugFormat("MoveTo. Read frame in {0} ms.", mStopwatch->ElapsedMilliseconds);
-            
+            {
+                log->DebugFormat("MoveTo. Read frame in {0} ms.", mStopwatchRead->ElapsedMilliseconds);
+            }
+
             if (res == ReadResult::Success)
             {
                 // The actual timestamp we land on might not be the one requested.
                 int64_t actualTarget = mTimestampInfo.CurrentTimestamp;
                 if (target != actualTarget)
+                {
                     AddTimestampMapping(target, actualTarget);
+                }
 
                 moved = mPreBuffer->MoveTo(actualTarget);
                 if (mVerbose)
+                {
                     log->DebugFormat("MoveTo. Moved to {0}.", actualTarget);
+                }
             }
 
             StartPreBuffering();
@@ -830,6 +840,8 @@ double VideoReaderFFMpeg::WorkingZoneMemoryRequirement(VideoSection _newZone)
 void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkEventArgs^ e)
 {
     BackgroundWorker^ worker = dynamic_cast<BackgroundWorker^>(sender);
+
+    Thread::CurrentThread->Name = "CacheFilling";
 
     bool success = true;
     if (!mSectionToPrepend.IsEmpty)
@@ -1103,8 +1115,6 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     {
         throw gcnew CapabilityNotSupportedException("Importing to cache is not supported for the video.");
     }
-
-    Thread::CurrentThread->Name = "CacheFilling";
     
     if (mVerbose)
     {
@@ -1373,6 +1383,15 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
 ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame)
 {
+    //-------------------------------------
+    // Decode one frame from the video stream.
+    //
+    // Read packets from the video stream and feed them to libav until it can decode one frame.
+    // The frame may already be decoded if the codec has B-frames and the next I-frame was already decoded.
+    // Another way was tried where we feed packets to libav until its internal buffer is full, 
+    // but this sometimes returns an error "Invalid data found when processing input.". To investigate.
+    //-------------------------------------
+
     if (frame == nullptr)
     {
         return ReadResult::InvalidProgram;
@@ -1493,7 +1512,6 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
     av_packet_unref(packet);
     return result;
 }
-
 
 
 int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
@@ -2108,15 +2126,13 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
             break;
         }
 
-        mStopwatch->Restart();
 
         // Read the next frame.
         // If the cache is full this will block.
         // When the frame is added to the cache it will run its eviction policy and free another frame.
+        mStopwatchRead->Restart();
         ReadResult res = ReadFrame(-1, 1, false);
-
-        /*log->DebugFormat("ReadFrame: [{0}], {1} ms.", 
-            mTimestampInfo.CurrentTimestamp, mStopwatch->ElapsedMilliseconds);*/
+        log->DebugFormat("ReadFrame: [{0}], {1} ms.", mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
 
         if (canceler->CancellationPending)
         {

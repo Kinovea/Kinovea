@@ -250,7 +250,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         LoopWatcher^ mLoopWatcher;
         Thread^ mPreBufferingThread;
         ThreadCanceler^ mPreBufferingThreadCanceler;
-        Stopwatch^ mStopwatch = gcnew Stopwatch();
+        Stopwatch^ mStopwatchRead = gcnew Stopwatch();
         bool mVerbose = true;
         
     private:
