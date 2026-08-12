@@ -314,10 +314,17 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mVideoInfo.FrameIntervalMilliseconds = 1000.0 / mVideoInfo.FramesPerSeconds;
     mVideoInfo.AverageTimeStampsPerFrame = mVideoInfo.AverageTimeStampsPerSeconds / mVideoInfo.FramesPerSeconds;
 
-    // Working zone representing the whole video.
-    mWorkingZone = VideoSection(
-        mVideoInfo.FirstTimeStamp,
-        (int64_t)Math::Round(mVideoInfo.FirstTimeStamp + mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame));
+    // Initial working zone representing the whole video.
+    // For the end timestamp we can calculate from either frame count or duration.
+    // Compute both and use the max. This may be adjusted later when we read the last frame.
+    int64_t lastTimestamp = mVideoInfo.FirstTimeStamp + mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame;
+    if (videoStream->nb_frames > 0)
+    {
+        int64_t lastFrameTimestamp = mVideoInfo.FirstTimeStamp + (videoStream->nb_frames - 1) * mVideoInfo.AverageTimeStampsPerFrame;
+        lastTimestamp = Math::Max(lastTimestamp, lastFrameTimestamp);
+    }
+    
+    mWorkingZone = VideoSection(mVideoInfo.FirstTimeStamp, lastTimestamp);
 
     //-----------------------------------------------------
     // Image size info
@@ -1123,9 +1130,6 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 
     mCache->SetPrepending(isPrepend);
 
-    bool success = true;
-    int read = 0;
-
     // Realign the requested section on real timestamps.
     if (!mCache->WorkingZone.IsEmpty)
     {
@@ -1143,32 +1147,52 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         log->DebugFormat("Aligned requested section to cache: {0}", section);
     }
 
-    double end = section.End + (mVideoInfo.AverageTimeStampsPerFrame * 0.5);
-    int totalFrames = (int)Math::Floor((end - section.Start) / mVideoInfo.AverageTimeStampsPerFrame);
-    log->DebugFormat("Frames to cache: {0}", totalFrames);
-
     // Bail out if re-alignment revealed we don't need to cache anything new.
-    if (totalFrames == 0)
+    if (section.End - section.Start < mVideoInfo.AverageTimeStampsPerFrame)
     {
         return true;
     }
 
-    // Read the first frame with seek.
+    // The number of frames to cache is an estimate and is only used to report progress.
+    // The actual reading only stops when we get the target end timestamp or EOF.
+    double frameIntervals = (section.End - section.Start) / mVideoInfo.AverageTimeStampsPerFrame;
+    int totalFrames = (int)Math::Round(frameIntervals + 1);
+    log->DebugFormat("Frames to cache: {0} (avg ts/f: {1}).", totalFrames, mVideoInfo.AverageTimeStampsPerFrame);
+
+    // Seek to first frame.
+    int read = 0;
+    bool success = true;
     ReadResult res = ReadFrame(section.Start, 1, false);
     success = (res == ReadResult::Success);
-
-    // Continue reading frames until we have the right number, we are past the target, or EOF.
-    while ((mTimestampInfo.CurrentTimestamp < section.End) &&
-           (read < totalFrames) && 
-           (res == ReadResult::Success))
+    read++;
+    
+    while (true)
     {
+        if (mTimestampInfo.CurrentTimestamp >= section.End)
+        {
+            log->DebugFormat("Caching complete [{0}]. Read: {1} frames.", mTimestampInfo.CurrentTimestamp, read);
+            success = true;
+            break;
+        }
+
+        if (res == ReadResult::EOFReached)
+        {
+            // Unexpected but not fatal.
+            log->WarnFormat("EOF while caching [{0}]. Read: {1} frames.", mTimestampInfo.CurrentTimestamp, read);
+            success = true;
+            break;
+        }
+
+        if (res != ReadResult::Success)
+        {
+            log->ErrorFormat("Error while caching [{0}]. Read: {1} frames.", mTimestampInfo.CurrentTimestamp, read);
+            success = false;
+            break;
+        }
+
         if (bgWorker->CancellationPending)
         {
-            if (mVerbose)
-            {
-                log->DebugFormat("Cancellation at frame [{0}]", mTimestampInfo.CurrentTimestamp);
-            }
-
+            log->DebugFormat("Cancellation while caching [{0}]. Read: {1} frames.", mTimestampInfo.CurrentTimestamp, read);
             mCache->Clear();
             success = false;
             break;
@@ -1176,13 +1200,9 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 
         // Read the next frame.
         res = ReadFrame(-1, 1, false);
-        success = (res == ReadResult::Success);
-
-        if (success)
-        {
-            read = read + 1;
-            bgWorker->ReportProgress(read, totalFrames);
-        }
+        read++;
+        
+        bgWorker->ReportProgress(read, totalFrames);
     }
 
     if (!bgWorker->CancellationPending)
@@ -1391,7 +1411,6 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
     // Another way was tried where we feed packets to libav until its internal buffer is full, 
     // but this sometimes returns an error "Invalid data found when processing input.". To investigate.
     //-------------------------------------
-
     if (frame == nullptr)
     {
         return ReadResult::InvalidProgram;
