@@ -98,7 +98,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     public: 
         virtual property VideoCapabilities Flags {
             VideoCapabilities get() override { 
-                return	m_Capabilities; 
+                return	mCapabilities; 
             }
         }
         virtual property VideoDecodingMode DecodingMode {
@@ -144,7 +144,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         }
         virtual property bool CanDrawUnscaled {
             bool get() override {
-                return m_CanDrawUnscaled;
+                return mCanDrawUnscaled;
             }
         }
 
@@ -200,23 +200,23 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
         // General
-        VideoCapabilities m_Capabilities;
+        VideoCapabilities mCapabilities;
         bool mIsLoaded;
-        bool m_bFirstFrameRead;
+        bool mIsFirstFrameRead;
         VideoInfo mVideoInfo;
-        Dictionary<int64_t, TimedPoint^>^ stabOffsets = gcnew Dictionary<int64_t, TimedPoint^>();
+        Dictionary<int64_t, TimedPoint^>^ mStabOffsets = gcnew Dictionary<int64_t, TimedPoint^>();
         
         // Decoding mode & working zone.
-        int64_t m_timestampOffset = 0;
+        int64_t mTimestampOffset = 0;
         VideoDecodingMode mCachingMode;
-        bool m_bIsVeryShort;
+        bool mIsVeryShort;
         VideoSection mWorkingZone;
-        VideoSection m_SectionToPrepend;
-        VideoSection m_SectionToAppend;
+        VideoSection mSectionToPrepend;
+        VideoSection mSectionToAppend;
         
         // Decoding size.
-        Size m_DecodingSize;
-        bool m_CanDrawUnscaled;
+        Size mDecodingSize;
+        bool mCanDrawUnscaled;
 
         // Frame containers
         IVideoFramesContainer^ mFrameContainer;
@@ -246,12 +246,12 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool mFilterDeinterlace = false;
 
         // Others
-        Object^ m_Locker;
-        bool m_WasPrebuffering;
-        LoopWatcher^ m_LoopWatcher;
-        Thread^ m_PreBufferingThread;
-        ThreadCanceler^ m_PreBufferingThreadCanceler;
-        Stopwatch^ m_Stopwatch = gcnew Stopwatch();
+        Object^ mLocker;
+        bool mWasPrebuffering;
+        LoopWatcher^ mLoopWatcher;
+        Thread^ mPreBufferingThread;
+        ThreadCanceler^ mPreBufferingThreadCanceler;
+        Stopwatch^ mStopwatch = gcnew Stopwatch();
         bool mVerbose = true;
         
     private:
