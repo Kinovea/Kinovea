@@ -1417,110 +1417,138 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
     }
 
     AVPacket* packet = av_packet_alloc();
-    int res = 0;
+    int decodeResult = 0;
+    int demuxResult = 0;
+    int feedDecoderResult = 0;
     ReadResult result = ReadResult::UnknownError;
+
+    // This nested loop is somewhat reversed compared to the usual libav decoding example.
+    // We exit the function to return a frame as soon as we have one.
+    // We still feed the decoder with packets until it can produce that frame, so the 
+    // next time we come here it's possible the decoder is ready to decode.
+    // The first thing we do is try to get a frame from the decoder.
 
     while (true)
     {
-        // Try to decode the frame immediately in case libav already has it.
-        // This happens when the codec has B-frames, the next I-frame may already
-        // be decoded since it's required to decode the inside of the GOP.
-        res = avcodec_receive_frame(codecCtx, frame);
+        // Immediately try to decode a frame from the decoder's internal buffer.
+        decodeResult = avcodec_receive_frame(codecCtx, frame);
 
-        if (res >= 0)
+        if (decodeResult >= 0)
         {
             // Our job is done.
             result = ReadResult::Success;
             break;
         }
-        else if (res == AVERROR(EAGAIN))
+        else if (decodeResult == AVERROR(EAGAIN))
         {
             // The decoder needs more packets before it can produce a frame.
-            // This is normal for codecs with B-frames.
+            // This is normal for codecs with B-frames or buffering.
+            // Note: enabling multithreading on the codec may increase 
+            // buffering by one frame per thread.
             
-            // Read packets until we get a video one and feed it to libav.
+            // Read packets until we get a video one and feed it to the decoder.
             while (true)
             {
+                // Demux a packet.
                 av_packet_unref(packet);
-                res = av_read_frame(formatCtx, packet);
+                demuxResult = av_read_frame(formatCtx, packet);
 
-                // Don't fail on EOF here. It sends EOF when it reads the last packet,
-                // we should treat it as normal, feed it to the decoder and loop back to decoding.
-                if (res < 0 && res != AVERROR_EOF)
+                if (demuxResult == AVERROR_EOF)
                 {
-                    // If not end of file this is unrecoverable.
+                    // EOF here means the demuxer has no more packets (on any stream), 
+                    // and we have nothing to feed to the decoder.
+                    // The decoder may still have frames to output though.
+                    // Flush the decoder by sending a null packet.
+                    feedDecoderResult = avcodec_send_packet(codecCtx, nullptr);
+                    if (feedDecoderResult < 0)
+                    {
+                        LogFFMpegError("avcodec_send_packet (flush)", feedDecoderResult);
+                        result = ReadResult::UnknownError;
+                        break;
+                    }
+
+                    // If we get here we should now be ready to try to decode a frame again.
+                    break;
+                }
+                else if (demuxResult < 0)
+                {
+                    // If not EOF this is unrecoverable.
                     // We don't even know if it's on the right stream.
-                    LogFFMpegError("av_read_frame", res);
+                    LogFFMpegError("av_read_frame", demuxResult);
                     result = ReadResult::UnknownError;
                     break;
                 }
                 
-                // Keep reading if it's not in the right stream.
+                // If it's not in the right stream just keep demuxing.
                 if (packet->stream_index != streamIndex)
                 {
-                    if (res == AVERROR_EOF)
-                    {
-                        result = ReadResult::EOFReached;
-                        break;
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
-                // Supply the raw packet data as input to the decoder.
-                res = avcodec_send_packet(codecCtx, packet);
-                if (res < 0)
+                // Supply the raw packet to the decoder.
+                feedDecoderResult = avcodec_send_packet(codecCtx, packet);
+                if (feedDecoderResult == AVERROR(EAGAIN))
                 {
-                    if (res == AVERROR(EAGAIN))
-                    {
-                        // libav buffer is full and requires a call to avcodec_receive_frame
-                        // to consume its internal buffer.
-                        // This should never happen here, as we were just told it needed more packets.
-                        LogFFMpegError("avcodec_send_packet", res);
-                        result = ReadResult::UnknownError;
-                        break;
-                    }
-                    else if (res == AVERROR_EOF)
-                    {
-                        // The decoder has been flushed and will not accept any more packets.
-                        LogFFMpegError("avcodec_send_packet", res);
-                        result = ReadResult::EOFReached;
-                        break;
-                    }
-                    else
-                    {
-                        LogFFMpegError("avcodec_send_packet", res);
-                        result = ReadResult::UnknownError;
-                        break;
-                    }
+                    // The decoder is full and requires a call to avcodec_receive_frame
+                    // to consume its internal buffer.
+                    // This should never happen here, as we were just told it needed more packets.
+                    LogFFMpegError("avcodec_send_packet", feedDecoderResult);
+                    result = ReadResult::UnknownError;
+                    break;
+                }
+                else if (feedDecoderResult == AVERROR_EOF)
+                {
+                    // The decoder has been flushed and will not accept any more packets.
+                    LogFFMpegError("avcodec_send_packet", feedDecoderResult);
+                    result = ReadResult::EOFReached;
+                    break;
+                }
+                else if (feedDecoderResult < 0)
+                {
+                    // Decoder error.
+                    LogFFMpegError("avcodec_send_packet", feedDecoderResult);
+                    result = ReadResult::UnknownError;
+                    break;
                 }
 
-                // If we get here we have read and sent a packet to libav.
+                // If we get here we have demuxed one or more packets and 
+                // fed at least one video packet to the decoder.
                 break;
             }
 
-            if (res < 0)
+            if (feedDecoderResult < 0)
             {
-                // An irrecoverable error occurred while reading or sending packets.
+                // Unrecoverable error while feeding or flushing the decoder.
+                // `result` variable should be set already.
+                break;
+            }
+            else if (demuxResult == AVERROR_EOF)
+            {
+                // The decoder has been flushed.
+                // We should now be ready to try to decode a frame again.
+                continue;
+            }
+            else if (demuxResult < 0)
+            {
+                // Irrecoverable error occurred while demuxing.
                 // `result` variable should be set already.
                 break;
             }
             
-            // We are ready to try decoding a frame again.
+            // Otherwise we are ready to try decoding a frame again.
             continue;
         }
-        else if (res == AVERROR_EOF)
+        else if (decodeResult == AVERROR_EOF)
         {
             // The decoder has been fully flushed and will not return any more frames.
-            LogFFMpegError("avcodec_receive_frame", res);
+            LogFFMpegError("avcodec_receive_frame", decodeResult);
             result = ReadResult::EOFReached;
             break;
         }
         else
         {
-            LogFFMpegError("avcodec_receive_frame", res);
+            // Decoding error.
+            LogFFMpegError("avcodec_receive_frame", decodeResult);
             result = ReadResult::UnknownError;
             break;
         }
@@ -2145,13 +2173,12 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
             break;
         }
 
-
         // Read the next frame.
         // If the cache is full this will block.
         // When the frame is added to the cache it will run its eviction policy and free another frame.
         mStopwatchRead->Restart();
         ReadResult res = ReadFrame(-1, 1, false);
-        log->DebugFormat("ReadFrame: [{0}], {1} ms.", mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
+        //log->DebugFormat("ReadFrame: [{0}], {1} ms.", mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
 
         if (canceler->CancellationPending)
         {

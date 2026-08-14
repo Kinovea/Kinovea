@@ -280,8 +280,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         int SeekTo(int64_t targetTimestamp);
 
         /// Decode the next available frame from libav. 
-        /// Read and feed packets to libav until one frame is decoded or the end of the stream is reached.
-        /// If a frame is already available doesn't read any packet.
+        /// Demux and feed packets to libav until one frame is decoded or the end of the stream is reached.
+        /// If a frame is already available doesn't demux anything.
         ReadResult DecodeOneFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame);
 
         /// Convert the libav AVFrame to a .NET Bitmap and store it to the container.
