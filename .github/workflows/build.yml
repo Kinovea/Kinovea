@@ -28,7 +28,15 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore Kinovea.VS2019.sln
 
+    - name: Cache extra dependencies
+      id: extra-deps-cache
+      uses: actions/cache@v4
+      with:
+        path: Refs/FFmpeg
+        key: ${{ runner.os }}-extra-deps-${{ hashFiles('Refs/get-dependencies.ps1') }}
+    
     - name: Get extra dependencies
+      if: steps.extra-deps-cache.outputs.cache-hit != 'true'
       shell: pwsh
       run: ./Refs/get-dependencies.ps1
   
