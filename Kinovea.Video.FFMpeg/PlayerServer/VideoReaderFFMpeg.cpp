@@ -152,7 +152,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         index++;
         ReadResult read = ReadFrame(ts == 0 ? -1 : ts, 1, true);
         
-        //log->DebugFormat("After ReadFrame #{0} [{1}]: {2} ms.", index, mTimestampInfo.CurrentTimestamp, mStopwatch->ElapsedMilliseconds);
+        //log->DebugFormat("After ReadFrame #{0} [{1}]: {2} ms.", index, mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
 
         if (read == ReadResult::Success &&
             mFrameContainer->CurrentFrame != nullptr &&
@@ -196,38 +196,83 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         Options = Options->Default;
     }
 
-    AVFormatContext* formatCtx = nullptr;
+    AVFormatContext* formatCtx = avformat_alloc_context();
+
+    // If we are opening the file just to extract thumbnails we take some shortcuts.
+    // - Try to avoid calling avformat_find_stream_info and look for video stream manually.
+    // - For the case where we can't do that, use limited probing settings.
+    // - Disable multithreading which can increase buffering and latency, 
+    // we only decode keyframes anyway so buffering shouldn't be useful.
     
+    if (forSummary)
+    {
+        // Note: flag AVFMT_FLAG_NOBUFFER is too aggressive, some files fail to decode frames.
+        formatCtx->probesize = 32 * 1024;
+        formatCtx->max_analyze_duration = 25 * 1000;
+        formatCtx->max_probe_packets = 10;
+        formatCtx->flags |= AVFMT_FLAG_FAST_SEEK;
+    }
+
     // FFmpeg expects filenames as UTF-8, .NET strings are UTF-16.
-    // On Windows, FFmpeg converts UTF-8 file paths back to UTF-16 internally.
+    // On Windows, FFmpeg will convert UTF-8 paths back to UTF-16 internally.
     int byteCount = Encoding::UTF8->GetByteCount(filePath);
     array<Byte>^ utf8Path = gcnew array<Byte>(byteCount + 1);
     Encoding::UTF8->GetBytes(filePath, 0, filePath->Length, utf8Path, 0);
     pin_ptr<Byte> pinnedPath = &utf8Path[0];
     const char* pszFilePath = reinterpret_cast<const char*>(pinnedPath);
     
-    if (avformat_open_input(&formatCtx, pszFilePath, nullptr, nullptr) != 0)
+    int res = avformat_open_input(&formatCtx, pszFilePath, nullptr, nullptr);
+    if (res != 0)
     {
         log->ErrorFormat("The file {0} could not be openned. (Wrong path or not a video/image.)", filePath);
         return OpenVideoResult::FileNotOpenned;
     }
 
-    // Get stream info.
-    int res = avformat_find_stream_info(formatCtx, nullptr);
-    if (res < 0)
+    mVideoStreamIndex = -1;
+    if (forSummary)
     {
-        log->ErrorFormat("Stream info not found. Error: {0}.", res);
-        return OpenVideoResult::StreamInfoNotFound;
+        // The call to avformat_find_stream_info can be quite expensive so 
+        // for extracting thumbnails we just try to find the codec without probing.
+        // This should work for most formats.
+        // It fails for a few formats that have auto-descriptive frames like transport streams,
+        // and for files with multiple video streams it may use the wrong stream.
+        // This is rare and not catastrophic, we'll use the full workflow when opening the file.
+        for (int i = 0; i < formatCtx->nb_streams; i++)
+        {
+            AVStream* stream = formatCtx->streams[i];
+            AVCodecParameters* codecpar = stream->codecpar;
+            if (codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+            {
+                // Verify we have the minimal info needed to decode frames.
+                if (codecpar->codec_id != AV_CODEC_ID_NONE && codecpar->width > 0 && codecpar->height > 0)
+                {
+                    mVideoStreamIndex = i;
+                }
+
+                break;
+            }
+        }
+    }
+
+    if (!forSummary || (mVideoStreamIndex < 0))
+    {
+        // Get stream info by probing the first packets.
+        res = avformat_find_stream_info(formatCtx, nullptr);
+        if (res < 0)
+        {
+            log->ErrorFormat("Stream info not found. Error: {0}.", res);
+            return OpenVideoResult::StreamInfoNotFound;
+        }
+    
+        mVideoStreamIndex = av_find_best_stream(formatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
+        if (mVideoStreamIndex < 0)
+        {
+            log->Error("No video stream found in the file.");
+            return OpenVideoResult::VideoStreamNotFound;
+        }
     }
 
     // Video stream.
-    mVideoStreamIndex = av_find_best_stream(formatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
-    if (mVideoStreamIndex < 0)
-    {
-        log->Error("No video stream found in the file.");
-        return OpenVideoResult::VideoStreamNotFound;
-    }
-
     AVStream* videoStream = formatCtx->streams[mVideoStreamIndex];
 
     // Find, allocate and open the video codec context.
@@ -253,29 +298,33 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         return OpenVideoResult::CodecNotOpened;
     }
 
-
     // Enable multithreading.
-    videoCodecCtx->thread_count = 0;
-    if (videoCodec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
+    // This increases the buffering in the decoder so only do this for actual playback
+    // not for summary where we only do seeking.
+    if (!forSummary)
     {
-        videoCodecCtx->thread_type = FF_THREAD_FRAME;
+        videoCodecCtx->thread_count = 0;
+        if (videoCodec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
+        {
+            videoCodecCtx->thread_type = FF_THREAD_FRAME;
+        }
+        else if (videoCodec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
+        {
+            videoCodecCtx->thread_type = FF_THREAD_SLICE;
+        }
+        else
+        {
+            videoCodecCtx->thread_count = 1; 
+        }
     }
-    else if (videoCodec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
-    {
-        videoCodecCtx->thread_type = FF_THREAD_SLICE;
-    }
-    else
-    {
-        videoCodecCtx->thread_count = 1; 
-    }
-
+    
     res = avcodec_open2(videoCodecCtx, videoCodec, nullptr);
     if (res < 0) 
     {
         log->ErrorFormat("Codec could not be openned. Error: {0}", res);
         return OpenVideoResult::CodecNotOpened;
     }
-                
+
     //-----------------------------------------------------
     // Time info
     //-----------------------------------------------------
@@ -285,11 +334,10 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mVideoInfo.AverageTimeStampsPerSeconds = (double)videoStream->time_base.den / (double)videoStream->time_base.num;
 
     // This may be updated after the first actual decoding.
+    // Ignore negative start time.
     double startSeconds = (double)formatCtx->start_time / AV_TIME_BASE;
     long firstTimestamp = (long)Math::Round(startSeconds * mVideoInfo.AverageTimeStampsPerSeconds);
     mVideoInfo.FirstTimeStamp = Math::Max(firstTimestamp, 0);
-
-    // Ignore negative start time.
 
     mVideoInfo.DurationTimeStamps = 0;
     if (videoStream->duration > 0)
@@ -316,7 +364,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
 
     // Initial working zone representing the whole video.
     // For the end timestamp we can calculate from either frame count or duration.
-    // Compute both and use the max. This may be adjusted later when we read the last frame.
+    // Compute both and use the max.
     int64_t lastTimestamp = mVideoInfo.FirstTimeStamp + mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame;
     if (videoStream->nb_frames > 0)
     {
@@ -384,7 +432,6 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
 
     this->Options->ImageRotation = mVideoInfo.ImageRotation;
     UpdateReferenceSizes(Options->ImageAspectRatio, verbose);
-
     //-----------------------------------------------------
         
     mFormatCtx = formatCtx;
@@ -395,7 +442,6 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     if (forSummary)
     {
         mCapabilities = VideoCapabilities::CanDecodeOnDemand;
-        ChangeCachingMode(VideoDecodingMode::OnDemand);
     }
     else
     {
@@ -414,10 +460,10 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         {
             mCapabilities = mCapabilities | VideoCapabilities::CanChangeDemosaicing;
         }
-
-        // Start with no caching, we'll switch later.
-        ChangeCachingMode(VideoDecodingMode::OnDemand);
     }
+
+    // Start with no caching, we'll switch later if possible.
+    ChangeCachingMode(VideoDecodingMode::OnDemand);
 
     return OpenVideoResult::Success;
 }
@@ -1258,7 +1304,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // It's possible to get here with a target timestamp equal to the current timestamp.
     // For example when we change the output size.
     // Currently this means we'll seek back to the start of the GOP and decode many frames again.
-    // TODO: keep the AVFrame around and just redo the convert.
+    // This should only happen in on-demand mode though, which shouldn't really be a thing.
 
     // Do an initial seek if a seek target is specified.
     // This should land us at the start of the GOP containing the target.
@@ -1970,7 +2016,8 @@ bool VideoReaderFFMpeg::CreateVideoFilterGraph(
     //------------------------------
     // Scaling
     //------------------------------
-    // fast-bilinear is speed over quality, not needed for the use case.
+    // fast-bilinear is speed over quality, not needed for main images.
+
     AVFilterContext* scaleCtx = nullptr;
     snprintf(args, sizeof(args), "w=%d:h=%d:flags=bilinear", dstWidth, dstHeight);
     ret = avfilter_graph_create_filter(&scaleCtx, scaleFilter, "scale", args, nullptr, mFilterGraph);
