@@ -206,6 +206,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         // Summary extraction
         bool mIsForSummary;
+        int64_t mSummaryPreviousSeek = AV_NOPTS_VALUE;
 
         // Decoding mode & working zone.
         int64_t mTimestampOffset = 0;

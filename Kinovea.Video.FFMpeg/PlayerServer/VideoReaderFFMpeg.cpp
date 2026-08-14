@@ -162,7 +162,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         }
     }
 
-    int64_t previousFrameTimestamp = -1;
+    mSummaryPreviousSeek = AV_NOPTS_VALUE;
     for (int i = 0; i < targets->Count; i++)
     {
         int64_t ts = targets[i];
@@ -174,23 +174,23 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
 
         //log->DebugFormat("After ReadFrame {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
 
-        if (read != ReadResult::Success || mFrameContainer->CurrentFrame == nullptr)
+        if (read == ReadResult::Same)
         {
-            // Bail out on any reading error.
-            break;
+            // We detected that the seek would have landed on the same key frame as before.
+            // This may happen for files with large GOP. 
+            // We skipped the decode entirely.
+            //log->DebugFormat("Same seek. [{0}]. {1} ms.", mSummaryPreviousSeek, mStopwatchRead->ElapsedMilliseconds);
+            continue;
         }
 
-        if (mCurrentTimestamp <= previousFrameTimestamp)
+        if (read != ReadResult::Success || mFrameContainer->CurrentFrame == nullptr)
         {
-            // The seek landed on the same key frame as before.
-            // This may happen for files with very large GOP for example.
-            log->DebugFormat("Summary extraction, asked [{0}], got [{1}]. {2} ms.", ts, mCurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
-            continue;
+            // Bail out on any error.
+            break;
         }
 
         Bitmap^ bmp = BitmapHelper::CopyBgr32Rows(mFrameContainer->CurrentFrame->Image);
         summary->Thumbs->Add(bmp);
-        previousFrameTimestamp = mCurrentTimestamp;
 
         // Check if we are out of time budget.
         if (mStopwatchRead->ElapsedMilliseconds > timeout && i < targets->Count - 1)
@@ -1330,6 +1330,30 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
         // Never seek before start.
         targetTimestamp = std::max(targetTimestamp, 0LL);
         seeking = true;
+    }
+
+    if (mIsForSummary)
+    {
+        // Check where the seek is going to land.
+        // If we will be in the same GOP as the previous seek we can skip this thumbnail.
+        // 
+        // This only works on files with a frame index, fallback to decoding if there is no index.
+        // Only consider this a reliable heuristic if the predicted timestamp is non-negative,
+        // sometimes we get the same negative value but decoding reveals different frames.
+        // 
+        // We can't seek and decode one packet to check the packet pts as it's not reliable 
+        // and not the same as the frame best_effort_timestamp.
+        const AVIndexEntry* entry = avformat_index_get_entry_from_timestamp(mFormatCtx->streams[mVideoStreamIndex], targetTimestamp, AVSEEK_FLAG_BACKWARD);
+        if (entry != nullptr && entry->timestamp >= 0)
+        {
+            if (entry->timestamp == mSummaryPreviousSeek)
+            {
+                log->DebugFormat("Skipping thumbnail at {0} because it's in the same GOP as previous seek at {1}.", targetTimestamp, mSummaryPreviousSeek);
+                return ReadResult::Same;
+            }
+
+            mSummaryPreviousSeek = entry->timestamp;
+        }
     }
 
     // At this point there are 3 cases.

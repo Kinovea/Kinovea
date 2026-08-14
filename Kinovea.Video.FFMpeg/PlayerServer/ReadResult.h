@@ -25,8 +25,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	public enum class ReadResult
 	{
 		Success,
-        NotReady, 
+        Same,
         EOFReached,
+        NotReady, 
 		NotConverted,
         UnknownError,
 	};
