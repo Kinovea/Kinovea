@@ -912,7 +912,7 @@ namespace Kinovea.ScreenManager
             // This timer is used for display and to feed the delay buffer when using recording mode "Camera".
             // No point displaying images faster than what the camera produces, or that the monitor can show, but floor at 1 fps.
             double displayFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
-            double monitorFramerate = GetMonitorFramerate();
+            double monitorFramerate = UIHelper.GetMonitorFramerate(viewportController.View.Handle);
 
             double slowFramerate = Math.Min(displayFramerate, monitorFramerate);
             if (cameraGrabber.Framerate != 0)
@@ -1449,32 +1449,6 @@ namespace Kinovea.ScreenManager
             screenToolManager.SetActiveTool(tool);
             // Update cursor
             // refresh for cursor.
-        }
-        
-        private double GetMonitorFramerate()
-        {
-            // Based on https://github.com/rickbrew/RefreshRateWpf/blob/master/RefreshRateWpfApp/MainWindow.xaml.cs
-            double defaultFramerate = 60;
-
-            IntPtr hmonitor = NativeMethods.MonitorFromWindow(viewportController.View.Handle, NativeMethods.MONITOR_DEFAULTTONEAREST);
-            if (hmonitor == IntPtr.Zero)
-                return defaultFramerate;
-
-            // Get more info about the monitor.
-            NativeMethods.MONITORINFOEXW monitorInfo = new NativeMethods.MONITORINFOEXW();
-            monitorInfo.cbSize = (uint)Marshal.SizeOf<NativeMethods.MONITORINFOEXW>();
-            bool result = NativeMethods.GetMonitorInfoW(hmonitor, ref monitorInfo);
-            if (!result)
-                return defaultFramerate;
-
-            // Get the current display settings for that monitor.
-            NativeMethods.DEVMODEW devMode = new NativeMethods.DEVMODEW();
-            devMode.dmSize = (ushort)Marshal.SizeOf<NativeMethods.DEVMODEW>();
-            result = NativeMethods.EnumDisplaySettingsW(monitorInfo.szDevice, NativeMethods.ENUM_CURRENT_SETTINGS, out devMode);
-            if (!result)
-                return defaultFramerate;
-
-            return (double)devMode.dmDisplayFrequency;
         }
 
         /// <summary>

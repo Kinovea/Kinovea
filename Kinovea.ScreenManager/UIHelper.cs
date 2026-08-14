@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Kinovea.ScreenManager
 {
@@ -40,6 +41,32 @@ namespace Kinovea.ScreenManager
             int top = (containerSize.Height - height)/2;
             
             return new Rectangle(left, top, width, height);
+        }
+
+        public static double GetMonitorFramerate(IntPtr handle)
+        {
+            // Based on https://github.com/rickbrew/RefreshRateWpf/blob/master/RefreshRateWpfApp/MainWindow.xaml.cs
+            double defaultFramerate = 60;
+
+            IntPtr hmonitor = NativeMethods.MonitorFromWindow(handle, NativeMethods.MONITOR_DEFAULTTONEAREST);
+            if (hmonitor == IntPtr.Zero)
+                return defaultFramerate;
+
+            // Get more info about the monitor.
+            NativeMethods.MONITORINFOEXW monitorInfo = new NativeMethods.MONITORINFOEXW();
+            monitorInfo.cbSize = (uint)Marshal.SizeOf<NativeMethods.MONITORINFOEXW>();
+            bool result = NativeMethods.GetMonitorInfoW(hmonitor, ref monitorInfo);
+            if (!result)
+                return defaultFramerate;
+
+            // Get the current display settings for that monitor.
+            NativeMethods.DEVMODEW devMode = new NativeMethods.DEVMODEW();
+            devMode.dmSize = (ushort)Marshal.SizeOf<NativeMethods.DEVMODEW>();
+            result = NativeMethods.EnumDisplaySettingsW(monitorInfo.szDevice, NativeMethods.ENUM_CURRENT_SETTINGS, out devMode);
+            if (!result)
+                return defaultFramerate;
+
+            return (double)devMode.dmDisplayFrequency;
         }
     }
 }
