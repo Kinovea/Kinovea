@@ -298,7 +298,7 @@ namespace Kinovea.ScreenManager
         // Player state
         private int framesToDecode = 1;
         private bool isBusyRendering;
-        private object m_TimingSync = new object();
+        private object lockBusyRendering = new object(); // lock to guard isBusyRendering access between the timer thread and UI thread.
         private bool interactiveFrameTracker = true;
         private bool showCacheInTimeline = false;
 
@@ -309,8 +309,6 @@ namespace Kinovea.ScreenManager
         private uint multimediaTimerID;
         private Stopwatch stopwatchPlayback = new Stopwatch();  // Used for time keeping during playback.
         private bool isCurrentlyPlaying;
-        private int renderingDrops;
-        private const int maxDecodingDrops = 6; // Number of decoding drops before we force slow down playback speed.
         private NativeMethods.TimerCallback timerCallback;
 
 
@@ -2762,13 +2760,15 @@ namespace Kinovea.ScreenManager
             // Time keeping.
             playbackFrameInterval = GetPlaybackFrameInterval();
             startPlaybackTimestamp = currentTimestamp;
-            log.DebugFormat("Starting playback at timestamp {0}, frame interval:{1}", startPlaybackTimestamp, playbackFrameInterval);
 
-            // TODO: the multimedia timer doesn't need to be high frequency.
-            // We just have it match the monitor refresh rate.
+            // The timer doesn't need to be high frequency.
             // We will translate from real elapsed time to video elapsed time based on the playback speed.
-            //uint refreshInterval = (uint)(1000.0 / monitorRefreshRate);
-            uint refreshInterval = (uint)playbackFrameInterval;
+            // Max it at the monitor refresh rate.
+            uint refreshInterval = (uint)Math.Max(playbackFrameInterval, (1000.0 / monitorRefreshRate));
+            
+            log.DebugFormat("Starting playback at timestamp {0}, frame interval:{1} ms, refresh interval:{2} ms.", 
+                startPlaybackTimestamp, playbackFrameInterval, refreshInterval);
+            
             uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
 
             stopwatchPlayback.Restart();
@@ -2792,98 +2792,131 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            // We cannot change the pointer to current here in case the UI is painting it,
-            // so we will pass the number of drops along to the rendering.
-            // The rendering will then ask for an update of the pointer to current, skipping as
-            // many frames we missed during the interval.
-            lock (m_TimingSync)
+            //------------------------------
+            // Runs in the playback timer thread.
+            //------------------------------
+
+            lock (lockBusyRendering)
             {
-                if (!isBusyRendering)
-                {
-                    int drops = renderingDrops;
-                    BeginInvoke((Action)delegate { Rendering_Invoked(drops); });
-                    isBusyRendering = true;
-                    renderingDrops = 0;
-                    dropWatcher.AddDropStatus(false);
-                }
-                else
-                {
-                    renderingDrops++;
-                    dropWatcher.AddDropStatus(true);
-                }
+                if (isBusyRendering)
+                    return;
+
+                // isBusyRendering will be set to false in the Application.Idle event handler or when pausing playback.
+                isBusyRendering = true;
+                BeginInvoke((Action)delegate { Rendering_Invoked(0); });
             }
         }
+
         private void Rendering_Invoked(int missedFrames)
         {
-            // This is in UI thread space.
-            // Rendering in the context of continuous playback (play loop).
+            //------------------------------
+            // Runs in UI thread, in the context of playback.
+            //------------------------------
             timeWatcher.Restart();
 
-            bool tracking = m_FrameServer.Metadata.AnyTracking;
-            int skip = tracking ? 0 : missedFrames;
-            double skipTs = (skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-            long estimateNext = (long)Math.Round(currentTimestamp + skipTs);
+            // Expected timestamp for the next frame to be rendered.
+            long realElapsedMilliseconds = stopwatchPlayback.ElapsedMilliseconds;
+            double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            double elapsedFrames = realElapsedMilliseconds / playbackFrameInterval;
+            double elapsedTimestamps = elapsedFrames * avgtspf;
 
-            if (estimateNext > m_iSelEnd)
+            // There should be only two cases.
+            // - We are tracking: force frame by frame.
+            // - We are not tracking: calculate the expected timestamp and jump to it.
+            // Decoding of the video happens in a background thread and pushes frames to a buffer.
+            
+            FrameQuery fq = new FrameQuery();
+            long expectedTimestamp = 0;
+            bool isTracking = m_FrameServer.Metadata.AnyTracking;
+            if (isTracking)
             {
-                EndOfFile();
+                expectedTimestamp = (long)(currentTimestamp + avgtspf);
+                
+                fq.ByTimestamp = false;
+                fq.FrameCount = 1;
             }
             else
             {
-                long oldPosition = currentTimestamp;
+                expectedTimestamp = (long)Math.Round(startPlaybackTimestamp + elapsedTimestamps);
 
-                // This may be slow (several ms) due to delete call when dequeuing the pre-buffer. To investigate.
-                m_FrameServer.VideoReader.MoveNext(skip, false);
+                fq.ByTimestamp = true;
+                fq.Timestamp = expectedTimestamp;
+            
+                double lag = 1000 * (currentTimestamp - expectedTimestamp) / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                log.DebugFormat("Playback tick. Current: [{0}]. Target: [{1}]. Lag: {2:0.0} ms.", currentTimestamp, expectedTimestamp, lag);
+            }
 
-                // In case the frame wasn't available in the pre-buffer, don't render anything.
-                // This means if we missed the previous frame because the UI was busy, we won't
-                // render it now either. On the other hand, it means we will have less chance to
-                // miss the next frame while trying to render an already outdated one.
-                // We must also "unreset" the rendering drop counter, since we didn't actually render the frame.
-                if (m_FrameServer.VideoReader.Drops > 0)
-                {
-                    if (m_FrameServer.VideoReader.Drops > maxDecodingDrops)
-                    {
-                        log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.Drops);
-                        ForceSlowdown();
-                    }
-                    else
-                    {
-                        lock (m_TimingSync)
-                            renderingDrops = missedFrames;
-                    }
-                }
-                else if (m_FrameServer.VideoReader.Current != null)
-                {
-                    if (videoFilterIsActive)
-                        m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
+            // Bail out if we are already there.
+            if (expectedTimestamp == currentTimestamp)
+            {
+                return;
+            }
 
-                    DoInvalidate();
-                    currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
+            // If we predict EOF on the next frame perform the loop back and restart.
+            if (expectedTimestamp > m_iSelEnd)
+            {
+                EOFDuringPlayback();
+                return;
+            }
 
-                    ComputeOrStopTracking(skip == 0);
+            long oldTimestamp = currentTimestamp;
 
-                    // This causes Invalidates and will postpone the idle event.
-                    // Update UI. For speed purposes, we don't update Selection Tracker hairline.
-                    trkFrame.Position = currentTimestamp;
-                    trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
-                    trkFrame.Invalidate();
-                    UpdateCurrentPositionLabel();
+            // Move the reader to the target timestamp or next frame.
+            // This should return immediately and set reader.Current to the nearest frame from
+            // the active buffer type (cache, pre-buffer, on-demand).
+            if (fq.ByTimestamp)
+            {
+                m_FrameServer.VideoReader.MoveTo(currentTimestamp, expectedTimestamp);
+            }
+            else
+            {
+                m_FrameServer.VideoReader.MoveNext(0, false);
+            }
 
-                    ReportForSyncMerge();
-                }
+            // Bail out on error.
+            if (m_FrameServer.VideoReader.Current == null)
+            {
+                return;
+            }
 
-                if (currentTimestamp < oldPosition && m_bSynched)
-                {
-                    // Sometimes the test to preemptively detect the end of file won't work.
-                    StopPlaying();
-                    ShowNextFrame(m_iSelStart, true);
-                    UpdatePositionUI();
-                    framesToDecode = 1;
-                }
+            currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
+
+            if (videoFilterIsActive)
+            {
+                m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(currentTimestamp);
+            }
+
+            DoInvalidate();
+
+            // Perform the tracking step (tracks and camera).
+            // This updates the tracks based on their stored data or computes the tracking for
+            // the active tracks.
+            ComputeOrStopTracking(isTracking);
+
+            // Note: this causes invalidates and postpones the idle event.
+            // Update UI. For speed purposes, we don't update Selection Tracker hairline.
+            trkFrame.Position = currentTimestamp;
+            trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
+            trkFrame.Invalidate();
+            UpdateCurrentPositionLabel();
+
+            ReportForSyncMerge();
+
+            // In dual playback, double check if we have looped back.
+            if (m_bSynched && currentTimestamp < oldTimestamp)
+            {
+                StopPlaying();
+                ShowNextFrame(m_iSelStart, true);
+                UpdatePositionUI();
+                framesToDecode = 1;
             }
         }
-        private void EndOfFile()
+
+        /// <summary>
+        /// EOF reached during playback or dual playback.
+        /// Stop tracking and playback, go back to the start and restart playing.
+        /// </summary>
+        private void EOFDuringPlayback()
         {
             m_FrameServer.Metadata.StopAllTracking();
 
@@ -2978,8 +3011,10 @@ namespace Kinovea.ScreenManager
             // Forcing the rendering to synchronize with this event allows
             // the UI to have a chance to process non-rendering related events like
             // button clicks, mouse move, etc.
-            lock (m_TimingSync)
+            lock (lockBusyRendering)
+            {
                 isBusyRendering = false;
+            }
 
             timeWatcher.LogTime("Back to idleness");
             //m_TimeWatcher.DumpTimes();
@@ -3061,10 +3096,9 @@ namespace Kinovea.ScreenManager
 
             StopMultimediaTimer();
 
-            lock (m_TimingSync)
+            lock (lockBusyRendering)
             {
                 isBusyRendering = false;
-                renderingDrops = 0;
             }
 
             framesToDecode = 0;
