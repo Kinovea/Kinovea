@@ -137,48 +137,71 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
     summary->ImageSize = mVideoInfo.ReferenceSize;
     summary->Framerate = mVideoInfo.FramesPerSeconds;
 
-    //log->DebugFormat("ExtractSummary {0}. After load: {1} ms.", filePath, mStopwatch->ElapsedMilliseconds);
+    String^ filename = Path::GetFileName(filePath);
+    //log->DebugFormat("ExtractSummary \"{0}\"", filename);
     
     // Read some frames (directly decode at small size).
     float stretch = (float)mVideoInfo.OriginalSize.Width / maxSize.Width;
     mDecodingSize = Size(maxSize.Width, (int)(mVideoInfo.OriginalSize.Height / stretch));
 
-    int64_t step = (int64_t)Math::Ceiling((double)mVideoInfo.DurationTimeStamps / count);
-    int64_t previousFrameTimestamp = -1;
-
-    //log->DebugFormat("Summary extraction, before reading thumbnails: {0} ms.", mStopwatchRead->ElapsedMilliseconds);
-    
-    int index = 0;
-    for (int64_t ts = 0; ts < mVideoInfo.DurationTimeStamps; ts += step)
+    // Sample frames throughout the video.
+    auto targets = gcnew List<int64_t>();
+    int64_t start = mVideoInfo.FirstTimeStamp;
+    int64_t end = (int64_t)Math::Round(start + mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame);
+    if (count == 1)
     {
-        index++;
-        ReadResult read = ReadFrame(ts == 0 ? -1 : ts, 1, true);
-        
-        //log->DebugFormat("After ReadFrame #{0} [{1}]: {2} ms.", index, mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
-
-        if (read == ReadResult::Success &&
-            mFrameContainer->CurrentFrame != nullptr &&
-            mTimestampInfo.CurrentTimestamp > previousFrameTimestamp)
+        targets->Add((int64_t)Math::Round((double)(start + end) / 2.0));
+    }
+    else
+    {
+        int64_t interval = (int64_t)Math::Round((double)(end - start) / count);
+        for (int i = 0; i < count; i++)
         {
-            Bitmap^ bmp = BitmapHelper::CopyBgr32Rows(mFrameContainer->CurrentFrame->Image);
-            summary->Thumbs->Add(bmp);
-            previousFrameTimestamp = mTimestampInfo.CurrentTimestamp;
+            int64_t ts = start + interval * i;
+            targets->Add(ts);
         }
-        else
+    }
+
+    int64_t previousFrameTimestamp = -1;
+    for (int i = 0; i < targets->Count; i++)
+    {
+        int64_t ts = targets[i];
+        
+        // Always force a seek even if the target is 0.
+        // This improves perfs as some decoders have buffering causing slow down when just asking 
+        // for frames until we get one, compared to forcing a seek to the nearest keyframe.
+        ReadResult read = ReadFrame(ts, 1, true);
+
+        //log->DebugFormat("After ReadFrame {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
+
+        if (read != ReadResult::Success || mFrameContainer->CurrentFrame == nullptr)
         {
-            // Bail out on reading error.
+            // Bail out on any reading error.
             break;
         }
 
-        if (mStopwatchRead->ElapsedMilliseconds > timeout)
+        if (mTimestampInfo.CurrentTimestamp <= previousFrameTimestamp)
         {
-            log->WarnFormat("Summary extraction out of budget after {0} frames in {1} ms. {2}.", 
-                index, mStopwatchRead->ElapsedMilliseconds, Path::GetFileName(filePath));
+            // The seek landed on the same key frame as before.
+            // This may happen for files with very large GOP for example.
+            //log->DebugFormat("Summary extraction, seek landed on the same key frame.");
+            continue;
+        }
+
+        Bitmap^ bmp = BitmapHelper::CopyBgr32Rows(mFrameContainer->CurrentFrame->Image);
+        summary->Thumbs->Add(bmp);
+        previousFrameTimestamp = mTimestampInfo.CurrentTimestamp;
+
+        // Check if we are out of time budget.
+        if (mStopwatchRead->ElapsedMilliseconds > timeout && i < targets->Count - 1)
+        {
+            log->WarnFormat("Summary extraction out of budget after {0} frames in {1} ms.", 
+                i + 1, mStopwatchRead->ElapsedMilliseconds);
             break;
         }
     }
 
-    log->DebugFormat("Summary extraction for {0}: {1} ms.", Path::GetFileName(filePath), mStopwatchRead->ElapsedMilliseconds);
+    log->DebugFormat("Summary extraction for \"{0}\": {1} ms.", filename, mStopwatchRead->ElapsedMilliseconds);
 
     Close();
     return summary;
@@ -1497,7 +1520,7 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
             // This is normal for codecs with B-frames or buffering.
             // Note: enabling multithreading on the codec may increase 
             // buffering by one frame per thread.
-            
+
             // Read packets until we get a video one and feed it to the decoder.
             while (true)
             {
