@@ -311,6 +311,8 @@ namespace Kinovea.ScreenManager
         private bool isCurrentlyPlaying;
         private int renderingDrops;
         private const int maxDecodingDrops = 6; // Number of decoding drops before we force slow down playback speed.
+        private NativeMethods.TimerCallback timerCallback;
+
 
         // Timing
         // Time mapper links the speed slider, the playback frame rate and the capture frame rate.
@@ -499,6 +501,7 @@ namespace Kinovea.ScreenManager
             keyframeBoxes.Clear();
             CollapseKeyframePanel(true);
 
+            timerCallback = MultimediaTimer_Tick;
             selectionTimer.Interval = 10000;
             selectionTimer.Tick += SelectionTimer_OnTick;
 
@@ -2767,9 +2770,9 @@ namespace Kinovea.ScreenManager
             //uint refreshInterval = (uint)(1000.0 / monitorRefreshRate);
             uint refreshInterval = (uint)playbackFrameInterval;
             uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
-            
+
             stopwatchPlayback.Restart();
-            multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, MultimediaTimer_Tick, UIntPtr.Zero, eventType);
+            multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, timerCallback, UIntPtr.Zero, eventType);
             isCurrentlyPlaying = true;
         }
         private void StopMultimediaTimer()
