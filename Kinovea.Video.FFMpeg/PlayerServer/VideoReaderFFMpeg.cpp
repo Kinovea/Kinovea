@@ -145,6 +145,8 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
 
     int64_t step = (int64_t)Math::Ceiling((double)mVideoInfo.DurationTimeStamps / count);
     int64_t previousFrameTimestamp = -1;
+
+    //log->DebugFormat("Summary extraction, before reading thumbnails: {0} ms.", mStopwatchRead->ElapsedMilliseconds);
     
     int index = 0;
     for (int64_t ts = 0; ts < mVideoInfo.DurationTimeStamps; ts += step)
@@ -170,11 +172,13 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
 
         if (mStopwatchRead->ElapsedMilliseconds > timeout)
         {
-            log->WarnFormat("Thumbnail out of budget after {0} frames in {1} ms. {2}.", 
+            log->WarnFormat("Summary extraction out of budget after {0} frames in {1} ms. {2}.", 
                 index, mStopwatchRead->ElapsedMilliseconds, Path::GetFileName(filePath));
             break;
         }
     }
+
+    log->DebugFormat("Summary extraction for {0}: {1} ms.", Path::GetFileName(filePath), mStopwatchRead->ElapsedMilliseconds);
 
     Close();
     return summary;
@@ -1174,6 +1178,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         log->DebugFormat("Requested section to cache: {0}. Prepend:{1}", section, isPrepend);
     }
 
+    mStopwatchRead->Restart();
     mCache->SetPrepending(isPrepend);
 
     // Realign the requested section on real timestamps.
@@ -1216,7 +1221,8 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     {
         if (mTimestampInfo.CurrentTimestamp >= section.End)
         {
-            log->DebugFormat("Caching complete [{0}]. Read: {1} frames.", mTimestampInfo.CurrentTimestamp, read);
+            log->DebugFormat("Caching complete [{0}]. Read: {1} frames in {2} ms.", 
+                mTimestampInfo.CurrentTimestamp, read, mStopwatchRead->ElapsedMilliseconds);
             success = true;
             break;
         }
@@ -1261,7 +1267,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 }
 
 
-ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrameJump, bool approximate)
+ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrameJump, bool forSummary)
 {
     mLoopWatcher->LoopStart();
 
@@ -1337,10 +1343,10 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     framesDecoded = 1;
     //LogFrameInfo(frame);
 
-    // Log but don't fail if seeking landed beyond the target.
-    // Might happen if the very first packet is not a keyframe, 
+    // If seeking landed beyond the target log it but don't fail. 
+    // It might happen if the very first packet is not a keyframe, 
     // possibly from cut-off stream or corrupted file.
-    if (seeking && !approximate && frame->best_effort_timestamp > targetTimestamp)
+    if (!forSummary && seeking && frame->best_effort_timestamp > targetTimestamp)
     {
         log->WarnFormat("Seek({0}) landed at {1}. Frame type: {2}",
             targetTimestamp,
@@ -1353,10 +1359,10 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
     mTimestampInfo.CurrentTimestamp = frame->best_effort_timestamp;
 
-    if (approximate)
+    if (forSummary)
     {
         // Early exit for thumbnail extraction.
-        result = ConvertAndStoreFrame(frame);
+        result = ConvertAndStoreFrame(frame, true);
         av_frame_free(&frame);
         return result;
     }
@@ -1367,7 +1373,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
         if (mTimestampInfo.CurrentTimestamp >= targetTimestamp)
         {
             log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
-            result = ConvertAndStoreFrame(frame);
+            result = ConvertAndStoreFrame(frame, false);
             av_frame_free(&frame);
             return result;
         }
@@ -1390,7 +1396,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
             if (frame->best_effort_timestamp >= targetTimestamp)
             {
                 log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
-                result = ConvertAndStoreFrame(frame);
+                result = ConvertAndStoreFrame(frame, false);
                 av_frame_free(&frame);
                 break;
             }
@@ -1407,7 +1413,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
         {
             // We are done.
             //log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
-            result = ConvertAndStoreFrame(frame);
+            result = ConvertAndStoreFrame(frame, false);
             av_frame_free(&frame);
             return result;
         }
@@ -1431,7 +1437,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
             {
                 // We are done.
                 //log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
-                result = ConvertAndStoreFrame(frame);
+                result = ConvertAndStoreFrame(frame, false);
                 av_frame_free(&frame);
                 break;
             }
@@ -1643,7 +1649,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
 }
 
 
-ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
+ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool forSummary)
 {
     //-------------------------------------
     // Convert the decoded frame to the final frame, wrap it in a Bitmap, 
@@ -1690,14 +1696,31 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame)
         }
     }
 
-    // Deinterlace, Scale and Convert the decoded AVFrame.
-    bool converted = RescaleAndConvert(
-        decodedFrame, 
-        convertedFrame, 
-        mDecodingSize.Width, 
-        mDecodingSize.Height, 
-        sConvertPixelFormat, 
-        Options->Deinterlace);
+    bool converted = false;
+    if (!Options->Deinterlace && mCopyFilteredFrame)
+    {
+        // Scale and convert the decoded AVFrame to the correct format and size.
+        // Uses swscale API.
+        converted = RescaleAndConvert(
+            decodedFrame,
+            convertedFrame, 
+            mDecodingSize.Width, 
+            mDecodingSize.Height, 
+            sConvertPixelFormat, 
+            forSummary);
+    }
+    else
+    {
+        // Deinterlace, scale and convert the decoded AVFrame.
+        // Uses filter graph API.
+        converted = RescaleAndConvert2(
+            decodedFrame, 
+            convertedFrame, 
+            mDecodingSize.Width, 
+            mDecodingSize.Height, 
+            sConvertPixelFormat, 
+            Options->Deinterlace);
+    }
 
     if (!converted)
     {
@@ -1800,7 +1823,50 @@ AVPixelFormat VideoReaderFFMpeg::GetSourceFormat(AVCodecContext* videoCodecCtx)
 }
 
 
-bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace)
+bool VideoReaderFFMpeg::RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool forSummary)
+{
+    // This variant doesn't support deinterlacing and uses the old sws_scale API.
+    // It is faster than the new one.
+    // By this point dstFrame is already allocated.
+
+    bool result = true;
+    AVPixelFormat srcFormat = GetSourceFormat(mVideoCodecCtx);
+
+    int flags = SWS_BILINEAR;
+    if (forSummary)
+    {
+        flags = SWS_POINT;
+    }
+
+    // TODO: keep the conext around and only recreate it when the values change.
+    SwsContext* scalingCtx = sws_getContext(
+        mVideoCodecCtx->width, mVideoCodecCtx->height, srcFormat,
+        dstWidth, dstHeight, dstPixelFormat,
+        flags, nullptr, nullptr, nullptr);
+
+    const uint8_t* const* srcSlice = srcFrame->data;
+    int* srcStride = srcFrame->linesize;
+    int srcSliceY = 0;
+    int srcSliceH = mVideoCodecCtx->height;
+    uint8_t** dst = dstFrame->data;
+    int* dstStride = dstFrame->linesize;
+
+    try
+    {
+        sws_scale(scalingCtx, srcSlice, srcStride, srcSliceY, srcSliceH, dst, dstStride);
+    }
+    catch (Exception^)
+    {
+        result = false;
+        log->Error("RescaleAndConvert Error : sws_scale failed.");
+    }
+
+    sws_freeContext(scalingCtx);
+
+    return result;
+}
+
+bool VideoReaderFFMpeg::RescaleAndConvert2(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace)
 {
     int srcWidth = srcFrame->width;
     int srcHeight = srcFrame->height;

@@ -273,7 +273,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// 
         /// Otherwise advance as many frames as needed to reach the target timestamp or frame.
         /// targetJumpFrame is relative to the current frame.
-        ReadResult ReadFrame(int64_t targetTimestamp, int targetJumpFrame, bool approximate);
+        ReadResult ReadFrame(int64_t targetTimestamp, int targetJumpFrame, bool forSummary);
         
         /// Seek to a frame at or before the target. 
         /// Does not decode any frames.
@@ -294,14 +294,24 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Stores the VideoFrame in the active frame container.
         /// 
         /// Does not release the passed AVFrame.
-        ReadResult ConvertAndStoreFrame(AVFrame* decodedFrame);
+        ReadResult ConvertAndStoreFrame(AVFrame* decodedFrame, bool forSummary);
 
         /// Apply the rotation to the .NET bitmap.
         void ApplyRotation(Bitmap^ bmp, ImageRotation rotation);
         
         /// Convert and scale the decoded frame to the final pixel format and size.
         /// dstFrame must already be allocated.
-        bool RescaleAndConvert(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace);
+        /// Uses the old swscale pipeline.
+        /// This variant does not support deinterlacing.
+        bool RescaleAndConvert(
+            AVFrame* srcFrame, AVFrame* dstFrame, 
+            int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat,
+            bool forSummary);
+
+        /// Convert and scale the decoded frame to the final pixel format and size.
+        /// dstFrame must already be allocated.
+        /// Uses the new filter graph pipeline.
+        bool RescaleAndConvert2(AVFrame* srcFrame, AVFrame* dstFrame, int dstWidth, int dstHeight, AVPixelFormat dstPixelFormat, bool deinterlace);
         
         /// Create the filter graph.
         /// buffer -> [yadif] -> scale -> format -> buffersink.
