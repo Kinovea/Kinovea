@@ -69,7 +69,6 @@ extern "C" {
 }
 
 #include "ReadResult.h"
-#include "TimestampInfo.h"
 #include "SavingContext.h"
 
 using namespace System;
@@ -195,17 +194,19 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     // Members
     private:
+
         static const enum AVPixelFormat sConvertPixelFormat = AV_PIX_FMT_BGRA;
-        static const int sDecodingQuality = SWS_BILINEAR;
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
         // General
         VideoCapabilities mCapabilities;
         bool mIsLoaded;
-        bool mIsFirstFrameRead;
         VideoInfo mVideoInfo;
         Dictionary<int64_t, TimedPoint^>^ mStabOffsets = gcnew Dictionary<int64_t, TimedPoint^>();
         
+        // Summary extraction
+        bool mIsForSummary;
+
         // Decoding mode & working zone.
         int64_t mTimestampOffset = 0;
         VideoDecodingMode mCachingMode;
@@ -213,7 +214,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoSection mSectionToPrepend;
         VideoSection mSectionToAppend;
         
-        // Decoding size.
+        // Output size after decode and scale filter.
         Size mDecodingSize;
         bool mCanDrawUnscaled;
 
@@ -223,11 +224,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         PreBuffer^ mPreBuffer;
         Cache^ mCache;
         
-        // FFMpeg specifics
+        // FFmpeg context.
         int mVideoStreamIndex;
         AVFormatContext* mFormatCtx;
         AVCodecContext* mVideoCodecCtx;
-        TimestampInfo mTimestampInfo;
+        
+        // The timestamp of the decoded frame (frame->best_effort_timestamp).
+        int64_t mCurrentTimestamp = AV_NOPTS_VALUE;
 
         // FFmpeg filter graph.
         AVFilterGraph* mFilterGraph = nullptr;
@@ -236,7 +239,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         AVFrame* mFilteredFrame = nullptr;
         static bool mCopyFilteredFrame = true;
 
-        // Configuration of the graph.
+        // Configuration of the filter graph.
         int mFilterSrcWidth = 0;
         int mFilterSrcHeight = 0;
         AVPixelFormat mFilterSrcFormat = AV_PIX_FMT_NONE;
@@ -257,7 +260,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         void DataInit();
         
-        
         /// Load the video file and initialize the FFMpeg context.
         OpenVideoResult Load(String^ filePath, bool forSummary);
         
@@ -268,12 +270,12 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Read one frame from the video stream and add it to the active frame container.
         /// Seeks backwards if needed.
         /// 
-        /// If approximate is true, seek to the target and decode only one frame, 
-        /// even if it's not the target. This is used for thumbnails for example.
+        /// If we are in the context of summary extraction seek to the nearest keyframe
+        /// and decode only one frame, even if it's not the target.
         /// 
         /// Otherwise advance as many frames as needed to reach the target timestamp or frame.
         /// targetJumpFrame is relative to the current frame.
-        ReadResult ReadFrame(int64_t targetTimestamp, int targetJumpFrame, bool forSummary);
+        ReadResult ReadFrame(int64_t targetTimestamp, int targetJumpFrame);
         
         /// Seek to a frame at or before the target. 
         /// Does not decode any frames.

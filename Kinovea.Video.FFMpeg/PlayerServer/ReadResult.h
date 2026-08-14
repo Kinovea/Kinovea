@@ -25,24 +25,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	public enum class ReadResult
 	{
 		Success,
-		FileNotLoaded,
-		FrameContainerNotSet,
-		MemoryNotAllocated,
-
-        // Errors from trying to read packets, feed packets, or decoding frames.
-		/// Generic error while decoding a frame.
-        FrameNotRead,
-        
-        /// end of file was reached while reading packets.
+        NotReady, 
         EOFReached,
-
-        /// Irrecoverable error while reading packets.
+		NotConverted,
         UnknownError,
-
-        /// Dev error.
-        InvalidProgram,
-
-		ImageNotConverted,
-        SeekAfterTarget
 	};
 }}}

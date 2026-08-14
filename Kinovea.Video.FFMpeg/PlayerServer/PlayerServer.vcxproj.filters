@@ -42,7 +42,6 @@
       <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="VideoReaderFFMpeg.h" />
-    <ClInclude Include="TimestampInfo.h" />
     <ClInclude Include="SavingContext.h" />
     <ClInclude Include="MJPEGWriter.h" />
     <ClInclude Include="ReadResult.h" />

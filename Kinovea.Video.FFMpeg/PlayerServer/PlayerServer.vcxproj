@@ -227,7 +227,6 @@
     <ClInclude Include="ReadResult.h" />
     <ClInclude Include="MJPEGWriter.h" />
     <ClInclude Include="SavingContext.h" />
-    <ClInclude Include="TimestampInfo.h" />
     <ClInclude Include="VideoReaderFFMpeg.h" />
   </ItemGroup>
   <ItemGroup>
