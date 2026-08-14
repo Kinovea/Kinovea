@@ -383,4 +383,4 @@ Installer/build-*.txt
 /Refs/ExpTreeLib/ExpTreeLib.xml
 /Tools/explorer-harness/videos/*
 /Tools/explorer-harness/*.mp4
-/Refs/FFmpeg/8.1.2/*
+/Refs/FFmpeg/ffmpeg-8.1.2-full_build-shared/*

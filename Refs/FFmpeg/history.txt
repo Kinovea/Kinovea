@@ -1,4 +1,11 @@
 
+
+2026-07-12
+ffmpeg-8.1.2-full_build-shared
+https://www.gyan.dev/ffmpeg/builds/
+https://github.com/GyanD/codexffmpeg/releases/tag/8.1.2
+
+
 2015-09-20
 FFmpeg version: 2015-07-25 git-8a17335
   libavutil      54. 27.100 / 54. 27.100

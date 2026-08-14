@@ -21,14 +21,14 @@
 
     <Message Text="Copying native dependencies."/>
 
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avcodec-62.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avdevice-62.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avfilter-11.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avformat-62.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\avutil-60.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\swresample-6.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\swscale-9.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\8.1.2\bin\ffmpeg.exe" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\avcodec-62.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\avdevice-62.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\avfilter-11.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\avformat-62.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\avutil-60.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\swresample-6.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\swscale-9.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\ffmpeg-8.1.2-full_build-shared\bin\ffmpeg.exe" DestinationFolder="$(TargetDir)"/>
 
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcm90.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcp90.dll" DestinationFolder="$(TargetDir)"/>
