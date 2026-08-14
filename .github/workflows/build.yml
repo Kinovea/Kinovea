@@ -28,6 +28,10 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore Kinovea.VS2019.sln
 
+    - name: Get extra dependencies
+      shell: pwsh
+      run: ./Refs/get-dependencies.ps1
+  
     - name: Build Solution
       run: msbuild Kinovea.VS2019.sln /p:Platform="x64" /p:Configuration=Release /p:AllowedReferenceRelatedFileExtensions=none
 
