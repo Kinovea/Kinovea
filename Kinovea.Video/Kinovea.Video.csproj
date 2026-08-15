@@ -183,8 +183,8 @@
     <Compile Include="FrameContainers\SingleFrame.cs" />
     <Compile Include="FrameContainers\PreBuffer.cs" />
     <Compile Include="CapabilityNotSupportedException.cs" />
-    <Compile Include="FrameQuery.cs" />
     <Compile Include="IFrameGenerator.cs" />
+    <Compile Include="PlayerState.cs" />
     <Compile Include="VideoDecodingMode.cs" />
     <Compile Include="VideoReaderAlwaysCaching.cs" />
     <Compile Include="VideoReader.cs" />

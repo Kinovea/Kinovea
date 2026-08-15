@@ -2368,6 +2368,30 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
             break;
         }
 
+        // Read the last published snapshot of the player state.
+        PlayerState^ playerState = Volatile::Read(this->playerState);
+        if (playerState != nullptr && playerState->IsPlaying)
+        {
+            // Compute the expected frame timestamp the player would like to see right now.
+            // The player does its own computation independently using the same code.
+            double avgtspf = mVideoInfo.AverageTimeStampsPerFrame;
+            int64_t now = Stopwatch::GetTimestamp();
+            double realElapsedSeconds = (double)(now - playerState->StartPlaybackEpoch) / Stopwatch::Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / playerState->PlaybackFrameInterval;
+            double elapsedTimestamps = elapsedFrames * avgtspf;
+            int64_t expectedTimestamp = (long)Math::Round(playerState->StartPlaybackTimestamp + elapsedTimestamps);
+            double lag = 1000 * (mCurrentTimestamp - expectedTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
+
+            log->DebugFormat("PreBuffering thread, predicted player timestamp: {0}, latest stored: {1}, Lag: {2} ms.", 
+                expectedTimestamp, mCurrentTimestamp, lag);
+        
+            // TODO: estimate how far behind we are and skip work if needed.
+            // - decode but skip scale/convert/rotate/store.
+            // - ask ffmpeg to skip decoding certain frame types.
+            // - seek ahead a large amount.
+        }
+
+
         // Read the next frame.
         // This will perform decoding, scaling, format conversion, rotation, etc.
         // Then attempt to store the frame in the async cache.

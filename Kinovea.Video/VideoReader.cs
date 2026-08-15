@@ -145,6 +145,10 @@ namespace Kinovea.Video
         // have non regular timestamps intervals.
         private Dictionary<long, long> tsMap = new Dictionary<long, long>();
 
+        // Latest snapshot of the player state.
+        // Used by the decoding thread to predict what should be decoded next.
+        protected PlayerState playerState = null;
+
         #region Open/Close
         public abstract OpenVideoResult Open(string filePath);
         
@@ -211,6 +215,15 @@ namespace Kinovea.Video
         /// </summary>
         public virtual void BeforePlayloop()
         {
+        }
+
+        /// <summary>
+        /// The player changed state and publishes the new state.
+        /// This is used to inform which frames to decode next.
+        /// </summary>
+        public void PublishPlayerState(PlayerState newPlayerState)
+        {
+            Volatile.Write(ref playerState, newPlayerState);
         }
 
         /// <summary>

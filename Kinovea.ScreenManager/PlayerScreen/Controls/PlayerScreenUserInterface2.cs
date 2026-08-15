@@ -303,11 +303,9 @@ namespace Kinovea.ScreenManager
         private bool showCacheInTimeline = false;
 
         // Active playback
-        private long startPlaybackTimestamp;    // Reference point for the playback timer.
-        private double playbackFrameInterval;   // The interval between frames in milliseconds, taking speed slider into account.
+        private PlayerState playerState;      // Current player state snapshot.
         private double monitorRefreshRate = 60;
         private uint multimediaTimerID;
-        private Stopwatch stopwatchPlayback = new Stopwatch();  // Used for time keeping during playback.
         private bool isCurrentlyPlaying;
         private NativeMethods.TimerCallback timerCallback;
 
@@ -601,6 +599,12 @@ namespace Kinovea.ScreenManager
             //---------------------------------------------------------------------------
             log.DebugFormat("Post load process.");
 
+            // Publish the initial player state snapshot to the decoder.
+            PlayerState state = new PlayerState(0, 0, 0, 0, false);
+            playerState = state;
+            m_FrameServer.VideoReader.PublishPlayerState(state);
+
+            // Read/decode the first frame.
             ShowNextFrame(-1, true);
             UpdatePositionUI();
 
@@ -630,7 +634,6 @@ namespace Kinovea.ScreenManager
             // We fix what we can with the help of data read from the first frame or
             // from the analysis mode switch if successful.
             //---------------------------------------------------------------------------------------
-
             DoInvalidate();
 
             firstTimestamp = currentTimestamp;
@@ -2762,20 +2765,27 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.PauseAutosave();
 
             // Time keeping.
-            playbackFrameInterval = GetPlaybackFrameInterval();
-            startPlaybackTimestamp = currentTimestamp;
-
-            // The timer doesn't need to be high frequency.
+            // The timer itself doesn't need to be high frequency.
             // We will translate from real elapsed time to video elapsed time based on the playback speed.
-            // Max it at the monitor refresh rate.
+            // Cap it at the monitor refresh rate.
+            double playbackFrameInterval = GetPlaybackFrameInterval();
             uint refreshInterval = (uint)Math.Round(Math.Max(playbackFrameInterval, (1000.0 / monitorRefreshRate)));
             
-            log.DebugFormat("Starting playback at timestamp {0}, frame interval:{1} ms, refresh interval:{2} ms.", 
-                startPlaybackTimestamp, playbackFrameInterval, refreshInterval);
-            
-            uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
+            log.DebugFormat("Starting playback at timestamp {0}, frame interval:{1} ms, refresh interval:{2} ms.",
+                currentTimestamp, playbackFrameInterval, refreshInterval);
 
-            stopwatchPlayback.Restart();
+            // Snapshot the playback state and publish it to the reader.
+            PlayerState state = new PlayerState(
+                playerState.Generation + 1,
+                currentTimestamp,
+                Stopwatch.GetTimestamp(),
+                playbackFrameInterval,
+                true);
+
+            playerState = state;
+            m_FrameServer.VideoReader.PublishPlayerState(state);
+
+            uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
             multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, timerCallback, UIntPtr.Zero, eventType);
             isCurrentlyPlaying = true;
         }
@@ -2823,35 +2833,26 @@ namespace Kinovea.ScreenManager
             timeWatcher.Restart();
 
             // Compute expected timestamp for the next frame to be rendered.
-            long realElapsedMilliseconds = stopwatchPlayback.ElapsedMilliseconds;
             double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-            double elapsedFrames = realElapsedMilliseconds / playbackFrameInterval;
+            long now = Stopwatch.GetTimestamp();
+            double realElapsedSeconds = (double)(now - playerState.StartPlaybackEpoch) / Stopwatch.Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / playerState.PlaybackFrameInterval;
             double elapsedTimestamps = elapsedFrames * avgtspf;
 
             // There should be only two cases.
             // - We are tracking: force frame by frame.
             // - We are not tracking: calculate the expected timestamp and jump to it.
             // Decoding of the video happens in a background thread and pushes frames to a buffer.
-            
-            FrameQuery fq = new FrameQuery();
             long expectedTimestamp = 0;
             bool isTracking = m_FrameServer.Metadata.AnyTracking;
             if (isTracking)
             {
                 expectedTimestamp = (long)(currentTimestamp + avgtspf);
-                
-                fq.ByTimestamp = false;
-                fq.FrameCount = 1;
             }
             else
             {
-                expectedTimestamp = (long)Math.Round(startPlaybackTimestamp + elapsedTimestamps);
-
-                fq.ByTimestamp = true;
-                fq.Timestamp = expectedTimestamp;
-            
-                double lag = 1000 * (currentTimestamp - expectedTimestamp) / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                log.DebugFormat("Playback tick. Current: [{0}]. Target: [{1}]. Lag: {2:0.0} ms.", currentTimestamp, expectedTimestamp, lag);
+                expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
+                log.DebugFormat("Playback tick. Current: [{0}]. Target: [{1}].", currentTimestamp, expectedTimestamp);
             }
 
             // Bail out if we are already there.
@@ -2869,16 +2870,16 @@ namespace Kinovea.ScreenManager
 
             long oldTimestamp = currentTimestamp;
 
-            // Acquire the best cached frame for the expected timestamp.
+            // Acquire the best cached frame for the expected timestamp or next.
             // This should return immediately and set reader.Current to the nearest frame from
             // the active buffer type (cache, pre-buffer, on-demand).
-            if (fq.ByTimestamp)
+            if (isTracking)
             {
-                m_FrameServer.VideoReader.MoveTo(currentTimestamp, expectedTimestamp);
+                m_FrameServer.VideoReader.MoveNext(0, false);
             }
             else
             {
-                m_FrameServer.VideoReader.MoveNext(0, false);
+                m_FrameServer.VideoReader.MoveTo(currentTimestamp, expectedTimestamp);
             }
 
             // Bail out on error.
@@ -3021,39 +3022,46 @@ namespace Kinovea.ScreenManager
             //m_TimeWatcher.DumpTimes();
             loopWatcher.AddLoopTime(timeWatcher.RawTime("Back to idleness"));
         }
-        private bool ShowNextFrame(long _iSeekTarget, bool _bAllowUIUpdate)
+
+        /// <summary>
+        /// Asks the reader to display the next frame.
+        /// This is only called for static changes like user navigation or seeking, not playback.
+        /// </summary>
+        private bool ShowNextFrame(long targetTimestamp, bool _bAllowUIUpdate)
         {
             if (!m_FrameServer.VideoReader.Loaded)
                 return false;
 
-            //if (_iSeekTarget >= 0)
-            //    log.DebugFormat("ShowNextFrame: {0}", _iSeekTarget);
+            //if (targetTimestamp >= 0)
+            //    log.DebugFormat("ShowNextFrame: {0}", targetTimestamp);
 
             // TODO: More refactoring needed.
-            // Eradicate the scheme where we use the _iSeekTarget parameter to mean two things.
+            // Eradicate the scheme where we use the targetTimestamp parameter to mean two things.
             if (isCurrentlyPlaying)
                 throw new ThreadStateException("ShowNextFrame called while play loop.");
 
-            bool refreshInPlace = _iSeekTarget == currentTimestamp;
+            bool refreshInPlace = targetTimestamp == currentTimestamp;
             bool hasMore = false;
 
-            if (_iSeekTarget < 0)
+            if (targetTimestamp < 0)
             {
                 hasMore = m_FrameServer.VideoReader.MoveBy(framesToDecode, true);
             }
             else
             {
-                hasMore = m_FrameServer.VideoReader.MoveTo(currentTimestamp, _iSeekTarget);
+                hasMore = m_FrameServer.VideoReader.MoveTo(currentTimestamp, targetTimestamp);
             }
 
             if (m_FrameServer.VideoReader.Current != null)
             {
                 if (videoFilterIsActive)
+                {
                     m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
+                }
 
                 currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
 
-                bool contiguous = _iSeekTarget < 0 && framesToDecode <= 1;
+                bool contiguous = targetTimestamp < 0 && framesToDecode <= 1;
                 if (!refreshInPlace)
                 {
                     ComputeOrStopTracking(contiguous);
@@ -3090,6 +3098,7 @@ namespace Kinovea.ScreenManager
 
             return hasMore;
         }
+
         private void StopPlaying(bool _bAllowUIUpdate)
         {
             if (!m_FrameServer.Loaded || !isCurrentlyPlaying)
