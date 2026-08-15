@@ -192,7 +192,11 @@ namespace Kinovea.Video
         public abstract bool MoveNext(int _skip, bool _decodeIfNecessary);
         
         /// <summary>
-        /// Must set `Current` to the asked frame, by timestamp.
+        /// Informs the reader that the player is asking for the passed timestamp.
+        /// For synchronous reading this should set `Current` to the exact requested frame.
+        /// For asynchronous reading this should set `Current` the nearest known frame,
+        /// and synchronize the player state (target and speed) with the decoding thread
+        /// so it can take decisions on what to decode next.
         /// </summary>
         /// <returns>false if the end of file has been reached</returns>
         public abstract bool MoveTo(long from, long target);
@@ -239,7 +243,6 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Returns true if the enumerator may still move to the next frame in the working zone.
-        /// This is only used during export.
         /// </summary>
         public bool HasMoreFrames()
         {

@@ -2802,11 +2802,15 @@ namespace Kinovea.ScreenManager
 
             lock (lockBusyRendering)
             {
+                // Bail out if busy.
                 if (isBusyRendering)
                     return;
 
-                // isBusyRendering will be set to false in the Application.Idle event handler or when pausing playback.
+                // The flag will be set to false in the Application.Idle event handler or when pausing playback.
                 isBusyRendering = true;
+
+                // Recomputing the target timestamp is done later on the UI thread
+                // to account for any delay between posting and execution.
                 BeginInvoke((Action)delegate { Rendering_Invoked(0); });
             }
         }
@@ -2818,7 +2822,7 @@ namespace Kinovea.ScreenManager
             //------------------------------
             timeWatcher.Restart();
 
-            // Expected timestamp for the next frame to be rendered.
+            // Compute expected timestamp for the next frame to be rendered.
             long realElapsedMilliseconds = stopwatchPlayback.ElapsedMilliseconds;
             double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
             double elapsedFrames = realElapsedMilliseconds / playbackFrameInterval;
@@ -2865,7 +2869,7 @@ namespace Kinovea.ScreenManager
 
             long oldTimestamp = currentTimestamp;
 
-            // Move the reader to the target timestamp or next frame.
+            // Acquire the best cached frame for the expected timestamp.
             // This should return immediately and set reader.Current to the nearest frame from
             // the active buffer type (cache, pre-buffer, on-demand).
             if (fq.ByTimestamp)

@@ -123,14 +123,17 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             // Return the internal working zone.
             VideoSection get() override { return mWorkingZone; }
         }
-        virtual property VideoSection PreBufferingSegment {
+
+
+        /*virtual property VideoSection PreBufferingSegment {
             VideoSection get() override {
                 if(mCachingMode == VideoDecodingMode::PreBuffering)
                     return mPreBuffer->Segment;
                 else 
                     return VideoSection::MakeEmpty(); 
             }
-        }
+        }*/
+
         virtual property VideoFrame^ Current {
             VideoFrame^ get() override { 
                 return mFrameContainer != nullptr ? mFrameContainer->CurrentFrame : nullptr; 
@@ -216,7 +219,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Frame containers
         IVideoFramesContainer^ mFrameContainer;
         SingleFrame^ mSingleFrameContainer;
-        PreBuffer^ mPreBuffer;
+        PreBuffer2^ mPreBuffer;
         Cache^ mCache;
         
         // FFmpeg context.

@@ -46,7 +46,7 @@ VideoReaderFFMpeg::VideoReaderFFMpeg()
     VideoFrameDisposer^ disposer = gcnew VideoFrameDisposer(DisposeFrame);
 
     mSingleFrameContainer = gcnew SingleFrame(disposer);
-    mPreBuffer = gcnew PreBuffer(disposer);
+    mPreBuffer = gcnew PreBuffer2(disposer);
     mCache = gcnew Cache(disposer);
     
     mLoopWatcher = gcnew LoopWatcher();
@@ -590,21 +590,26 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        if (!_decodeIfNecessary || mPreBuffer->HasNext(_skip))
-        {
-            mPreBuffer->MoveBy(_skip + 1);
-            moved = true;
-        }
-        else
-        {
-            // Stop thread, decode frame, move to it, restart thread.
-            log->DebugFormat("MoveNext, stopping pre-buffering.");
-            StopPreBuffering();
-            ReadResult res = ReadFrame(-1, _skip + 1);
-            if (res == ReadResult::Success)
-                moved = mPreBuffer->MoveBy(_skip + 1);
-            StartPreBuffering();
-        }
+        // TODO:
+        //mPreBuffer->AcquireClosest(_skip + 1, _decodeIfNecessary);
+        mPreBuffer->AcquireClosest(0);
+        moved = true;
+
+        //if (!_decodeIfNecessary || mPreBuffer->HasNext(_skip))
+        //{
+        //    mPreBuffer->MoveBy(_skip + 1);
+        //    moved = true;
+        //}
+        //else
+        //{
+        //    // Stop thread, decode frame, move to it, restart thread.
+        //    log->DebugFormat("MoveNext, stopping pre-buffering.");
+        //    StopPreBuffering();
+        //    ReadResult res = ReadFrame(-1, _skip + 1);
+        //    if (res == ReadResult::Success)
+        //        moved = mPreBuffer->MoveBy(_skip + 1);
+        //    StartPreBuffering();
+        //}
     }
 
     return moved && HasMoreFrames();
@@ -612,6 +617,12 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
 
 bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
 {
+    //-----------------------------------------------------
+    // This runs in the UI thread.
+    //-----------------------------------------------------
+
+    // The player is informing that the expected timestamp to display right now.
+
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
         return false;
 
@@ -622,69 +633,87 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
 
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
+        // Synchronous read of the requested frame.
+        // The ReadFrame will call `store` on the single-frame frame container
+        // which will set the `Current` property to the requested frame.
         ReadResult res = ReadFrame(target, 1);
         moved = (res == ReadResult::Success);
     }
     else if (mCachingMode == VideoDecodingMode::Caching)
     {
+        // Move the current frame pointer to the requested frame in the cache.
         moved = mCache->MoveTo(target);
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        if (mPreBuffer->Contains(target))
-        {
-            //if (mVerbose)
-            //    log->DebugFormat("MoveTo. From:{0} to target:{1}. In buffer:{2}.", from, target, mPreBuffer->Segment);
-            
-            moved = mPreBuffer->MoveTo(target);
-        }
-        else
-        {
-            // Stop thread, decode frame, move to it, restart thread.
-            log->DebugFormat("MoveTo, stopping pre-buffering.");
-            StopPreBuffering();
+        // Find the closest cached frame and set it as `Current`. 
+        // If the cache is full this call will evict one frame at the far edge
+        // and pulse the decoder thread waiting in Add().
+        mPreBuffer->AcquireClosest(target);
+        moved = true;
+        
+        // TODO:
+        // Inform the prebuffering thread of the player state.
+        // current target, direction of movement, speed, etc.
+        // This will be used to decide what to decode next, seek ahead, etc.
 
-            // Adding the target frame will either keep the prebuffer frames contiguous or not.
-            // If the frame is the next one or it's a rollover jump, fine. Otherwise we need to clear.
-            // jump to next frame after current segment is currently not handled gracefully and will clear anyway.
-            // (Avoids another locking just for a very rare case).
-            if (!mPreBuffer->IsRolloverJump(target))
-            {
-                //if (mVerbose)
-                //    log->DebugFormat("MoveTo. From:{0} to target:{1}. Out of buffer:{2}. Clearing buffer.", from, target, mPreBuffer->Segment);
-                
-                mPreBuffer->Clear();
-            }
 
-            // This is done on the UI thread but the decoding thread has just been put to sleep.
 
-            mStopwatchRead->Restart();
+        
+        //if (mPreBuffer->Contains(target))
+        //{
+        //    //if (mVerbose)
+        //    //    log->DebugFormat("MoveTo. From:{0} to target:{1}. In buffer:{2}.", from, target, mPreBuffer->Segment);
+        //    
+        //    moved = mPreBuffer->MoveTo(target);
+        //}
+        //else
+        //{
+        //    // Stop thread, decode frame, move to it, restart thread.
+        //    log->DebugFormat("MoveTo, stopping pre-buffering.");
+        //    StopPreBuffering();
 
-            ReadResult res = ReadFrame(target, 1);
+        //    // Adding the target frame will either keep the prebuffer frames contiguous or not.
+        //    // If the frame is the next one or it's a rollover jump, fine. Otherwise we need to clear.
+        //    // jump to next frame after current segment is currently not handled gracefully and will clear anyway.
+        //    // (Avoids another locking just for a very rare case).
+        //    if (!mPreBuffer->IsRolloverJump(target))
+        //    {
+        //        //if (mVerbose)
+        //        //    log->DebugFormat("MoveTo. From:{0} to target:{1}. Out of buffer:{2}. Clearing buffer.", from, target, mPreBuffer->Segment);
+        //        
+        //        mPreBuffer->Clear();
+        //    }
 
-            if (mVerbose)
-            {
-                log->DebugFormat("MoveTo. Read frame in {0} ms.", mStopwatchRead->ElapsedMilliseconds);
-            }
+        //    // This is done on the UI thread but the decoding thread has just been put to sleep.
 
-            if (res == ReadResult::Success)
-            {
-                // The actual timestamp we land on might not be the one requested.
-                int64_t actualTarget = mCurrentTimestamp;
-                if (target != actualTarget)
-                {
-                    AddTimestampMapping(target, actualTarget);
-                }
+        //    mStopwatchRead->Restart();
 
-                moved = mPreBuffer->MoveTo(actualTarget);
-                if (mVerbose)
-                {
-                    log->DebugFormat("MoveTo. Moved to {0}.", actualTarget);
-                }
-            }
+        //    ReadResult res = ReadFrame(target, 1);
 
-            StartPreBuffering();
-        }
+        //    if (mVerbose)
+        //    {
+        //        log->DebugFormat("MoveTo. Read frame in {0} ms.", mStopwatchRead->ElapsedMilliseconds);
+        //    }
+
+        //    if (res == ReadResult::Success)
+        //    {
+        //        // The actual timestamp we land on might not be the one requested.
+        //        int64_t actualTarget = mCurrentTimestamp;
+        //        if (target != actualTarget)
+        //        {
+        //            AddTimestampMapping(target, actualTarget);
+        //        }
+
+        //        moved = mPreBuffer->MoveTo(actualTarget);
+        //        if (mVerbose)
+        //        {
+        //            log->DebugFormat("MoveTo. Moved to {0}.", actualTarget);
+        //        }
+        //    }
+
+        //    StartPreBuffering();
+        //}
     }
 
     return moved && HasMoreFrames();
@@ -721,9 +750,13 @@ void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceRelo
     {
         mWorkingZone = _newZone;
         if (mCachingMode == VideoDecodingMode::OnDemand && CanPreBuffer)
+        {
             ChangeCachingMode(VideoDecodingMode::PreBuffering);
+        }
         else if (mCachingMode == VideoDecodingMode::PreBuffering)
-            mPreBuffer->UpdateWorkingZone(mWorkingZone);
+        {
+            //mPreBuffer->UpdateWorkingZone(mWorkingZone);
+        }
     }
     else
     {
@@ -881,7 +914,7 @@ void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode wantedMode)
         break;
     case VideoDecodingMode::PreBuffering:
         mFrameContainer = mPreBuffer;
-        mPreBuffer->UpdateWorkingZone(mWorkingZone);
+        //mPreBuffer->UpdateWorkingZone(mWorkingZone);
         SeekTo(mWorkingZone.Start);
         StartPreBuffering();
         break;
@@ -1073,6 +1106,8 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
         return false;
     }
 
+    // We are pre-buffering.
+
     if (mVerbose)
         log->DebugFormat("Changing decoding size: {0}x{1} -> {2}x{3}", 
             mDecodingSize.Width, mDecodingSize.Height, targetSize.Width, targetSize.Height);
@@ -1089,8 +1124,11 @@ bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
     if (currentTimestamp >= 0)
     {
         ReadResult res = ReadFrame(currentTimestamp, 1);
+
         if (res == ReadResult::Success)
-            mPreBuffer->MoveTo(currentTimestamp);
+        {
+            mPreBuffer->AcquireClosest(currentTimestamp);
+        }
     }
 
     StartPreBuffering();
@@ -1116,7 +1154,10 @@ void VideoReaderFFMpeg::DisableCustomDecodingSize()
     {
         ReadResult res = ReadFrame(currentTimestamp, 1);
         if (res == ReadResult::Success)
-            mPreBuffer->MoveTo(currentTimestamp);
+        {
+            //mPreBuffer->MoveTo(currentTimestamp);
+            mPreBuffer->AcquireClosest(currentTimestamp);
+        }
     }
 
     StartPreBuffering();
@@ -2291,6 +2332,7 @@ void VideoReaderFFMpeg::StartPreBuffering()
 
     ParameterizedThreadStart^ pts = gcnew ParameterizedThreadStart(this, &VideoReaderFFMpeg::PreBufferingWorker);
     mPreBufferingThreadCanceler->Reset();
+    mPreBuffer->ResetInterruptAdd();
     mPreBufferingThread = gcnew Thread(pts);
     mPreBufferingThread->Start(mPreBufferingThreadCanceler);
 }
@@ -2300,19 +2342,13 @@ void VideoReaderFFMpeg::StopPreBuffering()
     if (mPreBufferingThread == nullptr || !mPreBufferingThread->IsAlive)
         return;
 
-    if (mVerbose)
-        log->Debug("Stopping prebuffering thread.");
+    log->Debug("Stopping prebuffering thread.");
 
     mPreBufferingThreadCanceler->Cancel();
 
-    // The cancellation will only be effective when we next pass in the 
-    // decoding loop and check the cancellation flag. This means that if the thread is in waiting state, 
-    // (trying to push a frame to an already full buffer), the cancellation will not proceed.
-    // UnblockAndMakeRoom will force a Pulse, dequeing a frame if necessary.
-    // However, if we just make room for one frame and it's the UI thread that is doing the Add,
-    // it will be blocked after the addition since the buffer will again be full. 
-    // We must actually make sure the next Read operation won't block.
-    mPreBuffer->UnblockAndMakeRoom();
+    // Signal the cache that we are cancelling.
+    // This will unblock the prebuffering thread if it is waiting for a free slot in Add().
+    mPreBuffer->InterruptAdd();
 
     mPreBufferingThread->Join();
 }
@@ -2328,20 +2364,22 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
     {
         if (canceler->CancellationPending)
         {
-            log->DebugFormat("PreBuffering thread, cancellation detected. Before ReadFrame().");
+            log->DebugFormat("PreBuffering thread, cancellation before ReadFrame().");
             break;
         }
 
         // Read the next frame.
-        // If the cache is full this will block.
-        // When the frame is added to the cache it will run its eviction policy and free another frame.
+        // This will perform decoding, scaling, format conversion, rotation, etc.
+        // Then attempt to store the frame in the async cache.
+        // If the cache is full this will wait in PreBuffer.Add() until the cache evicts a frame.
+        // This eviction will happen when the UI thread moves to a different frame.
         mStopwatchRead->Restart();
         ReadResult res = ReadFrame(-1, 1);
         //log->DebugFormat("ReadFrame: [{0}], {1} ms.", mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
 
         if (canceler->CancellationPending)
         {
-            log->DebugFormat("PreBuffering thread, cancellation detected. After ReadFrame().");
+            log->DebugFormat("PreBuffering thread, cancellation after ReadFrame().");
             break;
         }
 

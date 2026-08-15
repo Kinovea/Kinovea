@@ -179,6 +179,7 @@
     <Compile Include="FrameContainers\Cache.cs" />
     <Compile Include="FrameContainers\IVideoFramesContainer.cs" />
     <Compile Include="FrameContainers\IWorkingZoneContainer.cs" />
+    <Compile Include="FrameContainers\PreBuffer2.cs" />
     <Compile Include="FrameContainers\SingleFrame.cs" />
     <Compile Include="FrameContainers\PreBuffer.cs" />
     <Compile Include="CapabilityNotSupportedException.cs" />
