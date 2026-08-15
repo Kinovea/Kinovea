@@ -43,21 +43,30 @@ jobs:
     - name: Build Solution
       run: msbuild Kinovea.VS2019.sln /p:Platform="x64" /p:Configuration=Release /p:AllowedReferenceRelatedFileExtensions=none
 
-    - name: Create Portable AppData Folder
-      shell: cmd
-      run: mkdir Kinovea\bin\x64\Release\AppData
+    - name: Prepare Portable build
+      shell: pwsh
+      run: |
+        $appData = "Kinovea/bin/x64/Release/AppData"
+        New-Item -ItemType Directory -Force -Path $appData | Out-Null
+        New-Item -ItemType File -Force -Path "$appData/portable" | Out-Null
+        
+    - name: Create Portable Archive
+      shell: pwsh
+      run: |
+        Compress-Archive `
+          -Path "Kinovea/bin/x64/Release/*" `
+          -DestinationPath "Kinovea-Portable-${{env.VERSION}}.zip"
         
     - name: Upload Portable
-      id: upload-portable
       uses: actions/upload-artifact@v6
       with:
         name: Kinovea-Portable-${{env.VERSION}}
-        path: Kinovea/bin/x64/Release/
+        path: Kinovea-Portable-${{env.VERSION}}.zip
         
     - name: Remove Portable AppData Folder
-      shell: cmd
-      run: rmdir Kinovea\bin\x64\Release\AppData
-    
+      shell: pwsh
+      run: Remove-Item -Recurse -Force "Kinovea/bin/x64/Release/AppData"
+          
     - name: Install NSIS
       uses: repolevedavaj/install-nsis@v1.2.0
       with:
