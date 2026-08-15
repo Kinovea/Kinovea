@@ -703,12 +703,6 @@ void VideoReaderFFMpeg::BeforePlayloop()
     }
 }
 
-void VideoReaderFFMpeg::ResetDrops()
-{
-    if (mCachingMode == VideoDecodingMode::PreBuffering)
-        mPreBuffer->ResetDrops();
-}
-
 void VideoReaderFFMpeg::UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn)
 {
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)

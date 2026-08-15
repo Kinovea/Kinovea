@@ -70,14 +70,6 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Counter of dropped frames for asynchronous readers that did not have the requested frame ready.
-        /// </summary>
-        public virtual int Drops 
-        {
-            get { return 0; }
-        }
-
-        /// <summary>
         /// Gets or sets the image-level options (aspect, rotation, demosaicing, deinterlace).
         /// </summary>
         public VideoOptions Options { get; set; }
@@ -191,7 +183,6 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Must set `Current` to the next video frame.
-        /// This is called in the context of the playback loop.
         /// For async readers, if the frame is not available right now, call it a drop.
         /// Decoding of that next frame should have happened in the decoding thread already.
         /// If `decodeIfNecessary` is true then force sync and only return after the frame has 
@@ -202,7 +193,6 @@ namespace Kinovea.Video
         
         /// <summary>
         /// Must set `Current` to the asked frame, by timestamp.
-        /// This is called in the context of frame by frame navigation.
         /// </summary>
         /// <returns>false if the end of file has been reached</returns>
         public abstract bool MoveTo(long from, long target);
@@ -216,15 +206,6 @@ namespace Kinovea.Video
         /// Does nothing by default. Override to implement.
         /// </summary>
         public virtual void BeforePlayloop()
-        {
-        }
-
-        /// <summary>
-        /// Called when the decoding drop counter should be reset, e.g: after forced slow down.
-        /// This is a reader specific action because not all reader are subject to dropping.
-        /// Does nothing by default. Override to implement.
-        /// </summary>
-        public virtual void ResetDrops()
         {
         }
 

@@ -2943,14 +2943,7 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             framesToDecode = 1;
         }
-        private void ForceSlowdown()
-        {
-            m_FrameServer.VideoReader.ResetDrops();
-            framesToDecode = 0;
-            sldrSpeed.StepJump(-0.05);
-        }
-
-
+        
         /// <summary>
         /// Update tracks and trackable drawings for the new timestamp.
         /// At the end of this all drawings bound to tracks must have been 

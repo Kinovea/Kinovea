@@ -136,11 +136,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
                 return mFrameContainer != nullptr ? mFrameContainer->CurrentFrame : nullptr; 
             }
         }
-        virtual property int Drops {
-            int get() override {
-                return mCachingMode == VideoDecodingMode::PreBuffering ? mPreBuffer->Drops : 0;
-            }
-        }
         virtual property bool CanDrawUnscaled {
             bool get() override {
                 return mCanDrawUnscaled;
@@ -176,7 +171,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Decoding mode, play loop and frame enumeration.
         // TODO: these should be moved to C#.
         virtual void BeforePlayloop() override;
-        virtual void ResetDrops() override;
         virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
         virtual void BeforeFrameEnumeration() override;
         virtual void AfterFrameEnumeration() override;
