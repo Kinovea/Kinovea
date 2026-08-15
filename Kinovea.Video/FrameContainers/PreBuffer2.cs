@@ -22,8 +22,9 @@ namespace Kinovea.Video
         private readonly object sync = new object();
         private readonly SortedList<long, VideoFrame> frames = new SortedList<long, VideoFrame>();
         private VideoFrame current;
-        private int capacity = 32;
         private bool interruptAdd;
+        private int capacity = 32;
+        private int framesToKeepBehind = 8; // Retention window behind current.
         private VideoFrameDisposer frameDisposer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -63,7 +64,7 @@ namespace Kinovea.Video
             // This runs on the decoding thread.
             //---------------------------------
 
-            log.DebugFormat("Request to add [{0}] to cache. Cached: {1}", frame.Timestamp, frames.Count);
+            log.DebugFormat("Request to add [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
 
             lock (sync)
             {
@@ -89,12 +90,12 @@ namespace Kinovea.Video
                     }
 
                     // Keep waiting.
-                    log.DebugFormat("Cache full. Waiting to add [{0}]. Cached: {1}", frame.Timestamp, frames.Count);
+                    log.DebugFormat("Cache full. Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
                     Monitor.Wait(sync);
                 }
 
                 frames.Add(frame.Timestamp, frame);
-                log.DebugFormat("Added frame [{0}] to cache. Cached: {1}", frame.Timestamp, frames.Count);
+                log.DebugFormat("Added frame [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
 
                 Monitor.PulseAll(sync);
             }
@@ -127,9 +128,9 @@ namespace Kinovea.Video
             //---------------------------------
             // Runs on the UI thread.
             //---------------------------------
-            VideoFrame frameToDispose = null;
+            List<VideoFrame> evictedFrames = null;
 
-            log.DebugFormat("Acquiring closest frame to [{0}]. Cached: {1}", timestamp, frames.Count);
+            log.DebugFormat("Acquiring closest frame to [{0}]. Cached: {1}.", timestamp, frames.Count);
 
             lock (sync)
             {
@@ -139,48 +140,29 @@ namespace Kinovea.Video
                     return;
                 }
 
-                // Get frame at timestamp >= to the target timestamp.
-                int index = LowerBound(timestamp);
-                VideoFrame closest;
-                if (index == 0)
-                {
-                    closest = frames.Values[0];
-                }
-                else if (index == frames.Count)
-                {
-                    closest = frames.Values[frames.Count - 1];
-                }
-                else
-                {
-                    VideoFrame before = frames.Values[index - 1];
-                    VideoFrame after = frames.Values[index];
-                    long deltaBefore = timestamp - before.Timestamp;
-                    long deltaAfter = after.Timestamp - timestamp;
-                    closest = deltaBefore <= deltaAfter ? before : after;
-                }
-
+                VideoFrame closest = FindClosest(timestamp);
                 if (ReferenceEquals(current, closest))
                     return;
 
                 log.DebugFormat("Setting current frame to [{0}].", closest.Timestamp);
                 current = closest;
 
-                // If the cache is full this is an opportunity to evict one less useful frame
-                // and wake the decoding thread.
-                if (frames.Count >= capacity)
-                {
-                    frameToDispose = EvictFurthestFromCurrent();
-                }
+                // Remove old frames from the cache.
+                evictedFrames = EvictFramesBehindCurrent();
 
-                if (frameToDispose != null)
+                // Unblock the decoding thread if it was waiting for space in the cache.
+                if (evictedFrames != null)
                 {
                     Monitor.PulseAll(sync);
                 }
             }
 
-            if (frameToDispose != null)
+            if (evictedFrames != null)
             {
-                DisposeFrame(frameToDispose);
+                foreach (VideoFrame frame in evictedFrames)
+                {
+                    DisposeFrame(frame);
+                }
             }
         }
 
@@ -229,6 +211,36 @@ namespace Kinovea.Video
         }
 
         /// <summary>
+        /// Find the closest frame to the target timestamp.
+        /// </summary>
+        private VideoFrame FindClosest(long timestamp)
+        {
+            if (frames.Count == 0)
+                throw new InvalidProgramException();
+
+            VideoFrame closest;
+
+            int index = LowerBound(timestamp);
+            if (index == 0)
+            {
+                closest = frames.Values[0];
+            }
+            else if (index == frames.Count)
+            {
+                closest = frames.Values[frames.Count - 1];
+            }
+            else
+            {
+                VideoFrame before = frames.Values[index - 1];
+                VideoFrame after = frames.Values[index];
+                long deltaBefore = timestamp - before.Timestamp;
+                long deltaAfter = after.Timestamp - timestamp;
+                closest = deltaBefore <= deltaAfter ? before : after;
+            }
+
+            return closest;
+        }
+        /// <summary>
         /// Find the first frame with a timestamp greater than or equal to the target timestamp.
         /// </summary>
         private int LowerBound(long timestamp)
@@ -249,34 +261,35 @@ namespace Kinovea.Video
 
             return low;
         }
-        
+
         /// <summary>
-        /// Remove one frame from the cache (but not current).
-        /// Returns the removed frame so it can be disposed outside the lock.
+        /// Remove one or more old frames from the cache.
+        /// Returns the removed frames so they can be disposed outside the lock.
         /// Caller must hold sync.
         /// </summary>
-        private VideoFrame EvictFurthestFromCurrent()
+        private List<VideoFrame> EvictFramesBehindCurrent()
         {
-            // Bail out if empty.
-            if (frames.Count <= 1 || current == null)
+            if (current == null)
                 return null;
 
-            // Since we keep them sorted the furthest is always either the first or last.
-            int firstIndex = 0;
-            int lastIndex = frames.Count - 1;
-            VideoFrame first = frames.Values[firstIndex];
-            VideoFrame last = frames.Values[lastIndex];
-            long deltaFirst = Math.Abs(current.Timestamp - first.Timestamp);
-            long deltaLast = Math.Abs(last.Timestamp - current.Timestamp);
-            int removeIndex = deltaFirst >= deltaLast ? firstIndex : lastIndex;
-            
-            log.DebugFormat("Cache: removing frame [{0}] at index {1}.", frames.Values[removeIndex].Timestamp, removeIndex);
+            int currentIndex = frames.IndexOfKey(current.Timestamp);
+            int removeCount = currentIndex - framesToKeepBehind;
+            if (removeCount <= 0)
+                return null;
 
-            VideoFrame removed = frames.Values[removeIndex];
-            frames.RemoveAt(removeIndex);
+            List<VideoFrame> removed = new List<VideoFrame>();
+            for (int i = 0; i < removeCount; i++)
+            {
+                VideoFrame frame = frames.Values[0];
+                frames.RemoveAt(0);
+                removed.Add(frame);
+            }
+
+            log.DebugFormat("Evicted {0} frames behind current. Cached: {1}.", removeCount, frames.Count);
+
             return removed;
         }
-        
+
         #endregion
     }
 }
