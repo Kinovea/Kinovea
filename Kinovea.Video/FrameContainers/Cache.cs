@@ -28,7 +28,7 @@ using Kinovea.Services;
 namespace Kinovea.Video
 {
     /// <summary>
-    /// A frame container for the caching of the whole working zone.
+    /// A cache of the whole working zone.
     /// All methods run in the UI thread.
     /// Play head moves are synchronous and instantaneous.
     /// </summary>
@@ -133,6 +133,7 @@ namespace Kinovea.Video
 
             log.Debug("Cache cleared.");
         }
+        
         /// <summary>
         /// Remove all items that are outside the working zone.
         /// </summary>

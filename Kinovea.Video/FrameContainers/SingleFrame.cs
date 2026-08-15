@@ -22,17 +22,18 @@ using System;
 
 namespace Kinovea.Video
 {
+    // A "cache" with a capacity of a single frame, used for synchronous decoding.
     public class SingleFrame : IVideoFramesContainer
     {
         public VideoFrame CurrentFrame {
-            get { return m_Current; }
+            get { return current; }
         }
         
         #region Construction / Destruction
         public SingleFrame(){}
-        public SingleFrame(VideoFrameDisposer _disposer)
+        public SingleFrame(VideoFrameDisposer disposer)
         {
-            m_Disposer = _disposer;
+            this.disposer = disposer;
         }
         public void Dispose()
         {
@@ -51,28 +52,28 @@ namespace Kinovea.Video
         #endregion
         
         #region Members
-        private VideoFrame m_Current = new VideoFrame();
-        private VideoFrameDisposer m_Disposer;
+        private VideoFrame current = new VideoFrame();
+        private VideoFrameDisposer disposer;
         #endregion
         
-        public void Add(VideoFrame _frame)
+        public void Add(VideoFrame frame)
         {
             Clear();
-            m_Current.Image = _frame.Image;
-            m_Current.Timestamp = _frame.Timestamp;
+            current.Image = frame.Image;
+            current.Timestamp = frame.Timestamp;
         }
         public void Clear()
         {
-            if(m_Current.Image != null)
+            if(current.Image != null)
             {
-                if(m_Disposer != null)
-                    m_Disposer(m_Current);
+                if(disposer != null)
+                    disposer(current);
                 else
-                    m_Current.Image.Dispose();
+                    current.Image.Dispose();
             }
             
-            m_Current.Image = null;
-            m_Current.Timestamp = 0;
+            current.Image = null;
+            current.Timestamp = 0;
         }
     }
 }

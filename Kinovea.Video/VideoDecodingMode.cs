@@ -12,20 +12,21 @@ namespace Kinovea.Video
         NotInitialized,
 
         /// <summary>
-        /// Frames are decoded on the fly, synchronously, when the player requests them.
-        /// Used at init, for frame enumeration (export or video modes), very small videos.
+        /// Synchronously read frames when the player requests them.
+        /// Used at init, for frame enumeration (export or video modes).
         /// </summary>
         OnDemand,
 
         /// <summary>
-        /// Frames are decoded in a separate thread and pushed to a small buffer.
-        /// Only supported by the FFMpeg reader.
+        /// Asynchronous reading and decoding. 
+        /// Frames are decoded on a separate thread and pushed to a cache.
+        /// Only supported in the FFmpeg reader.
         /// </summary>
         PreBuffering,
 
         /// <summary>
         /// All the frames of the working zone are loaded into a large buffer.
-        /// Supported by FFMpeg and GIF readers.
+        /// Supported by FFmpeg and GIF readers.
         /// </summary>
         Caching,
     }
