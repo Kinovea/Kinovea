@@ -503,12 +503,16 @@ namespace Kinovea.ScreenManager
             selectionTimer.Interval = 10000;
             selectionTimer.Tick += SelectionTimer_OnTick;
 
-            sldrSpeed.Minimum = 0;
-            sldrSpeed.Maximum = 1000;
-            timeMapper.SetInputRange(sldrSpeed.Minimum, sldrSpeed.Maximum);
-            timeMapper.SetSlowMotionRange(0, 2);
+            // The slider value range is arbitrary.
+            // The slowmo range corresponds to the factor wrt nominal video playback speed.
+            // The time mapper takes values in slomo and returns slider values, or vice versa.
+            double sldrMin = 0;
+            double sldrMax = 1000;
+            timeMapper.SetInputRange(sldrMin, sldrMax);
+            timeMapper.SetSlowMotionRange(0, 5);
             slowMotion = 1;
-            sldrSpeed.Initialize(timeMapper.GetInputFromSlowMotion(slowMotion));
+            double sldrVal = timeMapper.GetInputFromSlowMotion(slowMotion);
+            sldrSpeed.Initialize(sldrMin, sldrMax, sldrVal);
 
             monitorRefreshRate = UIHelper.GetMonitorFramerate(this.Handle);
 
@@ -2764,7 +2768,7 @@ namespace Kinovea.ScreenManager
             // The timer doesn't need to be high frequency.
             // We will translate from real elapsed time to video elapsed time based on the playback speed.
             // Max it at the monitor refresh rate.
-            uint refreshInterval = (uint)Math.Max(playbackFrameInterval, (1000.0 / monitorRefreshRate));
+            uint refreshInterval = (uint)Math.Round(Math.Max(playbackFrameInterval, (1000.0 / monitorRefreshRate)));
             
             log.DebugFormat("Starting playback at timestamp {0}, frame interval:{1} ms, refresh interval:{2} ms.", 
                 startPlaybackTimestamp, playbackFrameInterval, refreshInterval);

@@ -26,6 +26,9 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// This maps an arbitrary value range (say 0-1000) to the pixel coordinates of the slider.
+    /// </summary>
     public class SliderLinear : Control
     {
         #region Events
@@ -122,11 +125,12 @@ namespace Kinovea.ScreenManager
             this.Height = gutterCenter.Height;
         }
         
-        public void Initialize(double val)
+        public void Initialize(double min, double max, double val)
         {
-            min = 0;
-            max = 1000;
+            this.min = min;
+            this.max = max;
             this.val = val;
+
             stickyValue = val;
             sticky = true;
             stickyRadius = 0.05 * (max - min);

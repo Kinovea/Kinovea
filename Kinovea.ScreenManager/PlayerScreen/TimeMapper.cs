@@ -43,15 +43,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private const double epsilon = 0.000001;
+        private const double epsilon = 1e-3;
 
         // Slow motion slider input values.
+        // This is an arbitrary range.
         private double minInput = 0; 
         private double maxInput = 1000;
+        private double safeMinInput = 1;
 
         // Slow motion factor values. 1 = file baseline.
-        private double minSlowMotion = epsilon;
+        private double minSlowMotion = 0;
         private double maxSlowMotion = 2;
+        private double safeMinSlowMotion = 0.002;
 
         private double fileInterval = 40; 
         private double userInterval = 40;
@@ -61,23 +64,23 @@ namespace Kinovea.ScreenManager
         #region Public methods
         /// <summary>
         /// Set the range of slider input values.
-        /// This should be directly coming from the UI.
         /// </summary>
         public void SetInputRange(double minInput, double maxInput)
         {
             this.minInput = minInput;
             this.maxInput = maxInput;
+            this.safeMinInput = minInput + (epsilon * (maxInput - minInput));
         }
 
         /// <summary>
-        /// Set the range of allowed slow motion factor values. 
-        /// 0 = extremely slow (clamped).
-        /// Values above 1 are "fast motion" rather than slow motion.
+        /// Set the range of "slow motion" factor.
+        /// Values above 1x are "fast motion" rather than slow motion.
         /// </summary>
         public void SetSlowMotionRange(double minSlowMotion, double maxSlowMotion)
         {
-            this.minSlowMotion = Math.Max(epsilon, minSlowMotion);
+            this.minSlowMotion = minSlowMotion;
             this.maxSlowMotion = maxSlowMotion;
+            this.safeMinSlowMotion = minSlowMotion + (epsilon * (maxSlowMotion - minSlowMotion));
         }
 
         /// <summary>
@@ -135,9 +138,12 @@ namespace Kinovea.ScreenManager
         {
             double inputNormalized = (input - minInput) / (maxInput - minInput);
             double result = minSlowMotion + (inputNormalized * (maxSlowMotion - minSlowMotion));
-            return result;
+            return Math.Max(result, safeMinSlowMotion);
         }
 
+        /// <summary>
+        /// Maps from slow motion factor to slider input value.
+        /// </summary>
         private double MapSlowMotion(double slowMotion)
         {
             slowMotion = Math.Min(Math.Max(slowMotion, minSlowMotion), maxSlowMotion);
@@ -148,7 +154,7 @@ namespace Kinovea.ScreenManager
         {
             double slowMotionNormalized = (slowMotion - minSlowMotion) / (maxSlowMotion - minSlowMotion);
             double result = minInput + (slowMotionNormalized * (maxInput - minInput));
-            return result;
+            return Math.Max(result, safeMinInput);
         }
         #endregion
 
