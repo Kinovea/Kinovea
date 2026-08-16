@@ -246,6 +246,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // and try to seek ahead to the next keyframe.
         static const double mSeekAheadLagThreshold = 1;
 
+        // The active decoding policy (for pre-buffering). 
+        // Determines if we should skip decoding or skip scaling/converting/storing 
+        // some frames in case we fall behind the player demands.
+        DecodingPolicy mDecodingPolicy = DecodingPolicy::Normal;
+
+        
+
         // FFmpeg filter graph for scaling/converting the decoded frame to its final form.
         AVFilterGraph* mFilterGraph = nullptr;
         AVFilterContext* mFilterSource = nullptr;
@@ -270,6 +277,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Generic stopwatch for instrumentation/debugging purposes. 
         // Production logic should use its own stopwatch if needed.
         Stopwatch^ mStopwatch = gcnew Stopwatch();
+
+        // Simple counter, only used for debugging and logging.
+        int mDecodedFrames = 0;
     
     private:
 
@@ -343,6 +353,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Get the source format of decoded frames.
         /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
         AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
+
+        /// <summary>
+        /// Change the ffmpeg codec context based on the passed policy. 
+        /// This determines whether we will decode everything or skip some frames.
+        /// </summary>
+        void UpdateDecodingPolicy(DecodingPolicy policy);
+        
 
         /// Release the memory allocated by libav for the frame buffer.
         static void DisposeFrame(VideoFrame^ _frame);

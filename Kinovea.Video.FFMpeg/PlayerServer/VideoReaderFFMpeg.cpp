@@ -1453,6 +1453,14 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
         return result;
     }
 
+    // TODO:
+    // Check the container in case we already have stored this frame.
+    // This might happen if we decoded the frame during asynchronous decoding in 
+    // playback mode (may be sparse), then stop playback and seek back to the start
+    // of the GOP to fill it densely. In that case we shouldn't discard the existing
+    // frames from the cache so the target might already be there.
+    
+
     if (seeking)
     {
         // Check if the initial decode is already at the seek target.
@@ -1574,6 +1582,7 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
         if (decodeResult >= 0)
         {
             // Our job is done.
+            mDecodedFrames++;
             result = ReadResult::Success;
             break;
         }
@@ -1893,7 +1902,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     mFrameContainer->Add(vf);
 
     mCurrentTimestamp = mDecodedTimestamp;
-    log->DebugFormat("Stored frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
+    //log->DebugFormat("Stored frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
 
 
     return ReadResult::Success;
@@ -2299,6 +2308,31 @@ void VideoReaderFFMpeg::ApplyRotation(Bitmap^ bmp, ImageRotation rotation)
 }
 
 
+void VideoReaderFFMpeg::UpdateDecodingPolicy(DecodingPolicy policy)
+{
+    if (policy == mDecodingPolicy)
+        return;
+
+    log->DebugFormat("Updating decoding policy from {0} to {1}.", mDecodingPolicy, policy);
+    mDecodingPolicy = policy;
+
+    // Note: we can change mVideoCodecCtx->skip_frame at any time 
+    // no need to close and re-open the codec.
+    
+    switch (policy)
+    {
+        case DecodingPolicy::Normal:
+        case DecodingPolicy::Behind:
+            mVideoCodecCtx->skip_frame = AVDISCARD_DEFAULT;
+            break;
+
+        case DecodingPolicy::FarBehind:
+            mVideoCodecCtx->skip_frame = AVDISCARD_NONREF;
+            break;
+    }
+}
+
+
 void VideoReaderFFMpeg::DisposeFrame(VideoFrame^ videoFrame)
 {
     //log->DebugFormat("Disposing frame [{0}].", videoFrame->Timestamp);
@@ -2374,6 +2408,9 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
 
     log->DebugFormat("PreBuffering thread started.");
 
+    UpdateDecodingPolicy(DecodingPolicy::Normal);
+    mDecodedFrames = 0;
+
     while (true)
     {
         if (canceler->CancellationPending)
@@ -2392,12 +2429,12 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
                 long expectedTimestamp = this->GetExpectedTimestamp(playerState);
                 double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-                log->DebugFormat("Predicted player timestamp: {0}, latest stored: {1}, Lag: {2:0.000} s, Cache: {3}/{4}.", 
-                    expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity);
+                //log->DebugFormat("Predicted player timestamp: {0}, latest stored: {1}, Lag: {2:0.000} s, Cache: {3}/{4}.", 
+                //    expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity);
         
                 if (lag > mSeekAheadLagThreshold)
                 {
-                    log->ErrorFormat("Lag is over seek ahead threshold.");
+                    log->ErrorFormat("Lag is over seek ahead threshold. Decoded frames: {0}.", mDecodedFrames);
                 
                     // We are hopelessly behind, try to seek ahead.
                     // Note: calling seek directly with min, target, max, doesn't always work.
@@ -2439,10 +2476,19 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
                         }
                     }
                 }
+                else
+                {
+                    // Depending on how far behind we are figure the decoding policy we should apply.
+                    // Different thresholds for entering and leaving the levels to avoid oscillations.
+                    DecodingPolicy newPolicy = mDecodingPolicy;
+                    
+
+                }
             }
             else
             {
-                // TODO: if we are not playing switch back to a dense decoding policy to handle frame by frame nav.
+                // TODO: if we are not currently playing, switch back to a dense decoding policy 
+                // to handle frame by frame nav.
                 // Check the playerState.Generation to see if we just changed mode.
             }
         }
@@ -2463,9 +2509,6 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
         // Check if we hit the end of the zone.
         if (mCurrentTimestamp > mWorkingZone.End || res == ReadResult::EOFReached)
         {
-            if (mVerbose)
-                log->DebugFormat("Average prebuffering loop time: {0:0.000}ms. (Budget: {1:0.000}ms).", mLoopWatcher->Average, mVideoInfo.FrameIntervalMilliseconds);
-            
             ReadFrame(mWorkingZone.Start, 1);
             continue;
         }

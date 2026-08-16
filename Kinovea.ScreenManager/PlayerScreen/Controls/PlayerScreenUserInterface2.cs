@@ -2865,7 +2865,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
-                log.DebugFormat("Playback tick. Current: [{0}]. Target: [{1}].", currentTimestamp, expectedTimestamp);
+                //log.DebugFormat("Playback tick. Current: [{0}]. Target: [{1}].", currentTimestamp, expectedTimestamp);
             }
 
             // Bail out if we are already there.

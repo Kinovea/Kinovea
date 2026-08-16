@@ -176,6 +176,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DecodingPolicy.cs" />
     <Compile Include="FrameContainers\Cache.cs" />
     <Compile Include="FrameContainers\IVideoFramesContainer.cs" />
     <Compile Include="FrameContainers\IWorkingZoneContainer.cs" />
