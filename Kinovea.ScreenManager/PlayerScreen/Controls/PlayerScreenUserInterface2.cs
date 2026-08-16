@@ -600,7 +600,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Post load process.");
 
             // Publish the initial player state snapshot to the decoder.
-            PlayerState state = new PlayerState(0, 0, 0, 0, false);
+            PlayerState state = new PlayerState(0, 0, 0, 0, 0, false);
             playerState = state;
             m_FrameServer.VideoReader.PublishPlayerState(state);
 
@@ -2780,6 +2780,7 @@ namespace Kinovea.ScreenManager
                 currentTimestamp,
                 Stopwatch.GetTimestamp(),
                 playbackFrameInterval,
+                refreshInterval,
                 true);
 
             playerState = state;
@@ -2802,7 +2803,7 @@ namespace Kinovea.ScreenManager
             Application.Idle -= Application_Idle;
             m_FrameServer.Metadata.UnpauseAutosave();
 
-            PlayerState state = new PlayerState(playerState.Generation + 1, currentTimestamp, 0, 0, false);
+            PlayerState state = new PlayerState(playerState.Generation + 1, currentTimestamp, 0, 0, 0, false);
             playerState = state;
             m_FrameServer.VideoReader.PublishPlayerState(state);
 

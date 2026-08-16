@@ -8,12 +8,12 @@ namespace Kinovea.Video
 {
     /// <summary>
     /// A little immutable snapshot of the player state at a given time.
-    /// This is used by the reader to inform its decoding strategy.
+    /// This is used by the reader to inform its decoding policy.
     /// 
     /// The playback epoch can be used to compute the timestamp the player would 
     /// expect to display at any given time during the decoding loop.
     /// 
-    /// This can be used to skip work if it falls behind or change the retention policy.
+    /// This can be used by the decoder to skip work if it falls behind.
     /// </summary>
     public class PlayerState
     {
@@ -42,16 +42,25 @@ namespace Kinovea.Video
         public double PlaybackFrameInterval { get; }
 
         /// <summary>
+        /// The interval between presented frames during playback, in milliseconds.
+        /// Never smaller than the monitor refresh interval.
+        /// </summary>
+        public double RefreshInterval { get; }
+
+        /// <summary>
         /// True if the player is currently playing, false if paused.
         /// </summary>
         public bool IsPlaying { get; }
 
-        public PlayerState(int generation, long startPlaybackTimestamp, long startPlaybackEpoch, double playbackFrameInterval, bool isPlaying)
+        public PlayerState(
+            int generation, long startPlaybackTimestamp, long startPlaybackEpoch, 
+            double playbackFrameInterval, double refreshInterval, bool isPlaying)
         {
             Generation = generation;
             StartPlaybackTimestamp = startPlaybackTimestamp;
             StartPlaybackEpoch = startPlaybackEpoch;
             PlaybackFrameInterval = playbackFrameInterval;
+            RefreshInterval = refreshInterval;
             IsPlaying = isPlaying;
         }
     }

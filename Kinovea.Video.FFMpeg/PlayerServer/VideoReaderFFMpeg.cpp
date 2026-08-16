@@ -1443,7 +1443,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // Depending on the call we may be done or need to keep decoding.
     mDecodedTimestamp = frame->best_effort_timestamp;
 
-    log->DebugFormat("Decoded frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
+    //log->DebugFormat("Decoded frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
 
     if (mIsForSummary)
     {
@@ -1459,6 +1459,44 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // playback mode (may be sparse), then stop playback and seek back to the start
     // of the GOP to fill it densely. In that case we shouldn't discard the existing
     // frames from the cache so the target might already be there.
+
+
+    // Decoding policy.
+    if (mDecodingPolicy == DecodingPolicy::Behind || mDecodingPolicy == DecodingPolicy::FarBehind)
+    {
+        // Skip scale/convert/store if we are behind.
+        // But keep presenting progress frames periodically.
+        PlayerState^ playerState = Volatile::Read(this->playerState);
+        if (playerState != nullptr && playerState->IsPlaying)
+        {
+            // Compute the next publish timestamp based on how many frames fit within the refresh interval.
+            // 
+            // Example:
+            // Say we play a 120 fps video at 2.5x, on a 60Hz monitor.
+            // The refresh rate will be capped at 60 fps, 16.67 ms per frame.
+            // The playback frame rate will be 120*2.5 = 300 fps, 3.33 ms per frame.
+            //
+            // For every presented frame we have to decode 5 frames.
+            // We compute the expected timestamp of the 5th frame and discard the first 4.
+
+            int64_t lastPublished = mCurrentTimestamp;
+            double frames = playerState->RefreshInterval / playerState->PlaybackFrameInterval;
+            double timestampsPerPublish = frames * mVideoInfo.AverageTimeStampsPerFrame;
+            int64_t nextPublishTimestamp = (int64_t)Math::Round(lastPublished + timestampsPerPublish);
+            bool shouldPublish = mDecodedTimestamp >= nextPublishTimestamp;
+
+            //log->WarnFormat("Policy: {0}. Decoded frame [{1}]. Last published [{2}]. Next presentation [{3}]. Publish: {4}.", 
+            //    mDecodingPolicy.ToString(), mDecodedTimestamp, lastPublished, nextPublishTimestamp, shouldPublish);
+
+            if (!shouldPublish)
+            {
+                //log->DebugFormat("Policy: skipping frame [{0}]. Behind next presentation [{1}].", mDecodedTimestamp, nextPresentationTimestamp);
+                av_frame_free(&frame);
+                return ReadResult::Success;
+            }
+        }
+
+    }
     
 
     if (seeking)
@@ -2328,6 +2366,12 @@ void VideoReaderFFMpeg::UpdateDecodingPolicy(DecodingPolicy policy)
 
         case DecodingPolicy::FarBehind:
             mVideoCodecCtx->skip_frame = AVDISCARD_NONREF;
+
+            if (mVideoCodecCtx->has_b_frames == 0)
+            {
+                log->Warn("File has no B-frames, skipping non-ref frames will have no effect.");
+            }
+
             break;
     }
 }
@@ -2429,13 +2473,16 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
                 long expectedTimestamp = this->GetExpectedTimestamp(playerState);
                 double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-                //log->DebugFormat("Predicted player timestamp: {0}, latest stored: {1}, Lag: {2:0.000} s, Cache: {3}/{4}.", 
-                //    expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity);
-        
+                String^ logLine = String::Format("Predicted player timestamp: {0}, latest stored: {1}, Lag: {2:0.000} s, Cache: {3}/{4}. Frame:{5}.",
+                    expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
+
                 if (lag > mSeekAheadLagThreshold)
                 {
-                    log->ErrorFormat("Lag is over seek ahead threshold. Decoded frames: {0}.", mDecodedFrames);
+                    log->ErrorFormat("Lag of {0:0.000}s is over seek-ahead threshold. Decoded frames: {1}. Cache: {2}/{3}.", 
+                        lag, mDecodedFrames, mPreBuffer->Count, mPreBuffer->Capacity);
                 
+                    log->DebugFormat(logLine);
+
                     // We are hopelessly behind, try to seek ahead.
                     // Note: calling seek directly with min, target, max, doesn't always work.
                     // First, some decoders just fallback to AVSEEK_FLAG_BACKWARD which moves us 
@@ -2478,11 +2525,54 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
                 }
                 else
                 {
-                    // Depending on how far behind we are figure the decoding policy we should apply.
+                    // Figure the decoding policy we should apply.
                     // Different thresholds for entering and leaving the levels to avoid oscillations.
-                    DecodingPolicy newPolicy = mDecodingPolicy;
-                    
 
+                    // Behind mode: drop the scale/convert work for frames that aren't presented.
+                    // Only switch back when we are comfortably ahead.
+                    double thresholdEnterBehind = 0;
+                    double thresholdLeaveBehind = -0.100;
+
+                    // Far behind mode: drop decoding of B-frames at ffmpeg level.
+                    // This only makes a difference for files that have B-frames in the first place.
+                    double thresholdEnterFarBehind = 0.5;
+                    double thresholdLeaveFarBehind = 0.2;
+                    
+                    DecodingPolicy oldPolicy = mDecodingPolicy;
+                    switch (mDecodingPolicy)
+                    {
+                    case DecodingPolicy::Normal:
+                        if (lag > thresholdEnterFarBehind)
+                        {
+                            UpdateDecodingPolicy(DecodingPolicy::FarBehind);
+                        }
+                        else if (lag > thresholdEnterBehind)
+                        {
+                            UpdateDecodingPolicy(DecodingPolicy::Behind);
+                        }
+                        break;
+                    case DecodingPolicy::Behind:
+                        if (lag > thresholdEnterFarBehind)
+                        {
+                            UpdateDecodingPolicy(DecodingPolicy::FarBehind);
+                        }
+                        else if (lag < thresholdLeaveBehind)
+                        {
+                            UpdateDecodingPolicy(DecodingPolicy::Normal);
+                        }
+                        break;
+                    case DecodingPolicy::FarBehind:
+                        if (lag < thresholdLeaveFarBehind)
+                        {
+                            UpdateDecodingPolicy(DecodingPolicy::Behind);
+                        }
+                        break;
+                    }
+
+                    if (oldPolicy != mDecodingPolicy)
+                    {
+                        log->DebugFormat(logLine);
+                    }
                 }
             }
             else
