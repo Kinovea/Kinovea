@@ -72,6 +72,7 @@ void VideoReaderFFMpeg::DataInit()
     mVideoInfo = VideoInfo::Empty;
     mWorkingZone = VideoSection::MakeEmpty();
     mCurrentTimestamp = AV_NOPTS_VALUE;
+    mCurrentGopTimestamp = AV_NOPTS_VALUE;
     mWasPrebuffering = false;
     mCanDrawUnscaled = false;
 }
@@ -1423,6 +1424,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // Get the first frame after the seek or the next frame available in the decoder.
     AVFrame* frame = av_frame_alloc();
     result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+    //log->DebugFormat("ReadFrame. Decoded frame at [{0}]. Frame type: {1}", frame->best_effort_timestamp, GetFrameTypeString(frame->pict_type));
     if (result != ReadResult::Success)
     {
         av_frame_free(&frame);
@@ -1625,6 +1627,17 @@ ReadResult VideoReaderFFMpeg::DecodeOneFrame(AVFormatContext* formatCtx, int str
                     continue;
                 }
 
+                // If we found a video packet and it's a keyframe, remember the timestamp. 
+                // We use this to detect if we can seek ahead to a different GOP
+                // in case we fall behind during async decoding.
+                if (packet->flags & AV_PKT_FLAG_KEY)
+                {
+                    if (packet->dts != AV_NOPTS_VALUE)
+                        mCurrentGopTimestamp = packet->dts;
+                    else
+                        mCurrentGopTimestamp = packet->pts;
+                }
+
                 // Supply the raw packet to the decoder.
                 feedDecoderResult = avcodec_send_packet(codecCtx, packet);
                 if (feedDecoderResult == AVERROR(EAGAIN))
@@ -1732,6 +1745,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
     // Reset the internal codec state. 
     avcodec_flush_buffers(mVideoCodecCtx);
     mCurrentTimestamp = AV_NOPTS_VALUE;
+    mCurrentGopTimestamp = AV_NOPTS_VALUE;
     return res;
 }
 
@@ -2368,38 +2382,78 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
             break;
         }
 
-        // Read the last published snapshot of the player state.
+        // Read the last published snapshot of the player state to inform decoding strategy.
         PlayerState^ playerState = Volatile::Read(this->playerState);
-        if (playerState != nullptr && playerState->IsPlaying)
+        if (playerState != nullptr)
         {
-            // Compute the expected frame timestamp the player would like to see right now.
-            // The player does its own computation independently using the same code.
-            double avgtspf = mVideoInfo.AverageTimeStampsPerFrame;
-            int64_t now = Stopwatch::GetTimestamp();
-            double realElapsedSeconds = (double)(now - playerState->StartPlaybackEpoch) / Stopwatch::Frequency;
-            double elapsedFrames = realElapsedSeconds * 1000.0 / playerState->PlaybackFrameInterval;
-            double elapsedTimestamps = elapsedFrames * avgtspf;
-            int64_t expectedTimestamp = (long)Math::Round(playerState->StartPlaybackTimestamp + elapsedTimestamps);
-            double lag = 1000 * (mCurrentTimestamp - expectedTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
+            if (playerState->IsPlaying)
+            {
+                // Estimate how far behind we are and skip work if needed.
+                long expectedTimestamp = this->GetExpectedTimestamp(playerState);
+                double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-            log->DebugFormat("PreBuffering thread, predicted player timestamp: {0}, latest stored: {1}, Lag: {2} ms.", 
-                expectedTimestamp, mCurrentTimestamp, lag);
+                log->DebugFormat("Predicted player timestamp: {0}, latest stored: {1}, Lag: {2:0.000} s.", 
+                    expectedTimestamp, mCurrentTimestamp, lag);
         
-            // TODO: estimate how far behind we are and skip work if needed.
-            // - decode but skip scale/convert/rotate/store.
-            // - ask ffmpeg to skip decoding certain frame types.
-            // - seek ahead a large amount.
+                // Start with the worst case scenario.
+                if (lag > mSeekAheadLagThreshold)
+                {
+                    //log->DebugFormat("Lag > {0} ms. Seeking to {1}.", lagSeekThreshold, expectedTimestamp);
+                
+                    // We are hopelessly behind, try to seek ahead.
+                    // note: calling seek directly with min, target, max, doesn't always work.
+                    // First, some decoders just fallback to AVSEEK_FLAG_BACKWARD which moves us 
+                    // back in time and is worse than doing nothing.
+                    // Secondly, seek is done in a different "domain" than the timestamps we get from decoding frames.
+                    // The values of packet->pts don't always match the values of frame->best_effort_timestamp. 
+                    // 
+                    // As decoding progresses we keep track of the timestamps of key frame packets and use that 
+                    // to check if seek ahead is actually possible.
+                    //
+                    // Poll the index for the closest keyframe before the target timestamp.
+                    AVStream* stream = mFormatCtx->streams[mVideoStreamIndex];
+                    const AVIndexEntry* entry = avformat_index_get_entry_from_timestamp(stream, expectedTimestamp, AVSEEK_FLAG_BACKWARD);
+                    if (entry != nullptr)
+                    {
+                        //log->DebugFormat("Found index entry for timestamp [{0}]. Key at [{1}].", expectedTimestamp, entry->timestamp);
+                    
+                        // Only seek if the keyframe is ahead of the current GOP start. 
+                        // Otherwise we would just seeking back in time.
+                        int64_t seekTimestamp = entry->timestamp;
+                        if (seekTimestamp > mCurrentGopTimestamp)
+                        {
+                            log->WarnFormat("Seek ahead to [{0}]", seekTimestamp);
+                            int res = avformat_seek_file(
+                                mFormatCtx,
+                                mVideoStreamIndex,
+                                seekTimestamp,
+                                seekTimestamp,
+                                seekTimestamp,
+                                0);
+                        
+                            if (res >= 0)
+                            {
+                                avcodec_flush_buffers(mVideoCodecCtx);
+                                mCurrentTimestamp = AV_NOPTS_VALUE;
+                                mCurrentGopTimestamp = AV_NOPTS_VALUE;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // TODO: if we are not playing switch back to a dense decoding policy to handle frame by frame nav.
+                // Check the playerState.Generation to see if we just changed mode.
+            }
         }
-
 
         // Read the next frame.
         // This will perform decoding, scaling, format conversion, rotation, etc.
         // Then attempt to store the frame in the async cache.
         // If the cache is full this will wait in PreBuffer.Add() until the cache evicts a frame.
-        // This eviction will happen when the UI thread moves to a different frame.
-        mStopwatchRead->Restart();
+        // This eviction will happen when the UI thread moves to a different frame in PreBuffer.AcquireClosest().
         ReadResult res = ReadFrame(-1, 1);
-        //log->DebugFormat("ReadFrame: [{0}], {1} ms.", mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
 
         if (canceler->CancellationPending)
         {

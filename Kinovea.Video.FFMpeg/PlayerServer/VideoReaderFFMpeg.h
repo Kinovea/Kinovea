@@ -227,8 +227,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         AVFormatContext* mFormatCtx;
         AVCodecContext* mVideoCodecCtx;
         
-        // The timestamp of the decoded frame (frame->best_effort_timestamp).
+        // The frame-domain timestamp of the last decoded frame (frame->best_effort_timestamp).
         int64_t mCurrentTimestamp = AV_NOPTS_VALUE;
+
+        // The seek-domain timestamp of the last keyframe. (packet->pts or packet->dts).
+        int64_t mCurrentGopTimestamp = AV_NOPTS_VALUE;
+
+        // If the lag in seconds between the frame we are supposed to be presenting in the player 
+        // and the last frame we decoded goes above this value, we declare decoding bankrupcy
+        // and try to seek ahead to the next keyframe.
+        static const double mSeekAheadLagThreshold = 1;
 
         // FFmpeg filter graph.
         AVFilterGraph* mFilterGraph = nullptr;

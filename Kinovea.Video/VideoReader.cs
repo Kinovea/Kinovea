@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
@@ -224,6 +225,23 @@ namespace Kinovea.Video
         public void PublishPlayerState(PlayerState newPlayerState)
         {
             Volatile.Write(ref playerState, newPlayerState);
+        }
+
+        /// <summary>
+        /// Compute the expected frame timestamp the player would like to see right now.
+        /// The player does its own computation independently using the same code.
+        /// </summary>
+        public long GetExpectedTimestamp(PlayerState state)
+        {
+            if (state == null || !state.IsPlaying)
+                return 0;
+
+            long now = Stopwatch.GetTimestamp();
+            double realElapsedSeconds = (double)(now - playerState.StartPlaybackEpoch) / Stopwatch.Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / playerState.PlaybackFrameInterval;
+            double elapsedTimestamps = elapsedFrames * Info.AverageTimeStampsPerFrame;
+            long expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
+            return expectedTimestamp;
         }
 
         /// <summary>

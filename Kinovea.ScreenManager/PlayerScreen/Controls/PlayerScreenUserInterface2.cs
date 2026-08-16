@@ -507,7 +507,7 @@ namespace Kinovea.ScreenManager
             double sldrMin = 0;
             double sldrMax = 1000;
             timeMapper.SetInputRange(sldrMin, sldrMax);
-            timeMapper.SetSlowMotionRange(0, 5);
+            timeMapper.SetSlowMotionRange(0, 10);
             slowMotion = 1;
             double sldrVal = timeMapper.GetInputFromSlowMotion(slowMotion);
             sldrSpeed.Initialize(sldrMin, sldrMax, sldrVal);
@@ -2789,15 +2789,22 @@ namespace Kinovea.ScreenManager
             multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, timerCallback, UIntPtr.Zero, eventType);
             isCurrentlyPlaying = true;
         }
+
         private void StopMultimediaTimer()
         {
             if (multimediaTimerID != 0)
+            {
                 NativeMethods.timeKillEvent(multimediaTimerID);
+            }
 
             multimediaTimerID = 0;
             isCurrentlyPlaying = false;
             Application.Idle -= Application_Idle;
             m_FrameServer.Metadata.UnpauseAutosave();
+
+            PlayerState state = new PlayerState(playerState.Generation + 1, currentTimestamp, 0, 0, false);
+            playerState = state;
+            m_FrameServer.VideoReader.PublishPlayerState(state);
 
             log.DebugFormat("Playback paused. Avg frame time: {0:0.000} ms. Drop ratio: {1:0.00}", loopWatcher.Average, dropWatcher.Ratio);
         }
@@ -2831,6 +2838,12 @@ namespace Kinovea.ScreenManager
             // Runs in UI thread, in the context of playback.
             //------------------------------
             timeWatcher.Restart();
+
+            if (!playerState.IsPlaying || playerState.PlaybackFrameInterval == 0)
+            {
+                log.ErrorFormat("Rendering_Invoked called while not playing. Generation: {0}.", playerState.Generation);
+                return;   
+            }
 
             // Compute expected timestamp for the next frame to be rendered.
             double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;

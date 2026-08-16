@@ -64,7 +64,7 @@ namespace Kinovea.Video
             // This runs on the decoding thread.
             //---------------------------------
 
-            log.DebugFormat("Request to add [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
+            //log.DebugFormat("Request to add [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
 
             lock (sync)
             {
@@ -90,12 +90,12 @@ namespace Kinovea.Video
                     }
 
                     // Keep waiting.
-                    log.DebugFormat("Cache full. Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
+                    //log.DebugFormat("Cache full. Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
                     Monitor.Wait(sync);
                 }
 
                 frames.Add(frame.Timestamp, frame);
-                log.DebugFormat("Added frame [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
+                //log.DebugFormat("Added frame [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
 
                 Monitor.PulseAll(sync);
             }
@@ -130,7 +130,7 @@ namespace Kinovea.Video
             //---------------------------------
             List<VideoFrame> evictedFrames = null;
 
-            log.DebugFormat("Acquiring closest frame to [{0}]. Cached: {1}.", timestamp, frames.Count);
+            //log.DebugFormat("Acquiring closest frame to [{0}]. Cached: {1}.", timestamp, frames.Count);
 
             lock (sync)
             {
@@ -144,7 +144,7 @@ namespace Kinovea.Video
                 if (ReferenceEquals(current, closest))
                     return;
 
-                log.DebugFormat("Setting current frame to [{0}].", closest.Timestamp);
+                //log.DebugFormat("Setting current frame to [{0}].", closest.Timestamp);
                 current = closest;
 
                 // Remove old frames from the cache.
@@ -285,7 +285,7 @@ namespace Kinovea.Video
                 removed.Add(frame);
             }
 
-            log.DebugFormat("Evicted {0} frames behind current. Cached: {1}.", removeCount, frames.Count);
+            //log.DebugFormat("Evicted {0} frames behind current. Cached: {1}.", removeCount, frames.Count);
 
             return removed;
         }
