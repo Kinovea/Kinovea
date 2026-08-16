@@ -40,7 +40,6 @@ using namespace Kinovea::Video::FFMpeg;
 #pragma region Construction/Destruction
 VideoReaderFFMpeg::VideoReaderFFMpeg()
 {
-    mLocker = gcnew Object();
     mPreBufferingThreadCanceler = gcnew ThreadCanceler();
 
     VideoFrameDisposer^ disposer = gcnew VideoFrameDisposer(DisposeFrame);
@@ -49,7 +48,6 @@ VideoReaderFFMpeg::VideoReaderFFMpeg()
     mPreBuffer = gcnew PreBuffer2(disposer);
     mCache = gcnew Cache(disposer);
     
-    mLoopWatcher = gcnew LoopWatcher();
     DataInit();
 }
 
@@ -582,7 +580,7 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
     {
         mStopwatch->Restart();
         ReadResult res = ReadFrame(-1, _skip + 1);
-        log->DebugFormat("MoveNext. Read frame in {0} ms.", mStopwatch->ElapsedMilliseconds);
+        log->DebugFormat("Synchronous MoveNext(): {0} ms.", mStopwatch->ElapsedMilliseconds);
         moved = res == ReadResult::Success;
     }
     else if (mCachingMode == VideoDecodingMode::Caching)
@@ -1340,7 +1338,6 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 
 ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrameJump)
 {
-    mLoopWatcher->LoopStart();
     mStopwatch->Restart();
 
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized || mFrameContainer == nullptr)
@@ -1355,9 +1352,6 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     int	framesToDecode = targetFrameJump;
     int framesDecoded = 0;
     int res = 0;
-
-    // TODO: shouldn't need to lock. Make sure we don't synchronously ask for a frame while prebuffering.
-    lock l(mLocker);
 
     // Convert negative jump to a seek target.
     if (targetFrameJump < 0)
@@ -1447,12 +1441,9 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     
     // At this point we have decoded one frame.
     // Depending on the call we may be done or need to keep decoding.
-
     mDecodedTimestamp = frame->best_effort_timestamp;
-    //mCurrentTimestamp = frame->best_effort_timestamp;
 
     log->DebugFormat("Decoded frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
-
 
     if (mIsForSummary)
     {
@@ -2475,7 +2466,6 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
             if (mVerbose)
                 log->DebugFormat("Average prebuffering loop time: {0:0.000}ms. (Budget: {1:0.000}ms).", mLoopWatcher->Average, mVideoInfo.FrameIntervalMilliseconds);
             
-            mLoopWatcher->Restart();
             ReadFrame(mWorkingZone.Start, 1);
             continue;
         }

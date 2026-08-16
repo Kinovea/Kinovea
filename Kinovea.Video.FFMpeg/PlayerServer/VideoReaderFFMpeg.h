@@ -217,7 +217,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool mCanDrawUnscaled;
 
         // Frame containers
-        IVideoFramesContainer^ mFrameContainer;
+        // mFrameContainer references one of the three below.
+        // Only one is active at a time.
+        IVideoFramesContainer^ mFrameContainer; 
         SingleFrame^ mSingleFrameContainer;
         PreBuffer2^ mPreBuffer;
         Cache^ mCache;
@@ -244,14 +246,14 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // and try to seek ahead to the next keyframe.
         static const double mSeekAheadLagThreshold = 1;
 
-        // FFmpeg filter graph.
+        // FFmpeg filter graph for scaling/converting the decoded frame to its final form.
         AVFilterGraph* mFilterGraph = nullptr;
         AVFilterContext* mFilterSource = nullptr;
         AVFilterContext* mFilterSink = nullptr;
         AVFrame* mFilteredFrame = nullptr;
         static bool mCopyFilteredFrame = true;
 
-        // Configuration of the filter graph.
+        // Active configuration of the filter graph.
         int mFilterSrcWidth = 0;
         int mFilterSrcHeight = 0;
         AVPixelFormat mFilterSrcFormat = AV_PIX_FMT_NONE;
@@ -260,14 +262,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool mFilterDeinterlace = false;
 
         // Others
-        Object^ mLocker;
         bool mWasPrebuffering;
-        LoopWatcher^ mLoopWatcher;
         Thread^ mPreBufferingThread;
         ThreadCanceler^ mPreBufferingThreadCanceler;
-        Stopwatch^ mStopwatch = gcnew Stopwatch();
         bool mVerbose = true;
         
+        // Generic stopwatch for instrumentation/debugging purposes. 
+        // Production logic should use its own stopwatch if needed.
+        Stopwatch^ mStopwatch = gcnew Stopwatch();
+    
     private:
 
         void DataInit();
