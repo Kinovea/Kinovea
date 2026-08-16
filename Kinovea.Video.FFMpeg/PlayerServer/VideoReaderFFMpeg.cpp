@@ -122,7 +122,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
     // Allocate 100 ms to this task. 
     // Always get at least one image but after that if we run out of time we cancel.
     int64_t timeout = 100;
-    mStopwatchRead->Restart();
+    Stopwatch^ stopwatchSummary = Stopwatch::StartNew();
 
     OpenVideoResult loaded = Load(filePath, true);
     if (loaded != OpenVideoResult::Success)
@@ -173,14 +173,14 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         // for frames until we get one, compared to forcing a seek to the nearest keyframe.
         ReadResult read = ReadFrame(ts, 1);
 
-        //log->DebugFormat("After ReadFrame {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, mStopwatchRead->ElapsedMilliseconds);
+        //log->DebugFormat("After ReadFrame {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
 
         if (read == ReadResult::Same)
         {
             // We detected that the seek would have landed on the same key frame as before.
             // This may happen for files with large GOP. 
             // We skipped the decode entirely.
-            //log->DebugFormat("Same seek. [{0}]. {1} ms.", mSummaryPreviousSeek, mStopwatchRead->ElapsedMilliseconds);
+            //log->DebugFormat("Same seek. [{0}]. {1} ms.", mSummaryPreviousSeek, stopwatchSummary->ElapsedMilliseconds);
             continue;
         }
 
@@ -194,15 +194,15 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         summary->Thumbs->Add(bmp);
 
         // Check if we are out of time budget.
-        if (mStopwatchRead->ElapsedMilliseconds > timeout && i < targets->Count - 1)
+        if (stopwatchSummary->ElapsedMilliseconds > timeout && i < targets->Count - 1)
         {
             log->WarnFormat("Summary extraction out of budget after {0} frames in {1} ms.", 
-                i + 1, mStopwatchRead->ElapsedMilliseconds);
+                i + 1, stopwatchSummary->ElapsedMilliseconds);
             break;
         }
     }
 
-    log->DebugFormat("Summary extraction for \"{0}\": {1} ms.", filename, mStopwatchRead->ElapsedMilliseconds);
+    log->DebugFormat("Summary extraction for \"{0}\": {1} ms.", filename, stopwatchSummary->ElapsedMilliseconds);
 
     Close();
     mIsForSummary = false;
@@ -580,9 +580,9 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
 
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
-        mStopwatchRead->Restart();
+        mStopwatch->Restart();
         ReadResult res = ReadFrame(-1, _skip + 1);
-        log->DebugFormat("MoveNext. Read frame in {0} ms.", mStopwatchRead->ElapsedMilliseconds);
+        log->DebugFormat("MoveNext. Read frame in {0} ms.", mStopwatch->ElapsedMilliseconds);
         moved = res == ReadResult::Success;
     }
     else if (mCachingMode == VideoDecodingMode::Caching)
@@ -688,13 +688,13 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
 
         //    // This is done on the UI thread but the decoding thread has just been put to sleep.
 
-        //    mStopwatchRead->Restart();
+        //    mStopwatch->Restart();
 
         //    ReadResult res = ReadFrame(target, 1);
 
         //    if (mVerbose)
         //    {
-        //        log->DebugFormat("MoveTo. Read frame in {0} ms.", mStopwatchRead->ElapsedMilliseconds);
+        //        log->DebugFormat("MoveTo. Read frame in {0} ms.", mStopwatch->ElapsedMilliseconds);
         //    }
 
         //    if (res == ReadResult::Success)
@@ -1249,7 +1249,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         log->DebugFormat("Requested section to cache: {0}. Prepend:{1}", section, isPrepend);
     }
 
-    mStopwatchRead->Restart();
+    mStopwatch->Restart();
     mCache->SetPrepending(isPrepend);
 
     // Realign the requested section on real timestamps.
@@ -1293,7 +1293,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         if (mCurrentTimestamp >= section.End)
         {
             log->DebugFormat("Caching complete [{0}]. Read: {1} frames in {2} ms.", 
-                mCurrentTimestamp, read, mStopwatchRead->ElapsedMilliseconds);
+                mCurrentTimestamp, read, mStopwatch->ElapsedMilliseconds);
             success = true;
             break;
         }
@@ -1341,6 +1341,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrameJump)
 {
     mLoopWatcher->LoopStart();
+    mStopwatch->Restart();
 
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized || mFrameContainer == nullptr)
     {
@@ -1447,7 +1448,11 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // At this point we have decoded one frame.
     // Depending on the call we may be done or need to keep decoding.
 
-    mCurrentTimestamp = frame->best_effort_timestamp;
+    mDecodedTimestamp = frame->best_effort_timestamp;
+    //mCurrentTimestamp = frame->best_effort_timestamp;
+
+    log->DebugFormat("Decoded frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
+
 
     if (mIsForSummary)
     {
@@ -1460,7 +1465,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     if (seeking)
     {
         // Check if the initial decode is already at the seek target.
-        if (mCurrentTimestamp >= targetTimestamp)
+        if (mDecodedTimestamp >= targetTimestamp)
         {
             log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
             result = ConvertAndStoreFrame(frame, false);
@@ -1481,7 +1486,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
             //LogFrameInfo(frame);
             framesDecoded++;
-            mCurrentTimestamp = frame->best_effort_timestamp;
+            mDecodedTimestamp = frame->best_effort_timestamp;
         
             if (frame->best_effort_timestamp >= targetTimestamp)
             {
@@ -1521,7 +1526,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
             //LogFrameInfo(frame);
             framesDecoded++;
-            mCurrentTimestamp = frame->best_effort_timestamp;
+            mDecodedTimestamp = frame->best_effort_timestamp;
 
             if (framesDecoded >= framesToDecode)
             {
@@ -1888,13 +1893,17 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     // Construct a VideoFrame.
     VideoFrame^ vf = gcnew VideoFrame();
     vf->Image = bmp;
-    vf->Timestamp = mCurrentTimestamp;
+    vf->Timestamp = mDecodedTimestamp;
     
     // Store it to the active container.
     // If we are in mode on-demand, this is synchronous and will replace the single stored frame.
     // If we are in mode prebuffer, we are in a background thread and this will potentially block if the 
-    // cache is full. 
+    // cache is full.
     mFrameContainer->Add(vf);
+
+    mCurrentTimestamp = mDecodedTimestamp;
+    log->DebugFormat("Stored frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
+
 
     return ReadResult::Success;
 }
@@ -2392,16 +2401,15 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
                 long expectedTimestamp = this->GetExpectedTimestamp(playerState);
                 double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-                log->DebugFormat("Predicted player timestamp: {0}, latest stored: {1}, Lag: {2:0.000} s.", 
-                    expectedTimestamp, mCurrentTimestamp, lag);
+                log->DebugFormat("Predicted player timestamp: {0}, latest stored: {1}, Lag: {2:0.000} s, Cache: {3}/{4}.", 
+                    expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity);
         
-                // Start with the worst case scenario.
                 if (lag > mSeekAheadLagThreshold)
                 {
-                    //log->DebugFormat("Lag > {0} ms. Seeking to {1}.", lagSeekThreshold, expectedTimestamp);
+                    log->ErrorFormat("Lag is over seek ahead threshold.");
                 
                     // We are hopelessly behind, try to seek ahead.
-                    // note: calling seek directly with min, target, max, doesn't always work.
+                    // Note: calling seek directly with min, target, max, doesn't always work.
                     // First, some decoders just fallback to AVSEEK_FLAG_BACKWARD which moves us 
                     // back in time and is worse than doing nothing.
                     // Secondly, seek is done in a different "domain" than the timestamps we get from decoding frames.
@@ -2422,7 +2430,7 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
                         int64_t seekTimestamp = entry->timestamp;
                         if (seekTimestamp > mCurrentGopTimestamp)
                         {
-                            log->WarnFormat("Seek ahead to [{0}]", seekTimestamp);
+                            log->WarnFormat("Decoding thread synchronization. Seeking ahead to [{0}]", seekTimestamp);
                             int res = avformat_seek_file(
                                 mFormatCtx,
                                 mVideoStreamIndex,

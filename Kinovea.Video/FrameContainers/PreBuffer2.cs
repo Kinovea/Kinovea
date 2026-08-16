@@ -14,7 +14,26 @@ namespace Kinovea.Video
         #region Properties
         public VideoFrame CurrentFrame
         {
-            get { return current; }
+            get 
+            { 
+                return current; 
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                lock (sync)
+                {
+                    return frames.Count;
+                }
+            }
+        }
+
+        public int Capacity
+        {
+            get { return capacity; }
         }
         #endregion
 

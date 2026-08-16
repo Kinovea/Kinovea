@@ -227,9 +227,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         AVFormatContext* mFormatCtx;
         AVCodecContext* mVideoCodecCtx;
         
-        // The frame-domain timestamp of the last decoded frame (frame->best_effort_timestamp).
-        int64_t mCurrentTimestamp = AV_NOPTS_VALUE;
 
+        // The frame-domain timestamp of the last stored frame (frame->best_effort_timestamp).
+        // Stored as in put in the active frame container and available to the player.
+        // This is not necessarily the frame that the player is currently showing.
+        int64_t mCurrentTimestamp = AV_NOPTS_VALUE;
+        
+        // The frame-domain timestamp of the last decoded frame.
+        int64_t mDecodedTimestamp = AV_NOPTS_VALUE;
+        
         // The seek-domain timestamp of the last keyframe. (packet->pts or packet->dts).
         int64_t mCurrentGopTimestamp = AV_NOPTS_VALUE;
 
@@ -259,7 +265,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         LoopWatcher^ mLoopWatcher;
         Thread^ mPreBufferingThread;
         ThreadCanceler^ mPreBufferingThreadCanceler;
-        Stopwatch^ mStopwatchRead = gcnew Stopwatch();
+        Stopwatch^ mStopwatch = gcnew Stopwatch();
         bool mVerbose = true;
         
     private:
