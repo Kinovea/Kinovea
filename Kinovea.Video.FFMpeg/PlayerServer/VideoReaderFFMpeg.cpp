@@ -69,8 +69,12 @@ void VideoReaderFFMpeg::DataInit()
     mVideoStreamIndex = -1;
     mVideoInfo = VideoInfo::Empty;
     mWorkingZone = VideoSection::MakeEmpty();
+
     mCachedTimestamp = AV_NOPTS_VALUE;
+    mPreviousDecodedTimestamp = AV_NOPTS_VALUE;
+    mDecodedTimestamp = AV_NOPTS_VALUE;
     mCurrentGopTimestamp = AV_NOPTS_VALUE;
+    
     mWasPrebufferingBeforeEnumeration = false;
     
     mVideoGeometry = nullptr;
@@ -1479,6 +1483,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameThumbnail(int64_t targetTimestamp)
         return result;
     }
 
+    mPreviousDecodedTimestamp = mDecodedTimestamp;
     mDecodedTimestamp = frame->best_effort_timestamp;
 
     result = ConvertAndStoreFrame(frame, true);
@@ -1505,6 +1510,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameNext()
     //mStopwatch->Restart();
     AVFrame* frame = av_frame_alloc();
     result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+    mPreviousDecodedTimestamp = mDecodedTimestamp;
     mDecodedTimestamp = frame->best_effort_timestamp;
     mLoopWatcher->LoopEnd();
 
@@ -1613,6 +1619,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
     
     // At this point we have decoded one frame.
     // Depending on the call we may be done or need to keep decoding.
+    mPreviousDecodedTimestamp = mDecodedTimestamp;
     mDecodedTimestamp = frame->best_effort_timestamp;
 
     //log->DebugFormat("Decoded frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
@@ -1646,6 +1653,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
 
         //LogFrameInfo(frame);
         framesDecoded++;
+        mPreviousDecodedTimestamp = mDecodedTimestamp;
         mDecodedTimestamp = frame->best_effort_timestamp;
 
         if (framesDecoded % 10 == 0)
@@ -1923,6 +1931,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
     // Reset the internal codec state. 
     avcodec_flush_buffers(mVideoCodecCtx);
     mCachedTimestamp = AV_NOPTS_VALUE;
+    mPreviousDecodedTimestamp = AV_NOPTS_VALUE;
     mDecodedTimestamp = AV_NOPTS_VALUE;
     mCurrentGopTimestamp = AV_NOPTS_VALUE;
     return res;
@@ -2064,15 +2073,11 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     // Note: rotation doesn't change the size of the buffer.
     ApplyRotation(bmp, mVideoGeometry->ImageRotation);
 
-    // Construct a VideoFrame.
-    VideoFrame^ vf = gcnew VideoFrame();
-    vf->Image = bmp;
-    vf->Timestamp = mDecodedTimestamp;
-    
-    // Store it to the active container.
+    // Construct the VideoFrame and store it to the active container.
     // If we are in mode on-demand, this is synchronous and will replace the single stored frame.
     // If we are in mode prebuffer, we are in a background thread and this will potentially block if the 
     // cache is full.
+    VideoFrame^ vf = gcnew VideoFrame(bmp, mDecodedTimestamp, mPreviousDecodedTimestamp);
     CacheAddResult addResult = mFrameContainer->Add(vf);
 
     if (addResult == CacheAddResult::Added)
@@ -2517,7 +2522,6 @@ void VideoReaderFFMpeg::DisposeFrame(VideoFrame^ videoFrame)
     }
 
     delete videoFrame->Image;
-    videoFrame->Image = nullptr;
 
     if (bufferPtr != IntPtr::Zero)
     {

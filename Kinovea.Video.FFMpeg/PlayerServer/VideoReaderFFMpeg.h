@@ -287,6 +287,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         // The frame-domain timestamp of the last decoded frame.
         int64_t mDecodedTimestamp = AV_NOPTS_VALUE;
+
+        // The timestamp of the previous decoded decoded frame.
+        int64_t mPreviousDecodedTimestamp = AV_NOPTS_VALUE;
         
         // The seek-domain timestamp of the last keyframe. (packet->pts or packet->dts).
         int64_t mCurrentGopTimestamp = AV_NOPTS_VALUE;

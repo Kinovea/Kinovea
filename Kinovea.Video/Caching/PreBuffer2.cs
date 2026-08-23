@@ -201,7 +201,8 @@ namespace Kinovea.Video
                 }
 
                 frames.Add(frame.Timestamp, frame);
-                log.DebugFormat("Added frame [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
+                log.DebugFormat("Added frame [{0}] (prev: [{1}]). Cached: {2}.", 
+                    frame.Timestamp, frame.PreviousTimestamp, frames.Count);
 
                 Monitor.PulseAll(sync);
             }

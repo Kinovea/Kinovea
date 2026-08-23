@@ -25,14 +25,32 @@ namespace Kinovea.Video
 {
     public class VideoFrame
     {
-        public long Timestamp;
-        public Bitmap Image;
+        /// <summary>
+        /// The video frame bitmap (scaled, rotated, stabilized, etc.).
+        /// </summary>
+        public Bitmap Image { get; }
         
-        public VideoFrame(){}
-        public VideoFrame(long _ts, Bitmap _img)
+        /// <summary>
+        /// The timestamp of this frame.
+        /// </summary>
+        public long Timestamp { get; }
+        
+        /// <summary>
+        /// The timestamp of the video frame immediately preceding 
+        /// this frame in the media.
+        /// </summary>
+        public long PreviousTimestamp { get; }
+        
+        public VideoFrame(Bitmap image, long timestamp, long previousTimestamp)
         {
-            Timestamp = _ts;
-            Image = _img;
+            Image = image;
+            Timestamp = timestamp;
+            PreviousTimestamp = previousTimestamp;
+        }
+
+        public static VideoFrame Empty()
+        {
+            return new VideoFrame(null, -1, -1);
         }
     }
 }

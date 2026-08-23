@@ -69,7 +69,7 @@ namespace Kinovea.Video.SVG
         private IFrameGenerator generator;
         private bool initialized;
         private bool firstFrame = true;
-        private VideoFrame current = new VideoFrame();
+        private VideoFrame current = VideoFrame.Empty();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
         private VideoGeometry videoGeometry = new VideoGeometry();
@@ -239,11 +239,12 @@ namespace Kinovea.Video.SVG
             if (current != null && current.Image != null)
                 generator.DisposePrevious(current.Image);
 
-            Bitmap bmp = generator.Generate(timestamp, outputSize);
-            current.Image = bmp;
-            current.Timestamp = timestamp;
+            long avgtspf = (long)videoInfo.AverageTimeStampsPerFrame;
 
-            bool hasMore = workingZone.Contains(timestamp + (long)videoInfo.AverageTimeStampsPerFrame);
+            Bitmap bmp = generator.Generate(timestamp, outputSize);
+            current = new VideoFrame(bmp, timestamp, timestamp - avgtspf);
+
+            bool hasMore = workingZone.Contains(timestamp + avgtspf);
             return hasMore;
         }
         #endregion

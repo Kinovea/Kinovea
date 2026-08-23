@@ -74,7 +74,7 @@ namespace Kinovea.Video.Bitmap
         private IFrameGenerator generator;
         private bool initialized;
         private bool firstFrame = true;
-        private VideoFrame current = new VideoFrame();
+        private VideoFrame current = VideoFrame.Empty();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
         private VideoGeometry videoGeometry = new VideoGeometry();
@@ -251,11 +251,12 @@ namespace Kinovea.Video.Bitmap
             if(current != null && current.Image != null)
                 generator.DisposePrevious(current.Image);
 
-            SystemBitmap bmp = generator.Generate(timestamp);
-            current.Image = bmp;
-            current.Timestamp = timestamp;
+            long avgtspf = (long)videoInfo.AverageTimeStampsPerFrame;
 
-            bool hasMore = workingZone.Contains(timestamp + (long)videoInfo.AverageTimeStampsPerFrame);
+            SystemBitmap bmp = generator.Generate(timestamp);
+            current = new VideoFrame(bmp, timestamp, timestamp - avgtspf);
+
+            bool hasMore = workingZone.Contains(timestamp + avgtspf);
             return hasMore;
         }
         #endregion

@@ -221,12 +221,16 @@ namespace Kinovea.Video.GIF
         private void LoadCache(FrameDimension dimension)
         {
             Cache.Clear();
+            long previousTimestamp = -1;
             for(int i = 0; i<count; i++)
             {
-                VideoFrame vf = new VideoFrame();
-                vf.Timestamp = (long)Math.Round(i * videoInfo.AverageTimeStampsPerFrame);
-                vf.Image = GetFrameAt(dimension, i);
+                Bitmap image = GetFrameAt(dimension, i);
+                long timestamp = (long)Math.Round(i * videoInfo.AverageTimeStampsPerFrame);
+
+                VideoFrame vf = new VideoFrame(image, timestamp, previousTimestamp);
                 Cache.Add(vf);
+
+                previousTimestamp = timestamp;
             }
         }
         private Bitmap GetFrameAt(FrameDimension dimension, int target)
