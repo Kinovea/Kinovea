@@ -71,13 +71,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Configure the muxer, stream and codec.
         /// Configure the scaling context for conversion from source to target pixel format.
         /// Write the file header.
-        RecordingResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation);
+        RecordingResult OpenSavingContext(RecordingSettings^ recordingSettings);
         
         /// Close the saving context and free any allocated resources.
         RecordingResult CloseSavingContext(bool _bEncodingSuccess);
                        
         /// Encode and write one frame to the file.
-        RecordingResult SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
+        RecordingResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
     private:
         static int GreatestCommonDenominator(int a, int b);
@@ -85,7 +85,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         double ComputeBitrate(Size outputSize, double frameInterval);
         
         /// Configure the codec with default parameters.
-        bool SetupEncoder(SavingContext^ _SavingContext, Kinovea::Services::ImageFormat _imageFormat);
+        bool SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat, int quality);
 
         /// Wrap the incoming buffer in a packet and writes it to the file.
         /// Used when the incoming buffer is already in the target format.

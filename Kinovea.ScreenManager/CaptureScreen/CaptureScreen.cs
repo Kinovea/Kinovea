@@ -1960,20 +1960,29 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Manual scheduled recording: saving delay buffer content.");
 
             MJPEGWriter writer = new MJPEGWriter();
-            VideoInfo info = new VideoInfo();
-            info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
             double framerate = GetDelayBufferFramerate();
             if (framerate == 0)
                 framerate = 25;
 
             double interval = 1000.0 / framerate;
-            string formatString = FilesystemHelper.GetFormatStringCapture(uncompressed);
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
-            RecordingResult openResult = writer.OpenSavingContext(path, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval, ImageRotation);
 
+            RecordingSettings settings = new RecordingSettings();
+            settings.FilePath = path;
+            settings.ImageSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
+            settings.Quality = 2;
+            settings.ImageFormat = imageDescriptor.Format;
+            settings.Uncompressed = uncompressed;
+            settings.FrameInterval = interval;
+            settings.FileFrameInterval = fileInterval;
+            settings.Rotation = ImageRotation;
+
+            RecordingResult openResult = writer.OpenSavingContext(settings);
             if (openResult != RecordingResult.Success)
+            {
                 return;
+            }
 
             // Find the section of the buffer we need to save.
             int minAge = 0;

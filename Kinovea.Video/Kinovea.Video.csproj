@@ -186,8 +186,8 @@
     <Compile Include="Caching\PreBuffer.cs" />
     <Compile Include="OpenVideoResult.cs" />
     <Compile Include="RecordingResult.cs" />
-    <Compile Include="SaveResult.cs" />
     <Compile Include="FitHelper.cs" />
+    <Compile Include="RecordingSettings.cs" />
     <Compile Include="VideoExportResult.cs" />
     <Compile Include="VideoGeometry\VideoGeometry.cs" />
     <Compile Include="VideoGeometry\VideoGeometryRequest.cs" />

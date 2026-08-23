@@ -47,7 +47,7 @@ MJPEGWriter::!MJPEGWriter()
 /// MJPEGWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation)
+RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
 {
     //---------------------------------------------------------------------------------------------------
     // Set up the saving context.
@@ -63,31 +63,22 @@ RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _inf
         delete m_SavingContext;
     
     m_SavingContext = gcnew SavingContext();
-
+    m_SavingContext->outputSize = settings->ImageSize;
     
-
-    // Apparently not all output size are ok, some crash sws_scale.
-    // We will keep the input size and use the input pixel aspect ratio for maximum compatibility.
-    // [2011-08-21] - Check if the issue with output size is related to odd number of rows.
-    if(!_info.OriginalSize.IsEmpty)
-        m_SavingContext->outputSize = _info.OriginalSize;
+    if (settings->FileFrameInterval > 0)
+    {
+        m_SavingContext->fFramesInterval = settings->FileFrameInterval;
+    }
     
-    if(_info.PixelAspectRatio > 0)
-        m_SavingContext->fPixelAspectRatio = _info.PixelAspectRatio;
-
-    if(_fFileFramesInterval > 0) 
-        m_SavingContext->fFramesInterval = _fFileFramesInterval;
-    
-    m_SavingContext->iBitrate = (int)ComputeBitrate(m_SavingContext->outputSize, m_SavingContext->fFramesInterval);
-    
-    m_SavingContext->uncompressed = _uncompressed;
+    m_SavingContext->uncompressed = settings->Uncompressed;
 
     do
     {
         // Muxer selection.
 
         // StringToHGlobalAnsi is harmless here as we know the format string is ASCII.
-        char* pFormatString = static_cast<char*>(Marshal::StringToHGlobalAnsi(_formatString).ToPointer());
+        String^ formatString = FilesystemHelper::GetFormatStringCapture(settings->Uncompressed);
+        char* pFormatString = static_cast<char*>(Marshal::StringToHGlobalAnsi(formatString).ToPointer());
         const AVOutputFormat* format = av_guess_format(pFormatString, nullptr, nullptr);
         if (format == nullptr) 
         {
@@ -118,7 +109,7 @@ RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _inf
         //-----------------------
 
         // Find specific encoder.
-        AVCodecID codecId = _uncompressed ? AV_CODEC_ID_RAWVIDEO : AV_CODEC_ID_MJPEG;
+        AVCodecID codecId = settings->Uncompressed ? AV_CODEC_ID_RAWVIDEO : AV_CODEC_ID_MJPEG;
         if ((m_SavingContext->pOutputCodec = avcodec_find_encoder(codecId)) == nullptr)
         {
             result = RecordingResult::EncoderNotFound;
@@ -137,7 +128,7 @@ RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _inf
 
         m_SavingContext->pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
 
-        switch (rotation)
+        switch (settings->Rotation)
         {
         case ImageRotation::Rotate90:
             av_dict_set(&m_SavingContext->pOutputVideoStream->metadata, "rotate", "90", 0);
@@ -154,7 +145,7 @@ RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _inf
         }
         
         // Configure encoder.
-        if(!SetupEncoder(m_SavingContext, _imageFormat))
+        if(!SetupEncoder(m_SavingContext, settings->ImageFormat, settings->Quality))
         {
             result = RecordingResult::EncoderParametersNotSet;
             log->Error("Encoder parameters not set");
@@ -188,9 +179,9 @@ RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _inf
 
         // Open the file.
         // Temporary pinned UTF-8 buffer.
-        int byteCount = System::Text::Encoding::UTF8->GetByteCount(_filePath);
+        int byteCount = System::Text::Encoding::UTF8->GetByteCount(settings->FilePath);
         array<Byte>^ utf8Path = gcnew array<Byte>(byteCount + 1);
-        Encoding::UTF8->GetBytes(_filePath, 0, _filePath->Length, utf8Path, 0);
+        Encoding::UTF8->GetBytes(settings->FilePath, 0, settings->FilePath->Length, utf8Path, 0);
         pin_ptr<Byte> pinnedPath = &utf8Path[0];
         const char* pszFilePath = reinterpret_cast<const char*>(pinnedPath);
         averror = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, pszFilePath, AVIO_FLAG_WRITE);
@@ -234,10 +225,14 @@ RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _inf
         }
 
         m_SavingContext->sourceFormat = AV_PIX_FMT_BGRA;
-        if (_imageFormat == Kinovea::Services::ImageFormat::RGB24)
+        if (settings->ImageFormat == ImageFormat::RGB24)
+        {
             m_SavingContext->sourceFormat = AV_PIX_FMT_BGR24;
-        else if (_imageFormat == Kinovea::Services::ImageFormat::Y800)
+        }
+        else if (settings->ImageFormat == ImageFormat::Y800)
+        {
             m_SavingContext->sourceFormat = AV_PIX_FMT_GRAY8;
+        }
 
         // Source frame initially has no storage of its own, 
         // its data pointers will be attached to the byte array later.
@@ -397,7 +392,7 @@ double MJPEGWriter::ComputeBitrate(Size outputSize, double frameInterval)
 }
 
 
-bool MJPEGWriter::SetupEncoder(SavingContext^ savingCtx, Kinovea::Services::ImageFormat imgFormat)
+bool MJPEGWriter::SetupEncoder(SavingContext^ savingCtx, ImageFormat imgFormat, int quality)
 {
     //----------------------------------------
     // Parameters for encoding.
@@ -460,31 +455,11 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ savingCtx, Kinovea::Services::Imag
     else
         savingCtx->pOutputCodecContext->pix_fmt = AV_PIX_FMT_YUV420P; 	
     
-    // Frame rate emulation. If not zero, the lower layer (i.e. format handler) has to read frames at native frame rate.
-    // src: ?
-    // ->rate_emu
-
-    //-------------------------------------------------------------
-    // Encoding quality.
-    // 
-    // Old parameters up to 0.8.21 :
-    // CODEC_FLAG_QSCALE : not set.
-    // qcompress = 0.5, qblur = 0.5, qmin = 2, qmax = 16, max_qdiff = 3, mpeg_quant = 0.
-    //
-    // These parameters adjust "qscale" which is the degree of quantization during image encoding.
-    // The higher quantization, the more compression, the more artifacts, and the smaller filesize.
-    // If QSCALE flag is not set, the encoder will use up to qmax for the actual qscale parameter.
-    //
-    // When encoding for entertainment there might be a tradeoff between size and quality, 
-    // but in sport analysis we are heavy users of frame by frame on highly dynamic scenes, 
-    // These highly dynamic scenes are exactly what the encoding algorithms "optimize" out, 
-    // so if we use "entertainment" parameters we end up with artefacts exactly at the worst moment.
-    // In order to retain full details in dynamic scenes we must use the minimum quantization possible, at the expense of file size.
-    //-------------------------------------------------------------
     
-    savingCtx->pOutputCodecContext->flags |= AV_CODEC_FLAG_QSCALE;	// Constant Quantization. (this means the bitrate parameter won't be used).
-    savingCtx->pOutputCodecContext->qmin = 1;						// minimum quantizer (def:2)
-    savingCtx->pOutputCodecContext->qmax = 1;						// maximum quantizer (def:31) (When using QSCALE flag only qmin is used anyway.)
+    // Encoding quality.
+    savingCtx->pOutputCodecContext->flags |= AV_CODEC_FLAG_QSCALE;
+    savingCtx->pOutputCodecContext->qmin = quality;
+    savingCtx->pOutputCodecContext->qmax = quality;
     
     // Sample Aspect Ratio.
     
