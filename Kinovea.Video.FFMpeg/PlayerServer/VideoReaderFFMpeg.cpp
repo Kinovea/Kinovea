@@ -173,7 +173,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
     {
         int64_t ts = targets[i];
         
-        ReadResult read = ReadThumbnail(ts);
+        ReadResult read = ReadFrameThumbnail(ts);
 
         //log->DebugFormat("After ReadFrame {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
 
@@ -630,7 +630,7 @@ bool VideoReaderFFMpeg::MoveNext(bool decodeIfNecessary)
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
         mStopwatch->Restart();
-        ReadResult res = ReadFrame(-1, 1);
+        ReadResult res = ReadFrameNext();
         log->DebugFormat("Synchronous MoveNext(): {0} ms.", mStopwatch->ElapsedMilliseconds);
         moved = res == ReadResult::Success;
     }
@@ -698,7 +698,7 @@ bool VideoReaderFFMpeg::MoveTo(int64_t target)
         }
 
         // The cache is possibly sparse, get whatever is closest.
-        log->DebugFormat("Player requests presentation of [{0}].", target);
+        log->DebugFormat("Player requests presentation of [~{0}].", target);
         mPreBuffer->AcquireClosest(target);
         return true;
     }
@@ -1413,8 +1413,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
             break;
         }
 
-        // Read the next frame.
-        res = ReadFrame(-1, 1);
+        res = ReadFrameNext();
         read++;
 
         //mLoopWatcher->LoopEnd();
@@ -1442,7 +1441,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 #pragma region Frame level reading/decoding/scaling/converting/storing
 
 
-ReadResult VideoReaderFFMpeg::ReadThumbnail(int64_t targetTimestamp)
+ReadResult VideoReaderFFMpeg::ReadFrameThumbnail(int64_t targetTimestamp)
 {
     if (!mIsLoaded || 
         mCachingMode != VideoDecodingMode::OnDemand || 
@@ -1490,6 +1489,56 @@ ReadResult VideoReaderFFMpeg::ReadThumbnail(int64_t targetTimestamp)
     mDecodedTimestamp = frame->best_effort_timestamp;
 
     result = ConvertAndStoreFrame(frame, true);
+    av_frame_free(&frame);
+    return result;
+}
+
+
+ReadResult VideoReaderFFMpeg::ReadFrameNext()
+{
+    if (!mIsLoaded ||
+        mCachingMode == VideoDecodingMode::NotInitialized ||
+        mFrameContainer == nullptr ||
+        mVideoGeometry == nullptr ||
+        mVideoGeometry->OutputSize.IsEmpty)
+    {
+        return ReadResult::NotReady;
+    }
+
+    ReadResult result = ReadResult::UnknownError;
+
+    // Get the next frame available in the decoder.
+    mLoopWatcher->LoopStart();
+    AVFrame* frame = av_frame_alloc();
+    result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+    mLoopWatcher->LoopEnd();
+
+    if (HasJobChanged())
+    {
+        // FIXME: we should keep the decoded frame as pending here.
+        // The next job might be able to just restart from there.
+        log->DebugFormat("ReadFrame. Job changed during decoding. Abandoning.");
+        av_frame_free(&frame);
+        return ReadResult::NewJob;
+    }
+
+    if (result != ReadResult::Success)
+    {
+        av_frame_free(&frame);
+        return result;
+    }
+
+    mDecodedTimestamp = frame->best_effort_timestamp;
+
+    //log->DebugFormat("Decoded next frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
+
+    if (!ShouldStoreFrame())
+    {
+        av_frame_free(&frame);
+        return ReadResult::Success;
+    }
+    
+    result = ConvertAndStoreFrame(frame, false);
     av_frame_free(&frame);
     return result;
 }
@@ -2697,7 +2746,7 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
         // If the cache is full this will wait in PreBuffer.Add() until the cache evicts a frame.
         // This eviction will happen when the UI thread moves to a different 
         // frame in PreBuffer.AcquireClosest().
-        res = ReadFrame(-1, 1);
+        res = ReadFrameNext();
 
         // Check if we were cancelled while waiting in Add().
         if (canceller->CancellationPending)
@@ -3002,7 +3051,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         initAction, 
         resumeDecoding);
 
-    log->DebugFormat("GetDecodingJobPlan: {0}.", plan);
+    log->DebugFormat("{0}.", plan);
     return plan;
 
 

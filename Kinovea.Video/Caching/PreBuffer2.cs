@@ -108,7 +108,7 @@ namespace Kinovea.Video
                 {
                     if (frames.ContainsKey(frame.Timestamp))
                     {
-                        log.DebugFormat("Frame [{0}] is already in cache. Cached: {1}.", frame.Timestamp, frames.Count);
+                        log.DebugFormat("Duplicate add request for [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
                         return CacheAddResult.Duplicate;
                     }
 
@@ -123,12 +123,12 @@ namespace Kinovea.Video
                     }
 
                     // Keep waiting.
-                    log.DebugFormat("Prebuffer waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
+                    log.DebugFormat("Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
                     Monitor.Wait(sync);
                 }
 
                 frames.Add(frame.Timestamp, frame);
-                log.DebugFormat("Added frame [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
+                log.DebugFormat("Added frame [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
 
                 Monitor.PulseAll(sync);
             }
@@ -137,7 +137,8 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Unblock any thread waiting in Add().
+        /// Temporarily close the cache for business.
+        /// Unblock any thread waiting in Add(). 
         /// </summary>
         public void InterruptAdd()
         {
@@ -149,6 +150,9 @@ namespace Kinovea.Video
             }
         }
 
+        /// <summary>
+        /// Reopen the cache for business.
+        /// </summary>
         public void ResetInterruptAdd()
         {
             lock (sync)
@@ -156,16 +160,6 @@ namespace Kinovea.Video
                 interruptAdd = false;
             }
         }
-
-        public void WakeWaiters()
-        {
-            lock (sync)
-            {
-                Monitor.PulseAll(sync);
-            }
-        }
-
-
 
 
         /// <summary>

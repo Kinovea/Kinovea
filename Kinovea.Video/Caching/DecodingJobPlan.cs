@@ -52,7 +52,7 @@ namespace Kinovea.Video
 
         public override string ToString()
         {
-            return string.Format("DecodingJobPlan. RequestedTimestamp: [~{0}]. TargetTimestamp: [{1}]. TargetIsResolved:{2}. DecoderInitAction: {3}, ResumeDecoding: {4}.",
+            return string.Format("DecodingJobPlan: RequestedTimestamp: [~{0}]. TargetTimestamp: [{1}]. TargetIsResolved:{2}. DecoderInitAction: {3}, ResumeDecoding: {4}.",
                 RequestedTimestamp, TargetTimestamp, TargetIsResolved, DecoderInitAction, ResumeDecoding);
         }
     }
