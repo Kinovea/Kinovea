@@ -520,9 +520,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
         
         /// Returns true if the pending frame is a continuation of the prebuffer.
-        bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd);
+        bool IsPendingNext(int64_t cacheEnd);
 
-
+        /// Compare timestamps with a tolerance of half a frame.
+        /// Used to compare request timestamps with media timestamps.
+        bool TimestampsEqual(int64_t ts1, int64_t ts2);
         
 
         //-------------------

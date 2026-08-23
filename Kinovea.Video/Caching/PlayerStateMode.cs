@@ -31,5 +31,7 @@ namespace Kinovea.Video
         /// The player requests the very previous frame.
         /// </summary>
         StepBackward,
+
+        RefreshInPlace,
     }
 }

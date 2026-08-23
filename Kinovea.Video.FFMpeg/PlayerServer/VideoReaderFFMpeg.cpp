@@ -1580,7 +1580,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
     if (res < 0)
     {
         LogFFMpegError("SeekTo", res);
-        log->ErrorFormat("Error trying to seek to: [{1}]", targetTimestamp);
+        log->ErrorFormat("Error trying to seek to: [~{1}]", targetTimestamp);
         return ReadResult::UnknownError;
     }
 
@@ -1613,7 +1613,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
     // possibly from cut-off stream or corrupted file.
     if (frame->best_effort_timestamp > targetTimestamp)
     {
-        log->WarnFormat("Seek({0}) landed at {1}. Frame type: {2}",
+        log->WarnFormat("Seek to [~{0}] landed at [{1}]. Frame type: {2}",
             targetTimestamp,
             frame->best_effort_timestamp,
             GetFrameTypeString(frame->pict_type));
@@ -1655,10 +1655,18 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
         //LogFrameInfo(frame);
         framesDecoded++;
         mDecodedTimestamp = frame->best_effort_timestamp;
-        
-        if (frame->best_effort_timestamp >= targetTimestamp)
+
+        if (framesDecoded % 10 == 0)
         {
-            log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
+            log->DebugFormat("Seeking towards [~{0}]. Current [{1}]. Decoded {2} frames.", 
+                targetTimestamp, mDecodedTimestamp, framesDecoded);
+        }
+
+        if (mDecodedTimestamp >= targetTimestamp)
+        {
+            log->DebugFormat("Found seek target. [~{0}] -> [{1}]. Decoded {2} frames.", 
+                targetTimestamp, mDecodedTimestamp, framesDecoded);
+
             result = ConvertAndStoreFrame(frame, false);
             av_frame_free(&frame);
             break;
@@ -2910,7 +2918,7 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
     // Runs in the prebuffer thread.
     //-------------------------------
 
-    log->DebugFormat("InitDecodingJob. Initializing for job {0}.", mWorkingPlayerState);
+    log->DebugFormat("InitDecodingJob. Initializing for job {0}", mWorkingPlayerState);
     log->DebugFormat("InitDecodingJob. Last decoded: [{0}]. Last stored: [{1}].", mDecodedTimestamp, mCurrentTimestamp);
 
     // By this point we have abandonned all work from the old job,
@@ -3010,7 +3018,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         else
         {
             // Check if target is next.
-            if (targetTimestamp == mPendingFrame->Timestamp)
+            if (TimestampsEqual(targetTimestamp, mPendingFrame->Timestamp))
             {
                 plan->DecoderInitAction = DecoderInitAction::None;
                 plan->ResubmitPending = true;
@@ -3043,227 +3051,52 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
             plan->ResubmitPending = false;
             return plan;
         }
-
+        else
+        {
+            // TODO: this should be advance, not seek.
+            log->DebugFormat("Decoder behind acquired target: seeking.");
+        }
     }
     else
     {
         // For now assume sparse jobs.
-
-        if (targetTimestamp < cacheStart)
+        bool decodeOnTarget = TimestampsEqual(mDecodedTimestamp, targetTimestamp);
+        if (decodeOnTarget)
         {
-
+            // Target was decoded while the job was prepared.
+            plan->DecoderInitAction = DecoderInitAction::None;
+            plan->ResubmitPending = false;
+            return plan;
         }
-        else if (targetTimestamp > cacheEnd)
-        {
 
+        bool isStart = TimestampsEqual(targetTimestamp, cacheStart);
+        bool isEnd = TimestampsEqual(targetTimestamp, cacheEnd);
+
+        if (!isStart && targetTimestamp < cacheStart)
+        {
+            log->DebugFormat("Target before prebuffer cache: seeking.");
+        }
+        else if (!isEnd && targetTimestamp > cacheEnd)
+        {
+            // This could be advance or seek depending on how far ahead the target is.
+
+            log->DebugFormat("Target after prebuffer cache: seeking.");
+        }
+        else if (mDecodedTimestamp > targetTimestamp)
+        {
+            // TODO: this should be more restricted in the future for dense jobs.
+            plan->DecoderInitAction = DecoderInitAction::None;
+            plan->ResubmitPending = false;
+            return plan;
         }
         else
         {
-            if (mDecodedTimestamp >= targetTimestamp)
-            {
-                plan->DecoderInitAction = DecoderInitAction::None;
-                plan->ResubmitPending = false;
-                return plan;
-            }
+            // This should be advance, not seek.
+            log->DebugFormat("Target within prebuffer cache bounds but decoder behind target: seeking.");
         }
-
     }
 
-
-    // 1. CanUsePending() -> is the pending frame a continuation of the cache.
-    // If yes, and cache is full: job is done.
-    // If yes and cache is not full: re-submit the pending frame and resume decoding to continue until full.
-    // If no but exists: dispose.
-    
-    
-    // CanContinueDense()
-    // CanContinueSparse()
-    // CanReuseNearbyGOP()
-
     return plan;
-
-
-    //log->DebugFormat("BeginJob {0}. Last decoded: [{1}]. Last stored: [{2}].",
-    //    state, mDecodedTimestamp, mCurrentTimestamp);
-
-    //mPreBuffer->Print();
-
-
-    
-
-    //int64_t target = state->ReferenceTimestamp;
-    //int64_t deltaDecoded = target - mDecodedTimestamp;
-    //int64_t deltaStored = target - mCurrentTimestamp;
-
-    //if (acquired)
-    //{
-    //    deltaDecoded = acquiredTimestamp - mDecodedTimestamp;
-    //    deltaStored = acquiredTimestamp - mCurrentTimestamp;
-    //}
-
-
-    //
-
-    //ReadResult res;
-    //switch (state->Mode)
-    //{
-    //case PlayerStateMode::Playback:
-    //{
-    //    if (mPreBuffer->Contains(target))
-    //    {
-    //        // Continue decoding from wherever we are.
-    //        log->DebugFormat("BeginJob {0}, target is in cache. Continue decoding from [{1}].",
-    //            state, mCurrentTimestamp);
-    //    }
-    //    else
-    //    {
-    //        double lag = (target - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
-
-    //        if (lag > 0 && lag < mSeekAheadLagThreshold)
-    //        {
-    //            log->DebugFormat("BeginJob {0}, target is slightly ahead. Continue decoding from [{1}]. Lag: {2:0.000}s.", 
-    //                state, mCurrentTimestamp, lag);
-
-    //            // TODO: Decode until we get there.
-    //        }
-    //        else if (lag > 0)
-    //        {
-    //            log->WarnFormat("BeginJob {0}, target is far ahead. Seek to [{1}]. Lag: {2:0.000}s.",
-    //                state, target, lag);
-
-    //            res = ReadFrameSeek(target, 1);
-    //        }
-    //        else
-    //        {
-    //            log->WarnFormat("BeginJob {0}, target is behind. Seek to [{1}]. Lag: {2:0.000}s.",
-    //                state, target, lag);
-
-    //            res = ReadFrameSeek(target, 1);
-    //        }
-    //    }
-
-    //    break;
-    //}
-    //case PlayerStateMode::Timestamp:
-    //{
-    //    if (acquired)
-    //    {
-    //        if (cacheFull)
-    //        {
-    //            if (mPendingFrame != nullptr)
-    //            {
-    //                // Acquired + cache full + pending frame:
-    //                // We have already processed all the work to do for this job.
-    //                // 
-    //                // Example: 
-    //                // - file opens, cache fills, blocked in Add().
-    //                // - user advances to frame [1]
-    //                // - we are still in the retention window, nothing to evict.
-    //                // - The Add() is interrupted, the frame is moved to pending.
-    //                // - We arrive here, the target is in cache, the cache is full, we still 
-    //                // have the pending frame… there is nothing more we can do.
-    //                // It doesn't make sense to re-submit the frame it will just block again,
-    //                // and we don't need to restart decoding or seek.
-    //                // When the user moves past the retention window, starts playback or 
-    //                // moves to a completely different frame we'll get a new job.
-
-    //                // Should we check that this pending frame is actually the 
-    //                // next frame after the acquired frame ?
-    //                log->DebugFormat("BeginJob: target is in cache, cache is full and we have the next frame pending. No more work to do.");
-
-    //                return ReadResult::NoMoreWork;
-    //            }
-    //            else
-    //            {
-    //                // cache is full but we don't have a pending frame.
-    //                // FIXME:
-    //                // Maybe we realized there was a new job between the decode and the store?
-    //                // If we don't convert the decoded image and re-submit to the cache we'll lose it.
-
-    //                log->DebugFormat("BeginJob: target is in cache, cache is full, no pending frame. No more work to do.");
-
-    //                return ReadResult::NoMoreWork;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (mPendingFrame != nullptr)
-    //            {
-    //                // Acquired + cache not full + pending frame:
-    //                // Re-submit and continue decoding normally.
-
-    //                // FIXME: this is only true if the decoder is right after the end of the dense section.
-
-    //                log->DebugFormat("BeginJob: target is in cache, cache is not full and we have the next frame pending. Re-submitting the pending frame.");
-    //                
-    //                mPreBuffer->Add(mPendingFrame);
-    //                mPendingFrame = nullptr;
-    //                
-    //                return ReadResult::Success;
-    //            }
-    //            else
-    //            {
-    //                // acquired, cache not full, no pending frame.
-    //                log->DebugFormat("BeginJob: target is in cache, cache is not full and we have no pending frame. Continue decoding.");
-
-
-
-
-
-    //            }
-    //        }
-    //    }
-    //    else
-    //    {
-    //        // Check if the target is ahead or behind the current decoding position.
-
-    //        double lag = () / mVideoInfo.AverageTimeStampsPerSeconds;
-
-    //        if (lag > 0 && lag < mSeekAheadLagThreshold)
-    //        {
-    //            log->DebugFormat("BeginJob {0}, target is slightly ahead. Continue decoding from [{1}]. Lag: {2:0.000}s.", 
-    //                state, mCurrentTimestamp, lag);
-
-    //            // TODO: Decode until we get there.
-
-    //        }
-    //        else if (lag > 0)
-    //        {
-    //            log->WarnFormat("BeginJob {0}, target is far ahead. Seek to [{1}]. Lag: {2:0.000}s.", 
-    //                state, target, lag);
-
-    //            res = ReadFrameSeek(target, 1);
-    //        }
-    //        else
-    //        {
-    //            log->WarnFormat("BeginJob {0}, target is behind. Seek to [{1}]. Lag: {2:0.000}s.",
-    //                state, target, lag);
-
-    //            res = ReadFrameSeek(target, 1);
-    //        }
-    //    }
-
-    //    break;
-    //}
-    //case PlayerStateMode::StepForward:
-    //{
-    //    // Check if we already have the frame in cache ?
-    //    // In any case we need to continue decoding.
-    //    //res = ReadFrameSeek(state->ReferenceTimestamp, 1);
-    //    break;
-    //}
-    //case PlayerStateMode::StepBackward:
-    //{
-    //    // Check if we already have the frame.
-    //}
-    //}
-
-
-    //// In theory at this point we should have the frame in cache.
-    //// Either it was already there or we decoded it or seeked to it.
-    //// FIXME: this will be true only when we fix the functions above that decode but don't seek.
-    //// TODO: report to the player.
-
 }
 
 bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd)
@@ -3288,6 +3121,14 @@ bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd)
 
     return false;
 }
+
+bool VideoReaderFFMpeg::TimestampsEqual(int64_t ts1, int64_t ts2)
+{
+    double tolerance = mVideoInfo.AverageTimeStampsPerFrame / 2.0;
+    return Math::Abs(ts1 - ts2) <= tolerance;
+}
+
+
 
 bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
 {
@@ -3318,41 +3159,52 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
     else if (plan->DecoderInitAction == DecoderInitAction::None)
     {
         // Do not move, the decoder is already in the right spot.
+        if (!plan->ResubmitPending || mPendingFrame == nullptr)
+        {
+
+            // Target may have been decoded/stored while the job was in preparation.
+            if (TimestampsEqual(mCurrentTimestamp, plan->TargetTimestamp))
+            {
+                mPreBuffer->AcquireClosest(plan->TargetTimestamp);
+                return true;
+            }
+
+            return false;
+        }
+
+        // We have a pending frame.
+        // Normally this only happens when the target was acquired or 
+        // the pending frame was itself the target.
         // This may immediately block in add() again, but that's ok.
         // We'll just get woken up when the player moves forward or when a new job arrives.
-        if (plan->ResubmitPending && mPendingFrame != nullptr)
+        CacheAddResult result = mPreBuffer->Add(mPendingFrame);
+
+        if (result == CacheAddResult::Added)
         {
-            CacheAddResult result = mPreBuffer->Add(mPendingFrame);
+            mCurrentTimestamp = mPendingFrame->Timestamp;
+            mPendingFrame = nullptr;
 
-            if (result == CacheAddResult::Added)
+            if (TimestampsEqual(mCurrentTimestamp, plan->TargetTimestamp))
             {
-                mCurrentTimestamp = mPendingFrame->Timestamp;
-                mPendingFrame = nullptr;
-
-                double tolerance = mVideoInfo.AverageTimeStampsPerFrame / 2.0;
-                if (Math::Abs(mCurrentTimestamp - plan->TargetTimestamp) <= tolerance)
-                {
-                    // The pending frame was the requested frame.
-                    // This can happen when we step forward fast enough.
-                    // The new request can come while we are decoding/storing it.
-                    mPreBuffer->AcquireClosest(plan->TargetTimestamp);
-                    return true;
-                }
-
+                // The pending frame was the requested frame.
+                // This can happen when we step forward fast enough.
+                // The new request can come while we are decoding/storing it.
+                mPreBuffer->AcquireClosest(plan->TargetTimestamp);
+                return true;
             }
-            else if (result == CacheAddResult::Duplicate)
-            {
-                DisposeFrame(mPendingFrame);
-                mPendingFrame = nullptr;
-                return false;
-            }
-            else if (result == CacheAddResult::Interrupted)
-            {
-                // Interrupted.
-                // Then the frame stays in pending state.
-                log->DebugFormat("ExecuteDecodingJobPlan: [{0}] is still pending.", mPendingFrame->Timestamp);
-                return false;
-            }
+        }
+        else if (result == CacheAddResult::Duplicate)
+        {
+            DisposeFrame(mPendingFrame);
+            mPendingFrame = nullptr;
+            return false;
+        }
+        else if (result == CacheAddResult::Interrupted)
+        {
+            // Interrupted.
+            // Then the frame stays in pending state.
+            log->DebugFormat("ExecuteDecodingJobPlan: [{0}] is still pending.", mPendingFrame->Timestamp);
+            return false;
         }
 
         return false;
