@@ -173,10 +173,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
     {
         int64_t ts = targets[i];
         
-        // Always force a seek even if the target is 0.
-        // This improves perfs as some decoders have buffering causing slow down when just asking 
-        // for frames until we get one, compared to forcing a seek to the nearest keyframe.
-        ReadResult read = ReadFrame(ts, 1);
+        ReadResult read = ReadThumbnail(ts);
 
         //log->DebugFormat("After ReadFrame {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
 
@@ -521,7 +518,10 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         false,
         0);
 
-    LogVideoGeometry(mVideoGeometry);
+    if (!forSummary)
+    {
+        LogVideoGeometry(mVideoGeometry);
+    }
 
     return OpenVideoResult::Success;
 }
@@ -1442,21 +1442,73 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 #pragma region Frame level reading/decoding/scaling/converting/storing
 
 
+ReadResult VideoReaderFFMpeg::ReadThumbnail(int64_t targetTimestamp)
+{
+    if (!mIsLoaded || 
+        mCachingMode != VideoDecodingMode::OnDemand || 
+        mFrameContainer == nullptr ||
+        mVideoGeometry == nullptr)
+    {
+        return ReadResult::NotReady;
+    }
+
+    // Check where the seek is going to land.
+    // If it's in the same GOP as the previous thumbnail we can skip it.
+    // This only works on files with a frame index, keep the duplicate if there is no index.
+    const AVIndexEntry* entry = avformat_index_get_entry_from_timestamp(mFormatCtx->streams[mVideoStreamIndex], targetTimestamp, AVSEEK_FLAG_BACKWARD);
+    if (entry != nullptr && entry->timestamp != AV_NOPTS_VALUE)
+    {
+        if (entry->timestamp == mSummaryPreviousSeek)
+        {
+            log->DebugFormat("Skipping thumbnail request for [~{0}], same seek result: [{1}].", targetTimestamp, mSummaryPreviousSeek);
+            return ReadResult::Same;
+        }
+
+        mSummaryPreviousSeek = entry->timestamp;
+    }
+
+    // Always seek even if the target is 0.
+    // This improves perfs as some decoders have buffering causing slow down when just asking 
+    // for frames until we get the first one, compared to forcing a seek to the nearest keyframe.
+
+    int res = SeekTo(targetTimestamp);
+    if (res < 0)
+    {
+        LogFFMpegError("SeekTo", res);
+        log->ErrorFormat("Error trying to seek to: [{1}]", targetTimestamp);
+    }
+
+    // Get the first frame after the seek.
+    AVFrame* frame = av_frame_alloc();
+    ReadResult result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+    if (result != ReadResult::Success)
+    {
+        av_frame_free(&frame);
+        return result;
+    }
+
+    mDecodedTimestamp = frame->best_effort_timestamp;
+
+    result = ConvertAndStoreFrame(frame, true);
+    av_frame_free(&frame);
+    return result;
+}
+
+
 ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrameJump)
 {
     mStopwatch->Restart();
 
-    if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized || mFrameContainer == nullptr)
+    if (!mIsLoaded || 
+        mCachingMode == VideoDecodingMode::NotInitialized || 
+        mFrameContainer == nullptr ||
+        mVideoGeometry == nullptr ||
+        mVideoGeometry->OutputSize.IsEmpty)
     {
         return ReadResult::NotReady;
     }
 
-    if (mVideoGeometry == nullptr || mVideoGeometry->OutputSize.IsEmpty)
-    {
-        return ReadResult::NotReady;
-    }
-
-    ReadResult result = ReadResult::Success;
+    ReadResult result = ReadResult::UnknownError;
 
     // This is used for both seeking and relative jump.
     bool seeking = targetTimestamp >= 0;
@@ -1472,24 +1524,6 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
         // Never seek before start.
         targetTimestamp = std::max(targetTimestamp, 0LL);
         seeking = true;
-    }
-
-    if (mIsForSummary)
-    {
-        // Check where the seek is going to land.
-        // If it's in the same GOP as the previous seek we can skip this thumbnail.
-        // This only works on files with a frame index, fallback to decoding if there is no index.
-        const AVIndexEntry* entry = avformat_index_get_entry_from_timestamp(mFormatCtx->streams[mVideoStreamIndex], targetTimestamp, AVSEEK_FLAG_BACKWARD);
-        if (entry != nullptr && entry->timestamp != AV_NOPTS_VALUE)
-        {
-            if (entry->timestamp == mSummaryPreviousSeek)
-            {
-                log->DebugFormat("Skipping thumbnail at {0} because it's in the same GOP as previous seek at {1}.", targetTimestamp, mSummaryPreviousSeek);
-                return ReadResult::Same;
-            }
-
-            mSummaryPreviousSeek = entry->timestamp;
-        }
     }
 
     // At this point there are 3 cases.
@@ -1547,7 +1581,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // If seeking landed beyond the target log it but don't fail. 
     // It might happen if the very first packet is not a keyframe, 
     // possibly from cut-off stream or corrupted file.
-    if (!mIsForSummary && seeking && frame->best_effort_timestamp > targetTimestamp)
+    if (seeking && frame->best_effort_timestamp > targetTimestamp)
     {
         log->WarnFormat("Seek({0}) landed at {1}. Frame type: {2}",
             targetTimestamp,
@@ -1560,14 +1594,6 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     mDecodedTimestamp = frame->best_effort_timestamp;
 
     //log->DebugFormat("Decoded frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
-
-    if (mIsForSummary)
-    {
-        // Early exit for thumbnail extraction.
-        result = ConvertAndStoreFrame(frame, true);
-        av_frame_free(&frame);
-        return result;
-    }
 
     // During playback we decode sequentially so the first decode should be the target, 
     // but we might want to skip storing if we are behind the player.

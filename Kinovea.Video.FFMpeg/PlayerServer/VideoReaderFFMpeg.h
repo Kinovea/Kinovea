@@ -366,6 +366,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Seeking/decoding
         //-------------------
 
+        /// Read one frame at the start of the GOP containing the target timestamp.
+        ReadResult ReadThumbnail(int64_t targetTimestamp);
+
+
         /// Read one frame from the video stream and add it to the active frame container.
         /// Seeks backwards if needed.
         /// 
