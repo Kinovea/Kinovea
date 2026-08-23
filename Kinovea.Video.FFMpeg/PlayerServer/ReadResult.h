@@ -31,13 +31,19 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// same thumbnail twice.
         Same,
 
-        /// End of file.
+        /// The decoder reached the end of the file or working zone.
         EOFReached,
 
         /// A newer player state has been detected.
         /// Current workload has been abandoned.
         NewJob,
 
+        /// All the work for the decoding job is done.
+        /// This is somewhat similar to EOF, the only thing to do is 
+        /// wait for a new job to arrive.
+        NoMoreWork,
+
+        /// The entire thread was cancelled.
         ThreadCancelled,
 
         NotReady,

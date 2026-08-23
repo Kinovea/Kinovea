@@ -2921,7 +2921,7 @@ namespace Kinovea.ScreenManager
 
             if (playerState.Mode != PlayerStateMode.Playback || playerState.PlaybackFrameInterval == 0)
             {
-                log.ErrorFormat("Rendering_Invoked called while not playing. Generation: {0}.", playerState.Id);
+                log.ErrorFormat("PresentPlayback called while not playing. Player state id: {0}.", playerState.Id);
                 return;   
             }
 

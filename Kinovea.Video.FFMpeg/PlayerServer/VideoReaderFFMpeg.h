@@ -276,6 +276,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // waiting in cache.Add(), or waiting after EOF.
         Object^ mLockReadyJobId = gcnew Object();
 
+        CachePreparationResult^ mPreBufferPreparation = nullptr;
+
         Thread^ mPreBufferingThread;
         ThreadCanceler^ mPreBufferingThreadCanceler;
 
@@ -484,12 +486,18 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         void PreBufferingWorker(Object^ _canceler);
 
+        /// Check if a new job has been posted by the player.
         bool HasJobChanged();
 
+        /// Pause the decoder thread until a new job is ready.
         PlayerState^ WaitForNewJobReady(ThreadCanceler^ canceller, int currentJobId);
 
-        void BeginJob(PlayerState^ state);
+        bool BeginJob(PlayerState^ state);
         
+        DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult);
+        
+        ReadResult ImplementDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
+
         ReadResult ProcessJob(ThreadCanceler^ canceller);
 
         /// Update the playback decode policy based on how behind we 
