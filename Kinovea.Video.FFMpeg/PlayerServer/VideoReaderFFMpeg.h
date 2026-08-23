@@ -281,10 +281,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         Thread^ mPreBufferingThread;
         ThreadCanceler^ mPreBufferingThreadCanceler;
 
-        // The frame-domain timestamp of the last stored frame (frame->best_effort_timestamp).
-        // Stored as in put in the active frame container and available to the player.
+        // The frame-domain timestamp of the frame we last added to the cache.
         // This is not necessarily the frame that the player is currently showing.
-        int64_t mCurrentTimestamp = AV_NOPTS_VALUE;
+        int64_t mCachedTimestamp = AV_NOPTS_VALUE;
         
         // The frame-domain timestamp of the last decoded frame.
         int64_t mDecodedTimestamp = AV_NOPTS_VALUE;

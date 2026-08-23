@@ -69,7 +69,7 @@ void VideoReaderFFMpeg::DataInit()
     mVideoStreamIndex = -1;
     mVideoInfo = VideoInfo::Empty;
     mWorkingZone = VideoSection::MakeEmpty();
-    mCurrentTimestamp = AV_NOPTS_VALUE;
+    mCachedTimestamp = AV_NOPTS_VALUE;
     mCurrentGopTimestamp = AV_NOPTS_VALUE;
     mWasPrebufferingBeforeEnumeration = false;
     
@@ -174,8 +174,6 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         int64_t ts = targets[i];
         
         ReadResult read = ReadFrameThumbnail(ts);
-
-        //log->DebugFormat("After ReadFrameThumbnail {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
 
         if (read == ReadResult::Same)
         {
@@ -797,7 +795,7 @@ bool VideoReaderFFMpeg::MoveCaching(int64_t target)
     }
     else
     {
-        // Move the current frame pointer to the requested frame in the cache.
+        // Acquire the requested frame.
         // TODO: the input target is in UI space, we should ask with tolerance.
         return mCache->MoveTo(target);
     }
@@ -1383,10 +1381,10 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     
     while (true)
     {
-        if (mCurrentTimestamp >= section.End)
+        if (mCachedTimestamp >= section.End)
         {
             log->DebugFormat("Caching complete [{0}]. Read: {1} frames in {2} ms.", 
-                mCurrentTimestamp, read, stopwatchCaching->ElapsedMilliseconds);
+                mCachedTimestamp, read, stopwatchCaching->ElapsedMilliseconds);
             success = true;
             break;
         }
@@ -1395,21 +1393,21 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         {
             // Unexpected but not fatal.
             log->WarnFormat("EOF while caching [{0}]. Read: {1} frames in {2} ms.", 
-                mCurrentTimestamp, read, stopwatchCaching->ElapsedMilliseconds);
+                mCachedTimestamp, read, stopwatchCaching->ElapsedMilliseconds);
             success = true;
             break;
         }
 
         if (res != ReadResult::Success)
         {
-            log->ErrorFormat("Error while caching [{0}]. Read: {1} frames.", mCurrentTimestamp, read);
+            log->ErrorFormat("Error while caching [{0}]. Read: {1} frames.", mCachedTimestamp, read);
             success = false;
             break;
         }
 
         if (bgWorker->CancellationPending)
         {
-            log->WarnFormat("Cancellation while caching [{0}]. Read: {1} frames.", mCurrentTimestamp, read);
+            log->WarnFormat("Cancellation while caching [{0}]. Read: {1} frames.", mCachedTimestamp, read);
             mCache->Clear();
             success = false;
             break;
@@ -1568,8 +1566,8 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
     int framesDecoded = 0;
     int res = 0;
 
-    // It's possible to get here with a target timestamp equal to the current timestamp.
-    // For example when we change the output size.
+    // It's possible to get here with a target equal to that of the acquired frame.
+    // For example when we change the output size (? this should invalidate everything).
     // We have to seek back to the start of the GOP and decode many frames again.
 
     // Initial seek.
@@ -1659,7 +1657,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
 
         if (framesDecoded % 10 == 0)
         {
-            log->DebugFormat("Seeking towards [~{0}]. Current [{1}]. Decoded {2} frames.", 
+            log->DebugFormat("Seeking towards [~{0}]. Last decoded: [{1}]. Decoded {2} frames.", 
                 targetTimestamp, mDecodedTimestamp, framesDecoded);
         }
 
@@ -1711,7 +1709,7 @@ bool VideoReaderFFMpeg::ShouldStoreFrame()
     // Note: the decoder thread never wraps around the end by itself within the same job,
     // so there shouldn't be any time where the decoded timestamp is less than the last published timestamp.
 
-    int64_t lastPublished = mCurrentTimestamp;
+    int64_t lastPublished = mCachedTimestamp;
     double frames = mWorkingPlayerState->RefreshInterval / mWorkingPlayerState->PlaybackFrameInterval;
     double timestampsPerPublish = frames * mVideoInfo.AverageTimeStampsPerFrame;
     int64_t nextPublishTimestamp = (int64_t)Math::Round(lastPublished + timestampsPerPublish);
@@ -1931,7 +1929,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
     
     // Reset the internal codec state. 
     avcodec_flush_buffers(mVideoCodecCtx);
-    mCurrentTimestamp = AV_NOPTS_VALUE;
+    mCachedTimestamp = AV_NOPTS_VALUE;
     mDecodedTimestamp = AV_NOPTS_VALUE;
     mCurrentGopTimestamp = AV_NOPTS_VALUE;
     return res;
@@ -2022,7 +2020,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     IntPtr data = IntPtr(convertedFrame->data[0]);
     Bitmap^ bmp = nullptr;
 
-    if (mStabOffsets->ContainsKey(mCurrentTimestamp))
+    if (mStabOffsets->ContainsKey(mDecodedTimestamp))
     {
         // Image stabilization. 
 
@@ -2036,8 +2034,8 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
 
         bmp = gcnew Bitmap(mScaledSize.Width, mScaledSize.Height, DecodingPixelFormat);
         Graphics^ g = Graphics::FromImage(bmp);
-        float dx = mStabOffsets[mCurrentTimestamp]->X;
-        float dy = mStabOffsets[mCurrentTimestamp]->Y;
+        float dx = mStabOffsets[mDecodedTimestamp]->X;
+        float dy = mStabOffsets[mDecodedTimestamp]->Y;
         
         // Paint the image with the offset applied into a new bitmap.
         // TODO: handle scaling (decoding size).
@@ -2086,7 +2084,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
 
     if (addResult == CacheAddResult::Added)
     {
-        mCurrentTimestamp = mDecodedTimestamp;
+        mCachedTimestamp = mDecodedTimestamp;
     }
     if (addResult == CacheAddResult::Duplicate)
     {
@@ -2564,9 +2562,9 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
         ReadResult res = ReadFrameSeek(startTimestamp);
         if (res == ReadResult::Success)
         {
-            log->DebugFormat("Read first frame synchronously. [{0}].", mCurrentTimestamp);
-            mPreBuffer->AcquireClosest(mCurrentTimestamp);
-            mWorkingZone = VideoSection(mCurrentTimestamp, mWorkingZone.End);
+            log->DebugFormat("Read first frame synchronously. [{0}].", mCachedTimestamp);
+            mPreBuffer->AcquireClosest(mCachedTimestamp);
+            mWorkingZone = VideoSection(mCachedTimestamp, mWorkingZone.End);
         }
     }
 
@@ -2722,9 +2720,9 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
             return ReadResult::NewJob;
         }
 
-        if (res == ReadResult::EOFReached || mCurrentTimestamp >= mWorkingZone.End)
+        if (res == ReadResult::EOFReached || mDecodedTimestamp >= mWorkingZone.End)
         {
-            // Return and wait for a new generation.
+            // Return and wait for a new job.
             log->DebugFormat("EOF reached.");
             return ReadResult::EOFReached;
         }
@@ -2782,10 +2780,10 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
     // Estimate how far behind we are compared to the player.
     // Note: this lag is in presentation space and independent from the speed slider.
     long expectedTimestamp = this->GetPlaybackTimestamp(mWorkingPlayerState);
-    double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
+    double lag = (expectedTimestamp - mCachedTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
     String^ logLine = String::Format("UpdateDecodePolicy: estimated player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame: {5}.",
-        expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
+        expectedTimestamp, mCachedTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
 
     log->DebugFormat(logLine);
             
@@ -2829,7 +2827,7 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
                 if (res >= 0)
                 {
                     avcodec_flush_buffers(mVideoCodecCtx);
-                    mCurrentTimestamp = AV_NOPTS_VALUE;
+                    mCachedTimestamp = AV_NOPTS_VALUE;
                     mCurrentGopTimestamp = AV_NOPTS_VALUE;
                 }
             }
@@ -2920,7 +2918,7 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
     //-------------------------------
 
     log->DebugFormat("InitDecodingJob. Initializing for job {0}", mWorkingPlayerState);
-    log->DebugFormat("InitDecodingJob. Last decoded: [{0}]. Last stored: [{1}].", mDecodedTimestamp, mCurrentTimestamp);
+    log->DebugFormat("InitDecodingJob. Last decoded: [{0}]. Last stored: [{1}].", mDecodedTimestamp, mCachedTimestamp);
 
     // By this point we have abandonned all work from the old job,
     // the reader has finished preparing the cache for the new job.
@@ -2933,12 +2931,13 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
     // Reset decoding policy.
     ExecuteDecodingPolicy(DecodingPolicy::Normal);
 
+    // Get the state of the cache from the preparation.
     CachePreparationResult^ cachePrepResult = Volatile::Read(this->mPreBufferPreparation);
 
+    // Get and execute the plan that moves the decoder to the best spot to continue 
+    // decoding or to fullfil the immediate request if it wasn't already acquired during prep.
     DecodingJobPlan^ plan = GetDecodingJobPlan(state, cachePrepResult);
-
     log->Debug(plan);
-
     bool acquiredDuringInit = ExecuteDecodingJobPlan(state, plan);
     if (!plan->TargetIsResolved && acquiredDuringInit)
     {
@@ -2946,23 +2945,32 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
         OnFrameAcquired(state);
     }
 
-
+    // At this point the decoder can just start decoding frames forward until EOF or cancellation.
 }
 
 DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult)
 {
     //-----------------------------------------------------------------
-    // The goal of this function is to determine how we are going to 
-    // initialize the decoder for the new job.
+    // The goal of this function is to find where we should move the decoder to:
+    // 1. fullfil the immediate request if it wasn't acquired yet
+    // 2. continue decoding from there.
+    //
+    // Just because the request was already acquired doesn't mean the decoder is at 
+    // the right spot to continue.
     // 
-    // Important: when in doubt we can always fall back to seeking to 
-    // the target and restart decoding from there.
+    // Once the immediate request is fullfilled and the decoder relocated, the "job" will 
+    // simply continue decoding frame by frame forward until EOF or cancellation.
+    // 
+    // By now the cache has already been reshaped to accomodate the new request.
+    // 
+    // Important: when in doubt we can always fall back to seeking to the target and 
+    // restart decoding from there.
     // Everything else is optimization, so we identify a few known scenarios 
     // rather than try to handle all combinations of states.
-    // If we can't prove an optimization is safe we should return Seek.
+    // If we can't prove an optimization is safe we should seek.
     //-----------------------------------------------------------------
 
-
+    // Grab the results of the initial request handling from the cache side.
     bool isAcquired = cachePrepResult->TargetAcquired;
     int64_t acquiredTimestamp = cachePrepResult->AcquiredTimestamp;
     bool denseForward = cachePrepResult->DenseForward;
@@ -2971,13 +2979,12 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     int64_t cacheEnd = cachePrepResult->CacheEndTimestamp;
     bool cacheFull = cachePrepResult->Full;
 
-
     // Shared variables by all scenarios.
     int64_t requestedTimestamp = state->ReferenceTimestamp;
     int64_t targetTimestamp = isAcquired ? acquiredTimestamp : requestedTimestamp;
 
     // Failsafe scenario is to just seek and restart decoding,
-    // unless we can prove we are ready or almost ready.
+    // unless we can prove we have a better thing to do.
     DecodingJobPlan^ plan = gcnew DecodingJobPlan();
     plan->RequestedTimestamp = requestedTimestamp;
     plan->TargetTimestamp = targetTimestamp;
@@ -2988,14 +2995,21 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
 
     if (mDecodedTimestamp < 0)
     {
-        // The decoder is nowhere.
+        // The decoder location is not known.
         // This may happen for example if we start a seek and get interrupted 
-        // with a new job before decoding the first frame.
+        // with a new job before decoding even the first frame.
         log->DebugFormat("Decoder is nowhere: seeking.");
         plan->DecoderInitAction = DecoderInitAction::Seek;
         return plan;
     }
 
+    //---------------------------------------------
+    // This can be further simplified.
+    // Probably we only need to consider the furthest ahead frame between
+    // pending, last decode and last stored.
+    // First check if it's outside the cache.
+    // Then compare with the player request/acquired target.
+    //---------------------------------------------
 
     bool hasPending = mPendingFrame != nullptr;
     bool pendingIsNext = IsPendingNext(cacheEnd);
@@ -3008,13 +3022,6 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         mPendingFrame = nullptr;
         hasPending = false;
     }
-
-
-    // This can be further simplified.
-    // Probably we only need to consider the furthest ahead frame between
-    // pending, last decode and last stored.
-    // First check if it's outside the cache.
-    // Then compare with the player request/acquired target.
 
 
     if (pendingIsNext)
@@ -3134,7 +3141,7 @@ bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd)
         return false;
 
     // FIXME: we don't store the previousTimestamp yet.
-    // The true test is that mPendingFrame->PreviousTimestamp == mCurrentTimestamp == cacheEnd.
+    // The true test is that mPendingFrame->PreviousTimestamp == mCachedTimestamp == cacheEnd.
     if (mPendingFrame->Timestamp > cacheEnd)
     {
         return true;
@@ -3151,7 +3158,7 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
     // For now we don't implement advance option.
     if (plan->DecoderInitAction == DecoderInitAction::Seek)
     {
-        log->DebugFormat("ExecuteDecodingJobPlan: seeking to [{0}].", plan->TargetTimestamp);
+        log->DebugFormat("ExecuteDecodingJobPlan: seeking to [~{0}].", plan->TargetTimestamp);
 
         // Seek and decode until the target.
         // TODO: have another argument to tell if we should store the intermediate frames.
@@ -3177,13 +3184,16 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
         
         if (!plan->ResubmitPending || mPendingFrame == nullptr)
         {
-            // Target may have been decoded/stored while the job was in preparation.
-            TimestampRelation relTarget = RelateTimestamps(mCurrentTimestamp, plan->TargetTimestamp);
-
-            if (relTarget == TimestampRelation::Match)
+            if (mCachedTimestamp > 0)
             {
-                mPreBuffer->AcquireClosest(plan->TargetTimestamp);
-                return true;
+                // Target may have been decoded/stored while the job was in preparation.
+                TimestampRelation relTarget = RelateTimestamps(mCachedTimestamp, plan->TargetTimestamp);
+
+                if (relTarget == TimestampRelation::Match)
+                {
+                    mPreBuffer->AcquireClosest(plan->TargetTimestamp);
+                    return true;
+                }
             }
 
             // Target not acquired.
@@ -3200,11 +3210,11 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
 
         if (result == CacheAddResult::Added)
         {
-            // Update last stored.
-            mCurrentTimestamp = mPendingFrame->Timestamp;
+            // Update last cached frame.
+            mCachedTimestamp = mPendingFrame->Timestamp;
             mPendingFrame = nullptr;
 
-            TimestampRelation relTarget = RelateTimestamps(mCurrentTimestamp, plan->TargetTimestamp);
+            TimestampRelation relTarget = RelateTimestamps(mCachedTimestamp, plan->TargetTimestamp);
             if (relTarget == TimestampRelation::Match)
             {
                 // The pending frame was the requested frame.

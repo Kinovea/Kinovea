@@ -209,7 +209,7 @@ namespace Kinovea.Video
             double tolerance = Info.AverageTimeStampsPerFrame / 2.0;
             double farAheadThreshold = Info.AverageTimeStampsPerFrame * 50.0;
 
-            if (reference < 0)
+            if (request < 0 || reference < 0)
                 return TimestampRelation.Unknown;
 
             long delta = request - reference;
