@@ -91,7 +91,7 @@ namespace Kinovea.Video
         /// May block until space becomes available or cancellation.
         /// If the frame is already cached or we are cancelled, the frame is disposed.
         /// </summary>
-        public void Add(VideoFrame frame)
+        public CacheAddResult Add(VideoFrame frame)
         {
             //---------------------------------
             // This runs on the decoding thread, with one exception,
@@ -108,14 +108,12 @@ namespace Kinovea.Video
                 {
                     if (frames.ContainsKey(frame.Timestamp))
                     {
-                        frameDisposer(frame);
-                        return;
+                        return CacheAddResult.Duplicate;
                     }
 
                     if (interruptAdd)
                     {
-                        frameDisposer(frame);
-                        return;
+                        return CacheAddResult.Interrupted;
                     }
 
                     if (frames.Count < capacity)
@@ -133,6 +131,8 @@ namespace Kinovea.Video
 
                 Monitor.PulseAll(sync);
             }
+
+            return CacheAddResult.Added;
         }
 
         /// <summary>

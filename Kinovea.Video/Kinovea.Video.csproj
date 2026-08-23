@@ -176,6 +176,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CacheAddResult.cs" />
     <Compile Include="Caching\CacheLoadMode.cs" />
     <Compile Include="Caching\DecodingPolicy.cs" />
     <Compile Include="Caching\Cache.cs" />
@@ -184,7 +185,6 @@
     <Compile Include="Caching\PreBuffer2.cs" />
     <Compile Include="Caching\PlayerStateMode.cs" />
     <Compile Include="Caching\SingleFrame.cs" />
-    <Compile Include="Caching\PreBuffer.cs" />
     <Compile Include="OpenVideoResult.cs" />
     <Compile Include="RecordingResult.cs" />
     <Compile Include="FitHelper.cs" />

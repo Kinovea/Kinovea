@@ -65,10 +65,11 @@ namespace Kinovea.Video
         private VideoFrameDisposer frameDisposer;
         #endregion
         
-        public void Add(VideoFrame frame)
+        public CacheAddResult Add(VideoFrame frame)
         {
             Clear();
             current = frame;
+            return CacheAddResult.Added;
         }
         public void Clear()
         {

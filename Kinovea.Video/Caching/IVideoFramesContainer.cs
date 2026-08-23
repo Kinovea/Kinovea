@@ -25,7 +25,7 @@ namespace Kinovea.Video
     public interface IVideoFramesContainer
     {
         VideoFrame CurrentFrame { get; }
-        void Add(VideoFrame _frame);
+        CacheAddResult Add(VideoFrame _frame);
         void Clear();
     }
 }

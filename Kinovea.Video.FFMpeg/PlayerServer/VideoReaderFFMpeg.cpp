@@ -2060,11 +2060,25 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     // If we are in mode on-demand, this is synchronous and will replace the single stored frame.
     // If we are in mode prebuffer, we are in a background thread and this will potentially block if the 
     // cache is full.
-    mFrameContainer->Add(vf);
+    CacheAddResult addResult = mFrameContainer->Add(vf);
 
-    // The add may have been interrupted.
+    if (addResult == CacheAddResult::Duplicate)
+    {
+        DisposeFrame(vf);
+    }
+    else if (addResult == CacheAddResult::Interrupted)
+    {
+        // Keep the frame as pending until the new job starts.
+        // We might want to add it again to avoid gaps, 
+        // or we might discard it if the new job is far away.
+        log->DebugFormat("Cache add interrupted. Marking [{0}] as pending.", mDecodedTimestamp);
+        mPendingFrame = vf;
+    }
+    else
+    {
+        mCurrentTimestamp = mDecodedTimestamp;
+    }
 
-    mCurrentTimestamp = mDecodedTimestamp;
     //log->DebugFormat("Stored frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
 
     return ReadResult::Success;
@@ -2873,13 +2887,46 @@ void VideoReaderFFMpeg::BeginJob(PlayerState^ state)
     // 3. Target is behind: seek.
     // 4. Target is far ahead: seek.
 
+    // In theory at this point if the cache has the target timestamp it should 
+    // already be set as Current.
+
+    // Check if we have a pending frame.
+    // This happens when the decoding thread is blocked in Add() and a new job arrives.
+    // The new job triggers an interrupt of the add, but we might still be interested
+    // in adding that frame.
+    if (mPendingFrame != nullptr)
+    {
+        log->DebugFormat("BeginJob {0}, Resubmitting pending frame [{1}].", state, mPendingFrame->Timestamp);
+        
+        // At this point if the cache is full we shouldn't add.
+        // The mPrebuffer.PrepareForNewJob should have cleared at least one spot.
+
+        if (mPreBuffer->Count == mPreBuffer->Capacity)
+        {
+            log->DebugFormat("Resubmitting impossible, cache is full.");
+        }
+        else
+        {
+            CacheAddResult addResult = mPreBuffer->Add(mPendingFrame);
+            if (addResult == CacheAddResult::Duplicate)
+            {
+                DisposeFrame(mPendingFrame);
+            }
+            else
+            {
+                mCurrentTimestamp = mPendingFrame->Timestamp;
+            }
+        }
+
+        mPendingFrame = nullptr;
+    }
+
+
     log->DebugFormat("BeginJob {0}, Last decoded: [{1}], Last stored: [{2}].",
         state, mDecodedTimestamp, mCurrentTimestamp);
 
     mPreBuffer->Print();
 
-    // In theory at this point if the cache has the target timestamp it should 
-    // already be set as Current.
 
     ReadResult res;
     switch (state->Mode)

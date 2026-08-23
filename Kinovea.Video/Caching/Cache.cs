@@ -115,7 +115,7 @@ namespace Kinovea.Video
             UpdateCurrentFrame();
             return true;
         }
-        public void Add(VideoFrame frame)
+        public CacheAddResult Add(VideoFrame frame)
         {
             if(isPrepending)
             {
@@ -128,6 +128,8 @@ namespace Kinovea.Video
             }
                 
             UpdateWorkingZone();
+
+            return CacheAddResult.Added;
         }
         public void Clear()
         {

@@ -249,6 +249,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         SingleFrame^ mSingleFrameContainer;
         PreBuffer2^ mPreBuffer;
         Cache^ mCache;
+        VideoFrame^ mPendingFrame;
         
         // FFmpeg context.
         int mVideoStreamIndex;
