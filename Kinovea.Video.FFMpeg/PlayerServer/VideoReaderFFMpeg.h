@@ -522,11 +522,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Returns true if the pending frame is a continuation of the prebuffer.
         bool IsPendingNext(int64_t cacheEnd);
 
-        /// Compare timestamps with a tolerance of half a frame.
-        /// Used to compare request timestamps with media timestamps.
-        bool TimestampsEqual(int64_t ts1, int64_t ts2);
-        
-
         //-------------------
         // Logging helpers
         //-------------------

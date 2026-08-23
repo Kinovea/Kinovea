@@ -48,6 +48,15 @@ namespace Kinovea.Video
             set { tolerance = value; }
         }
 
+        /// <summary>
+        /// Get or set the far ahead threshold for relating timestamps to the cache.
+        /// </summary>
+        public double FarAheadThreshold
+        {
+            get { return farAheadThreshold; }
+            set { farAheadThreshold = value; }
+        }
+
         #endregion
 
         #region Members
@@ -59,6 +68,7 @@ namespace Kinovea.Video
         private int framesToKeepBehind = 8; // Retention window behind current.
         private VideoFrameDisposer frameDisposer;
         private double tolerance = 0.0;
+        private double farAheadThreshold = 0.0;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -349,6 +359,48 @@ namespace Kinovea.Video
             {
                 VideoFrame closest = FindClosest(target);
                 return Math.Abs(closest.Timestamp - target) <= tolerance;
+            }
+        }
+
+        /// <summary>
+        /// Find where the target timestamp is with regards 
+        /// to the cache boundaries, with fuzzy matching.
+        /// </summary>
+        public CacheTimestampRelation RelateTimestamp(long target)
+        {
+            lock (sync)
+            {
+                if (frames.Count == 0)
+                {
+                    return CacheTimestampRelation.Empty;
+                }
+
+                VideoFrame closest = FindClosest(target);
+
+                if (Math.Abs(closest.Timestamp - target) <= tolerance)
+                {
+                    return CacheTimestampRelation.InBoundsMatch;
+                }
+
+                long first = frames.Values[0].Timestamp;
+                long last = frames.Values[frames.Count - 1].Timestamp;
+
+                if (target < first)
+                {
+                    return CacheTimestampRelation.Behind;
+                }
+
+                if (target > last)
+                {
+                    if (target - last > farAheadThreshold)
+                    {
+                        return CacheTimestampRelation.FarAhead;
+                    }
+
+                    return CacheTimestampRelation.Ahead;
+                }
+
+                return CacheTimestampRelation.InBoundsNoMatch;
             }
         }
 

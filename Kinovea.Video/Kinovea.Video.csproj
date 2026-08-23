@@ -179,6 +179,7 @@
     <Compile Include="Caching\CacheAddResult.cs" />
     <Compile Include="Caching\CacheLoadMode.cs" />
     <Compile Include="Caching\CachePreparationResult.cs" />
+    <Compile Include="Caching\CacheTimestampRelation.cs" />
     <Compile Include="Caching\DecoderInitAction.cs" />
     <Compile Include="Caching\DecodingJobPlan.cs" />
     <Compile Include="Caching\DecodingPolicy.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="RecordingResult.cs" />
     <Compile Include="FitHelper.cs" />
     <Compile Include="RecordingSettings.cs" />
+    <Compile Include="TimestampRelation.cs" />
     <Compile Include="VideoExportResult.cs" />
     <Compile Include="VideoGeometry\VideoGeometry.cs" />
     <Compile Include="VideoGeometry\VideoGeometryRequest.cs" />

@@ -203,6 +203,30 @@ namespace Kinovea.Video
         public virtual void BeforePlayloop()
         {
         }
+
+        public TimestampRelation RelateTimestamps(long request, long reference)
+        {
+            double tolerance = Info.AverageTimeStampsPerFrame / 2.0;
+            double farAheadThreshold = Info.AverageTimeStampsPerFrame * 50.0;
+
+            if (reference < 0)
+                return TimestampRelation.Unknown;
+
+            long delta = request - reference;
+
+            if (Math.Abs(delta) <= tolerance)
+                return TimestampRelation.Match;
+
+            if (delta < 0)
+                return TimestampRelation.Behind;
+
+            if (delta > farAheadThreshold)
+                return TimestampRelation.FarAhead;
+
+            return TimestampRelation.Ahead;
+        }
+
+
         #endregion
 
         #region Working zone and decoding mode
