@@ -84,9 +84,7 @@ namespace Kinovea.Video.GIF
             videoInfo.AverageTimeStampsPerSeconds = 100;
             videoInfo.FilePath = filePath;
 
-            // This reader can only function in frozen cache mode,
-            // so we systematically load the cache during opening.
-            OpenVideoResult res = LoadFile(filePath, true);
+            OpenVideoResult res = LoadFile(filePath, false);
             gif.Dispose();
             DumpInfo();
             return res;
@@ -99,7 +97,7 @@ namespace Kinovea.Video.GIF
         {
             VideoSummary summary = new VideoSummary(filePath);
 
-            OpenVideoResult res = LoadFile(filePath, false);
+            OpenVideoResult res = LoadFile(filePath, true);
             FrameDimension dimension = new FrameDimension(gif.FrameDimensionsList[0]);
 
             if (res == OpenVideoResult.Success)
@@ -133,7 +131,8 @@ namespace Kinovea.Video.GIF
         }
         public override bool MoveTo(long target)
         {
-            return cache.MoveTo(target);
+            cache.AcquireClosest(target);
+            return true;
         }
 
         public override bool PlayerRequest(PlayerState newState)
@@ -152,7 +151,7 @@ namespace Kinovea.Video.GIF
         #endregion 
 
         #region Private Methods
-        private OpenVideoResult LoadFile(string filePath, bool cache)
+        private OpenVideoResult LoadFile(string filePath, bool forSummary)
         {
             OpenVideoResult result = OpenVideoResult.UnknownError;
             
@@ -187,8 +186,10 @@ namespace Kinovea.Video.GIF
                 
                 videoInfo.FramesPerSeconds = 100D/interval;
                 videoInfo.AverageTimeStampsPerFrame = interval;
-
                 videoInfo.OriginalSize = gif.Size;
+
+                double tolerance = 0.5 * videoInfo.AverageTimeStampsPerFrame;
+                Cache.Tolerance = tolerance;
 
                 bool isPreScaled = false; // We don't have a presentation size yet.
                 float scale = 1.0f;
@@ -205,8 +206,10 @@ namespace Kinovea.Video.GIF
                     false,
                     0);
 
-                if (cache)
+                if (!forSummary)
+                {
                     LoadCache(dimension);
+                }
                 
                 loaded = true;
                 result = OpenVideoResult.Success;

@@ -356,8 +356,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         //-------------------
         bool MoveOnDemand(int64_t target);
         bool MoveCaching(int64_t target);
-
-
+        bool MovePrebuffer(int64_t target);
 
 
 
@@ -467,9 +466,14 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         void ChangeToBestAfterCaching();
 
+
+        //--------------------
+        // Static cache
+        //--------------------
+
         void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
         
-        bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
+        bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section);
         
 
         //-------------------

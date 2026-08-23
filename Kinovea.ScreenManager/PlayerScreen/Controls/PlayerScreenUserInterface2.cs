@@ -897,17 +897,21 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
                 OnPauseAsked();
 
+                // Threading: for full caching the loading happens in a background thread,
+                // control is returned to the UI but not here, we will be in the modal
+                // dialog that shows the progress bar. When the loading is done or cancelled
+                // the call below returns and we continue.
+                
                 m_FrameServer.VideoReader.UpdateWorkingZone(
                     newZone,
                     loadMode,
                     PreferencesManager.PlayerPreferences.WorkingZoneMemory, 
                     WorkingZoneCacheLoadWorker);
 
-
                 // We may have exited prebuferring for caching.
-                // In that case the decoding size has changed.
+                // In that case the decoding size may have changed.
+                // TODO: check if we actually changed mode.
                 ResizeUpdate(true);
-
             }
 
             // Present the first frame of the new working zone.
@@ -2981,6 +2985,9 @@ namespace Kinovea.ScreenManager
             }
 
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
+            
+            double lag = (expectedTimestamp - currentTimestamp) / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            //log.DebugFormat("Player lag: {0:0.00} s", lag);
 
             if (videoFilterIsActive)
             {
@@ -3164,10 +3171,23 @@ namespace Kinovea.ScreenManager
                 targetTimestamp, currentTimestamp, framesToDecode, refreshInPlace);
 
 
+            // TODO: Refactoring in progress.
+            // This should all just go through PlayerRequest(playerState) eventually.
             bool acquired = false;
             if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
             {
                 acquired = m_FrameServer.VideoReader.PlayerRequest(playerState);
+            }
+            else if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+            {
+                if (targetTimestamp < 0)
+                {
+                    acquired = m_FrameServer.VideoReader.MoveNext(true);
+                }
+                else
+                {
+                    acquired = m_FrameServer.VideoReader.PlayerRequest(playerState);
+                }
             }
             else
             {
@@ -3181,19 +3201,10 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-
-            // TODO:
-            // This is to be replaced with an asynchronous system.
-            // When possible (when not enumerating or tracking),
-            // the request above will return immediately with a boolean indicating if the frame is already available or not.
-            // If not, the reader will decode the frame in a background thread and notify the player when it's ready.
-            // All that is below will be moved to a separate function.
-
             if (acquired)
             {
                 AfterFrameAcquired(playerState);
             }
-
         }
 
         private void VideoReader_FrameAcquired(object sender, EventArgs<PlayerState> e)

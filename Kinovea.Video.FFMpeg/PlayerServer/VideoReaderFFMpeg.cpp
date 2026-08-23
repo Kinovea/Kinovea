@@ -420,8 +420,12 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mVideoInfo.FrameIntervalMilliseconds = 1000.0 / mVideoInfo.FramesPerSeconds;
     mVideoInfo.AverageTimeStampsPerFrame = mVideoInfo.AverageTimeStampsPerSeconds / mVideoInfo.FramesPerSeconds;
 
-    mPreBuffer->Tolerance = mVideoInfo.AverageTimeStampsPerFrame / 2.0;
-    mPreBuffer->FarAheadThreshold = mVideoInfo.AverageTimeStampsPerFrame * 50.0;
+    // Initialize tolerance for caches.
+    double tolerance = 0.5 * mVideoInfo.AverageTimeStampsPerFrame;
+    mCache->Tolerance = tolerance;
+    mPreBuffer->Tolerance = tolerance;
+    mPreBuffer->FarAheadThreshold = 50.0 * mVideoInfo.AverageTimeStampsPerFrame;
+
 
     // Initial working zone representing the whole video.
     // For the end timestamp we can calculate from either frame count or duration.
@@ -670,14 +674,13 @@ bool VideoReaderFFMpeg::MoveTo(int64_t target)
     // This runs in the UI thread.
     //-----------------------------------------------------
 
-    // The player is asking for a frame to present.
+    // This happens in the context of playback.
+    // The player is weakly asking for a frame to present.
 
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
         return false;
 
-    bool moved = false;
-    //target = MapTimestamp(target);
-
+    bool acquired = false;
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
         return MoveOnDemand(target);
@@ -688,57 +691,43 @@ bool VideoReaderFFMpeg::MoveTo(int64_t target)
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        if (mPreBuffer->Count == 0)
-        {
-            // This should never happen. We synchronously decode the first frame
-            // of the working zone before starting the thread.
-            log->ErrorFormat("MoveTo([{0}]): empty prebuffer.", target);
-            return false;
-        }
-
-        // The cache is possibly sparse, get whatever is closest.
-        log->DebugFormat("Player requests presentation of [~{0}].", target);
-        mPreBuffer->AcquireClosest(target);
-        return true;
+        return MovePrebuffer(target);
     }
 }
 
 
 bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
 {
-    // For now we only support this for prebuffering mode
-    // while the refactoring is in progress.
-
-    if (mCachingMode != VideoDecodingMode::PreBuffering)
-    {
-        throw gcnew InvalidProgramException("PlayerDemand() called while not prebuffering.");
-    }
-
-    CachePreparationResult^ result = nullptr;
-
-    // Convert the player request into a decode job.
+    //-------------------------
+    // Refactoring in progress.
+    //-------------------------
+    
+    // Convert the player request into a decoding job.
     // If the decoder thread is not currently blocked in Add(), 
     // it will eventually see this and abandon its current job.
     // It will then wait until this new job is ready to be processed.
     Volatile::Write(requestedPlayerState, newState);
     log->DebugFormat("Published decode job {0}", requestedPlayerState);
 
-    // Prepare the cache for the new state.
-    if (mCachingMode == VideoDecodingMode::PreBuffering)
+    // Try acquire the target and prepare the cache for the new job if needed.
+    bool acquired = false;
+    if (mCachingMode == VideoDecodingMode::Caching)
     {
-        // This will interrupt Add() if the decoder thread is waiting there.
+        acquired = MoveCaching(requestedPlayerState->ReferenceTimestamp);
+        mWorkingPlayerState = requestedPlayerState;
+    }
+    else if (mCachingMode == VideoDecodingMode::PreBuffering)
+    {
         log->DebugFormat("Preparing prebuffer for decode job {0} Tolerance: [{1:0.000}]", 
             requestedPlayerState, mPreBuffer->Tolerance);
 
         mPreBuffer->Print();
 
-        result = mPreBuffer->PrepareForNewJob(requestedPlayerState);
-
+        // This will interrupt Add() if the decoder thread is waiting there.
+        CachePreparationResult^ result = mPreBuffer->PrepareForNewJob(requestedPlayerState);
         Volatile::Write(mPreBufferPreparation, result);
-    }
-    else
-    {
-        // Nothing to do.
+
+        acquired = result->TargetAcquired;
     }
 
     // The new job is now ready to be processed.
@@ -752,16 +741,7 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
         l.release();
     }
 
-    if (mCachingMode == VideoDecodingMode::PreBuffering)
-    {
-        // Our work is done here.
-        // The prebuffer should be working on the new job by now.
-        return result->TargetAcquired;
-    }
-
-    // TODO: For other modes handle the job synchronously.
-
-    return result->TargetAcquired;
+    return acquired;
 }
 
 
@@ -796,9 +776,24 @@ bool VideoReaderFFMpeg::MoveCaching(int64_t target)
     else
     {
         // Acquire the requested frame.
-        // TODO: the input target is in UI space, we should ask with tolerance.
-        return mCache->MoveTo(target);
+        log->DebugFormat("Player requests presentation of [~{0}].", target);
+        mCache->AcquireClosest(target);
+        return true;
     }
+}
+
+bool VideoReaderFFMpeg::MovePrebuffer(int64_t target)
+{
+    if (mPreBuffer->Empty)
+    {
+        log->ErrorFormat("MoveTo([{0}]): empty prebuffer.", target);
+        return false;
+    }
+
+    // The cache is possibly sparse, get whatever is closest.
+    log->DebugFormat("Player requests presentation of [~{0}].", target);
+    mPreBuffer->AcquireClosest(target);
+    return true;
 }
 #pragma endregion
 
@@ -1294,12 +1289,12 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
     bool success = true;
     if (!mSectionToPrepend.IsEmpty)
     {
-        success = ReadManyToCache(worker, mSectionToPrepend, true);
+        success = ReadManyToCache(worker, mSectionToPrepend);
     }
 
     if (success && !mSectionToAppend.IsEmpty)
     {
-        success = ReadManyToCache(worker, mSectionToAppend, false);
+        success = ReadManyToCache(worker, mSectionToAppend);
     }
 
     if (!success)
@@ -1308,14 +1303,12 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
         // The UI is responsible for switching to prebuffering.
         // If this is running during the initial load we may not have set 
         // a reliable preferred size yet, but the UI side will be able to do 
-        // it cancellation handling.
-        // The first frame will be read again in the process of starting 
-        // the prebuffer thread.
+        // it during cancellation handling.
         ChangeCachingMode(VideoDecodingMode::OnDemand);
     }
 }
 
-bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection section, bool isPrepend)
+bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection section)
 {
     // Load the asked section to cache (doesn't move the playhead).
     // Called when filling the cache with the Working Zone.
@@ -1332,28 +1325,29 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         throw gcnew CapabilityNotSupportedException("Importing to cache is not supported for the video.");
     }
     
-    if (mVerbose)
-    {
-        log->DebugFormat("Requested section to cache: {0}. Prepend:{1}", section, isPrepend);
-    }
-
-    mCache->SetPrepending(isPrepend);
+    log->DebugFormat("Requested section to cache: [~{0} --> ~{1}].", section.Start, section.End);
 
     // Realign the requested section on real timestamps.
     if (!mCache->WorkingZone.IsEmpty)
     {
-        if (isPrepend && (mCache->WorkingZone.Start - section.Start < mVideoInfo.AverageTimeStampsPerFrame))
+        bool realigned = false;
+        double tolerance = 0.5 * mVideoInfo.AverageTimeStampsPerFrame;
+        if (Math::Abs(section.Start - mCache->WorkingZone.Start) <= tolerance)
         {
-            // Start target is less than one frame before the current start.
             section = VideoSection(mCache->WorkingZone.Start, section.End);
-        }
-        else if (!isPrepend && (section.End - mCache->WorkingZone.End < mVideoInfo.AverageTimeStampsPerFrame))
-        {
-            // End target is less than one frame after the current end.
-            section = VideoSection(section.Start, mCache->WorkingZone.End);
+            realigned = true;
         }
 
-        log->DebugFormat("Aligned requested section to cache: {0}", section);
+        if (Math::Abs(section.End - mCache->WorkingZone.End) <= tolerance)
+        {
+            section = VideoSection(section.Start, mCache->WorkingZone.End);
+            realigned = true;
+        }
+
+        if (realigned)
+        {
+            log->DebugFormat("Realigned requested section to cache: [~{0} --> ~{1}]", section.Start, section.End);
+        }
     }
 
     // Bail out if re-alignment revealed we don't need to cache anything new.
@@ -1366,7 +1360,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     // The actual reading only stops when we get the target end timestamp or EOF.
     double frameIntervals = (section.End - section.Start) / mVideoInfo.AverageTimeStampsPerFrame;
     int totalFrames = (int)Math::Round(frameIntervals + 1);
-    log->DebugFormat("Frames to cache: {0} (avg ts/f: {1}).", totalFrames, mVideoInfo.AverageTimeStampsPerFrame);
+    log->DebugFormat("Frames to cache: ~{0} (avgtspf: {1:0.000}).", totalFrames, mVideoInfo.AverageTimeStampsPerFrame);
 
     Stopwatch^ stopwatchCaching = Stopwatch::StartNew();
 
@@ -1421,7 +1415,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         bgWorker->ReportProgress(read, totalFrames);
     }
 
-    log->DebugFormat("ReadManyToCache. Average: {0:0.000} ms.", mLoopWatcher->Average);
+    log->DebugFormat("Cache filling, average per frame: {0:0.000} ms.", mLoopWatcher->Average);
 
     // Update the working zone with real values.
     // The request may have been an approximation from pixel mapping.
@@ -1430,7 +1424,6 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         mWorkingZone = mCache->WorkingZone;
     }
 
-    mCache->SetPrepending(false);
     return success;
 }
 
@@ -2088,6 +2081,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     }
     if (addResult == CacheAddResult::Duplicate)
     {
+        mCachedTimestamp = mDecodedTimestamp;
         DisposeFrame(vf);
     }
     else if (addResult == CacheAddResult::Interrupted)
@@ -2556,6 +2550,10 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
         mPreBuffer->Clear();
     }
 
+    // Make sure we allow adding the first frame.
+    mPreBufferingThreadCanceler->Reset();
+    mPreBuffer->ResetInterruptAdd();
+
     // Read the first frame outside the decoding thread so the UI may request it immediately.
     if (startTimestamp >= 0)
     {
@@ -2569,10 +2567,7 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
     }
 
     log->Debug("Starting prebuffering thread.");
-
     ParameterizedThreadStart^ pts = gcnew ParameterizedThreadStart(this, &VideoReaderFFMpeg::PreBufferingWorker);
-    mPreBufferingThreadCanceler->Reset();
-    mPreBuffer->ResetInterruptAdd();
     mPreBufferingThread = gcnew Thread(pts);
     mPreBufferingThread->Start(mPreBufferingThreadCanceler);
 }
@@ -2663,6 +2658,13 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ objCanceller)
     }
 
     log->DebugFormat("Exiting PreBuffering thread.");
+
+    if (mPendingFrame != nullptr)
+    {
+        log->DebugFormat("Disposing pending frame [{0}] on thread exit.", mPendingFrame->Timestamp);
+        DisposeFrame(mPendingFrame);
+        mPendingFrame = nullptr;
+    }
 }
 
 ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
@@ -2710,7 +2712,7 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
         // Check if we were cancelled while waiting in Add().
         if (canceller->CancellationPending)
         {
-            log->DebugFormat("PreBuffering thread, cancellation after ReadFrameSeek().");
+            log->DebugFormat("PreBuffering thread, cancellation after ReadFrameNext().");
             break;
         }
 

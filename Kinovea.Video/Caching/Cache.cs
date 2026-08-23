@@ -20,9 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Linq;
 using Kinovea.Services;
 
 namespace Kinovea.Video
@@ -30,32 +28,49 @@ namespace Kinovea.Video
     /// <summary>
     /// A cache of the whole working zone.
     /// All methods run in the UI thread.
-    /// Play head moves are synchronous and instantaneous.
+    /// Acquires are synchronous and instantaneous, no eviction.
     /// </summary>
     public class Cache : IVideoFramesContainer, IWorkingZoneFramesContainer
     {
         #region Properties
         public VideoFrame CurrentFrame 
         {
-            get { return currentFrame; }
+            get 
+            { 
+                return current; 
+            }
         }
         public VideoSection WorkingZone 
         {
-            get { return workingZone;}
+            get 
+            {
+                return workingZone;
+            }
         }
         public bool Empty
         {
-            get { return frames.Count == 0; }
+            get 
+            { 
+                return frames.Count == 0; 
+            }
+        }
+        /// <summary>
+        /// Get or set the tolerance for matching request-space timestamps built
+        /// from pixel location and clock, to media-space timestamps.
+        /// This should be set to half average timestamps per frame.
+        /// </summary>
+        public double Tolerance
+        {
+            get { return tolerance; }
+            set { tolerance = value; }
         }
         #endregion
-        
+
         #region Members
-        private List<VideoFrame> frames = new List<VideoFrame>();
-        private int currentIndex = -1;
-        private VideoFrame currentFrame;
+        private SortedList<long, VideoFrame> frames = new SortedList<long, VideoFrame>();
         private VideoSection workingZone = VideoSection.MakeEmpty();
-        private bool isPrepending;
-        private int insertIndex;
+        private VideoFrame current;
+        private double tolerance = 0.0;
         private VideoFrameDisposer frameDisposer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -81,127 +96,137 @@ namespace Kinovea.Video
                 Clear();
         }
         #endregion
-        
+
         #region Public Methods
-        public bool MoveBy(int frameCount)
+
+        public void AcquireClosest(long timestamp)
         {
-            if(frames.Count < 1 || frameCount < 0)
+            if (frames.Count == 0)
+            {
+                current = null;
+                return;
+            }
+
+            current = FindClosest(frames, timestamp);
+        }
+
+        /// <summary>
+        /// Move forward by a number of frames.
+        /// </summary>
+        public bool MoveBy(int steps)
+        {
+            if(frames.Count < 1 || steps <= 0 || current == null)
                 return false;
             
-            int lastIndex = frames.Count - 1;
-            int targetIndex = currentIndex + frameCount;
-            
-            if(targetIndex > lastIndex)
+            int targetIndex = frames.IndexOfValue(current) + steps;
+            if(targetIndex > frames.Count - 1)
                 return false;
             
-            currentIndex = targetIndex;
-            UpdateCurrentFrame();
+            current = frames.Values[targetIndex];
             return true;
         }
         
         /// <summary>
-        /// Move Current to point to the target.
-        /// Returns true if Current was set to the target.
+        /// Add a frame to the cache.
+        /// This always succeeds, the caller handles the memory budget.
         /// </summary>
-        public bool MoveTo(long target)
-        {
-            if(!Contains(target))
-                return false;
-            
-            if (currentFrame != null && target == currentFrame.Timestamp)
-                return true;
-
-            currentIndex = frames.FindIndex(f => f.Timestamp >= target);
-            UpdateCurrentFrame();
-            return true;
-        }
         public CacheAddResult Add(VideoFrame frame)
         {
-            if(isPrepending)
+            if (frames.ContainsKey(frame.Timestamp))
             {
-                frames.Insert(insertIndex, frame);
-                insertIndex++;
+                return CacheAddResult.Duplicate;
             }
-            else
-            {
-                frames.Add(frame);
-            }
-                
-            UpdateWorkingZone();
 
+            frames.Add(frame.Timestamp, frame);
+            UpdateWorkingZone();
             return CacheAddResult.Added;
         }
+
         public void Clear()
         {
-            currentFrame = null;
-            currentIndex = -1;
-            
-            foreach(VideoFrame frame in frames)
+            foreach(VideoFrame frame in frames.Values)
             {
                 DisposeFrame(frame);
             }
                 
             frames.Clear();
-            UpdateWorkingZone();
-
+            current = null;
+            workingZone = VideoSection.MakeEmpty();
+            
             log.Debug("Cache cleared.");
         }
         
         /// <summary>
-        /// Remove all items that are outside the working zone.
+        /// Evict all frames outside the new working zone.
         /// </summary>
-        public void ReduceWorkingZone(VideoSection newZone)
+        public void ReduceWorkingZone(VideoSection zone)
         {
-            workingZone = newZone;
-            
-            int removedAtLeft = 0;
-            for(int i = 0; i<frames.Count;i++)
+            for (int i = frames.Count - 1; i >= 0; i--)
             {
-                if (workingZone.Contains(frames[i].Timestamp))
-                    continue;
-                    
-                if (frames[i].Timestamp < workingZone.Start)
-                    removedAtLeft++;
-                        
-                DisposeFrame(frames[i]);
-                frames[i] = null;
-                
-                if (i==currentIndex)
-                    currentIndex = -1;
+                VideoFrame frame = frames.Values[i];
+
+                if (!zone.Contains(frame.Timestamp))
+                {
+                    DisposeFrame(frame);
+                    frames.RemoveAt(i);
+                }
             }
-            
-            if (currentIndex >= removedAtLeft)
-                currentIndex-=removedAtLeft;
-            
-            frames.RemoveAll(frame => object.ReferenceEquals(null, frame));
-            
-            currentIndex = Math.Max(0, currentIndex);
-            currentFrame = frames[currentIndex];
-            
+
             UpdateWorkingZone();
-        }
-        
-        /// <summary>
-        /// Specify insertion mode for future Add operations.
-        /// This can be used to add many images in front of the existing range of cached frames.
-        /// </summary>
-        public void SetPrepending(bool isPrepending)
-        {
-            this.isPrepending = isPrepending;
-            
-            // The insertion index is initialized to 0 and will be updated on each Add.
-            insertIndex = 0;
+
+            current = frames.Count > 0 ? frames.Values[0] : null;
         }
         #endregion
 
         #region Private Methods
-        private bool Contains(long _timestamp)
+        /// <summary>
+        /// Update the internal working zone with the actual timestamps of the first and last frame.
+        /// </summary>
+        private void UpdateWorkingZone()
         {
-            return workingZone.Contains(_timestamp);
+            if(frames.Count == 0)
+            {
+                workingZone = VideoSection.MakeEmpty();
+            }
+
+            long start = frames.Values[0].Timestamp;
+            long end = frames.Values[frames.Count - 1].Timestamp;
+
+
+            workingZone = new VideoSection(start, end);
         }
+        #endregion
+
+        #region IWorkingZoneFramesContainer implementation
+        public IReadOnlyList<VideoFrame> Frames 
+        {
+            get 
+            { 
+                return (IReadOnlyList<VideoFrame>)frames.Values;
+            }
+        }
+        
+        public Bitmap Representative 
+        {
+            get 
+            { 
+                if (frames.Count == 0)
+                    return null;
+
+                return frames.Values[(frames.Count / 2)].Image;
+            }
+        }
+
+        #endregion
+
+        #region Shared
+
+        // The following functions are shared between Cache and PreBuffer and 
+        // should be factorized in a base class.
+
         private void DisposeFrame(VideoFrame frame)
         {
-            if(frameDisposer != null)
+            if (frameDisposer != null)
             {
                 frameDisposer(frame);
             }
@@ -210,56 +235,61 @@ namespace Kinovea.Video
                 frame.Image.Dispose();
             }
         }
-        private void UpdateCurrentFrame()
+
+
+        /// <summary>
+        /// Find the closest frame to the target timestamp.
+        /// </summary>
+        private VideoFrame FindClosest(SortedList<long, VideoFrame> frames, long timestamp)
         {
-            if(currentIndex >= 0 && currentIndex < frames.Count)
+            if (frames.Count == 0)
+                return null;
+
+            VideoFrame closest;
+
+            int index = LowerBound(frames, timestamp);
+            if (index == 0)
             {
-                currentFrame = frames[currentIndex];
+                closest = frames.Values[0];
+            }
+            else if (index == frames.Count)
+            {
+                closest = frames.Values[frames.Count - 1];
             }
             else
             {
-                currentIndex = -1;
-                #if DEBUG
-                throw new IndexOutOfRangeException();
-                #endif
+                VideoFrame before = frames.Values[index - 1];
+                VideoFrame after = frames.Values[index];
+                long deltaBefore = timestamp - before.Timestamp;
+                long deltaAfter = after.Timestamp - timestamp;
+                closest = deltaBefore <= deltaAfter ? before : after;
             }
+
+            return closest;
         }
 
         /// <summary>
-        /// Update the internal working zone with the actual timestamps of the first and last frame.
+        /// Find the first frame with a timestamp greater than or equal to the target timestamp.
         /// </summary>
-        private void UpdateWorkingZone()
+        private int LowerBound(SortedList<long, VideoFrame> frames, long timestamp)
         {
-            if(frames.Count > 0)
+            // Assumes the caller already holds the lock.
+            int low = 0;
+            int high = frames.Count;
+
+            while (low < high)
             {
-                workingZone = new VideoSection(frames[0].Timestamp, frames[frames.Count - 1].Timestamp);
+                int mid = low + ((high - low) / 2);
+
+                if (frames.Keys[mid] < timestamp)
+                    low = mid + 1;
+                else
+                    high = mid;
             }
-            else
-            {
-                workingZone = VideoSection.MakeEmpty();
-            }
+
+            return low;
         }
-        #endregion
-        
-        #region IWorkingZoneFramesContainer implementation
-        public ReadOnlyCollection<VideoFrame> Frames {
-            get { return frames.AsReadOnly(); }
-        }
-        public Bitmap Representative {
-            get { return frames[(frames.Count / 2)].Image; }
-        }
-        public void Revert()
-        {
-            int lastIndex = frames.Count-1;
-            int halfIndex = frames.Count/2;
-            for(int i = 0; i<halfIndex; i++)
-            {
-                int opposedIndex = lastIndex - i;
-                Bitmap tmp = frames[i].Image;
-                frames[i].Image = frames[opposedIndex].Image;
-                frames[opposedIndex].Image = tmp;
-            }
-        }
-        #endregion
+    
+        #endregion    
     }
 }
