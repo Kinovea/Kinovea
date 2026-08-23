@@ -63,14 +63,6 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Returns the start and end of the decoding buffer when in pre-buffering mode.
-        /// </summary>
-        public virtual VideoSection PreBufferingSegment 
-        {
-            get { return VideoSection.MakeEmpty(); }
-        }
-
-        /// <summary>
         /// Gets or sets the image-level options (aspect, rotation, demosaicing, deinterlace).
         /// </summary>
         public VideoOptions Options { get; set; }

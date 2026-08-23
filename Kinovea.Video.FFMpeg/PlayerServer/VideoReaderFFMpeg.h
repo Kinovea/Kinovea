@@ -124,16 +124,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             VideoSection get() override { return mWorkingZone; }
         }
 
-
-        /*virtual property VideoSection PreBufferingSegment {
-            VideoSection get() override {
-                if(mCachingMode == VideoDecodingMode::PreBuffering)
-                    return mPreBuffer->Segment;
-                else 
-                    return VideoSection::MakeEmpty(); 
-            }
-        }*/
-
         virtual property VideoFrame^ Current {
             VideoFrame^ get() override { 
                 return mFrameContainer != nullptr ? mFrameContainer->CurrentFrame : nullptr; 

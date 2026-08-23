@@ -2460,19 +2460,6 @@ namespace Kinovea.ScreenManager
         private void UpdatePositionUI()
         {
             // Update markers and label for position.
-            if (showCacheInTimeline)
-            {
-                VideoSection section;
-                if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    section = new VideoSection(m_iSelStart, m_iSelEnd);
-                else if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
-                    section = m_FrameServer.VideoReader.PreBufferingSegment;
-                else
-                    section = new VideoSection(currentTimestamp, currentTimestamp);
-
-                trkFrame.UpdateCacheSegmentMarker(section);
-            }
-
             trkFrame.Position = currentTimestamp;
             trkFrame.Invalidate();
             trkSelection.SelPos = currentTimestamp;
@@ -2771,7 +2758,7 @@ namespace Kinovea.ScreenManager
             double playbackFrameInterval = GetPlaybackFrameInterval();
             uint refreshInterval = (uint)Math.Round(Math.Max(playbackFrameInterval, (1000.0 / monitorRefreshRate)));
             
-            log.DebugFormat("Starting playback at timestamp {0}, frame interval:{1} ms, refresh interval:{2} ms.",
+            log.DebugFormat("Starting playback on [{0}]. Frame interval:{1:0.000} ms, refresh interval:{2} ms.",
                 currentTimestamp, playbackFrameInterval, refreshInterval);
 
             // Snapshot the playback state and publish it to the reader.
@@ -2919,7 +2906,6 @@ namespace Kinovea.ScreenManager
             // Note: this causes invalidates and postpones the idle event.
             // Update UI. For speed purposes, we don't update Selection Tracker hairline.
             trkFrame.Position = currentTimestamp;
-            trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
             trkFrame.Invalidate();
             UpdateCurrentPositionLabel();
 
