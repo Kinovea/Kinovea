@@ -9,7 +9,7 @@ namespace Kinovea.Video
     /// <summary>
     /// This class holds some information about the state of the cache after 
     /// the preparation step for the next job.
-    /// This is used by the decoder for its initialization before starting the job.
+    /// This is used by the decoder to come up with an initialization plan.
     /// </summary>
     public class CachePreparationResult
     {
@@ -34,20 +34,38 @@ namespace Kinovea.Video
         /// <summary>
         /// End timestamp of the dense range.
         /// </summary>
-        public long DenseForwardEnd { get; }
+        public long DenseEndTimestamp { get; }
+
+        /// <summary>
+        /// Timestamp of the last frame stored in the cache.
+        /// Useful to test if a pending frame is a continuation of the cache.
+        /// </summary>
+        public long CacheEndTimestamp { get; }
 
         /// <summary>
         /// True if the cache is full and cannot accept more frames.
         /// </summary>
         public bool Full { get; }
 
-        public CachePreparationResult(bool targetAcquired, long acquiredTimestamp, bool denseForward, long denseForwardEnd, bool full)
+        public CachePreparationResult(
+            bool targetAcquired, 
+            long acquiredTimestamp, 
+            bool denseForward, 
+            long denseEndTimestamp, 
+            long cacheEndTimestamp,
+            bool full)
         {
             TargetAcquired = targetAcquired;
             AcquiredTimestamp = acquiredTimestamp;
             DenseForward = denseForward;
-            DenseForwardEnd = denseForwardEnd;
+            DenseEndTimestamp = denseEndTimestamp;
+            CacheEndTimestamp = cacheEndTimestamp;
             Full = full;
+        }
+
+        public static CachePreparationResult Empty()
+        {
+            return new CachePreparationResult(false, -1, false, -1, -1, false);
         }
     }
 }

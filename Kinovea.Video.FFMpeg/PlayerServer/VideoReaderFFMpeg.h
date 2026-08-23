@@ -498,12 +498,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Pause the decoder thread until a new job is ready.
         PlayerState^ WaitForNewJobReady(ThreadCanceler^ canceller, int currentJobId);
 
-        bool BeginJob(PlayerState^ state);
-        
-        DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult);
-        
-        ReadResult ImplementDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
-
         ReadResult ProcessJob(ThreadCanceler^ canceller);
 
         /// Update the playback decode policy based on how behind we 
@@ -517,6 +511,22 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void ImplementDecodingPolicy(DecodingPolicy policy);
 
         bool ShouldStoreFrame();
+
+        //------------------
+        // Prebuffering > Job initialization.
+        //------------------
+
+        bool BeginJob(PlayerState^ state);
+        
+        DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult);
+        
+        ReadResult ImplementDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
+        
+        /// Returns true if the pending frame is a continuation of the prebuffer.
+        bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd);
+
+
+        
 
         //-------------------
         // Logging helpers

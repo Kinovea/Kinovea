@@ -82,7 +82,7 @@ namespace Kinovea.Video
     
         public override string ToString()
         {
-            return string.Format("#{0} [Mode: {1}, Ref: ~{2}]", Id, Mode, ReferenceTimestamp);
+            return string.Format("#{0} Mode: {1}. Ref: [~{2}].", Id, Mode, ReferenceTimestamp);
         }
 
     }

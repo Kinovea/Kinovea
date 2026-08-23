@@ -17,42 +17,41 @@ namespace Kinovea.Video
         /// mapping.
         /// This is informative only, use TargetTimestamp.
         /// </summary>
-        public long RequestedTimestamp { get; }
+        public long RequestedTimestamp { get; set; }
 
         /// <summary>
         /// The actual media timestamp matching the requested timestamp.
         /// If TargetIsResolved is false, this is the same as RequestedTimestamp.
         /// </summary>
-        public long TargetTimestamp { get; }
+        public long TargetTimestamp { get; set; }
 
         /// <summary>
         /// Whether the target was acquired.
         /// </summary>
-        public bool TargetIsResolved { get; }
+        public bool TargetIsResolved { get; set; }
 
         /// <summary>
         /// Whether we should Stay there, Advance or Seek.
         /// </summary>
-        public DecoderInitAction DecoderInitAction{ get; }
+        public DecoderInitAction DecoderInitAction{ get; set; }
 
         /// <summary>
         /// Whether we should resume decoding after init or not.
         /// </summary>
-        public bool ResumeDecoding { get; }
+        public bool ResumeDecoding { get; set; }
 
-
-        public DecodingJobPlan(long requestedTimestamp, long targetTimestamp, bool targetIsResolved, DecoderInitAction decoderInitAction, bool resumeDecoding)
+        public DecodingJobPlan()
         {
-            RequestedTimestamp = requestedTimestamp;
-            TargetTimestamp = targetTimestamp;
-            TargetIsResolved = targetIsResolved;
-            DecoderInitAction = decoderInitAction;
-            ResumeDecoding = resumeDecoding;
+            RequestedTimestamp = -1;
+            TargetTimestamp = -1;
+            TargetIsResolved = false;
+            DecoderInitAction = DecoderInitAction.None;
+            ResumeDecoding = false;
         }
 
         public override string ToString()
         {
-            return string.Format("DecodingJobPlan: RequestedTimestamp: [~{0}]. TargetTimestamp: [{1}]. TargetIsResolved:{2}. DecoderInitAction: {3}, ResumeDecoding: {4}.",
+            return string.Format("DecodingJobPlan: RequestedTimestamp: [~{0}]. TargetTimestamp: [{1}]. TargetIsResolved:{2}. DecoderInitAction: {3}. ResumeDecoding: {4}.",
                 RequestedTimestamp, TargetTimestamp, TargetIsResolved, DecoderInitAction, ResumeDecoding);
         }
     }

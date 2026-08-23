@@ -186,7 +186,7 @@ namespace Kinovea.Video
             {
                 if (frames.Count == 0)
                 {
-                    result = new CachePreparationResult(false, -1, false, -1, false);
+                    result = CachePreparationResult.Empty();
                     log.Debug("PrepareForNewJob: cache is empty.");
                 }
                 else
@@ -222,7 +222,7 @@ namespace Kinovea.Video
                     if (targetAcquired)
                     {
                         // Evict in the past based on retention window.
-                        EvictBehind(indexAcquired, framesToKeepBehind);
+                        removed = EvictBehind(indexAcquired, framesToKeepBehind);
 
                         // Evict in the future only if needed?
                         // If we are going into a sparse job we don't need to evict?
@@ -247,7 +247,7 @@ namespace Kinovea.Video
                             // behind the target up to the retention window.
                             // For simplicity we just keep a retention window worth of frames at the end.
                             int index = frames.Count - 1;
-                            EvictBehind(index, framesToKeepBehind);
+                            removed = EvictBehind(index, framesToKeepBehind);
 
                             // The decoder will decide to seek or continue decoding 
                             // depending on whether the target is nearby or far ahead.
@@ -260,7 +260,7 @@ namespace Kinovea.Video
                         {
                             // The target is behind the entire cache.
                             // This will for sure result in a seek.
-                            EvictPurge();
+                            removed = EvictPurge();
                         }
                         else
                         {
@@ -268,20 +268,23 @@ namespace Kinovea.Video
                             // not within tolerance of any frame.
 
                             // If we are going into dense job, we will have to seek.
-                            EvictPurge();
+                            removed = EvictPurge();
 
                             // If we are going into a sparse job, we can keep the frames around.
                             // Evict behind based on retention window.
                             // Do not evict ahead.
                             // Unless we are on the first frame ?
                         }
-
-
-
                     }
 
                     bool full = frames.Count >= capacity;
-                    result = new CachePreparationResult(targetAcquired, acquiredTimestamp, denseForward, denseEnd, full);
+                    result = new CachePreparationResult(
+                        targetAcquired, 
+                        acquiredTimestamp, 
+                        denseForward, 
+                        denseEnd,
+                        frames.Values[frames.Count - 1].Timestamp,
+                        full);
 
                     log.DebugFormat("Job preparation complete. Acquired: {0}. Evicted {1} frames. Cached: {2}.", 
                         targetAcquired,    
@@ -354,13 +357,15 @@ namespace Kinovea.Video
             lock (sync)
             {
                 StringBuilder sb= new StringBuilder();
-                sb.AppendFormat("Cache ({0}): ", frames.Count);
+                sb.AppendFormat("Cache ({0}) @[{1}]: ", 
+                    frames.Count,
+                    current == null ? "null" : current.Timestamp.ToString());
+
                 for (int i = 0; i < frames.Count; i++)
                 {
                     VideoFrame frame = frames.Values[i];
                     sb.AppendFormat("[{0}] ", frame.Timestamp);
                 }
-                sb.AppendFormat(" Current: [{0}].", current == null ? "null" : current.Timestamp.ToString());
 
                 log.Debug(sb.ToString());
             }
