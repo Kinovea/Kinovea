@@ -322,7 +322,7 @@ namespace Kinovea.Video
             }
         }
         #endregion
-        
+
         #region Video geometry
 
         /// <summary>
@@ -330,6 +330,8 @@ namespace Kinovea.Video
         /// invalidate any cache if necessary.
         /// The resulting geometry is published in the VideoGeometry property.
         /// Returns true if a cache has been invalidated.
+        /// 
+        /// This is public but should only be called from FrameServerPlayer.PublishVideoGeometryRequest().
         /// </summary>
         public abstract bool UpdateVideoGeometry(VideoGeometryRequest request);
         #endregion

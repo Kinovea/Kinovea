@@ -506,7 +506,7 @@ namespace Kinovea.ScreenManager
         /// This includes skipping and duplicating frames as needed.
         /// This returns an internal bitmap and the caller should do its own copy.
         /// </summary>
-        public IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
+        public IEnumerable<Bitmap> EnumerateImages(VideoExportSettings settings)
         {
             // Use one reusable staging bitmap.
             Bitmap staging = null;
@@ -564,7 +564,7 @@ namespace Kinovea.ScreenManager
         /// Same as above but jumps from key frame to key frame.
         /// Returns an internal bitmap and the caller should do its own copy.
         /// </summary>
-        public IEnumerable<Bitmap> EnumerateKeyImages(SavingSettings settings)
+        public IEnumerable<Bitmap> EnumerateKeyImages(VideoExportSettings settings)
         {
             // Use one reusable staging bitmap.
             Bitmap staging = null;

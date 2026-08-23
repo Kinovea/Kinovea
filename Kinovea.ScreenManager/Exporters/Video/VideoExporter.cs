@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
             // Save the new preferred image format.
             PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(sfd.FileName);
 
-            SavingSettings s = new SavingSettings();
+            VideoExportSettings s = new VideoExportSettings();
             s.File = sfd.FileName;
 
             Metadata metadata = player1.FrameServer.Metadata;

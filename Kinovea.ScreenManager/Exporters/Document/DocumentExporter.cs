@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
             string filename = Path.GetFileNameWithoutExtension(file);
             file = Path.Combine(dir, filename + ".md");
 
-            SavingSettings s = new SavingSettings();
+            VideoExportSettings s = new VideoExportSettings();
             s.Section = new VideoSection(metadata.SelectionStart, metadata.SelectionEnd);
             s.KeyframesOnly = true;
 
@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
             // This runs in the background thread.
             Thread.CurrentThread.Name = "DocumentExporter";
             BackgroundWorker worker = sender as BackgroundWorker;
-            SavingSettings s = e.Argument as SavingSettings;
+            VideoExportSettings s = e.Argument as VideoExportSettings;
 
             //-----------------
             // Markdown export.

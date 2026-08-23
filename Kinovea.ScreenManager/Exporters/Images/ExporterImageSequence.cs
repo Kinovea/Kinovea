@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
             formProgressBar.CancelAsked += FormProgressBar_CancelAsked;
         }
 
-        public void Export(SavingSettings settings, PlayerScreen player)
+        public void Export(VideoExportSettings settings, PlayerScreen player)
         {
             // Setup global variables we'll use from inside the background thread.
             this.player = player;
@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
             // This runs in the background thread.
             Thread.CurrentThread.Name = "ImageExporter";
             BackgroundWorker worker = sender as BackgroundWorker;
-            SavingSettings s = e.Argument as SavingSettings;
+            VideoExportSettings s = e.Argument as VideoExportSettings;
 
             player.view.BeforeExportVideo();
 

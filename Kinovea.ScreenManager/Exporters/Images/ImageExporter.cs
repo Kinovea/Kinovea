@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
             // Save the new preferred image format.
             PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(sfd.FileName);
             
-            SavingSettings s = new SavingSettings();
+            VideoExportSettings s = new VideoExportSettings();
 
             try
             {

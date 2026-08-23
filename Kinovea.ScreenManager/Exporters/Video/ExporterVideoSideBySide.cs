@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
             formProgressBar.CancelAsked += FormProgressBar_CancelAsked;
         }
 
-        public void Export(SavingSettings settings, PlayerScreen leftPlayer, PlayerScreen rightPlayer, DualPlayerController dualPlayer)
+        public void Export(VideoExportSettings settings, PlayerScreen leftPlayer, PlayerScreen rightPlayer, DualPlayerController dualPlayer)
         {
             this.leftPlayer = leftPlayer;
             this.rightPlayer = rightPlayer;
@@ -81,7 +81,7 @@ namespace Kinovea.ScreenManager
             // This runs in the background thread.
             Thread.CurrentThread.Name = "VideoExporter";
             BackgroundWorker worker = sender as BackgroundWorker;
-            SavingSettings s = e.Argument as SavingSettings;
+            VideoExportSettings s = e.Argument as VideoExportSettings;
 
             // Stop playing and disable custom decoding size.
             leftPlayer.view.BeforeExportVideo();
@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Enumerate composite frames by moving through the common timeline.
         /// </summary>
-        IEnumerable<Bitmap> EnumerateComposite(SavingSettings s)
+        IEnumerable<Bitmap> EnumerateComposite(VideoExportSettings s)
         {
             currentTime = 0;
             while (currentTime < commonTimeline.LastTime)
@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Create the staging bitmaps we'll use to gather the frames and paint the composite.
         /// </summary>
-        private void PrepareStagingBitmaps(SavingSettings s)
+        private void PrepareStagingBitmaps(VideoExportSettings s)
         {
             Size sizeLeft = leftPlayer.FrameServer.VideoReader.Geometry.ReferenceSize;
             Size sizeRight = rightPlayer.FrameServer.VideoReader.Geometry.ReferenceSize;
@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Move the playhead in both players, get the images with drawings, paint the composite.
         /// </summary>
-        private void PaintCompositeImage(long currentTime, SavingSettings s)
+        private void PaintCompositeImage(long currentTime, VideoExportSettings s)
         {
             GotoTime(leftPlayer, currentTime);
             GotoTime(rightPlayer, currentTime);

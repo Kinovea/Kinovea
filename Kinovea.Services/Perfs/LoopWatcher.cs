@@ -27,7 +27,8 @@ namespace Kinovea.Services
     /// A simple time accumulator to get average loop time.
     /// Usage: call AddLoopTime once per loop, passing a time.
     /// The class can also use its own internal timer for convenience,
-    /// in this case, call LoopStart and LoopEnd once per loop.
+    /// in this case, call LoopStart and LoopEnd once per loop, this
+    /// is useful to focus on a subsection of the loop.
     /// </summary>
     public class LoopWatcher
     {

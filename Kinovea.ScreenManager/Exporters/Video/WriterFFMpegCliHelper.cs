@@ -12,7 +12,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class WriterFFMpegCliHelper
     {
-        public static string BuildArguments(SavingSettings settings, Size inputSize, Size outputSize)
+        public static string BuildArguments(VideoExportSettings settings, Size inputSize, Size outputSize)
         {
             StringBuilder args = new StringBuilder();
 
@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
             return args.ToString();
         }
 
-        private static void AddVideoEncodingArgs(StringBuilder args, SavingSettings settings)
+        private static void AddVideoEncodingArgs(StringBuilder args, VideoExportSettings settings)
         {
             ExportProfile p = settings.ExportProfile;
 

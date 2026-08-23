@@ -24,7 +24,7 @@ namespace Kinovea.ScreenManager
         /// Runs on the background thread of the worker.
         /// Checks for cancellation and reports progress to the worker.
         /// </summary>
-        public SaveResult Save(SavingSettings settings, IEnumerable<Bitmap> images, BackgroundWorker worker)
+        public SaveResult Save(VideoExportSettings settings, IEnumerable<Bitmap> images, BackgroundWorker worker)
         {
             if (settings == null || images == null || worker == null)
             {
@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private static SaveResult SaveFrames(Process ffmpeg, SavingSettings settings, IEnumerator<Bitmap> enumerator, Size inputSize, BackgroundWorker worker)
+        private static SaveResult SaveFrames(Process ffmpeg, VideoExportSettings settings, IEnumerator<Bitmap> enumerator, Size inputSize, BackgroundWorker worker)
         {
             bool processStarted = false;
             Task<string> stderrTask = null;

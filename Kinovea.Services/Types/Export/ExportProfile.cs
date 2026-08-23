@@ -78,13 +78,10 @@ namespace Kinovea.Services
         {
             switch (container)
             {
-                case VideoContainer.MKV: 
-                    return "matroska";
-                case VideoContainer.AVI: 
-                    return "avi";
-                case VideoContainer.MP4:
-                default: 
-                    return "mp4";
+                case VideoContainer.MKV: return "matroska";
+                case VideoContainer.AVI: return "avi";
+                case VideoContainer.MP4: return "mp4";
+                default:                 return "mp4";
             }
         }
 
@@ -98,24 +95,11 @@ namespace Kinovea.Services
         {
             switch (quality)
             {
-                case EncodingQuality.PerceptuallyLossless:
-                    {
-                        return 1;
-                    }
-                case EncodingQuality.High:
-                    {
-                        return 2;
-                    }
-                case EncodingQuality.Medium:
-                    {
-                        return 5;
-                    }
-                case EncodingQuality.Low:
-                    {
-                        return 10;
-                    }
-                default:
-                    return 2;
+                case EncodingQuality.PerceptuallyLossless:  return 1;
+                case EncodingQuality.High:                  return 2;
+                case EncodingQuality.Medium:                return 5;
+                case EncodingQuality.Low:                   return 10;
+                default:                                    return 2;
             }
         }
 
@@ -154,14 +138,10 @@ namespace Kinovea.Services
         {
             switch (speed)
             {
-                case EncodingSpeed.Fast:
-                    return "fast";
-                case EncodingSpeed.Medium:
-                    return "medium";
-                case EncodingSpeed.Slow:
-                    return "slow";
-                default:
-                    return "medium";
+                case EncodingSpeed.Fast:    return "fast";
+                case EncodingSpeed.Medium:  return "medium";
+                case EncodingSpeed.Slow:    return "slow";
+                default:                    return "medium";
             }
         }
 
