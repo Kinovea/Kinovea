@@ -36,6 +36,18 @@ namespace Kinovea.Video
         {
             get { return capacity; }
         }
+
+        /// <summary>
+        /// Get or set the tolerance for matching request-space timestamps built
+        /// from pixel location and clock, to media-space timestamps.
+        /// This should be set to half average timestamps per frame.
+        /// </summary>
+        public double Tolerance 
+        {
+            get { return tolerance; }
+            set { tolerance = value; }
+        }
+
         #endregion
 
         #region Members
@@ -46,6 +58,7 @@ namespace Kinovea.Video
         private int capacity = 32;
         private int framesToKeepBehind = 8; // Retention window behind current.
         private VideoFrameDisposer frameDisposer;
+        private double tolerance = 0.0;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -151,50 +164,107 @@ namespace Kinovea.Video
             }
         }
 
-        public void PrepareForNewJob(PlayerState state)
+        
+
+
+        /// <summary>
+        /// Prepare the cache for a new job.
+        /// Look for an acceptable frame near the new job target timestamp.
+        /// Acquires it if found within tolerance.
+        /// Interrupts add and pulse waiters.
+        /// Evicts non-useful frames from the cache.
+        /// Returns whether the target was acquired.
+        /// </summary>
+        public bool PrepareForNewJob(PlayerState state)
         {
-            List<VideoFrame> removed = new List<VideoFrame>();
+            List<VideoFrame> removed = null;
+            bool acquired = false;
 
             lock (sync)
             {
-                if (state.Mode == PlayerStateMode.Playback)
+                if (frames.Count == 0)
                 {
-                    // If we were in non-playback mode, the cache should contain 
-                    // a dense set of frames around the current frame. We can keep them.
+                    log.Debug("Cache is empty. Nothing to evict.");
                 }
                 else
                 {
-                    // We are moving in timestamp or stepped mode.
-                    // This means we may jump to a completely different part of the video.
-                    // For now just evict everything except current.
-                    
-                    // FIXME:
-                    // Check the target/reference timestamp and see
-                    // if we already have frames around it.
-                    // This is very possible when doing step or manual navigation.
-
-                    for (int i = frames.Count - 1; i >= 0; i--)
+                    long target = -1;
+                    if (state.Mode == PlayerStateMode.Playback)
                     {
-                        VideoFrame frame = frames.Values[i];
-                        if (!ReferenceEquals(frame, current))
-                        {
-                            frames.RemoveAt(i);
-                            removed.Add(frame);
-                        }
+                        target = state.StartPlaybackTimestamp;
                     }
+                    else
+                    {
+                        target = state.ReferenceTimestamp;
+                    }
+
+                    VideoFrame closest = FindClosest(target);
+
+                    // If within tolerance, acquire it.
+                    if (Math.Abs(closest.Timestamp - target) <= tolerance)
+                    {
+                        current = closest;
+                        acquired = true;
+                        // TODO: check sparse vs dense.
+                    }
+                    else if (target > current.Timestamp)
+                    {
+                        // Evict anything behind, no retention.
+                        // TODO: if the current cache is sparse but the job requires
+                        // dense cache, we will have to evict ahead as well.
+                        removed = EvictBehind(0);
+                    }
+                    else
+                    {
+                        // We will have to seek back anyway so no point keeping anything.
+                        removed = EvictPurge();
+                    }
+
+                    log.DebugFormat("Job preparation complete. Acquired: {0}. Evicted {1} frames. Cached: {2}. First: [{3}], Curr: [{4}], Last: [{5}]", 
+                        acquired,    
+                        removed == null ? 0 : removed.Count,
+                        frames.Count,
+                        frames.Values[0].Timestamp,
+                        current.Timestamp,
+                        frames.Values[frames.Count-1].Timestamp);
                 }
+
 
                 // Interrupt blocked Add().
                 interruptAdd = true;
                 Monitor.PulseAll(sync);
             }
 
-            foreach (var frame in removed)
+            if (removed != null)
             {
-                DisposeFrame(frame);
+                foreach (var frame in removed)
+                {
+                    DisposeFrame(frame);
+                }
+            }
+
+            return acquired;
+        }
+
+        /// <summary>
+        /// Check if the cache contains a frame with the passed timestamp.
+        /// The timestamp is considered in request-space and will be 
+        /// matched to media-space timestamps with a tolerance.
+        /// Does NOT acquire the frame if found.
+        /// </summary>
+        public bool Contains(long target)
+        {
+            lock (sync)
+            {
+                VideoFrame closest = FindClosest(target);
+                return Math.Abs(closest.Timestamp - target) <= tolerance;
             }
         }
 
+        /// <summary>
+        /// Remove and dispose all frames including the one pointed to by "current".
+        /// Pulse any waiters.
+        /// </summary>
         public void Clear()
         {
             VideoFrame[] framesToDispose;
@@ -215,6 +285,23 @@ namespace Kinovea.Video
                 DisposeFrame(frame);
             }
         }
+        
+        public void Print()
+        {
+            // Print the entire cache.
+            lock (sync)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i < frames.Count; i++)
+                {
+                    VideoFrame frame = frames.Values[i];
+                    stringBuilder.AppendFormat("[{0}] ", frame.Timestamp);
+                }
+
+                log.DebugFormat("Cache ({0}): {1}", frames.Count, stringBuilder.ToString());
+            }
+        }
+        
         #endregion
 
         #region Acquisition methods, move current to a different frame.
@@ -248,8 +335,8 @@ namespace Kinovea.Video
                 //log.DebugFormat("Setting current frame to [{0}].", closest.Timestamp);
                 current = closest;
 
-                // Remove old frames from the cache.
-                evictedFrames = EvictFramesBehindCurrent();
+                // Remove old frames from the cache if outside the retention window.
+                evictedFrames = EvictBehind(framesToKeepBehind);
 
                 // Unblock the decoding thread if it was waiting for space in the cache.
                 if (evictedFrames != null)
@@ -374,6 +461,7 @@ namespace Kinovea.Video
 
             return closest;
         }
+        
         /// <summary>
         /// Find the first frame with a timestamp greater than or equal to the target timestamp.
         /// </summary>
@@ -397,17 +485,17 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Remove one or more old frames from the cache.
+        /// Remove old frames from the cache with a retention window.
         /// Returns the removed frames so they can be disposed outside the lock.
         /// Caller must hold sync.
         /// </summary>
-        private List<VideoFrame> EvictFramesBehindCurrent()
+        private List<VideoFrame> EvictBehind(int framesToKeep)
         {
             if (current == null)
                 return null;
 
             int currentIndex = frames.IndexOfKey(current.Timestamp);
-            int removeCount = currentIndex - framesToKeepBehind;
+            int removeCount = currentIndex - framesToKeep;
             if (removeCount <= 0)
                 return null;
 
@@ -419,7 +507,54 @@ namespace Kinovea.Video
                 removed.Add(frame);
             }
 
-            //log.DebugFormat("Evicted {0} frames behind current. Cached: {1}.", removeCount, frames.Count);
+            log.DebugFormat("Evicted {0} frames behind current. Cached: {1}.", removeCount, frames.Count);
+            return removed;
+        }
+
+        /// <summary>
+        /// Remove future frames from the cache.
+        /// </summary>
+        /// <param name="framesToKeep"></param>
+        /// <returns></returns>
+        private List<VideoFrame> EvictAhead(int framesToKeep)
+        {
+            if (current == null)
+                return null;
+
+            int currentIndex = frames.IndexOfKey(current.Timestamp);
+            int removeCount = frames.Count - (currentIndex + 1 + framesToKeep);
+            if (removeCount <= 0)
+                return null;
+
+            List<VideoFrame> removed = new List<VideoFrame>();
+            for (int i = 0; i < removeCount; i++)
+            {
+                VideoFrame frame = frames.Values[frames.Count - 1];
+                frames.RemoveAt(frames.Count - 1);
+                removed.Add(frame);
+            }
+
+            log.DebugFormat("Evicted {0} frames ahead of current. Cached: {1}.", removeCount, frames.Count);
+            return removed;
+        }
+
+        /// <summary>
+        /// Remove all frames except the one pointed to by "current".
+        /// Returns the removed frames so they can be disposed outside the lock.
+        /// Caller must hold sync.
+        /// </summary>
+        private List<VideoFrame> EvictPurge()
+        {
+            List<VideoFrame> removed = new List<VideoFrame>();
+            for (int i = frames.Count - 1; i >= 0; i--)
+            {
+                VideoFrame frame = frames.Values[i];
+                if (!ReferenceEquals(frame, current))
+                {
+                    frames.RemoveAt(i);
+                    removed.Add(frame);
+                }
+            }
 
             return removed;
         }

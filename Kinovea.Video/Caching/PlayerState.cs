@@ -84,9 +84,9 @@ namespace Kinovea.Video
         public override string ToString()
         {
             if (Mode == PlayerStateMode.Playback)
-                return string.Format("{0} [{1}]", Id, Mode);
+                return string.Format("#{0} [Mode: {1}, Ref: ~{2}]", Id, Mode, StartPlaybackTimestamp);
             else
-                return string.Format("{0} [{1}] [{2}]", Id, Mode, ReferenceTimestamp);
+                return string.Format("#{0} [Mode: {1}, Ref: ~{2}]", Id, Mode, ReferenceTimestamp);
         }
 
     }

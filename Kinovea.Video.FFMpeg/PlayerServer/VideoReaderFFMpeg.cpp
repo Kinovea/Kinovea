@@ -425,6 +425,8 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mVideoInfo.FrameIntervalMilliseconds = 1000.0 / mVideoInfo.FramesPerSeconds;
     mVideoInfo.AverageTimeStampsPerFrame = mVideoInfo.AverageTimeStampsPerSeconds / mVideoInfo.FramesPerSeconds;
 
+    mPreBuffer->Tolerance = mVideoInfo.AverageTimeStampsPerFrame / 2.0;
+
     // Initial working zone representing the whole video.
     // For the end timestamp we can calculate from either frame count or duration.
     // Compute both and use the max.
@@ -713,6 +715,8 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
         throw gcnew InvalidProgramException("PlayerDemand() called while not prebuffering.");
     }
 
+    bool acquired = false;
+
     // Convert the player request into a decode job.
     // If the decoder thread is not currently blocked in Add(), 
     // it will eventually see this and abandon its current job.
@@ -724,8 +728,12 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
         // This will interrupt Add() if the decoder thread is waiting there.
-        log->DebugFormat("Preparing prebuffer for decode job {0}.", requestedPlayerState);
-        mPreBuffer->PrepareForNewJob(requestedPlayerState);
+        log->DebugFormat("Preparing prebuffer for decode job {0}. Tolerance: [{1:0.000}]", 
+            requestedPlayerState, mPreBuffer->Tolerance);
+
+        mPreBuffer->Print();
+
+        acquired = mPreBuffer->PrepareForNewJob(requestedPlayerState);
     }
     else
     {
@@ -746,12 +754,12 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     {
         // Our work is done here.
         // The prebuffer should be working on the new job by now.
-        return false;
+        return acquired;
     }
 
     // TODO: For other modes handle the job synchronously.
 
-    return true;
+    return acquired;
 }
 
 
@@ -1658,6 +1666,9 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
 bool VideoReaderFFMpeg::ShouldStoreFrame()
 {
+    if (mCachingMode != VideoDecodingMode::PreBuffering)
+        return true;
+
     if (mWorkingPlayerState->Mode != PlayerStateMode::Playback)
         return true;
 
@@ -1684,6 +1695,11 @@ bool VideoReaderFFMpeg::ShouldStoreFrame()
     double timestampsPerPublish = frames * mVideoInfo.AverageTimeStampsPerFrame;
     int64_t nextPublishTimestamp = (int64_t)Math::Round(lastPublished + timestampsPerPublish);
     bool shouldPublish = mDecodedTimestamp >= nextPublishTimestamp;
+
+    if (!shouldPublish)
+    {
+        log->DebugFormat("Skipping store of [{0}]. xxxxxxxxxxxxx", mDecodedTimestamp);
+    }
 
     //log->WarnFormat("Policy: {0}. Decoded frame [{1}]. Last published [{2}]. Next presentation [{3}]. Publish: {4}.", 
     //    mDecodingPolicy.ToString(), mDecodedTimestamp, lastPublished, nextPublishTimestamp, shouldPublish);
@@ -2045,6 +2061,8 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     // If we are in mode prebuffer, we are in a background thread and this will potentially block if the 
     // cache is full.
     mFrameContainer->Add(vf);
+
+    // The add may have been interrupted.
 
     mCurrentTimestamp = mDecodedTimestamp;
     //log->DebugFormat("Stored frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
@@ -2699,10 +2717,10 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
     long expectedTimestamp = this->GetPlaybackTimestamp(mWorkingPlayerState);
     double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-    String^ logLine = String::Format("Predicted player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame:{5}.",
+    String^ logLine = String::Format("UpdateDecodePolicy: estimated player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame:{5}.",
         expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
 
-    log->DebugFormat(logLine);
+    //log->DebugFormat(logLine);
             
     // Check worst case scenario first.
     if (lag > mSeekAheadLagThreshold)
@@ -2804,7 +2822,7 @@ void VideoReaderFFMpeg::ImplementDecodingPolicy(DecodingPolicy policy)
     if (policy == mDecodingPolicy)
         return;
 
-    log->DebugFormat("Updating policy: {0} -> {1}.", mDecodingPolicy, policy);
+    log->DebugFormat("Updating decoding policy: {0} -> {1}.", mDecodingPolicy, policy);
     mDecodingPolicy = policy;
 
     // Note: we can change mVideoCodecCtx->skip_frame at any time 
@@ -2830,12 +2848,15 @@ void VideoReaderFFMpeg::ImplementDecodingPolicy(DecodingPolicy policy)
 }
 
 
-
 void VideoReaderFFMpeg::BeginJob(PlayerState^ state)
 {
-
-    // The decoding thread has abandonned all work from the old job. 
-    // The reader has finished preparing the cache for the new job.
+    //-------------------------------
+    // Runs in the prebuffer thread.
+    //-------------------------------
+    
+    // By this point we have abandonned all work from the old job,
+    // the reader has finished preparing the cache for the new job,
+    // which may have resulted in the eviction of one or more frames.
     // We can now officially start working on the new job.
 
     // Make sure the cache accepts frames.
@@ -2846,18 +2867,98 @@ void VideoReaderFFMpeg::BeginJob(PlayerState^ state)
     ImplementDecodingPolicy(DecodingPolicy::Normal);
 
     // Initialize the decoder position.
-    ReadResult res;
+    // In general we distinguish 4 cases:
+    // 1. Target is already present in cache: nothing to do.
+    // 2. Target is close ahead: keep decoding until we reach it.
+    // 3. Target is behind: seek.
+    // 4. Target is far ahead: seek.
 
+    log->DebugFormat("BeginJob {0}, Last decoded: [{1}], Last stored: [{2}].",
+        state, mDecodedTimestamp, mCurrentTimestamp);
+
+    mPreBuffer->Print();
+
+    // In theory at this point if the cache has the target timestamp it should 
+    // already be set as Current.
+
+    ReadResult res;
     switch (state->Mode)
     {
     case PlayerStateMode::Playback:
     {
-        res = ReadFrame(state->StartPlaybackTimestamp, 1);
+        long target = state->StartPlaybackTimestamp;
+        if (mPreBuffer->Contains(target))
+        {
+            // Continue decoding from wherever we are.
+            log->DebugFormat("BeginJob {0}, target is in cache. Continue decoding from [{1}].",
+                state, mCurrentTimestamp);
+        }
+        else
+        {
+            double lag = (target - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
+
+            if (lag > 0 && lag < mSeekAheadLagThreshold)
+            {
+                log->DebugFormat("BeginJob {0}, target is slightly ahead. Continue decoding from [{1}]. Lag: {2:0.000}s.", 
+                    state, mCurrentTimestamp, lag);
+
+                // TODO: Decode until we get there.
+            }
+            else if (lag > 0)
+            {
+                log->WarnFormat("BeginJob {0}, target is far ahead. Seek to [{1}]. Lag: {2:0.000}s.",
+                    state, target, lag);
+
+                res = ReadFrame(target, 1);
+            }
+            else
+            {
+                log->WarnFormat("BeginJob {0}, target is behind. Seek to [{1}]. Lag: {2:0.000}s.",
+                    state, target, lag);
+
+                res = ReadFrame(target, 1);
+            }
+        }
+
         break;
     }
     case PlayerStateMode::Timestamp:
     {
-        res = ReadFrame(state->ReferenceTimestamp, 1);
+        long target = state->ReferenceTimestamp;
+        if (mPreBuffer->Contains(target))
+        {
+            // Continue decoding from wherever we are.
+            log->DebugFormat("BeginJob {0}, target is in cache. Continue decoding from [{1}].", 
+                state, mCurrentTimestamp);
+        }
+        else
+        {
+            double lag = (target - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
+
+            if (lag > 0 && lag < mSeekAheadLagThreshold)
+            {
+                log->DebugFormat("BeginJob {0}, target is slightly ahead. Continue decoding from [{1}]. Lag: {2:0.000}s.", 
+                    state, mCurrentTimestamp, lag);
+
+                // TODO: Decode until we get there.
+
+            }
+            else if (lag > 0)
+            {
+                log->WarnFormat("BeginJob {0}, target is far ahead. Seek to [{1}]. Lag: {2:0.000}s.", 
+                    state, target, lag);
+
+                res = ReadFrame(target, 1);
+            }
+            else
+            {
+                log->WarnFormat("BeginJob {0}, target is behind. Seek to [{1}]. Lag: {2:0.000}s.",
+                    state, target, lag);
+
+                res = ReadFrame(target, 1);
+            }
+        }
+
         break;
     }
     case PlayerStateMode::StepForward:
@@ -2872,6 +2973,12 @@ void VideoReaderFFMpeg::BeginJob(PlayerState^ state)
         // Check if we already have the frame.
     }
     }
+
+
+    // In theory at this point we should have the frame in cache.
+    // Either it was already there or we decoded it or seeked to it.
+    // FIXME: this will be true only when we fix the functions above that decode but don't seek.
+    // TODO: report to the player.
 
 }
 

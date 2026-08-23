@@ -987,10 +987,6 @@ namespace Kinovea.ScreenManager
             // Called from ScreenManager.
             ShowBorder(_bActive);
         }
-        public void StopPlaying()
-        {
-            StopPlaying(true);
-        }
         public void ForcePosition(long timestamp, bool allowUIUpdate)
         {
             framesToDecode = 1;
@@ -2856,6 +2852,12 @@ namespace Kinovea.ScreenManager
             isCurrentlyPlaying = true;
         }
 
+        /// <summary>
+        /// Stop the playback timer.
+        /// Does not create a player request by itself, the caller is responsible
+        /// for this as it knows whether the playback is really being stopped
+        /// or just briefly paused while we change the framerate.
+        /// </summary>
         private void StopMultimediaTimer()
         {
             if (multimediaTimerID != 0)
@@ -2869,7 +2871,19 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.UnpauseAutosave();
 
             // Whoever called this should move the playhead to the right place if needed.
-            log.DebugFormat("Playback paused. Avg frame time: {0:0.000} ms. Drop ratio: {1:0.00}", loopWatcher.Average, dropWatcher.Ratio);
+            log.DebugFormat("Avg frame time: {0:0.000} ms. <<<<<<<<<", loopWatcher.Average);
+        }
+
+        private double GetPlaybackElapsedTimestamps()
+        {
+            // Compute expected timestamp for the next frame to be presented.
+            double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            long now = Stopwatch.GetTimestamp();
+            double realElapsedSeconds = (double)(now - playerState.StartPlaybackEpoch) / Stopwatch.Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / playerState.PlaybackFrameInterval;
+            double elapsedTimestamps = elapsedFrames * avgtspf;
+
+            return elapsedTimestamps;
         }
         
         private void MultimediaTimer_Tick(uint uTimerID, uint uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2)
@@ -2912,12 +2926,7 @@ namespace Kinovea.ScreenManager
                 return;   
             }
 
-            // Compute expected timestamp for the next frame to be presented.
-            double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-            long now = Stopwatch.GetTimestamp();
-            double realElapsedSeconds = (double)(now - playerState.StartPlaybackEpoch) / Stopwatch.Frequency;
-            double elapsedFrames = realElapsedSeconds * 1000.0 / playerState.PlaybackFrameInterval;
-            double elapsedTimestamps = elapsedFrames * avgtspf;
+            double elapsedTimestamps = GetPlaybackElapsedTimestamps();
 
             // There should be only two cases.
             // - We are tracking: force frame by frame and disregard synchronization with the clock.
@@ -2927,15 +2936,16 @@ namespace Kinovea.ScreenManager
             bool isTracking = m_FrameServer.Metadata.AnyTracking;
             if (isTracking)
             {
-                expectedTimestamp = (long)(currentTimestamp + avgtspf);
+                expectedTimestamp = (long)(currentTimestamp + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
             else
             {
                 expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
-                //log.DebugFormat("Playback tick. Current: [{0}]. Target: [{1}].", currentTimestamp, expectedTimestamp);
+                //log.DebugFormat("Playback tick. Current: [{0}]. Target: [~{1}].", currentTimestamp, expectedTimestamp);
             }
 
             // Bail out if we are already there.
+            // FIXME: don't do this if tracking, this may not be the real next frame.
             if (expectedTimestamp == currentTimestamp)
             {
                 return;
@@ -3085,7 +3095,9 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkers();
 
             if (isCurrentlyPlaying && m_FrameServer.Metadata.AnyTrackFailed())
-                StopPlaying(true);
+            {
+                StopPlaying();
+            }
 
             UpdateAllowPreScaling(true);
         }
@@ -3157,7 +3169,7 @@ namespace Kinovea.ScreenManager
 
             bool moved = false;
 
-            log.DebugFormat("PresentFrame called. Target: {0}. Current: {1}. Frames to decode: {2}. Refresh in place: {3}.", 
+            log.DebugFormat("PresentFrame called. Target: [~{0}]. Current: [{1}]. Frames to decode: {2}. Refresh in place: {3}.", 
                 targetTimestamp, currentTimestamp, framesToDecode, refreshInPlace);
 
 
@@ -3224,11 +3236,25 @@ namespace Kinovea.ScreenManager
             ReportForSyncMerge();
         }
 
-        private void StopPlaying(bool _bAllowUIUpdate)
+        public void StopPlaying()
         {
-            if (!m_FrameServer.Loaded || !isCurrentlyPlaying)
+            if (!m_FrameServer.Loaded)
                 return;
 
+            if (!isCurrentlyPlaying || playerState.Mode != PlayerStateMode.Playback)
+                return;
+            
+            // Estimate where we should be at this time.
+            double elapsedTimestamps = GetPlaybackElapsedTimestamps();
+            long expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
+            if (expectedTimestamp > m_iSelEnd)
+            {
+                expectedTimestamp = m_iSelEnd;
+            }
+
+            log.DebugFormat("Playback paused. Expected: [~{0}], Current: [{1}].", 
+                expectedTimestamp, currentTimestamp);
+            
             StopMultimediaTimer();
 
             lock (lockBusyRendering)
@@ -3236,18 +3262,12 @@ namespace Kinovea.ScreenManager
                 isBusyRendering = false;
             }
 
-            // Lightweight present request.
-            // The reader should already have been alerted of the stop and 
-            // already prepared the switch to frame by frame.
-            //framesToDecode = 0;
-            m_FrameServer.VideoReader.MoveTo(currentTimestamp);
+            playerState = MakeFrameByFramePlayerState(expectedTimestamp);
+            PresentFrame(expectedTimestamp, true);
 
-            if (_bAllowUIUpdate)
-            {
-                buttonPlay.Image = Resources.flatplay;
-                DoInvalidate();
-                UpdatePositionUI();
-            }
+            buttonPlay.Image = Resources.flatplay;
+            DoInvalidate();
+            UpdatePositionUI();
         }
 
         /// <summary>
