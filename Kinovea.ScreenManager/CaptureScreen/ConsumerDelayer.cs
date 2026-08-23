@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
             this.delayer = delayer;
         }
 
-        public SaveResult StartRecord(string filename, double interval, int age, ImageRotation rotation)
+        public RecordingResult StartRecord(string filename, double interval, int age, ImageRotation rotation)
         {
             //-----------------------
             // Runs on the UI thread.
@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
 
             log.DebugFormat("Frame budget for writer [{0}]: {1:0.000} ms.", shortId, interval);
-            SaveResult result = writer.OpenSavingContext(filename, info, formatString, delayerImageDescriptor.Format, uncompressed, interval, fileInterval, rotation);
+            RecordingResult result = writer.OpenSavingContext(filename, info, formatString, delayerImageDescriptor.Format, uncompressed, interval, fileInterval, rotation);
 
             recording = true;
 
@@ -174,7 +174,9 @@ namespace Kinovea.ScreenManager
                 // Compositers (e.g: quadrants with different ages) are only supported in display.
                 bool copied = delayer.GetStrong(age, delayedFrame);
                 if (copied)
+                {
                     writer.SaveFrame(delayerImageDescriptor.Format, delayedFrame.Buffer, delayedFrame.PayloadLength, delayerImageDescriptor.TopDown);
+                }
             }
 
             Ellapsed = stopwatch.ElapsedMilliseconds - then;

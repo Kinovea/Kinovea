@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
         private PlayerScreen leftPlayer;
         private PlayerScreen rightPlayer;
         private DualPlayerController dualPlayer;
-        private SaveResult saveResult;
+        private VideoExportResult exportResult;
         
         private CommonTimeline commonTimeline;
         private double fileFrameInterval;
@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
             s.RenderingSize = bmpComposite.Size;
 
             WriterFFMpegCLI w = new WriterFFMpegCLI();
-            saveResult = w.Save(s, images, worker);
+            exportResult = w.Save(s, images, worker);
         }
 
         /// <summary>

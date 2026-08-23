@@ -612,38 +612,12 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void ReportError(SaveResult saveResult)
+        public void ReportError(VideoExportResult exportResult)
         {
-            switch(saveResult)
-            {
-                case SaveResult.Cancelled:
-                    // No error message if the user cancelled herself.
-                    break;
-                
-                case SaveResult.FileHeaderNotWritten:
-                case SaveResult.FileNotOpened:
-                    DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_FileError);
-                    break;
-                
-                case SaveResult.EncoderNotFound:
-                case SaveResult.EncoderNotOpened:
-                case SaveResult.EncoderParametersNotAllocated:
-                case SaveResult.EncoderParametersNotSet:
-                case SaveResult.InputFrameNotAllocated:
-                case SaveResult.MuxerNotFound:
-                case SaveResult.MuxerParametersNotAllocated:
-                case SaveResult.MuxerParametersNotSet:
-                case SaveResult.VideoStreamNotCreated:
-                case SaveResult.InputError:
-                case SaveResult.UnknownError:
-                default:
-                    DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_LowLevelError);
-                    break;
-            }
-        }
-        
-        private void DisplayErrorMessage(string error)
-        {
+            if (exportResult == VideoExportResult.Cancelled)
+                return;
+
+            string error = ScreenManagerLang.Error_SaveMovie_LowLevelError;
             MessageBox.Show(
                 error.Replace("\\n", "\n"),
                 ScreenManagerLang.Error_SaveMovie_Title,

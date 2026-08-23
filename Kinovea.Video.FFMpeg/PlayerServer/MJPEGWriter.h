@@ -71,13 +71,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Configure the muxer, stream and codec.
         /// Configure the scaling context for conversion from source to target pixel format.
         /// Write the file header.
-        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation);
+        RecordingResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation);
         
         /// Close the saving context and free any allocated resources.
-        SaveResult CloseSavingContext(bool _bEncodingSuccess);
+        RecordingResult CloseSavingContext(bool _bEncodingSuccess);
                        
         /// Encode and write one frame to the file.
-        SaveResult SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
+        RecordingResult SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
     private:
         static int GreatestCommonDenominator(int a, int b);

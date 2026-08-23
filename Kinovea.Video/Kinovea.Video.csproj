@@ -185,8 +185,10 @@
     <Compile Include="Caching\SingleFrame.cs" />
     <Compile Include="Caching\PreBuffer.cs" />
     <Compile Include="OpenVideoResult.cs" />
+    <Compile Include="RecordingResult.cs" />
     <Compile Include="SaveResult.cs" />
     <Compile Include="FitHelper.cs" />
+    <Compile Include="VideoExportResult.cs" />
     <Compile Include="VideoGeometry\VideoGeometry.cs" />
     <Compile Include="VideoGeometry\VideoGeometryRequest.cs" />
     <Compile Include="VideoReaders\VideoCapabilities.cs" />
@@ -199,7 +201,7 @@
     <Compile Include="Caching\ThreadCanceler.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Fraction.cs" />
-    <Compile Include="SavingSettings.cs" />
+    <Compile Include="VideoExportSettings.cs" />
     <Compile Include="VideoReaders\SupportedExtensionsAttribute.cs" />
     <Compile Include="Caching\VideoFrame.cs" />
     <Compile Include="VideoInfo.cs" />

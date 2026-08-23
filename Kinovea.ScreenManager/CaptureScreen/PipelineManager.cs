@@ -107,17 +107,17 @@ namespace Kinovea.ScreenManager
             this.filepath = filepath;
         }
 
-        public SaveResult StartRecord(string filepath, double interval, int age, ImageRotation rotation)
+        public RecordingResult StartRecord(string filepath, double interval, int age, ImageRotation rotation)
         {
             if (consumerRealtime == null && consumerDelayer == null)
                 throw new InvalidProgramException();
 
             pipeline.ResetDrops();
-            SaveResult result;
+            RecordingResult result;
             if (consumerRealtime != null)
             {
                 result = consumerRealtime.StartRecord(filepath, interval, rotation);
-                if (result == SaveResult.Success)
+                if (result == RecordingResult.Success)
                     consumerRealtime.Activate();
             }
             else

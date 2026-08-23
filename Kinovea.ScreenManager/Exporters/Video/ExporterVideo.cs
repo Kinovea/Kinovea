@@ -22,7 +22,7 @@ namespace Kinovea.ScreenManager
         private BackgroundWorker worker = new BackgroundWorker();
         private FormProgressBar formProgressBar = new FormProgressBar(true);
         private PlayerScreen player;
-        private SaveResult saveResult;
+        private VideoExportResult exportResult;
 
         public ExporterVideo()
         {
@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
 
             // Export loop.
             WriterFFMpegCLI w = new WriterFFMpegCLI();
-            saveResult = w.Save(s, images, worker);
+            exportResult = w.Save(s, images, worker);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -104,9 +104,9 @@ namespace Kinovea.ScreenManager
             player.view.AfterExportVideo();
             player.FrameServer.AfterSave();
 
-            if (saveResult != SaveResult.Success)
+            if (exportResult != VideoExportResult.Success)
             {
-                player.FrameServer.ReportError(saveResult);
+                player.FrameServer.ReportError(exportResult);
             }
         }
 

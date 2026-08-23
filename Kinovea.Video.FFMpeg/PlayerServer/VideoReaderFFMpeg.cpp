@@ -294,7 +294,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
             log->ErrorFormat("Stream info not found. Error: {0}.", res);
             return OpenVideoResult::StreamInfoNotFound;
         }
-    
+
         mVideoStreamIndex = av_find_best_stream(formatCtx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
         if (mVideoStreamIndex < 0)
         {
@@ -376,7 +376,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         }
         else
         {
-            videoCodecCtx->thread_count = 1; 
+            videoCodecCtx->thread_count = 1;
         }
     }
     

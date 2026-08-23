@@ -27,6 +27,7 @@ using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 using namespace System::Text;
 
+using namespace Kinovea::Services;
 using namespace Kinovea::Video;
 using namespace Kinovea::Video::FFMpeg;
 
@@ -46,7 +47,7 @@ MJPEGWriter::!MJPEGWriter()
 /// MJPEGWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation)
+RecordingResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, Kinovea::Services::ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation)
 {
     //---------------------------------------------------------------------------------------------------
     // Set up the saving context.
@@ -54,7 +55,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
     // This will be used by the actual saving function.
     //---------------------------------------------------------------------------------------------------
 
-    SaveResult result = SaveResult::Success;
+    RecordingResult result = RecordingResult::Success;
     m_swEncoding->Start();
     m_swWrite->Start();
 
@@ -90,7 +91,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         const AVOutputFormat* format = av_guess_format(pFormatString, nullptr, nullptr);
         if (format == nullptr) 
         {
-            result = SaveResult::MuxerNotFound;
+            result = RecordingResult::MuxerNotFound;
             Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
             log->Error("Muxer not found");
             break;
@@ -104,7 +105,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         int averror = avformat_alloc_output_context2(pinOutputFormatContext, format, nullptr, nullptr);
         if (averror < 0)
         {
-            result = SaveResult::MuxerParametersNotAllocated;
+            result = RecordingResult::MuxerParametersNotAllocated;
             LogFFMpegError("Failed to allocate output context", averror);
             break;
         }
@@ -120,7 +121,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         AVCodecID codecId = _uncompressed ? AV_CODEC_ID_RAWVIDEO : AV_CODEC_ID_MJPEG;
         if ((m_SavingContext->pOutputCodec = avcodec_find_encoder(codecId)) == nullptr)
         {
-            result = SaveResult::EncoderNotFound;
+            result = RecordingResult::EncoderNotFound;
             log->Error("Encoder not found");
             break;
         }
@@ -129,7 +130,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, m_SavingContext->pOutputCodec);
         if (m_SavingContext->pOutputVideoStream == nullptr) 
         {
-            result = SaveResult::VideoStreamNotCreated;
+            result = RecordingResult::VideoStreamNotCreated;
             log->Error("Video stream not created");
             break;
         }
@@ -155,7 +156,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         // Configure encoder.
         if(!SetupEncoder(m_SavingContext, _imageFormat))
         {
-            result = SaveResult::EncoderParametersNotSet;
+            result = RecordingResult::EncoderParametersNotSet;
             log->Error("Encoder parameters not set");
             break;
         }
@@ -167,7 +168,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         averror = avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr);
         if (averror < 0)
         {
-            result = SaveResult::EncoderNotOpened;
+            result = RecordingResult::EncoderNotOpened;
             LogFFMpegError("Encoder not opened", averror);
             break;
         }
@@ -178,7 +179,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         averror = avcodec_parameters_from_context(m_SavingContext->pOutputVideoStream->codecpar, m_SavingContext->pOutputCodecContext);
         if (averror < 0) 
         {
-            result = SaveResult::EncoderParametersNotSet;
+            result = RecordingResult::EncoderParametersNotSet;
             LogFFMpegError("Failed to copy encoder parameters to stream", averror);
             break;
         }
@@ -195,7 +196,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         averror = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, pszFilePath, AVIO_FLAG_WRITE);
         if (averror < 0) 
         {
-            result = SaveResult::FileNotOpened;
+            result = RecordingResult::FileNotOpened;
             LogFFMpegError("File not opened", averror);
             break;
         }
@@ -206,7 +207,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         averror = avformat_write_header(m_SavingContext->pOutputFormatContext, nullptr);
         if (averror < 0)
         {
-            result = SaveResult::FileHeaderNotWritten;
+            result = RecordingResult::FileHeaderNotWritten;
             LogFFMpegError("File header not written", averror);
             break;
         }
@@ -227,7 +228,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         m_SavingContext->pPacket = av_packet_alloc();
         if (!m_SavingContext->pSourceFrame || !m_SavingContext->pConvertedFrame || !m_SavingContext->pPacket)
         {
-            result = SaveResult::InputFrameNotAllocated;
+            result = RecordingResult::InputFrameNotAllocated;
             log->Error("Frames not allocated");
             break;
         }
@@ -305,11 +306,11 @@ void MJPEGWriter::SanityCheck(AVFormatContext* s)
 }
 
 
-SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
+RecordingResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
 {
     log->Debug("Closing the saving context.");
 
-    SaveResult result = SaveResult::Success;
+    RecordingResult result = RecordingResult::Success;
     m_swEncoding->Stop();
     m_swWrite->Stop();
 
@@ -350,9 +351,9 @@ SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
 }
 
 
-SaveResult MJPEGWriter::SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown)
+RecordingResult MJPEGWriter::SaveFrame(Kinovea::Services::ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown)
 {
-    SaveResult result = SaveResult::Success;
+    RecordingResult result = RecordingResult::Success;
     bool saved = false;
 
     bool doNotEncode = 
@@ -371,7 +372,7 @@ SaveResult MJPEGWriter::SaveFrame(Kinovea::Services::ImageFormat format, array<S
     if(!saved)
     {
         log->Error("error while writing output frame");
-        result = SaveResult::UnknownError;
+        result = RecordingResult::UnknownError;
     }
 
     return result;

@@ -20,22 +20,22 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Saves the passed images to a video, based on the settings.
+        /// Export the passed images to a video, based on the settings.
         /// Runs on the background thread of the worker.
         /// Checks for cancellation and reports progress to the worker.
         /// </summary>
-        public SaveResult Save(VideoExportSettings settings, IEnumerable<Bitmap> images, BackgroundWorker worker)
+        public VideoExportResult Save(VideoExportSettings settings, IEnumerable<Bitmap> images, BackgroundWorker worker)
         {
             if (settings == null || images == null || worker == null)
             {
-                return SaveResult.UnknownError;
+                return VideoExportResult.UnknownError;
             }
 
             string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
             if (!File.Exists(ffmpegPath))
             {
                 log.ErrorFormat("ffmpeg.exe not found: {0}", ffmpegPath);
-                return SaveResult.FFMpegNotFound;
+                return VideoExportResult.FFMpegNotFound;
             }
 
             using (IEnumerator<Bitmap> enumerator = images.GetEnumerator())
@@ -49,13 +49,13 @@ namespace Kinovea.ScreenManager
                 catch (Exception ex)
                 {
                     log.ErrorFormat("Error enumerating images for export: {0}", ex);
-                    return SaveResult.InputError;
+                    return VideoExportResult.InputError;
                 }
 
                 if (!hasFrame || enumerator.Current == null)
                 {
                     log.ErrorFormat("Image enumeration returned no frames.");
-                    return SaveResult.InputError;
+                    return VideoExportResult.InputError;
                 }
 
                 // TODO: get output size from user.
@@ -80,12 +80,12 @@ namespace Kinovea.ScreenManager
                 using (Process ffmpeg = new Process())
                 {
                     ffmpeg.StartInfo = startInfo;
-                    return SaveFrames(ffmpeg, settings, enumerator, inputSize, worker);
+                    return ExportFrames(ffmpeg, settings, enumerator, inputSize, worker);
                 }
             }
         }
 
-        private static SaveResult SaveFrames(Process ffmpeg, VideoExportSettings settings, IEnumerator<Bitmap> enumerator, Size inputSize, BackgroundWorker worker)
+        private static VideoExportResult ExportFrames(Process ffmpeg, VideoExportSettings settings, IEnumerator<Bitmap> enumerator, Size inputSize, BackgroundWorker worker)
         {
             bool processStarted = false;
             Task<string> stderrTask = null;
@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
                 if (!ffmpeg.Start())
                 {
                     log.ErrorFormat("Could not start ffmpeg.exe");
-                    return SaveResult.FFMpegNotStarted;
+                    return VideoExportResult.FFMpegNotStarted;
                 }
 
                 processStarted = true;
@@ -147,24 +147,24 @@ namespace Kinovea.ScreenManager
                 if (cancelled)
                 {
                     DeleteTemporaryFile(settings.File);
-                    return SaveResult.Cancelled;
+                    return VideoExportResult.Cancelled;
                 }
 
                 if (ffmpeg.ExitCode != 0)
                 {
                     log.ErrorFormat("ffmpeg exited with code {0}. Stderr: {1}", ffmpeg.ExitCode, stderr);
                     DeleteTemporaryFile(settings.File);
-                    return SaveResult.FFMpegError;
+                    return VideoExportResult.FFMpegError;
                 }
 
-                return SaveResult.Success;
+                return VideoExportResult.Success;
             }
             catch (Win32Exception ex)
             {
                 log.ErrorFormat(ex.ToString());
                 EnsureProcessTerminated(ffmpeg);
                 DeleteTemporaryFile(settings.File);
-                return SaveResult.FFMpegError;
+                return VideoExportResult.FFMpegError;
             }
             catch (Exception)
             {
@@ -176,7 +176,7 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat(stderr);
 
                 DeleteTemporaryFile(settings.File);
-                return SaveResult.FFMpegError;
+                return VideoExportResult.FFMpegError;
             }
             finally
             {

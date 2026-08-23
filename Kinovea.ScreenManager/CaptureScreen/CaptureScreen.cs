@@ -1755,7 +1755,7 @@ namespace Kinovea.ScreenManager
                 1000.0f / displayTimer.Interval);
             log.DebugFormat("--------------------------------------------------");
 
-            SaveResult result;
+            RecordingResult result;
             double framerate = cameraGrabber.Framerate;
             if (framerate == 0)
             {
@@ -1776,7 +1776,7 @@ namespace Kinovea.ScreenManager
                 {
                     double interval = 1000.0 / framerate;
                     result = pipelineManager.StartRecord(path, interval, delay, ImageRotation);
-                    recording = result == SaveResult.Success;
+                    recording = result == RecordingResult.Success;
                 }
                 else
                 {
@@ -1970,9 +1970,9 @@ namespace Kinovea.ScreenManager
             double interval = 1000.0 / framerate;
             string formatString = FilesystemHelper.GetFormatStringCapture(uncompressed);
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
-            SaveResult openResult = writer.OpenSavingContext(path, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval, ImageRotation);
+            RecordingResult openResult = writer.OpenSavingContext(path, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval, ImageRotation);
 
-            if (openResult != SaveResult.Success)
+            if (openResult != RecordingResult.Success)
                 return;
 
             // Find the section of the buffer we need to save.
