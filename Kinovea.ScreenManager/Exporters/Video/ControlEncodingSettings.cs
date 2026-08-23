@@ -56,8 +56,8 @@ namespace Kinovea.ScreenManager.Exporters.Video
             lblEncodingQuality.Text = "Encoding quality:";
             cbEncodingQuality.Items.Add("Perceptually lossless");
             cbEncodingQuality.Items.Add("High");
+            cbEncodingQuality.Items.Add("Good");
             cbEncodingQuality.Items.Add("Medium");
-            cbEncodingQuality.Items.Add("Low");
             cbEncodingQuality.SelectedIndex = 1;
 
             // Encoding speed.

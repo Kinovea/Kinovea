@@ -94,6 +94,7 @@ namespace Kinovea.ScreenManager
 
             writer = new MJPEGWriter();
 
+            EncodingQuality quality = PreferencesManager.CapturePreferences.EncodingQuality;
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && delayerImageDescriptor.Format != Kinovea.Services.ImageFormat.JPEG;
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
 
@@ -102,7 +103,7 @@ namespace Kinovea.ScreenManager
             RecordingSettings settings = new RecordingSettings();
             settings.FilePath = filename;
             settings.ImageSize = new Size(delayerImageDescriptor.Width, delayerImageDescriptor.Height);
-            settings.Quality = 2;
+            settings.Quality = ExportProfile.GetMJPEGQuality(quality);
             settings.ImageFormat = delayerImageDescriptor.Format;
             settings.Uncompressed = uncompressed;
             settings.FrameInterval = interval;

@@ -72,6 +72,11 @@ namespace Kinovea.Services
             get { BeforeRead(); return saveUncompressedVideo; }
             set { saveUncompressedVideo = value; Save(); }
         }
+        public EncodingQuality EncodingQuality
+        {
+            get { BeforeRead(); return encodingQuality; }
+            set { encodingQuality = value; Save(); }
+        }
         public CaptureAutomationConfiguration CaptureAutomationConfiguration
         {
             get { BeforeRead(); return captureAutomationConfiguration; }
@@ -124,6 +129,7 @@ namespace Kinovea.Services
         private double displaySynchronizationFramerate = 25.0;
         private CaptureRecordingMode recordingMode = CaptureRecordingMode.Delay;
         private bool saveUncompressedVideo;
+        private EncodingQuality encodingQuality = EncodingQuality.High;
         private bool verboseStats = false;
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
@@ -229,7 +235,8 @@ namespace Kinovea.Services
             writer.WriteElementString("CaptureRecordingMode", recordingMode.ToString());
             writer.WriteElementString("VerboseStats", verboseStats ? "true" : "false");
             writer.WriteElementString("SaveUncompressedVideo", saveUncompressedVideo ? "true" : "false");
-            
+            writer.WriteElementString("EncodingQuality", encodingQuality.ToString());
+
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
             if(cameraBlurbs.Count > 0)
@@ -290,6 +297,10 @@ namespace Kinovea.Services
                         break;
                     case "SaveUncompressedVideo":
                         saveUncompressedVideo = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "EncodingQuality":
+                        string encodingQualityString = reader.ReadElementContentAsString();
+                        encodingQuality = (EncodingQuality)Enum.Parse(typeof(EncodingQuality), encodingQualityString);
                         break;
                     case "VerboseStats":
                         verboseStats = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

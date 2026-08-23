@@ -21,11 +21,11 @@ namespace Kinovea.Services
         /// <summary>
         /// Social media
         /// </summary>
-        Medium,
+        Good,
 
         /// <summary>
         /// Preview, thumbnail.
         /// </summary>
-        Low,
+        Medium,
     }
 }

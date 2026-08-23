@@ -97,8 +97,8 @@ namespace Kinovea.Services
             {
                 case EncodingQuality.PerceptuallyLossless:  return 1;
                 case EncodingQuality.High:                  return 2;
-                case EncodingQuality.Medium:                return 5;
-                case EncodingQuality.Low:                   return 10;
+                case EncodingQuality.Good:                return 5;
+                case EncodingQuality.Medium:                   return 10;
                 default:                                    return 2;
             }
         }
@@ -121,11 +121,11 @@ namespace Kinovea.Services
                     {
                         return codec == VideoCodec.H264 ? 20 : 25;
                     }
-                case EncodingQuality.Medium:
+                case EncodingQuality.Good:
                     {
                         return codec == VideoCodec.H264 ? 23 : 28;
                     }
-                case EncodingQuality.Low:
+                case EncodingQuality.Medium:
                     {
                         return codec == VideoCodec.H264 ? 29 : 32;
                     }

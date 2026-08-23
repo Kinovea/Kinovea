@@ -1968,10 +1968,12 @@ namespace Kinovea.ScreenManager
             double interval = 1000.0 / framerate;
             double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
 
+            EncodingQuality quality = PreferencesManager.CapturePreferences.EncodingQuality;
+
             RecordingSettings settings = new RecordingSettings();
             settings.FilePath = path;
             settings.ImageSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
-            settings.Quality = 2;
+            settings.Quality = ExportProfile.GetMJPEGQuality(quality);
             settings.ImageFormat = imageDescriptor.Format;
             settings.Uncompressed = uncompressed;
             settings.FrameInterval = interval;
