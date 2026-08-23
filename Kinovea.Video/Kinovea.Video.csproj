@@ -176,32 +176,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CacheLoadMode.cs" />
-    <Compile Include="DecodingPolicy.cs" />
-    <Compile Include="FrameContainers\Cache.cs" />
-    <Compile Include="FrameContainers\IVideoFramesContainer.cs" />
-    <Compile Include="FrameContainers\IWorkingZoneContainer.cs" />
-    <Compile Include="FrameContainers\PreBuffer2.cs" />
-    <Compile Include="FrameContainers\SingleFrame.cs" />
-    <Compile Include="FrameContainers\PreBuffer.cs" />
-    <Compile Include="CapabilityNotSupportedException.cs" />
-    <Compile Include="IFrameGenerator.cs" />
-    <Compile Include="PlayerState.cs" />
-    <Compile Include="VideoDecodingMode.cs" />
-    <Compile Include="VideoReaderAlwaysCaching.cs" />
-    <Compile Include="VideoReader.cs" />
-    <Compile Include="ThreadCanceler.cs" />
+    <Compile Include="Caching\CacheLoadMode.cs" />
+    <Compile Include="Caching\DecodingPolicy.cs" />
+    <Compile Include="Caching\Cache.cs" />
+    <Compile Include="Caching\IVideoFramesContainer.cs" />
+    <Compile Include="Caching\IWorkingZoneContainer.cs" />
+    <Compile Include="Caching\PreBuffer2.cs" />
+    <Compile Include="Caching\SingleFrame.cs" />
+    <Compile Include="Caching\PreBuffer.cs" />
+    <Compile Include="OpenVideoResult.cs" />
+    <Compile Include="SaveResult.cs" />
+    <Compile Include="VideoReaders\VideoCapabilities.cs" />
+    <Compile Include="VideoReaders\CapabilityNotSupportedException.cs" />
+    <Compile Include="VideoReaders\IFrameGenerator.cs" />
+    <Compile Include="Caching\PlayerState.cs" />
+    <Compile Include="Caching\VideoDecodingMode.cs" />
+    <Compile Include="VideoReaders\VideoReaderAlwaysCaching.cs" />
+    <Compile Include="VideoReaders\VideoReader.cs" />
+    <Compile Include="Caching\ThreadCanceler.cs" />
     <Compile Include="Delegates.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="Fraction.cs" />
     <Compile Include="SavingSettings.cs" />
-    <Compile Include="SupportedExtensionsAttribute.cs" />
-    <Compile Include="VideoFrame.cs" />
+    <Compile Include="VideoReaders\SupportedExtensionsAttribute.cs" />
+    <Compile Include="Caching\VideoFrame.cs" />
     <Compile Include="VideoInfo.cs" />
     <Compile Include="VideoOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VideoSummary.cs" />
-    <Compile Include="VideoTypeManager.cs" />
+    <Compile Include="VideoReaders\VideoTypeManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -225,6 +227,9 @@
       <Project>{8aa92254-a016-4a84-925c-f5b07e02f8a8}</Project>
       <Name>Kinovea.Services</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="VideoGeometry\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
