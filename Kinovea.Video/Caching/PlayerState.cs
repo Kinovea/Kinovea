@@ -34,9 +34,13 @@ namespace Kinovea.Video
         public PlayerStateMode Mode { get; }
 
         /// <summary>
-        /// The timestamp of the frame we were at when the playback started.
+        /// For mode playback, the timestamp at which playback started.
+        /// For mode timestamp, this is the target of a jump.
+        /// For mode step forward or step backward, this is the current frame timestamp.
+        /// This may be in UI-space, mapped from timeline pixels or clock, 
+        /// and not an actual media timestamp.
         /// </summary>
-        public long StartPlaybackTimestamp { get; }
+        public long ReferenceTimestamp { get; }
 
         /// <summary>
         /// Global computer time when playback started.
@@ -57,36 +61,28 @@ namespace Kinovea.Video
         /// </summary>
         public double RefreshInterval { get; }
 
-        /// <summary>
-        /// The timestamp reference for non-playback mode. 
-        /// For mode timestamp, this is the target of a jump.
-        /// For mode step forward or step backward, this is the starting timestamp.
-        /// </summary>
-        public long ReferenceTimestamp { get; }
 
         public PlayerState(
             int generation, 
             PlayerStateMode mode,
-            long startPlaybackTimestamp, long startPlaybackEpoch, double playbackFrameInterval, double refreshInterval, 
-            long frameByFrameTimestamp)
+            long referenceTimestamp,
+            long startPlaybackEpoch = 0, 
+            double playbackFrameInterval = 0, 
+            double refreshInterval = 0) 
         {
             Id = generation;
             Mode = mode;
-            StartPlaybackTimestamp = startPlaybackTimestamp;
+            ReferenceTimestamp = referenceTimestamp;
             StartPlaybackEpoch = startPlaybackEpoch;
             PlaybackFrameInterval = playbackFrameInterval;
             RefreshInterval = refreshInterval;
-            ReferenceTimestamp = frameByFrameTimestamp;
         }
 
-        public static PlayerState Empty => new PlayerState(0, PlayerStateMode.Timestamp, 0, 0, 0, 0, 0);
+        public static PlayerState Empty => new PlayerState(0, PlayerStateMode.Timestamp, 0);
     
         public override string ToString()
         {
-            if (Mode == PlayerStateMode.Playback)
-                return string.Format("#{0} [Mode: {1}, Ref: ~{2}]", Id, Mode, StartPlaybackTimestamp);
-            else
-                return string.Format("#{0} [Mode: {1}, Ref: ~{2}]", Id, Mode, ReferenceTimestamp);
+            return string.Format("#{0} [Mode: {1}, Ref: ~{2}]", Id, Mode, ReferenceTimestamp);
         }
 
     }

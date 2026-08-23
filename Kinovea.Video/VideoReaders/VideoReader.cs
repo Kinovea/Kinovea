@@ -182,7 +182,7 @@ namespace Kinovea.Video
             double realElapsedSeconds = (double)(now - requestedPlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
             double elapsedFrames = realElapsedSeconds * 1000.0 / requestedPlayerState.PlaybackFrameInterval;
             double elapsedTimestamps = elapsedFrames * Info.AverageTimeStampsPerFrame;
-            long expectedTimestamp = (long)Math.Round(requestedPlayerState.StartPlaybackTimestamp + elapsedTimestamps);
+            long expectedTimestamp = (long)Math.Round(requestedPlayerState.ReferenceTimestamp + elapsedTimestamps);
             return expectedTimestamp;
         }
 

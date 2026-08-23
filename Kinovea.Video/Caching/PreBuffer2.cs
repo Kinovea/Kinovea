@@ -179,6 +179,7 @@ namespace Kinovea.Video
         {
             List<VideoFrame> removed = null;
             bool acquired = false;
+            long target = state.ReferenceTimestamp;
 
             lock (sync)
             {
@@ -188,16 +189,6 @@ namespace Kinovea.Video
                 }
                 else
                 {
-                    long target = -1;
-                    if (state.Mode == PlayerStateMode.Playback)
-                    {
-                        target = state.StartPlaybackTimestamp;
-                    }
-                    else
-                    {
-                        target = state.ReferenceTimestamp;
-                    }
-
                     VideoFrame closest = FindClosest(target);
 
                     // If within tolerance, acquire it.

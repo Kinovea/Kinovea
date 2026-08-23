@@ -2841,8 +2841,7 @@ namespace Kinovea.ScreenManager
                 currentTimestamp,
                 Stopwatch.GetTimestamp(),
                 playbackFrameInterval,
-                refreshInterval,
-                0);
+                refreshInterval);
 
             playerState = state;
             m_FrameServer.VideoReader.PlayerRequest(state);
@@ -2940,7 +2939,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
+                expectedTimestamp = (long)Math.Round(playerState.ReferenceTimestamp + elapsedTimestamps);
                 //log.DebugFormat("Playback tick. Current: [{0}]. Target: [~{1}].", currentTimestamp, expectedTimestamp);
             }
 
@@ -3118,15 +3117,6 @@ namespace Kinovea.ScreenManager
             loopWatcher.AddLoopTime(timeWatcher.RawTime("Back to idleness"));
         }
 
-        private PlayerState MakeFrameByFramePlayerState(long targetTimestamp)
-        {
-            return new PlayerState(
-                playerState.Id + 1, 
-                PlayerStateMode.Timestamp, 
-                0, 0, 0, 0, 
-                targetTimestamp);
-        }
-
         /// <summary>
         /// Asks the reader to change the frame pointed to by Current, to the best it has in store.
         /// This doesn't typically triggers a decode, the frame should already be waiting in a cache.
@@ -3157,12 +3147,11 @@ namespace Kinovea.ScreenManager
                 playerState = new PlayerState(
                     playerState.Id + 1,
                     PlayerStateMode.Timestamp,
-                    0, 0, 0, 0,
                     (long)Math.Round(currentTimestamp + framesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
             }
             else
             {
-                playerState = MakeFrameByFramePlayerState(targetTimestamp);
+                playerState = new PlayerState(playerState.Id + 1, PlayerStateMode.Timestamp, targetTimestamp);
             }
 
             bool refreshInPlace = targetTimestamp == currentTimestamp;
@@ -3246,7 +3235,7 @@ namespace Kinovea.ScreenManager
             
             // Estimate where we should be at this time.
             double elapsedTimestamps = GetPlaybackElapsedTimestamps();
-            long expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
+            long expectedTimestamp = (long)Math.Round(playerState.ReferenceTimestamp + elapsedTimestamps);
             if (expectedTimestamp > m_iSelEnd)
             {
                 expectedTimestamp = m_iSelEnd;
@@ -3262,7 +3251,7 @@ namespace Kinovea.ScreenManager
                 isBusyRendering = false;
             }
 
-            playerState = MakeFrameByFramePlayerState(expectedTimestamp);
+            playerState = new PlayerState(playerState.Id + 1, PlayerStateMode.Timestamp, expectedTimestamp);
             PresentFrame(expectedTimestamp, true);
 
             buttonPlay.Image = Resources.flatplay;

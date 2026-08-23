@@ -2927,13 +2927,13 @@ void VideoReaderFFMpeg::BeginJob(PlayerState^ state)
 
     mPreBuffer->Print();
 
+    long target = state->ReferenceTimestamp;
 
     ReadResult res;
     switch (state->Mode)
     {
     case PlayerStateMode::Playback:
     {
-        long target = state->StartPlaybackTimestamp;
         if (mPreBuffer->Contains(target))
         {
             // Continue decoding from wherever we are.
@@ -2971,7 +2971,6 @@ void VideoReaderFFMpeg::BeginJob(PlayerState^ state)
     }
     case PlayerStateMode::Timestamp:
     {
-        long target = state->ReferenceTimestamp;
         if (mPreBuffer->Contains(target))
         {
             // Continue decoding from wherever we are.
