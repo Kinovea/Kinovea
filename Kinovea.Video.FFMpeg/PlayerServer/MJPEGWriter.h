@@ -35,6 +35,7 @@ extern "C"
 #include "libavutil/error.h"
 #include "libavutil/frame.h"
 #include "libavutil/imgutils.h"
+#include "libavutil/opt.h"
 #include "libswscale/swscale.h" 
 }
 
@@ -85,7 +86,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         double ComputeBitrate(Size outputSize, double frameInterval);
         
         /// Configure the codec with default parameters.
-        bool SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat, int quality);
+        void SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat, int quality);
 
         /// Wrap the incoming buffer in a packet and writes it to the file.
         /// Used when the incoming buffer is already in the target format.

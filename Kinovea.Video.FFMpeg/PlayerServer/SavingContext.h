@@ -32,54 +32,44 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
 	public:
 
-		// FFMpeg context
-        const AVOutputFormat* pOutputFormat;    // Muxer general infos. (mime, extensions, supported codecs, etc.)
-		AVFormatContext* pOutputFormatContext;	// Muxer parameters.
+		// FFmpeg context
+        AVFormatContext* pOutputFormatContext;	// Muxer parameters.
 		const AVCodec* pOutputCodec;			// Encoder general infos. (codec_id, etc.)
 		AVCodecContext* pOutputCodecContext;	// Encoder parameters.
-		AVStream* pOutputVideoStream;			// Ouput stream for frames.
+        int streamIndex;
+        
+        // Image geometry
+        Size outputSize;
 
-        // Source and target format.
-        AVPixelFormat sourceFormat;		// The pixel format of the incoming frames.
+        // Frame rate
+        double frameInterval;
+        long long frameDuration;                // Duration of a frame in stream time base.
+
+        // Pixel format
+        bool uncompressed;
+        AVPixelFormat sourceFormat;		    // The pixel format of the incoming frames.
         AVPixelFormat targetFormat;		// The pixel format of the encoder.
 
-        // Encoding frames, reused for each incoming frame.
+        // Reusable frames/packets/scaling context.
         AVFrame* pSourceFrame;					// The current incoming frame.
         AVFrame* pConvertedFrame;				// Converted to the encoder format.
         AVPacket* pPacket;						// Encoded packet to be written to file.
         SwsContext* pScalingContext;            // The scaling context for the RGB -> YUV color conversion.
-        long long packetDuration;
 
-        int frameCounter;						// Count the number of frames encoded.
-        long long frameDuration;                // Duration of a frame in stream time base.
-
-		double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
-		bool bInputWasMpeg2;					
-		int iSampleAspectRatioNumerator;
-		int iSampleAspectRatioDenominator;
-
-		// User parameters
-		double fFramesInterval;				
-		int iBitrate;				
-		Size outputSize;
-        bool uncompressed;
-
-		// Control
-		bool bEncoderOpened;
-
+        int frameCounter;
+    
 		SavingContext::SavingContext()
 		{
+			outputSize = Size(720, 576);
+            
+			frameInterval = 40;			// Default speed : 25 fps.
+            frameDuration = 1000;
+
+            uncompressed = false;
             sourceFormat = AV_PIX_FMT_BGRA;
             targetFormat = AV_PIX_FMT_YUV420P;
 
             frameCounter = 0;
-            frameDuration = 1000;
-			bInputWasMpeg2 = false;
-			fFramesInterval = 40;			// Default speed : 25 fps.
-			iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
-			fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
-			outputSize = Size(720, 576);
-            uncompressed = false;
 		}
 	};
 }}}

@@ -67,7 +67,7 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
     
     if (settings->FileFrameInterval > 0)
     {
-        m_SavingContext->fFramesInterval = settings->FileFrameInterval;
+        m_SavingContext->frameInterval = settings->FileFrameInterval;
     }
     
     m_SavingContext->uncompressed = settings->Uncompressed;
@@ -89,7 +89,6 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
         }
 
         Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
-        m_SavingContext->pOutputFormat = format;
 
         // Allocate muxer context.
         pin_ptr<AVFormatContext*> pinOutputFormatContext = &m_SavingContext->pOutputFormatContext;
@@ -118,26 +117,28 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
         }
 
         // Create video stream.
-        m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, m_SavingContext->pOutputCodec);
-        if (m_SavingContext->pOutputVideoStream == nullptr) 
+        AVStream* pOutputVideoStream;
+        pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, m_SavingContext->pOutputCodec);
+        if (pOutputVideoStream == nullptr)
         {
             result = RecordingResult::VideoStreamNotCreated;
             log->Error("Video stream not created");
             break;
         }
 
-        m_SavingContext->pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
+        pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
+        m_SavingContext->streamIndex = pOutputVideoStream->id;
 
         switch (settings->Rotation)
         {
         case ImageRotation::Rotate90:
-            av_dict_set(&m_SavingContext->pOutputVideoStream->metadata, "rotate", "90", 0);
+            av_dict_set(&pOutputVideoStream->metadata, "rotate", "90", 0);
             break;
         case ImageRotation::Rotate180:
-            av_dict_set(&m_SavingContext->pOutputVideoStream->metadata, "rotate", "180", 0);
+            av_dict_set(&pOutputVideoStream->metadata, "rotate", "180", 0);
             break;
         case ImageRotation::Rotate270:
-            av_dict_set(&m_SavingContext->pOutputVideoStream->metadata, "rotate", "270", 0);
+            av_dict_set(&pOutputVideoStream->metadata, "rotate", "270", 0);
             break;
         case ImageRotation::Rotate0:
         default:
@@ -145,15 +146,11 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
         }
         
         // Configure encoder.
-        if(!SetupEncoder(m_SavingContext, settings->ImageFormat, settings->Quality))
-        {
-            result = RecordingResult::EncoderParametersNotSet;
-            log->Error("Encoder parameters not set");
-            break;
-        }
+        SetupEncoder(m_SavingContext, settings->ImageFormat, settings->Quality);
 
         m_SavingContext->pOutputFormatContext->video_codec_id = m_SavingContext->pOutputCodec->id;
         m_SavingContext->targetFormat = m_SavingContext->pOutputCodecContext->pix_fmt;
+        pOutputVideoStream->sample_aspect_ratio = m_SavingContext->pOutputCodecContext->sample_aspect_ratio;
 
         // Open the encoder.
         averror = avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr);
@@ -164,10 +161,8 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
             break;
         }
 
-        m_SavingContext->bEncoderOpened = true;
-        
         // Associate encoder to stream.
-        averror = avcodec_parameters_from_context(m_SavingContext->pOutputVideoStream->codecpar, m_SavingContext->pOutputCodecContext);
+        averror = avcodec_parameters_from_context(pOutputVideoStream->codecpar, m_SavingContext->pOutputCodecContext);
         if (averror < 0) 
         {
             result = RecordingResult::EncoderParametersNotSet;
@@ -175,7 +170,7 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
             break;
         }
 
-        m_SavingContext->pOutputVideoStream->time_base = m_SavingContext->pOutputCodecContext->time_base;
+        pOutputVideoStream->time_base = m_SavingContext->pOutputCodecContext->time_base;
 
         // Open the file.
         // Temporary pinned UTF-8 buffer.
@@ -207,7 +202,7 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
         // the requested time base to something else, so we compute it from the actual one.
         // This does (frame interval in seconds / time base).
         m_SavingContext->frameDuration = (long long)Math::Round(
-            (m_SavingContext->fFramesInterval * m_SavingContext->pOutputVideoStream->time_base.den) / 
+            (m_SavingContext->frameInterval * pOutputVideoStream->time_base.den) /
             (1000.0 * m_SavingContext->pOutputCodecContext->time_base.num));
 
         //------------------------------------------------------
@@ -274,18 +269,21 @@ void MJPEGWriter::SanityCheck(AVFormatContext* s)
     }
 
     AVStream* pStream = s->streams[0];
-    
     if (pStream->codecpar->codec_type != AVMEDIA_TYPE_VIDEO)
     {
         log->Error("Sanity check failed: not a video codec.");
         return;
     }
 
-    if(pStream->time_base.num <= 0 || pStream->time_base.den <= 0)
+    if (pStream->time_base.num <= 0 || pStream->time_base.den <= 0)
+    {
         log->Error("MJPEGWriter sanity check failed: time base not set.");
+    }
 
-    if(pStream->codecpar->width <= 0 || pStream->codecpar->height <= 0)
+    if (pStream->codecpar->width <= 0 || pStream->codecpar->height <= 0)
+    {
         log->Error("MJPEGWriter sanity check failed: dimensions not set.");
+    }
 
     if(av_cmp_q(pStream->sample_aspect_ratio, pStream->codecpar->sample_aspect_ratio))
     {
@@ -294,14 +292,10 @@ void MJPEGWriter::SanityCheck(AVFormatContext* s)
             pStream->sample_aspect_ratio.num, pStream->sample_aspect_ratio.den, 
             pStream->codecpar->sample_aspect_ratio.num, pStream->codecpar->sample_aspect_ratio.den));
     }
-
-    /*if(s->oformat->flags & AVFMT_GLOBALHEADER && !(pStream->flags & CODEC_FLAG_GLOBAL_HEADER))
-        log->Debug("MJPEGWriter sanity check warning: Codec does not use global headers but container format requires global headers");*/
-    
 }
 
 
-RecordingResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
+RecordingResult MJPEGWriter::CloseSavingContext(bool success)
 {
     log->Debug("Closing the saving context.");
 
@@ -309,35 +303,26 @@ RecordingResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
     m_swEncoding->Stop();
     m_swWrite->Stop();
 
-    if(_bEncodingSuccess)
+    // Write trailer and close the file.
+    if(success)
     {
-        // Write file trailer.		
         av_write_trailer(m_SavingContext->pOutputFormatContext);
     }
 
-    if(m_SavingContext->bEncoderOpened)
-    {
-        //avcodec_close(m_SavingContext->pOutputVideoStream->codec);
-        av_free(m_SavingContext->pSourceFrame);
-    }
-        
-    // Stream release (equivalent to freeing pOutputCodec + pOutputVideoStream)
+    avio_close(m_SavingContext->pOutputFormatContext->pb);
+    
+    // Release reusable objects.
+    av_free(m_SavingContext->pSourceFrame);
+    av_free(m_SavingContext->pConvertedFrame);
+    sws_freeContext(m_SavingContext->pScalingContext);
+
+    // Release streams, incl. codec.
     for(int i = 0; i < (int)m_SavingContext->pOutputFormatContext->nb_streams; i++) 
     {
-        //av_freep(&(m_SavingContext->pOutputFormatContext)->streams[i]->codecpar);
         av_freep(&(m_SavingContext->pOutputFormatContext)->streams[i]);
     }
 
-    // Close the file.
-    avio_close(m_SavingContext->pOutputFormatContext->pb);
-
-    //avcodec_free_context(m_SavingContext->pOutputCodecContext);
-
-    // Release scaling context
-    sws_freeContext(m_SavingContext->pScalingContext);
-
-    // Release muxer parameter object.
-    //av_free(m_SavingContext->pOutputFormatContext);
+    // Release muxer.
     avformat_free_context(m_SavingContext->pOutputFormatContext);
 
     log->Debug("Saving video completed.");
@@ -392,137 +377,65 @@ double MJPEGWriter::ComputeBitrate(Size outputSize, double frameInterval)
 }
 
 
-bool MJPEGWriter::SetupEncoder(SavingContext^ savingCtx, ImageFormat imgFormat, int quality)
+void MJPEGWriter::SetupEncoder(SavingContext^ savingCtx, ImageFormat imgFormat, int quality)
 {
-    //----------------------------------------
-    // Parameters for encoding.
-    // some tweaked, some taken from Mencoder.
-    // Not all clear...
-    //----------------------------------------
+    AVCodecContext* ctx = avcodec_alloc_context3(savingCtx->pOutputCodec);
+    
+    // Image geometry
+    ctx->width = savingCtx->outputSize.Width;
+    ctx->height = savingCtx->outputSize.Height;
+    ctx->sample_aspect_ratio = av_make_q(1, 1);
 
-    // TODO:
-    // Implement from ref: http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-dvd-mpeg4.html
-
-    log->Debug("Setting up the encoder.");
-
-    savingCtx->pOutputCodecContext = avcodec_alloc_context3(savingCtx->pOutputCodec);
-
-    // Picture width / height.
-    savingCtx->pOutputCodecContext->width = savingCtx->outputSize.Width;
-    savingCtx->pOutputCodecContext->height = savingCtx->outputSize.Height;
-
-    // Framerate and timebase.
-    if (savingCtx->fFramesInterval == 0)
+    // Sanity check frame interval.
+    if (savingCtx->frameInterval == 0)
     {
-        savingCtx->fFramesInterval = 40;
+        savingCtx->frameInterval = 40;
     }
 
-    // Set the timebase to a high resolution. 
+    // High resolution time base.
     // For example for 60 fps this sets it to 1/60000 of a second.
     // That's the unit of time we are expressing the timestamps in.
     // May be adjusted aftewards by ffmpeg anyway.
-    int resolution = (int)Math::Round(1000 * 1000 / savingCtx->fFramesInterval);
-    savingCtx->pOutputCodecContext->time_base = av_make_q(1, resolution);
+    int resolution = (int)Math::Round(1000 * 1000 / savingCtx->frameInterval);
+    ctx->time_base = av_make_q(1, resolution);
 
-    // The average bitrate (unused for constant quantizer encoding.)
-    savingCtx->pOutputCodecContext->bit_rate = savingCtx->iBitrate;
-    
-    // Number of bits the bitstream is allowed to diverge from the reference.
-    // the reference can be CBR (for CBR pass1) or VBR (for pass2)
-    // Source: Avidemux.
-    savingCtx->pOutputCodecContext->bit_rate_tolerance = 8000000;
-    
-    // Motion estimation algorithm used for video coding. 
-    // src: MEncoder.
-    //savingCtx->pOutputCodecContext->me_method = ME_EPZS;
-    //savingCtx->pOutputCodecContext->me_cmp = AV_
-    
-    //-------------------------------------------------------------------------------------------
-    // Encoding mode (i, b, p frames)
-    //
-    // gop_size		: the number of pictures in a group of pictures, or 0 for intra_only. (default : 12)
-    // max_b_frames	: maximum number of B-frames between non-B-frames (default : 0)
-    //				  Note: The output will be delayed by max_b_frames+1 relative to the input.
-    //
-    // [kinovea]	: Intra only.
-    //-------------------------------------------------------------------------------------------
-    savingCtx->pOutputCodecContext->gop_size				= 0;	
-    savingCtx->pOutputCodecContext->max_b_frames			= 0;								
-
-    // Target pixel format.
-    if (imgFormat == Kinovea::Services::ImageFormat::Y800 && savingCtx->uncompressed)
-        savingCtx->pOutputCodecContext->pix_fmt = AV_PIX_FMT_GRAY8;
-    else
-        savingCtx->pOutputCodecContext->pix_fmt = AV_PIX_FMT_YUV420P; 	
-    
-    
-    // Encoding quality.
-    savingCtx->pOutputCodecContext->flags |= AV_CODEC_FLAG_QSCALE;
-    savingCtx->pOutputCodecContext->qmin = quality;
-    savingCtx->pOutputCodecContext->qmax = quality;
-    
-    // Sample Aspect Ratio.
-    
-    // Assume PAR=1:1 (square pixels).
-    savingCtx->pOutputCodecContext->sample_aspect_ratio.num = 1;
-    savingCtx->pOutputCodecContext->sample_aspect_ratio.den = 1;
-
-    if(savingCtx->fPixelAspectRatio != 1.0)
+    // Global header handling.
+    if (savingCtx->pOutputFormatContext->oformat->flags & AVFMT_GLOBALHEADER)
     {
-        // -> Anamorphic video, non square pixels.
-        // We also output an anamorphic video.
-
-        if(savingCtx->bInputWasMpeg2)
-        {
-            // If MPEG, sample_aspect_ratio is actually the DAR...
-            // Reference for weird decision tree: mpeg12.c at mpeg_decode_postinit().
-            double fDisplayAspectRatio	= (double)m_SavingContext->iSampleAspectRatioNumerator / (double)m_SavingContext->iSampleAspectRatioDenominator;
-            double fPixelAspectRatio	= ((double)savingCtx->outputSize.Height * fDisplayAspectRatio) / (double)savingCtx->outputSize.Width;
-
-            if(fPixelAspectRatio > 1.0f)
-            {
-                // In this case the input sample aspect ratio was actually the display aspect ratio.
-                // We will recompute the aspect ratio.
-                int gcd = GreatestCommonDenominator((int)((double)savingCtx->outputSize.Width * fPixelAspectRatio), savingCtx->outputSize.Width);
-                savingCtx->pOutputCodecContext->sample_aspect_ratio.num = (int)(((double)savingCtx->outputSize.Width * fPixelAspectRatio)/gcd);
-                savingCtx->pOutputCodecContext->sample_aspect_ratio.den = savingCtx->outputSize.Width / gcd;
-            }
-            else
-            {
-                savingCtx->pOutputCodecContext->sample_aspect_ratio.num = m_SavingContext->iSampleAspectRatioNumerator;
-                savingCtx->pOutputCodecContext->sample_aspect_ratio.den = m_SavingContext->iSampleAspectRatioDenominator;
-            }
-        }
-        else
-        {
-            savingCtx->pOutputCodecContext->sample_aspect_ratio.num = m_SavingContext->iSampleAspectRatioNumerator;
-            savingCtx->pOutputCodecContext->sample_aspect_ratio.den = m_SavingContext->iSampleAspectRatioDenominator;
-        }
+        ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
     }
 
-    // Ensure the container stream uses the same aspect ratio.
-    savingCtx->pOutputVideoStream->sample_aspect_ratio.num = savingCtx->pOutputCodecContext->sample_aspect_ratio.num;
-    savingCtx->pOutputVideoStream->sample_aspect_ratio.den = savingCtx->pOutputCodecContext->sample_aspect_ratio.den;
+    if (savingCtx->uncompressed)
+    {
+        ctx->pix_fmt = imgFormat == ImageFormat::Y800 ? AV_PIX_FMT_GRAY8 : AV_PIX_FMT_YUV420P;
+        savingCtx->pOutputCodecContext = ctx;
+        return;
+    }
 
+    // MJPEG encoding.
+    // supports 4:2:0, 4:2:2 and 4:4:4 planar YUV.
+    ctx->pix_fmt = AV_PIX_FMT_YUV420P;
+    ctx->color_range = AVCOL_RANGE_JPEG;
     
-    savingCtx->pOutputCodecContext->strict_std_compliance = FF_COMPLIANCE_UNOFFICIAL;
-    
-    //-----------------------------------
-    // h. Other settings. (From MEncoder) 
-    //-----------------------------------
-    //savingCtx->pOutputCodecContext->i_luma_elim = 0;		// luma single coefficient elimination threshold
-    //savingCtx->pOutputCodecContext->i_chroma_elim = 0;		// chroma single coeff elimination threshold
-    savingCtx->pOutputCodecContext->lumi_masking = 0.0;
-    savingCtx->pOutputCodecContext->dark_masking = 0.0;
-    // pre_me (prepass for motion estimation)
-    // sample_rate
-    // codecContext->channels = 2;
-    // codecContext->mb_decision = 0;
-    
-    if (savingCtx->pOutputFormatContext->oformat->flags & AVFMT_GLOBALHEADER)
-        savingCtx->pOutputCodecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    // Constant quality.
+    ctx->flags |= AV_CODEC_FLAG_QSCALE;
+    ctx->qmin = quality;
+    ctx->qmax = quality;
 
-    return true;
+    // Optimized vs default Huffman tables.
+    // optimal Huffman: smaller files, extra encoding work.
+    // default Huffman: faster / simpler encoding, somewhat larger files.
+    av_opt_set(ctx->priv_data, "huffman", "default", 0);
+
+    // Intra-only
+    ctx->gop_size = 0;
+    ctx->max_b_frames = 0;
+
+    // Threading
+    //pCodecContext->thread_type = FF_THREAD_FRAME;
+    //pCodecContext->thread_count = 0; // auto
+
+    savingCtx->pOutputCodecContext = ctx;
 }
 
 
@@ -719,7 +632,7 @@ bool MJPEGWriter::WritePacket(SavingContext^ savingCtx)
     long long then = m_swWrite->ElapsedMilliseconds;
 
     // Shared packet parameters.
-    savingCtx->pPacket->stream_index = savingCtx->pOutputVideoStream->index;
+    savingCtx->pPacket->stream_index = savingCtx->streamIndex;
     savingCtx->pPacket->flags |= AV_PKT_FLAG_KEY;
 
     // Duration of this packet in stream time base units.
