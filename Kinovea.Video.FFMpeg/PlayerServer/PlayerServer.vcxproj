@@ -214,16 +214,6 @@
     <ClCompile Include="VideoReaderFFMpeg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavcodec\avcodec.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavdevice\avdevice.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavfilter\avfilter.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavformat\avformat.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\avutil.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\error.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\pixfmt.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libpostproc\postprocess.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libswresample\swresample.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h" />
     <ClInclude Include="ReadResult.h" />
     <ClInclude Include="MJPEGWriter.h" />
     <ClInclude Include="SavingContext.h" />

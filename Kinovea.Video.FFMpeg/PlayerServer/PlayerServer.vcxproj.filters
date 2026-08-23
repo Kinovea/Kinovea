@@ -1,46 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="FFMpeg">
-      <UniqueIdentifier>{4c4ef50c-72e7-4b60-ab7e-498a3c39eee2}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="VideoReaderFFMpeg.cpp" />
     <ClCompile Include="MJPEGWriter.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavcodec\avcodec.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavdevice\avdevice.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavfilter\avfilter.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavformat\avformat.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\avutil.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\error.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libpostproc\postprocess.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libswresample\swresample.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\pixfmt.h">
-      <Filter>FFMpeg</Filter>
-    </ClInclude>
     <ClInclude Include="VideoReaderFFMpeg.h" />
     <ClInclude Include="SavingContext.h" />
     <ClInclude Include="MJPEGWriter.h" />
