@@ -743,13 +743,13 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     }
 
     // The new job is now ready to be processed.
-    lock l(mLockReadyJobId);
+    lock l(mLockNewJobReady);
     {
         log->DebugFormat("Marking job {0} as ready.", requestedPlayerState);
         mReadyJobId = requestedPlayerState->Id;
 
         // Wake up the decoder thread if it was waiting in WaitForReadyJob().
-        Monitor::PulseAll(mLockReadyJobId);
+        Monitor::PulseAll(mLockNewJobReady);
     }
 
     if (mCachingMode == VideoDecodingMode::PreBuffering)
@@ -1527,9 +1527,9 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     }
 
     // At this point there are 3 cases.
-    // 1. Seek to specific timestamp.
-    // 2. Jump forward to the next frame.
-    // 3. Jump forward by n frames.
+    // 1. Move forward to the next frame.
+    // 2. Advance forward by n frames.
+    // 3. Seek and advance to a specific timestamp.
 
     // It's possible to get here with a target timestamp equal to the current timestamp.
     // For example when we change the output size.
@@ -1560,16 +1560,17 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
     mLoopWatcher->LoopEnd();
 
-
+    //log->DebugFormat("ReadFrame. Decoded frame at [{0}]. Frame type: {1}", frame->best_effort_timestamp, GetFrameTypeString(frame->pict_type));
+    
     if (HasJobChanged())
     {
+        // FIXME: we should keep the decoded frame as pending here.
+        // The next job might be able to just restart from there.
         log->DebugFormat("ReadFrame. Job changed during decoding. Abandoning.");
         av_frame_free(&frame);
         return ReadResult::NewJob;
     }
 
-
-    //log->DebugFormat("ReadFrame. Decoded frame at [{0}]. Frame type: {1}", frame->best_effort_timestamp, GetFrameTypeString(frame->pict_type));
     if (result != ReadResult::Success)
     {
         av_frame_free(&frame);
@@ -2595,10 +2596,14 @@ void VideoReaderFFMpeg::StopPreBufferingThread()
     mPreBufferingThreadCanceler->Cancel();
 
     // Signal the cache that we are cancelling.
-    // This will unblock the prebuffering thread if it is waiting for a free slot in Add().
+    // This will unblock the thread if it's waiting in Add().
     mPreBuffer->InterruptAdd();
+
+    // Wake up the thread if it's waiting for a job.
+    lock l(mLockNewJobReady);
+    Monitor::PulseAll(mLockNewJobReady);
+
     mPreBufferingThread->Join();
-    mPreBuffer->ResetInterruptAdd();
 }
 
 void VideoReaderFFMpeg::PreBufferingWorker(Object^ objCanceller)
@@ -2728,7 +2733,7 @@ bool VideoReaderFFMpeg::HasJobChanged()
 PlayerState^ VideoReaderFFMpeg::WaitForNewJobReady(ThreadCanceler^ canceller, int currentJobId)
 {
 
-    lock l(mLockReadyJobId);
+    lock l(mLockNewJobReady);
     {
         while (true)
         {
@@ -2748,7 +2753,7 @@ PlayerState^ VideoReaderFFMpeg::WaitForNewJobReady(ThreadCanceler^ canceller, in
 
             log->DebugFormat("Prebuffer thread, entering wait until a new job is ready. Current: {0}", mWorkingPlayerState);
 
-            Monitor::Wait(mLockReadyJobId);
+            Monitor::Wait(mLockNewJobReady);
         }
     }
 

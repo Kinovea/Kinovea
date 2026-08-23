@@ -268,13 +268,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // The job id matching the player state that has been 
         // received and prepared by the reader.
         // Written by the reader, read by the prebuffer thread.
-        // All access must be protected by mLockReadyJobId.
+        // All access must be protected by mLockNewJobReady.
         int mReadyJobId = -1;
 
         // Sync object to schedule the arrival and preparation of new player state
         // by the reader while the decoder is busy decoding/scaling/converting, 
         // waiting in cache.Add(), or waiting after EOF.
-        Object^ mLockReadyJobId = gcnew Object();
+        Object^ mLockNewJobReady = gcnew Object();
 
         CachePreparationResult^ mPreBufferPreparation = nullptr;
 
