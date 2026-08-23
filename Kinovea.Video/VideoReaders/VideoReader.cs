@@ -48,7 +48,13 @@ namespace Kinovea.Video
     public abstract class VideoReader
     {
         public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
-        
+
+        public event EventHandler<EventArgs<PlayerState>> FrameAcquired;
+        protected void OnFrameAcquired(PlayerState state)
+        {
+            FrameAcquired?.Invoke(this, new EventArgs<PlayerState>(state));
+        }
+
         #region Properties
         public abstract VideoFrame Current { get; }
         public abstract VideoCapabilities Flags { get; }

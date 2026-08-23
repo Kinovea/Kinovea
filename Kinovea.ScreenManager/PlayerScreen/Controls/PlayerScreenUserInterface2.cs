@@ -532,6 +532,7 @@ namespace Kinovea.ScreenManager
             // It will be restored in PostLoadProcess.
 
             // 1. Reset all data.
+            m_FrameServer.VideoReader.FrameAcquired -= VideoReader_FrameAcquired;
             m_FrameServer.Unload();
             ResetData();
             videoFilterIsActive = false;
@@ -598,6 +599,8 @@ namespace Kinovea.ScreenManager
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
             log.DebugFormat("Post load process.");
+
+            m_FrameServer.VideoReader.FrameAcquired += VideoReader_FrameAcquired;
 
             //-----------------------------
             // Read/decode the first frame.
@@ -2033,12 +2036,12 @@ namespace Kinovea.ScreenManager
 
                     // If it didn't work, try going back two frames to unstuck the situation.
                     // Todo: check if we're going to endup outside the working zone ?
-                    if (currentTimestamp == oldPos)
-                    {
-                        log.Debug("Seeking to previous frame did not work. Moving backward 2 frames.");
-                        framesToDecode = -2;
-                        PresentFrame(-1, true);
-                    }
+                    //if (currentTimestamp == oldPos)
+                    //{
+                    //    log.Debug("Seeking to previous frame did not work. Moving backward 2 frames.");
+                    //    framesToDecode = -2;
+                    //    PresentFrame(-1, true);
+                    //}
 
                     // Reset to normal.
                     framesToDecode = 1;
@@ -3156,25 +3159,25 @@ namespace Kinovea.ScreenManager
 
             bool refreshInPlace = targetTimestamp == currentTimestamp;
 
-            bool moved = false;
 
             log.DebugFormat("PresentFrame called. Target: [~{0}]. Current: [{1}]. Frames to decode: {2}. Refresh in place: {3}.", 
                 targetTimestamp, currentTimestamp, framesToDecode, refreshInPlace);
 
 
+            bool acquired = false;
             if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
             {
-                moved = m_FrameServer.VideoReader.PlayerRequest(playerState);
+                acquired = m_FrameServer.VideoReader.PlayerRequest(playerState);
             }
             else
             {
                 if (targetTimestamp < 0)
                 {
-                    m_FrameServer.VideoReader.MoveNext(true);
+                    acquired = m_FrameServer.VideoReader.MoveNext(true);
                 }
                 else
                 {
-                    m_FrameServer.VideoReader.MoveTo(targetTimestamp);
+                    acquired = m_FrameServer.VideoReader.MoveTo(targetTimestamp);
                 }
             }
 
@@ -3186,7 +3189,25 @@ namespace Kinovea.ScreenManager
             // If not, the reader will decode the frame in a background thread and notify the player when it's ready.
             // All that is below will be moved to a separate function.
 
+            if (acquired)
+            {
+                AfterFrameAcquired(playerState);
+            }
 
+        }
+
+        private void VideoReader_FrameAcquired(object sender, EventArgs<PlayerState> e)
+        {
+            //---------------------
+            // Runs in decoder/prebuffer thread
+            // The frame of a player request is available and ready to be displayed.
+            //---------------------
+
+            BeginInvoke((Action)delegate { AfterFrameAcquired(e.Value); });
+        }
+
+        private void AfterFrameAcquired(PlayerState state)
+        {
             // Bail out if there is no frame.
             if (m_FrameServer.VideoReader.Current == null)
             {
@@ -3195,20 +3216,26 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            // This is the actual timestamp from the file, may differ from the pixel-space one in the request.
+            // This event may not be for the last request we posted.
+            if (state.Id < playerState.Id)
+            {
+                // TODO: should we return here?
+            }
+
+            // Get the resolved timestamp from the file.
+            // It may differ from the one in the request.
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
+
+            log.DebugFormat("Received frame acquired for request #{0} (curr=#{1}). Present [{2}].", 
+                state.Id, playerState.Id, currentTimestamp);
+
 
             if (videoFilterIsActive)
             {
                 m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(currentTimestamp);
             }
 
-            bool contiguous = targetTimestamp < 0 && framesToDecode <= 1;
-            if (!refreshInPlace)
-            {
-                ComputeOrStopTracking(contiguous);
-            }
-            else
+            if (state.Mode == PlayerStateMode.RefreshInPlace)
             {
                 // Sync drawings bound to tracks.
                 m_FrameServer.Metadata.BeforeTrackingStep(currentTimestamp);
@@ -3218,12 +3245,20 @@ namespace Kinovea.ScreenManager
                 // Not sure why when manually navigating refresh in place is true.
                 sidePanelTracking.UpdateContent();
             }
+            else
+            {
+                //bool contiguous = state.ReferenceTimestamp < 0 && framesToDecode <= 1;
+                bool contiguous = state.Mode == PlayerStateMode.StepForward;
+                ComputeOrStopTracking(contiguous);
+            }
 
-            if (allowUIUpdate)
-                DoInvalidate();
+            DoInvalidate();
 
             ReportForSyncMerge();
+
+            // We should update the timeline UI here.
         }
+
 
         public void StopPlaying()
         {

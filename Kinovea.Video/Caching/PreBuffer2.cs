@@ -254,7 +254,10 @@ namespace Kinovea.Video
                         // Evict last.
                         // When we go back out of the cache we should probably make enough
                         // room so that the target lands in the middle after the initial seek.
-                        removed = EvictOne(frames.Count - 1);
+                        if (frames.Count > 1)
+                        {
+                            removed = EvictOne(frames.Count - 1);
+                        }
                     }
                     else
                     {
@@ -295,6 +298,7 @@ namespace Kinovea.Video
                             // Evict behind based on retention window.
                             // Do not evict ahead.
                             // Unless we are on the first frame ?
+                            
                         }
                     }
 
@@ -304,6 +308,7 @@ namespace Kinovea.Video
                         acquiredTimestamp, 
                         denseForward, 
                         denseEnd,
+                        frames.Values[0].Timestamp,
                         frames.Values[frames.Count - 1].Timestamp,
                         full);
 
@@ -582,7 +587,7 @@ namespace Kinovea.Video
         /// </summary>
         private List<VideoFrame> EvictBehind(int index, int framesToKeep)
         {
-            if (current == null)
+            if (frames.Count < 2)
                 return null;
 
             int removeCount = index - framesToKeep;
@@ -601,9 +606,18 @@ namespace Kinovea.Video
             return removed;
         }
 
+        /// <summary>
+        /// Evict one frame at index unless it's the only frame in the cache
+        /// or the one pointed by current.
+        /// Returns the removed frame.
+        /// Caller must hold sync.
+        /// </summary>
         private List<VideoFrame> EvictOne(int index)
         {
-            if (frames.Count == 0)
+            if (current == null || frames.Count < 2)
+                return null;
+
+            if (current == frames.Values[index])
                 return null;
 
             VideoFrame frame = frames.Values[index];
@@ -619,6 +633,9 @@ namespace Kinovea.Video
         /// </summary>
         private List<VideoFrame> EvictPurge()
         {
+            if (current == null || frames.Count < 2)
+                return null;
+
             List<VideoFrame> removed = new List<VideoFrame>();
             for (int i = frames.Count - 1; i >= 0; i--)
             {

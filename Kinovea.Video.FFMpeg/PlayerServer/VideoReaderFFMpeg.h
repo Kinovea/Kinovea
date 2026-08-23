@@ -517,7 +517,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// store frames along the way and resubmit a pending frame.
         DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult);
         
-        ReadResult ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
+        bool ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
         
         /// Returns true if the pending frame is a continuation of the prebuffer.
         bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd);

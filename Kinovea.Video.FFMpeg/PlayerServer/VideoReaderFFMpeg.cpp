@@ -175,7 +175,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         
         ReadResult read = ReadFrameThumbnail(ts);
 
-        //log->DebugFormat("After ReadFrameSeek {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
+        //log->DebugFormat("After ReadFrameThumbnail {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
 
         if (read == ReadResult::Same)
         {
@@ -1513,24 +1513,25 @@ ReadResult VideoReaderFFMpeg::ReadFrameNext()
     //mStopwatch->Restart();
     AVFrame* frame = av_frame_alloc();
     result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+    mDecodedTimestamp = frame->best_effort_timestamp;
     mLoopWatcher->LoopEnd();
 
-    if (HasJobChanged())
-    {
-        // FIXME: we should keep the decoded frame as pending here.
-        // The next job might be able to just restart from there.
-        log->DebugFormat("ReadFrameSeek. Job changed during decoding. Abandoning.");
-        av_frame_free(&frame);
-        return ReadResult::NewJob;
-    }
+    // During dense jobs do not allow new jobs to interrupt the work
+    // between decoding and storing.
+    //if (HasJobChanged())
+    //{
+    //    // FIXME: we should keep the decoded frame as pending here.
+    //    // The next job might be able to just restart from there.
+    //    log->DebugFormat("ReadFrameNext. Job changed during decoding. Abandoning.");
+    //    av_frame_free(&frame);
+    //    return ReadResult::NewJob;
+    //}
 
     if (result != ReadResult::Success)
     {
         av_frame_free(&frame);
         return result;
     }
-
-    mDecodedTimestamp = frame->best_effort_timestamp;
 
     //log->DebugFormat("Decoded next frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
 
@@ -2909,7 +2910,8 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
     // Runs in the prebuffer thread.
     //-------------------------------
 
-    log->DebugFormat("PreBuffering thread, Initializing job {0}", mWorkingPlayerState);
+    log->DebugFormat("InitDecodingJob. Initializing for job {0}.", mWorkingPlayerState);
+    log->DebugFormat("InitDecodingJob. Last decoded: [{0}]. Last stored: [{1}].", mDecodedTimestamp, mCurrentTimestamp);
 
     // By this point we have abandonned all work from the old job,
     // the reader has finished preparing the cache for the new job.
@@ -2928,9 +2930,14 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
 
     log->Debug(plan);
 
-    ReadResult res = ExecuteDecodingJobPlan(state, plan);
+    bool acquiredDuringInit = ExecuteDecodingJobPlan(state, plan);
+    if (!plan->TargetIsResolved && acquiredDuringInit)
+    {
+        log->DebugFormat("Target acquired during execution of the decoding job plan.");
+        OnFrameAcquired(state);
+    }
 
-    // TODO: maybe we can check if the initial move returned EOF or something.
+
 }
 
 DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult)
@@ -2951,6 +2958,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     int64_t acquiredTimestamp = cachePrepResult->AcquiredTimestamp;
     bool denseForward = cachePrepResult->DenseForward;
     int64_t denseEnd = cachePrepResult->DenseEndTimestamp;
+    int64_t cacheStart = cachePrepResult->CacheStartTimestamp;
     int64_t cacheEnd = cachePrepResult->CacheEndTimestamp;
     bool cacheFull = cachePrepResult->Full;
 
@@ -3001,10 +3009,13 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         }
         else
         {
-
-
-
-
+            // Check if target is next.
+            if (targetTimestamp == mPendingFrame->Timestamp)
+            {
+                plan->DecoderInitAction = DecoderInitAction::None;
+                plan->ResubmitPending = true;
+                return plan;
+            }
         }
     }
 
@@ -3017,6 +3028,47 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         hasPending = false;
     }
  
+
+    if (isAcquired)
+    {
+        // TODO:
+        // What we really want to know is whether the decoder is in a place that is 
+        // densely bridged with the target (for dense jobs), or is loosely bridged 
+        // with the target (for playback jobs).
+        // Note: the new job may have arrived between decoding and storing.
+
+        if (mDecodedTimestamp >= acquiredTimestamp)
+        {
+            plan->DecoderInitAction = DecoderInitAction::None;
+            plan->ResubmitPending = false;
+            return plan;
+        }
+
+    }
+    else
+    {
+        // For now assume sparse jobs.
+
+        if (targetTimestamp < cacheStart)
+        {
+
+        }
+        else if (targetTimestamp > cacheEnd)
+        {
+
+        }
+        else
+        {
+            if (mDecodedTimestamp >= targetTimestamp)
+            {
+                plan->DecoderInitAction = DecoderInitAction::None;
+                plan->ResubmitPending = false;
+                return plan;
+            }
+        }
+
+    }
+
 
     // 1. CanUsePending() -> is the pending frame a continuation of the cache.
     // If yes, and cache is full: job is done.
@@ -3237,11 +3289,9 @@ bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd)
     return false;
 }
 
-ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
+bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
 {
     // Initialize the decoder according to the plan.
-
-    ReadResult res = ReadResult::UnknownError;
 
     if (plan->DecoderInitAction == DecoderInitAction::Seek)
     {
@@ -3249,7 +3299,12 @@ ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, Decodin
 
         // Seek and decode until the target.
         // TODO: have another argument to tell if we should store the intermediate frames.
-        res = ReadFrameSeek(plan->TargetTimestamp);
+        ReadResult res = ReadFrameSeek(plan->TargetTimestamp);
+        if (res == ReadResult::Success)
+        {
+            mPreBuffer->AcquireClosest(plan->TargetTimestamp);
+            return true;
+        }
     }
     else if (plan->DecoderInitAction == DecoderInitAction::Advance)
     {
@@ -3258,6 +3313,7 @@ ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, Decodin
         // Should store and acquire the frames as we go.
         // The goal is just to move a little bit ahead, without seek to avoid 
         // restarting from the GOP start.
+        return false;
     }
     else if (plan->DecoderInitAction == DecoderInitAction::None)
     {
@@ -3272,24 +3328,37 @@ ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, Decodin
             {
                 mCurrentTimestamp = mPendingFrame->Timestamp;
                 mPendingFrame = nullptr;
+
+                double tolerance = mVideoInfo.AverageTimeStampsPerFrame / 2.0;
+                if (Math::Abs(mCurrentTimestamp - plan->TargetTimestamp) <= tolerance)
+                {
+                    // The pending frame was the requested frame.
+                    // This can happen when we step forward fast enough.
+                    // The new request can come while we are decoding/storing it.
+                    mPreBuffer->AcquireClosest(plan->TargetTimestamp);
+                    return true;
+                }
+
             }
             else if (result == CacheAddResult::Duplicate)
             {
                 DisposeFrame(mPendingFrame);
                 mPendingFrame = nullptr;
+                return false;
             }
             else if (result == CacheAddResult::Interrupted)
             {
                 // Interrupted.
                 // Then the frame stays in pending state.
                 log->DebugFormat("ExecuteDecodingJobPlan: [{0}] is still pending.", mPendingFrame->Timestamp);
+                return false;
             }
         }
 
-        res = ReadResult::Success;
+        return false;
     }
 
-    return res;
+    return false;
 }
 
 
