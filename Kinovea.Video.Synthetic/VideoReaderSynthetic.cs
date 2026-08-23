@@ -45,6 +45,12 @@ namespace Kinovea.Video.Synthetic
         public override VideoInfo Info { 
             get { return videoInfo;} 
         }
+
+        public override VideoGeometry Geometry
+        {
+            get { return videoGeometry; }
+        }
+
         public override bool Loaded { 
             get{ return initialized; } 
         }
@@ -64,6 +70,7 @@ namespace Kinovea.Video.Synthetic
         private VideoFrame current = new VideoFrame();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
+        private VideoGeometry videoGeometry = new VideoGeometry();
         private bool firstDecoded;
         #endregion
         
@@ -116,9 +123,6 @@ namespace Kinovea.Video.Synthetic
             
             return summary;
         }
-        public override void StartPrebufferingIfNotCaching()
-        {
-        }
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
             if (!firstDecoded)
@@ -151,8 +155,13 @@ namespace Kinovea.Video.Synthetic
         public override void AfterFrameEnumeration()
         {
         }
+        public override bool UpdateVideoGeometry(VideoGeometryRequest request)
+        {
+            // We don't support any video geometry request.
+            return false;
+        }
         #endregion
-        
+
         #region Private methods
         private OpenVideoResult InstanciateGenerator(SyntheticVideo video)
         {
@@ -174,8 +183,21 @@ namespace Kinovea.Video.Synthetic
             videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
             
             videoInfo.OriginalSize = video.ImageSize;
-            videoInfo.AspectRatioSize = videoInfo.OriginalSize;
-            videoInfo.ReferenceSize = videoInfo.OriginalSize;
+
+            bool isPreScaled = false; // We don't have a presentation size yet.
+            float scale = 1.0f;
+
+            videoGeometry = new VideoGeometry(
+                videoInfo.OriginalSize,
+                videoInfo.OriginalSize,
+                isPreScaled,
+                scale,
+                ImageAspectRatio.Auto,
+                ImageRotation.Rotate0,
+                Demosaicing.None,
+                false,
+                false,
+                0);
         }
         private bool UpdateCurrent(long timestamp)
         {

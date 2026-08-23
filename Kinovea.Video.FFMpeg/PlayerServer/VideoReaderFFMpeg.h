@@ -120,20 +120,17 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             }
         }
         virtual property VideoSection WorkingZone {
-            // Return the internal working zone.
             VideoSection get() override { return mWorkingZone; }
         }
-
         virtual property VideoFrame^ Current {
             VideoFrame^ get() override { 
                 return mFrameContainer != nullptr ? mFrameContainer->CurrentFrame : nullptr; 
             }
         }
-        virtual property bool CanDrawUnscaled 
-        {
-            bool get() override 
-            {
-                return mDecodingSize == mPreferredDecodingSize;
+        
+        virtual property VideoGeometry^ Geometry {
+            VideoGeometry^ get() override {
+                return mVideoGeometry;
             }
         }
 
@@ -169,17 +166,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual void BeforeFrameEnumeration() override;
         virtual void AfterFrameEnumeration() override;
 
-        // Image adjustments
-        virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
-        virtual bool ChangeImageRotation(ImageRotation rotation) override;
-        virtual bool ChangeDemosaicing(Demosaicing demosaicing) override;
-        virtual bool ChangeDeinterlace(bool _deint) override;
-        virtual bool SetStabilizationData(List<TimedPoint^>^ points) override;
-        
-        // Decoding size
-        virtual void SetPreferredDecodingSize(Size size) override;
-        virtual bool ChangeDecodingSize(Size _size) override;
-        virtual void SetAllowCustomDecodingSize(bool allow) override;
+        // Video geometry
+        virtual bool UpdateVideoGeometry(VideoGeometryRequest^ request) override;
 
     // Members
     private:
@@ -191,6 +179,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoCapabilities mCapabilities;
         bool mIsLoaded;
         VideoInfo mVideoInfo;
+
+        // Video Geometry configuration (rotation, deinterlacing, etc.)
+        VideoGeometry^ mVideoGeometry;                  // Current published geometry.
+        VideoGeometryRequest^ mVideoGeometryRequest;    // Last player side request.
         Dictionary<int64_t, TimedPoint^>^ mStabOffsets = gcnew Dictionary<int64_t, TimedPoint^>();
         
         // Summary extraction
@@ -205,17 +197,19 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoSection mSectionToAppend;
         bool mIsFirstWZUpdate = true;
 
-        // The actual value we use as output size in the scaling filter.
-        Size mDecodingSize;
-
-        // Decoding size preferred by the player. 
-        // Used when the viewport is smaller than the video.
-        // Only honored for prebuffering.
-        Size mPreferredDecodingSize;
-
-        // True if the player allows custom decoding size.
-        // This can be set to false during some operations that require full size images like tracking.
-        bool mAllowCustomDecodingSize = true;
+        // Image size.
+        // We deal with a bunch of sizes for different purposes.
+        // 1. original size -> size of images out of the decoder. Stored in mVideoInfo.OriginalSize. 
+        // 2. scaled size -> size of images out of the scaler, taking aspect ratio force into account.
+        // 3. reference size -> rotated original size, used for coordinates. Stored in mVideoGeometry.ReferenceSize.
+        // 4. output size -> rotated scaled size. What output images use. Stored in mVideoGeometry.OutputSize.
+        // In practice we compute the output size from the reference size, 
+        // and then we derive scaled size from the output based on rotation.
+        // Only the reference size and output size are relevant to the player.
+        Size mOriginalSize;     // ex: 1920 x 1080.
+        Size mScaledSize;       // ex: 960 x 540.
+        Size mReferenceSize;    // ex: 1080 x 1920.
+        Size mOutputSize;       // ex: 540 x 960.
 
         // Frame containers
         // mFrameContainer references one of the three below.
@@ -360,13 +354,14 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Release the memory allocated by libav for the frame buffer.
         static void DisposeFrame(VideoFrame^ _frame);
         
-        /// Set the decoding size to the default.
-        /// Does not change the preferred decoding size.
-        void ResetDecodingSize();
-
-        void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);
-        Size FixSize(Size _size, bool sideways);
-
+        // Video geometry
+        void ResolveGeometry(VideoGeometryRequest^ request);
+        bool SetStabilizationData(List<TimedPoint^>^ points);
+        
+        // Computes the reference size and set an initial scaled size.
+        void ComputeReferenceSize(ImageAspectRatio aspectRatio, ImageRotation rotation);
+        Size PadSize(Size size, bool isSideway);
+        
         /// Returns how many megabytes the working zone requires to be fully loaded in memory.
         /// This is for full size frames, not decoding size.
         double WorkingZoneMemoryRequirement(VideoSection _newZone);
@@ -378,24 +373,21 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             Action<DoWorkEventHandler^>^ workerFn) override;
 
 
-        // DecodeScheduler
-        // The following functions should eventually be refactored and moved to different classes.
-        bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
-        
-        /// Clears the old cache and points the main container to the one of the active mode.
+        /// Clears the old frame container and points it to the one of the new mode.
         /// This should be called after validating that the mode is available.
         /// This function stops and starts the prebuffer thread if needed.
+        /// It doesn't start the full cache loading.
         void ChangeCachingMode(VideoDecodingMode wantedMode);
 
         void ChangeToBestAfterCaching();
         void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
+        bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
         
         /// Start the prebuffering thread.
         void StartPreBufferingThread(int64_t startTimestamp);
 
-        /// Stop the prebuffering thread. 
-        /// Does not clear the frame cache.
-        /// Does not change the caching mode.
+        /// Stop the prebuffering thread.
+        /// Does not clear the frame cache, does not change the caching mode.
         void StopPreBufferingThread();
 
         void PreBufferingWorker(Object^ _canceler);
@@ -406,6 +398,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         static void LogFrameInfo(AVFrame* frame);
         static void LogFFMpegError(String^ context, int errorCode);
         static void LogStreamList(AVFormatContext* formatCtx);
+        static void LogVideoGeometry(VideoGeometry^ geometry);
         static String^ GetFrameTypeString(int type);
         static String^ GetFrameFormatString(AVPixelFormat format);
     };

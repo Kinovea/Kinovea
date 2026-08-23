@@ -24,72 +24,52 @@ using Kinovea.Services;
 
 namespace Kinovea.Video
 {
- 
-    // TODO: hide those items that are implementation details.
-    
+    /// <summary>
+    /// Information that is intrinsic to the file.
+    /// </summary>
     public struct VideoInfo
     {
         /// <summary>
-        /// Full path of the video file.
+        /// Full path on the file system.
         /// </summary>
         public string FilePath;
 
         /// <summary>
-        /// Whether a separate KVA metadata file has been loaded for this video.
-        /// </summary>
-        public bool HasKva;
-
-        /// <summary>
-        /// Image size in the file.
+        /// Raw image size without rotation or pixel aspect ratio.
         /// </summary>
         public Size OriginalSize;
 
         /// <summary>
-        /// Image size after aspect ratio fix (either from pixel aspect ratio or by user configuration).
-        /// Padded to 4 bytes along rotated width.
+        /// Image rotation flag stored in the file.
         /// </summary>
-        public Size AspectRatioSize;
-
-        /// <summary>
-        /// Image size after aspect ratio fix and rotation.
-        /// This is the unscaled image size, the images might be decoded at a smaller size still.
-        /// </summary>
-        public Size ReferenceSize;
+        public ImageRotation OriginalRotation;
 
         public double PixelAspectRatio;
         public Fraction SampleAspectRatio;
         public bool IsCodecMpeg2;
 
-        /// <summary>
-        /// Image rotation to use for decoding images.
-        /// Either from video internal metadata or user configuration.
-        /// </summary>
-        public ImageRotation ImageRotation;
-
-        // Timing info - some of this might be overriden by the user.
         public double AverageTimeStampsPerFrame;
         public double AverageTimeStampsPerSeconds;
         public double FramesPerSeconds;
         public double FrameIntervalMilliseconds;
-        
+
         public long FirstTimeStamp;
         public long LastTimeStamp;
         public long DurationTimeStamps;
-        
+
         public static VideoInfo Empty {
-            get {
-                return new VideoInfo {
+            get
+            {
+                return new VideoInfo
+                {
                     FilePath = "",
-                    HasKva = false,
 
                     OriginalSize = Size.Empty,
-                    AspectRatioSize = Size.Empty,
-                    ReferenceSize = Size.Empty,
+                    OriginalRotation = ImageRotation.Rotate0,
                     PixelAspectRatio = 1.0F,
                     SampleAspectRatio = new Fraction(),
                     IsCodecMpeg2 = false,
-                    ImageRotation = ImageRotation.Rotate0,
-       
+
                     AverageTimeStampsPerFrame = 0,
                     AverageTimeStampsPerSeconds = 0,
                     FramesPerSeconds = 0,

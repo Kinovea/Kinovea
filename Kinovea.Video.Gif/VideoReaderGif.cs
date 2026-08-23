@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using Kinovea.Services;
 
 namespace Kinovea.Video.GIF
 {
@@ -42,6 +43,10 @@ namespace Kinovea.Video.GIF
         public override VideoInfo Info {
             get { return videoInfo; }
         }
+        public override VideoGeometry Geometry
+        {
+            get { return videoGeometry; }
+        }
         public override VideoDecodingMode DecodingMode { 
             get { return loaded ? VideoDecodingMode.Caching : VideoDecodingMode.NotInitialized; }
         }
@@ -50,6 +55,7 @@ namespace Kinovea.Video.GIF
         #region Members
         private bool loaded;
         private VideoInfo videoInfo;
+        private VideoGeometry videoGeometry;
         private int count;
         private Image gif;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -101,8 +107,14 @@ namespace Kinovea.Video.GIF
             gif.Dispose();
             return summary;
         }
+        public override bool UpdateVideoGeometry(VideoGeometryRequest request)
+        {
+            // We don't support any video geometry request.
+            return false;
+        }
+
         #endregion
-        
+
         #region Private Methods
         private OpenVideoResult LoadFile(string filePath, bool cache)
         {
@@ -141,9 +153,22 @@ namespace Kinovea.Video.GIF
                 videoInfo.AverageTimeStampsPerFrame = interval;
 
                 videoInfo.OriginalSize = gif.Size;
-                videoInfo.AspectRatioSize = videoInfo.OriginalSize;
-                videoInfo.ReferenceSize = videoInfo.OriginalSize;
-                
+
+                bool isPreScaled = false; // We don't have a presentation size yet.
+                float scale = 1.0f;
+
+                videoGeometry = new VideoGeometry(
+                    videoInfo.OriginalSize,
+                    videoInfo.OriginalSize,
+                    isPreScaled,
+                    scale,
+                    ImageAspectRatio.Auto,
+                    ImageRotation.Rotate0,
+                    Demosaicing.None,
+                    false,
+                    false,
+                    0);
+
                 if (cache)
                     LoadCache(dimension);
                 

@@ -72,7 +72,14 @@ void VideoReaderFFMpeg::DataInit()
     mCurrentTimestamp = AV_NOPTS_VALUE;
     mCurrentGopTimestamp = AV_NOPTS_VALUE;
     mWasPrebuffering = false;
-    mAllowCustomDecodingSize = true;
+    
+    mVideoGeometry = nullptr;
+    mVideoGeometryRequest = nullptr;
+
+    mOriginalSize = Size::Empty;
+    mScaledSize = Size::Empty;
+    mReferenceSize = Size::Empty;
+    mOutputSize = Size::Empty;
 }
 #pragma endregion
 
@@ -128,17 +135,16 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         return summary;
     }
 
-    // Decoding size.
-    float stretch = (float)mVideoInfo.OriginalSize.Width / maxSize.Width;
-    mPreferredDecodingSize = Size(maxSize.Width, (int)(mVideoInfo.OriginalSize.Height / stretch));
-    mDecodingSize = mPreferredDecodingSize;
+    ComputeReferenceSize(ImageAspectRatio::Auto, mVideoInfo.OriginalRotation);
+    mScaledSize = FitHelper::Fit(mScaledSize, maxSize, true);
+    // We don't publish the output size here so we don't have to update it.
 
     ChangeCachingMode(VideoDecodingMode::OnDemand);
 
     summary->IsImage = mVideoInfo.DurationTimeStamps == 1;
     double durationSeconds = mVideoInfo.DurationTimeStamps / mVideoInfo.AverageTimeStampsPerSeconds;
     summary->DurationMilliseconds = (int64_t)Math::Round(durationSeconds * 1000.0);
-    summary->ImageSize = mVideoInfo.ReferenceSize;
+    summary->ImageSize = mVideoGeometry->ReferenceSize;
     summary->Framerate = mVideoInfo.FramesPerSeconds;
 
     String^ filename = Path::GetFileName(filePath);
@@ -220,11 +226,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     }
 
     mVideoInfo.FilePath = filePath;
-    if (Options == nullptr)
-    {
-        Options = Options->Default;
-    }
-
+    
     AVFormatContext* formatCtx = avformat_alloc_context();
 
     // If we are opening the file just to extract thumbnails we take some shortcuts.
@@ -330,9 +332,9 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     //-----------------------------------------------------
     // Collect image size and rotation
     //-----------------------------------------------------
-    mVideoInfo.OriginalSize = Size(videoCodecCtx->width, videoCodecCtx->height);
-
-    mVideoInfo.ImageRotation = ImageRotation::Rotate0;
+    mOriginalSize = Size(videoCodecCtx->width, videoCodecCtx->height);
+    mVideoInfo.OriginalSize = mOriginalSize;
+    mVideoInfo.OriginalRotation = ImageRotation::Rotate0;
     const AVPacketSideData* displaymatrix = av_packet_side_data_get(videoStream->codecpar->coded_side_data, videoStream->codecpar->nb_coded_side_data, AV_PKT_DATA_DISPLAYMATRIX);
     if (displaymatrix)
     {
@@ -342,11 +344,11 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         // Ignore rotations that aren't multiples of 90.
         rotation = ((int)-rotation + 360) % 360;
         if (rotation == 90)
-            mVideoInfo.ImageRotation = ImageRotation::Rotate90;
+            mVideoInfo.OriginalRotation = ImageRotation::Rotate90;
         else if (rotation == 180)
-            mVideoInfo.ImageRotation = ImageRotation::Rotate180;
+            mVideoInfo.OriginalRotation = ImageRotation::Rotate180;
         else if (rotation == 270)
-            mVideoInfo.ImageRotation = ImageRotation::Rotate270;
+            mVideoInfo.OriginalRotation = ImageRotation::Rotate270;
     }
 
     //-----------------------------------------------------
@@ -468,10 +470,6 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         mVideoInfo.PixelAspectRatio = 1.0f;
     }
 
-    this->Options->ImageRotation = mVideoInfo.ImageRotation;
-    UpdateReferenceSizes(Options->ImageAspectRatio, verbose);
-
-    //-----------------------------------------------------
         
     mFormatCtx = formatCtx;
     mVideoCodecCtx = videoCodecCtx;
@@ -492,7 +490,6 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
             VideoCapabilities::CanChangeImageRotation |
             VideoCapabilities::CanChangeDeinterlacing |
             VideoCapabilities::CanChangeWorkingZone |
-            VideoCapabilities::CanChangeDecodingSize |
             VideoCapabilities::CanStabilize;
 
         if (mVideoCodecCtx->codec_id == AV_CODEC_ID_RAWVIDEO)
@@ -503,6 +500,26 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
 
     // Start with no caching, we'll switch later if possible.
     ChangeCachingMode(VideoDecodingMode::OnDemand);
+
+    // Initialize the video geometry.
+    ComputeReferenceSize(ImageAspectRatio::Auto, mVideoInfo.OriginalRotation);
+    mScaledSize = mOriginalSize;
+    mOutputSize = mReferenceSize;
+    bool isPrescaled = false;           // Set this to false because we don't have an actual presentation size yet.
+    float scale = mOutputSize.Width / (float)mReferenceSize.Width;
+    mVideoGeometry = gcnew VideoGeometry(
+        mReferenceSize, 
+        mOutputSize,
+        isPrescaled,
+        scale,
+        ImageAspectRatio::Auto,
+        mVideoInfo.OriginalRotation,
+        Demosaicing::None,
+        false,
+        false,
+        0);
+
+    LogVideoGeometry(mVideoGeometry);
 
     return OpenVideoResult::Success;
 }
@@ -556,9 +573,9 @@ void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
 {
     // During loading we have called UpdateWorkingZone already, 
     // but only allowing it to either go full caching or stay in 
-    // on-demand mode, because we didn't have a reliable preferred 
-    // decoding size.
-    // Now that we do, see if we can go from on-demand to prebuffering.
+    // on-demand mode, because we didn't have a reliable presentation size.
+    // 
+    // Once we do we come back here, see if we can go from on-demand to prebuffering.
     // If we aren't in full caching mode by now it means either 
     // the wz doesn't fit in memory or this was disallowed, we don't 
     // change this here.
@@ -570,8 +587,18 @@ void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
     // In that case it's normal that we are already prebuffering.
     if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        log->WarnFormat("PostLoad called but already pre-buffering");
-        return;
+        if (mPreBufferingThread != nullptr && mPreBufferingThread->IsAlive)
+        {
+            log->WarnFormat("StartPrebufferingIfNotCaching called while already pre-buffering");
+            return;
+        }
+        else
+        {
+            // Something went very wrong.
+            mPreBuffer->Clear();
+            log->ErrorFormat("Prebuffering thread stopped.");
+            mCachingMode = VideoDecodingMode::OnDemand;
+        }
     }
 
     if (mCachingMode == VideoDecodingMode::Caching)
@@ -704,8 +731,14 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
 void VideoReaderFFMpeg::BeforePlayloop()
 {
     // Just in case something wrong happened, make sure the decoding thread is alive.
-    if (DecodingMode != VideoDecodingMode::Caching &&
-        (CanPreBuffer && DecodingMode != VideoDecodingMode::PreBuffering))
+
+    if (DecodingMode == VideoDecodingMode::Caching)
+    {
+        // All set.
+        return;
+    }
+
+    if (CanPreBuffer && DecodingMode != VideoDecodingMode::PreBuffering)
     {
         log->Error("Forcing PreBuffering thread to restart.");
         ChangeCachingMode(VideoDecodingMode::PreBuffering);
@@ -923,35 +956,39 @@ void VideoReaderFFMpeg::AfterFrameEnumeration()
     mWasPrebuffering = false;
 }
 
-void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode newCachingMode)
+void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode newMode)
 {
-    if (!CanSwitchDecodingMode(newCachingMode))
+    // At this point we must have validated that the target mode is doable,
+    // in terms of global capabilities, player state and memory requirements.
+    if (!CanSwitchDecodingMode(newMode))
     {
         throw gcnew CapabilityNotSupportedException();
     }
 
-    if (newCachingMode == mCachingMode)
+    if (newMode == mCachingMode)
     {
         return;
     }
 
-    log->DebugFormat("Changing caching mode: {0} -> {1}", mCachingMode, newCachingMode);
+    if (mVerbose)
+    {
+        log->DebugFormat("Changing caching mode: {0} -> {1}", mCachingMode, newMode);
+    }
 
     // Clear the existing cache.
     if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
         StopPreBufferingThread();
         mFrameContainer->Clear();
-        ResetDecodingSize();
     }
     else if (mFrameContainer != nullptr)
     {
         mFrameContainer->Clear();
     }
 
-    // At this point we have validated that the target caching mode is doable,
-    // in terms of global capabilities, player state and memory requirements.
-    mCachingMode = newCachingMode;
+    mCachingMode = newMode;
+
+    // Change container.
     switch (mCachingMode)
     {
     case VideoDecodingMode::OnDemand:
@@ -959,13 +996,25 @@ void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode newCachingMode)
         break;
     case VideoDecodingMode::PreBuffering:
         mFrameContainer = mPreBuffer;
-        StartPreBufferingThread(mWorkingZone.Start);
         break;
     case VideoDecodingMode::Caching:
         mFrameContainer = mCache;
         break;
     default:
         mFrameContainer = nullptr;
+    }
+
+    // Recompute the geometry, to take into account a possible
+    // change in allowPrescaling.
+    ResolveGeometry(mVideoGeometryRequest);
+
+    // For OnDemand, the frame will be read synchronously later.
+    // For Caching, the caller should launch a background worker
+    // to fill the cache.
+    // For PreBuffering, we read the first frame and start the background thread.
+    if (mCachingMode == VideoDecodingMode::PreBuffering)
+    {
+        StartPreBufferingThread(mWorkingZone.Start);
     }
 }
 
@@ -992,7 +1041,7 @@ double VideoReaderFFMpeg::WorkingZoneMemoryRequirement(VideoSection _newZone)
 
     // Caching is done at full aspect ratio size, not at the current decoding size based on the rendering viewport.
     // Otherwise we would have to potentially reload the cache each time there is a stretch/squeeze request.
-    int bufferSize = av_image_get_buffer_size(sConvertPixelFormat, mVideoInfo.ReferenceSize.Width, mVideoInfo.ReferenceSize.Height, 1);
+    int bufferSize = av_image_get_buffer_size(sConvertPixelFormat, mVideoGeometry->ReferenceSize.Width, mVideoGeometry->ReferenceSize.Height, 1);
     double frameMegaBytes = (double)bufferSize / 1048576;
     double durationMegaBytes = durationSeconds * mVideoInfo.FramesPerSeconds * frameMegaBytes;
 
@@ -1031,89 +1080,149 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
 
 #pragma endregion
 
-#pragma region Image adjustments (aspect, rotation, demosaicing, deinterlace, stabilization)
+#pragma Video geometry
 
-bool VideoReaderFFMpeg::ChangeAspectRatio(ImageAspectRatio aspectRatio)
+bool VideoReaderFFMpeg::UpdateVideoGeometry(VideoGeometryRequest^ request)
 {
-    if (!CanChangeAspectRatio)
-        throw gcnew CapabilityNotSupportedException();
+    Size oldOutputSize = mVideoGeometry == nullptr ? Size::Empty : mVideoGeometry->OutputSize;
 
-    if (aspectRatio == Options->ImageAspectRatio)
+    // Update published geometry based on the request.
+    ResolveGeometry(request);
+
+    // Check if we must invalidate the cache.
+    bool invalidated = true;
+    VideoGeometryRequest^ oldRequest = mVideoGeometryRequest;
+    if (oldRequest != nullptr)
     {
-        // Program error.
-        log->ErrorFormat("Request to change aspect ratio but already using the correct aspect ratio.");
-    }
-
-    // Potentially changes the aspect ratio size and the reference image size.
-    // This invalidates any cached frames.
-    if (mPreBufferingThread != nullptr && mPreBufferingThread->IsAlive)
-    {
-        StopPreBufferingThread();
-    }
-
-    Options->ImageAspectRatio = aspectRatio;
-    UpdateReferenceSizes(Options->ImageAspectRatio, true);
+        bool changedOptions =
+            request->AspectRatio != oldRequest->AspectRatio ||
+            request->Rotation != oldRequest->Rotation ||
+            request->Demosaicing != oldRequest->Demosaicing ||
+            request->Deinterlace != oldRequest->Deinterlace;
     
-    mFrameContainer->Clear();
-    return true;
+        // TODO: check if stabilization data has changed via a hash.
+
+        invalidated = changedOptions || mVideoGeometry->OutputSize != oldOutputSize;
+    }
+
+    if (invalidated && oldRequest != nullptr)
+    {
+        ChangeCachingMode(VideoDecodingMode::OnDemand);
+    }
+
+    // The caching or prebuffering thread will be restarted by the caller
+    // via an UpdateWorkingZone() call or StartPrebufferingIfNotCaching.
+
+    mVideoGeometryRequest = request;
+
+    return invalidated;
 }
-bool VideoReaderFFMpeg::ChangeImageRotation(ImageRotation rotation)
+
+void VideoReaderFFMpeg::ResolveGeometry(VideoGeometryRequest^ request)
 {
-    if (!CanChangeImageRotation)
-        throw gcnew CapabilityNotSupportedException();
-
-    if (rotation == Options->ImageRotation)
+    if (request == nullptr)
     {
-        // Program error.
-        log->ErrorFormat("Request to change image rotation but already using the correct rotation.");
+        return;
     }
 
-    // Potentially changes the aspect ratio size (padded to rotated width), 
-    // and the reference image size. This invalidates any cached frames.
-    if (mPreBufferingThread != nullptr && mPreBufferingThread->IsAlive)
-    {
-        StopPreBufferingThread();
-    }
+    bool readerAllowsPrescaling = mCachingMode == VideoDecodingMode::PreBuffering;
+    bool bothAllowPrescaling = readerAllowsPrescaling && request->AllowPreScaling;
 
-    Options->ImageRotation = rotation;
-    mVideoInfo.ImageRotation = rotation;
-    UpdateReferenceSizes(Options->ImageAspectRatio, true);
+    // Compute mReference size and an initial mScaledSize (aspect ratio but not rotated).
+    ComputeReferenceSize(request->AspectRatio, request->Rotation);
+    mOutputSize = mReferenceSize;
     
-    mFrameContainer->Clear();
-    return true;
-}
-bool VideoReaderFFMpeg::ChangeDemosaicing(Demosaicing demosaicing)
-{
-    if (!CanChangeDemosaicing)
-        throw gcnew CapabilityNotSupportedException();
-
-    // Decoding thread should be stopped at this point.
-    if (mPreBufferingThread != nullptr && mPreBufferingThread->IsAlive)
+    if (bothAllowPrescaling)
     {
-        log->ErrorFormat("PreBuffering thread is started.");
+        mOutputSize = FitHelper::Fit(mReferenceSize, request->PresentationSize, false);
     }
 
-    Options->Demosaicing = demosaicing;
+    mScaledSize = mOutputSize;
+    if (request->Rotation == ImageRotation::Rotate90 || request->Rotation == ImageRotation::Rotate270)
+    {
+        mScaledSize = Size(mOutputSize.Height, mOutputSize.Width);
+    }
 
-    mFrameContainer->Clear();
-    return true;
+    float decodingScale = mOutputSize.Width / (float)mReferenceSize.Width;
+    
+    SetStabilizationData(request->StabilizationData);
+
+    // Prescaled means we output at the presentation size and the player 
+    // can draw directly without rescaling.
+    // Whether we decode at the full size or not is orthogonal.
+    bool isPrescaled = mOutputSize == request->PresentationSize;
+
+    mVideoGeometry = gcnew VideoGeometry(
+        mReferenceSize,
+        mOutputSize,
+        isPrescaled,
+        decodingScale,
+        request->AspectRatio,
+        request->Rotation,
+        request->Demosaicing,
+        request->Deinterlace,
+        true,
+        0);
+
+    log->DebugFormat("Video geometry resolved: Original size: {0}x{1}, Scaled size:{2}x{3}.",
+        mOriginalSize.Width, mOriginalSize.Height,
+        mScaledSize.Width, mScaledSize.Height);
+
+    LogVideoGeometry(mVideoGeometry);
 }
-bool VideoReaderFFMpeg::ChangeDeinterlace(bool _deint)
+
+void VideoReaderFFMpeg::ComputeReferenceSize(ImageAspectRatio aspectRatio, ImageRotation rotation)
 {
-    if (!CanChangeDeinterlacing)
-        throw gcnew CapabilityNotSupportedException();
+    Size aspectRatioSize = Size::Empty;
+    aspectRatioSize.Width = mOriginalSize.Width;
 
-    // Decoding thread should be stopped at this point.
-    Options->Deinterlace = _deint;
-    mFrameContainer->Clear();
-    return true;
+    switch (aspectRatio)
+    {
+    case ImageAspectRatio::Force43:
+        aspectRatioSize.Height = (int)((mOriginalSize.Width * 3.0) / 4.0);
+        break;
+    case ImageAspectRatio::Force169:
+        aspectRatioSize.Height = (int)((mOriginalSize.Width * 9.0) / 16.0);
+        break;
+    case ImageAspectRatio::ForcedSquarePixels:
+        aspectRatioSize.Height = mOriginalSize.Height;
+        break;
+    case ImageAspectRatio::Auto:
+    default:
+        aspectRatioSize.Height = (int)((double)mOriginalSize.Height / mVideoInfo.PixelAspectRatio);
+        break;
+    }
+
+    bool isSideway = rotation == ImageRotation::Rotate90 || rotation == ImageRotation::Rotate270;
+
+    aspectRatioSize = PadSize(aspectRatioSize, isSideway);
+
+    // Init the scaled size to the full aspect ratio size, it will be changed later if allowed.
+    mScaledSize = aspectRatioSize;
+    mReferenceSize = aspectRatioSize;
+
+    if (isSideway)
+    {
+        mReferenceSize = Size(mReferenceSize.Height, mReferenceSize.Width);
+    }
 }
+
+Size VideoReaderFFMpeg::PadSize(Size _size, bool isSideway)
+{
+    // Fix unsupported width for conversion to .NET Bitmap. Must be a multiple of 4.
+    // Subtlety: the padding must be in the dimension that will be the width after rotation.
+    if (isSideway)
+        return Size(_size.Width, _size.Height + (_size.Height % 4));
+    else
+        return Size(_size.Width + (_size.Width % 4), _size.Height);
+}
+
 bool VideoReaderFFMpeg::SetStabilizationData(List<Kinovea::Services::TimedPoint^>^ points)
 {
     // Precompute the list of frame offsets with regards to the first point of the track.
     mStabOffsets->Clear();
-    mFrameContainer->Clear();
-    
+    //mFrameContainer->Clear();
+
     if (points == nullptr)
         return true;
 
@@ -1127,165 +1236,6 @@ bool VideoReaderFFMpeg::SetStabilizationData(List<Kinovea::Services::TimedPoint^
     }
 
     return true;
-}
-
-#pragma endregion
-
-#pragma region Decoding size
-
-void VideoReaderFFMpeg::SetPreferredDecodingSize(Size _size)
-{
-    log->DebugFormat("Set preferred decoding size: {0}. Reference:{1}.",
-        _size, mVideoInfo.ReferenceSize);
-
-    bool isSideway = 
-        mVideoInfo.ImageRotation == ImageRotation::Rotate90 || 
-        mVideoInfo.ImageRotation == ImageRotation::Rotate270;
-
-    // Remember the preferred decoding size.
-    // When we later switch to prebuffering we may use this.
-    mPreferredDecodingSize = FixSize(_size, isSideway);
-}
-
-bool VideoReaderFFMpeg::ChangeDecodingSize(Size _size)
-{
-    // Should return true if we are going to use the requested size.
-
-    if (!CanChangeDecodingSize)
-    {
-        throw gcnew CapabilityNotSupportedException();
-    }
-
-    log->DebugFormat("Request to change decoding size: {0} -> {1}. Reference:{2}.", 
-        mDecodingSize, _size, mVideoInfo.ReferenceSize);
-
-    SetPreferredDecodingSize(_size);
-    
-    if (mPreferredDecodingSize == mDecodingSize)
-    {
-        // Nothing to do.
-        return true;
-    }
-
-    // On-demand and Cached mode always use the full video size.
-    if (mCachingMode != VideoDecodingMode::PreBuffering)
-    {
-        log->Debug("Will not use custom decoding size because we are not prebuffering.");
-        return false;
-    }
-
-    if (!mAllowCustomDecodingSize)
-    {
-        log->Debug("Will not use custom decoding size because the player disallows it.");
-        return false;
-    }
-
-    // We are pre-buffering and we are allowed to change.
-    // This invalidates the cache.
-    log->DebugFormat("Changing decoding size: {0}x{1} -> {2}x{3}", 
-        mDecodingSize.Width, mDecodingSize.Height, 
-        mPreferredDecodingSize.Width, mPreferredDecodingSize.Height);
-
-    int64_t memoTimestamp =
-        mPreBuffer->CurrentFrame == nullptr ?
-        mWorkingZone.Start :
-        mPreBuffer->CurrentFrame->Timestamp;
-
-    // Stop thread, clear cache, decode first frame synchronously, restart thread.
-    StopPreBufferingThread();
-    mPreBuffer->Clear();
-    StartPreBufferingThread(memoTimestamp);
-
-    return true;
-}
-
-void VideoReaderFFMpeg::SetAllowCustomDecodingSize(bool isAllowed)
-{
-    bool wasAllowed = mAllowCustomDecodingSize;
-    mAllowCustomDecodingSize = isAllowed;
-
-    if (mCachingMode != VideoDecodingMode::PreBuffering)
-    {
-        return;
-    }
-    
-    // Changing this flag while prebuffering invalidates the cache.
-    // The function StartPreBufferingThread will take care of 
-    // setting the decoding size before starting the decoding.
-    bool changed = wasAllowed != isAllowed;
-
-    if (changed)
-    {
-        int64_t memoTimestamp =
-            mPreBuffer->CurrentFrame == nullptr ?
-            mWorkingZone.Start :
-            mPreBuffer->CurrentFrame->Timestamp;
-
-        StopPreBufferingThread();
-        mPreBuffer->Clear();
-        StartPreBufferingThread(memoTimestamp);
-    }
-}
-
-void VideoReaderFFMpeg::ResetDecodingSize()
-{
-    // Reset the decoding size to the default.
-    // "Aspect ratio size" is the video image size with 
-    // custom aspect ratio and padded along rotated width.
-    mDecodingSize = mVideoInfo.AspectRatioSize;
-
-    // Do not touch mPreferredDecodingSize.
-}
-
-void VideoReaderFFMpeg::UpdateReferenceSizes(Kinovea::Services::ImageAspectRatio _ratio, bool verbose)
-{
-    // Called during load or when aspect ratio or rotation changes.
-    
-    // Set the image geometry according to the pixel aspect ratio choosen.
-    if (verbose)
-        log->DebugFormat("Image aspect ratio: {0}", _ratio);
-
-    // Constraint width and change height to match aspect ratio.
-    mVideoInfo.AspectRatioSize.Width = mVideoInfo.OriginalSize.Width;
-
-    switch (_ratio)
-    {
-    case Kinovea::Services::ImageAspectRatio::Force43:
-        mVideoInfo.AspectRatioSize.Height = (int)((mVideoInfo.OriginalSize.Width * 3.0) / 4.0);
-        break;
-    case Kinovea::Services::ImageAspectRatio::Force169:
-        mVideoInfo.AspectRatioSize.Height = (int)((mVideoInfo.OriginalSize.Width * 9.0) / 16.0);
-        break;
-    case Kinovea::Services::ImageAspectRatio::ForcedSquarePixels:
-        mVideoInfo.AspectRatioSize.Height = mVideoInfo.OriginalSize.Height;
-        break;
-    case Kinovea::Services::ImageAspectRatio::Auto:
-    default:
-        mVideoInfo.AspectRatioSize.Height = (int)((double)mVideoInfo.OriginalSize.Height / mVideoInfo.PixelAspectRatio);
-        break;
-    }
-
-    bool sideway = mVideoInfo.ImageRotation == ImageRotation::Rotate90 || mVideoInfo.ImageRotation == ImageRotation::Rotate270;
-    mVideoInfo.AspectRatioSize = FixSize(mVideoInfo.AspectRatioSize, sideway);
-    mVideoInfo.ReferenceSize = sideway ? Size(mVideoInfo.AspectRatioSize.Height, mVideoInfo.AspectRatioSize.Width) : mVideoInfo.AspectRatioSize;
-
-    if (verbose)
-        log->DebugFormat("Image size: Original:{0}, AspectRatioSize:{1}, ReferenceSize:{2}.", mVideoInfo.OriginalSize, mVideoInfo.AspectRatioSize, mVideoInfo.ReferenceSize);
-
-    // After this the decoding size should be reset.
-    // First to the default (aspect ratio size), and later to a custom size based on the viewport, if possible.
-    // This second step will happen in psui > ResizeUpdate().
-    ResetDecodingSize();
-}
-
-Size VideoReaderFFMpeg::FixSize(Size _size, bool sideways)
-{
-    // Fix unsupported width for conversion to .NET Bitmap. Must be a multiple of 4.
-    // Subtlety: the padding must be in the dimension that will be the width after rotation.
-    if (sideways)
-        return Size(_size.Width, _size.Height + (_size.Height % 4));
-    else
-        return Size(_size.Width + (_size.Width % 4), _size.Height);
 }
 
 #pragma endregion
@@ -1411,6 +1361,11 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     mStopwatch->Restart();
 
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized || mFrameContainer == nullptr)
+    {
+        return ReadResult::NotReady;
+    }
+
+    if (mVideoGeometry == nullptr || mVideoGeometry->OutputSize.IsEmpty)
     {
         return ReadResult::NotReady;
     }
@@ -1893,8 +1848,8 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     {
         // Preallocate buffers with packed alignment.
         convertedFrame->format = sConvertPixelFormat;
-        convertedFrame->width = mDecodingSize.Width;
-        convertedFrame->height = mDecodingSize.Height;
+        convertedFrame->width = mScaledSize.Width;
+        convertedFrame->height = mScaledSize.Height;
         int res = av_frame_get_buffer(convertedFrame, 1);
         if (res < 0)
         {
@@ -1905,15 +1860,15 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     }
 
     bool converted = false;
-    if (!Options->Deinterlace && mCopyFilteredFrame)
+    if (!mVideoGeometry->Deinterlacing && mCopyFilteredFrame)
     {
         // Scale and convert the decoded AVFrame to the correct format and size.
         // Uses swscale API.
         converted = RescaleAndConvert(
             decodedFrame,
             convertedFrame, 
-            mDecodingSize.Width, 
-            mDecodingSize.Height, 
+            mScaledSize.Width,
+            mScaledSize.Height,
             sConvertPixelFormat, 
             forSummary);
     }
@@ -1924,10 +1879,10 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
         converted = RescaleAndConvert2(
             decodedFrame, 
             convertedFrame, 
-            mDecodingSize.Width, 
-            mDecodingSize.Height, 
+            mScaledSize.Width,
+            mScaledSize.Height,
             sConvertPixelFormat, 
-            Options->Deinterlace);
+            mVideoGeometry->Deinterlacing);
     }
 
     if (!converted)
@@ -1947,13 +1902,13 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
 
         // Wrap the native AVFrame in a bitmap.
         Bitmap^ bmp2 = gcnew Bitmap(
-            mDecodingSize.Width,
-            mDecodingSize.Height,
+            mScaledSize.Width,
+            mScaledSize.Height,
             stride,
             DecodingPixelFormat,
             data);
 
-        bmp = gcnew Bitmap(mDecodingSize.Width, mDecodingSize.Height, DecodingPixelFormat);
+        bmp = gcnew Bitmap(mScaledSize.Width, mScaledSize.Height, DecodingPixelFormat);
         Graphics^ g = Graphics::FromImage(bmp);
         float dx = mStabOffsets[mCurrentTimestamp]->X;
         float dy = mStabOffsets[mCurrentTimestamp]->Y;
@@ -1974,8 +1929,8 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     {
         // Normal case, just wrap the native AVFrame in the Bitmap.
         bmp = gcnew Bitmap(
-            mDecodingSize.Width, 
-            mDecodingSize.Height, 
+            mScaledSize.Width,
+            mScaledSize.Height,
             stride, 
             DecodingPixelFormat, 
             data);
@@ -1990,7 +1945,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     av_frame_free(&convertedFrame);
 
     // Note: rotation doesn't change the size of the buffer.
-    ApplyRotation(bmp, mVideoInfo.ImageRotation);
+    ApplyRotation(bmp, mVideoGeometry->ImageRotation);
 
     // Construct a VideoFrame.
     VideoFrame^ vf = gcnew VideoFrame();
@@ -2018,7 +1973,7 @@ AVPixelFormat VideoReaderFFMpeg::GetSourceFormat(AVCodecContext* videoCodecCtx)
         return videoCodecCtx->pix_fmt;
     }
 
-    switch (Options->Demosaicing)
+    switch (mVideoGeometry->Demosaicing)
     {
     case Demosaicing::RGGB:
         return AV_PIX_FMT_BAYER_RGGB8;
@@ -2493,16 +2448,6 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
         mPreBuffer->Clear();
     }
 
-    // Set the decoding size to the preferred size if allowed.
-    if (CanChangeDecodingSize && mAllowCustomDecodingSize)
-    {
-        mDecodingSize = mPreferredDecodingSize;
-    }
-    else
-    {
-        ResetDecodingSize();
-    }
-
     // Read the first frame outside the decoding thread so the UI may request it immediately.
     if (startTimestamp >= 0)
     {
@@ -2735,15 +2680,15 @@ void VideoReaderFFMpeg::LogFileInfo()
     log->DebugFormat("[Codec] - Has B Frames: {0}", mVideoCodecCtx->has_b_frames);
     log->DebugFormat("[Codec] - Width (pixels): {0}", mVideoCodecCtx->width);
     log->DebugFormat("[Codec] - Height (pixels): {0}", mVideoCodecCtx->height);
+    log->DebugFormat("[Codec] - Image rotation: {0}", mVideoInfo.OriginalRotation.ToString());
 
     // Calculated values
-    log->Debug("Duration (timestamps): " + mVideoInfo.DurationTimeStamps);
-    log->Debug("Average Fps: " + mVideoInfo.FramesPerSeconds);
-    log->Debug("Average Frame Interval (ms): " + mVideoInfo.FrameIntervalMilliseconds);
-    log->Debug("Average Timestamps per frame: " + mVideoInfo.AverageTimeStampsPerFrame);
-    log->Debug("Pixel Aspect Ratio: " + mVideoInfo.PixelAspectRatio);
-    log->Debug("Image rotation: " + mVideoInfo.ImageRotation.ToString());
-    log->Debug("---------------------------------------------------");
+    log->DebugFormat("Duration (timestamps): {0}", mVideoInfo.DurationTimeStamps);
+    log->DebugFormat("Average Fps: {0}", mVideoInfo.FramesPerSeconds);
+    log->DebugFormat("Average Frame Interval (ms): {0}", mVideoInfo.FrameIntervalMilliseconds);
+    log->DebugFormat("Average Timestamps per frame: {0}", mVideoInfo.AverageTimeStampsPerFrame);
+    log->DebugFormat("Pixel Aspect Ratio: {0:0.000}", mVideoInfo.PixelAspectRatio);
+    log->DebugFormat("---------------------------------------------------");
 }
 
 void VideoReaderFFMpeg::LogPacketInfo(AVPacket* packet)
@@ -2822,6 +2767,15 @@ void VideoReaderFFMpeg::LogStreamList(AVFormatContext* formatCtx)
         log->DebugFormat("\tStream #{0}: {1}, {2} frames.", i, streamType, formatCtx->streams[i]->nb_frames);
     }
 }
+
+void VideoReaderFFMpeg::LogVideoGeometry(VideoGeometry^ geometry)
+{
+    log->DebugFormat("Video geometry resolved: Reference size: {0}x{1}, Output size: {2}x{3}, Decoding scale: {4:0.000}.",
+        geometry->ReferenceSize.Width, geometry->ReferenceSize.Height,
+        geometry->OutputSize.Width, geometry->OutputSize.Height,
+        geometry->Scale);
+}
+
 
 String^ VideoReaderFFMpeg::GetFrameTypeString(int type)
 {

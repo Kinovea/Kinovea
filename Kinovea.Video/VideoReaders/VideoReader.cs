@@ -56,17 +56,14 @@ namespace Kinovea.Video
         public abstract bool Loaded { get; }
         public abstract VideoSection WorkingZone { get;}
         public abstract VideoDecodingMode DecodingMode { get; }
-        
+
+        public abstract VideoGeometry Geometry { get; }
+
         public virtual IWorkingZoneFramesContainer WorkingZoneFrames 
         {
             get { return null;}
         }
 
-        /// <summary>
-        /// Gets or sets the image-level options (aspect, rotation, demosaicing, deinterlace).
-        /// </summary>
-        public VideoOptions Options { get; set; }
-        
         /// <summary>
         /// Full path to the video file.
         /// </summary>
@@ -83,15 +80,11 @@ namespace Kinovea.Video
             get { return Info.DurationTimeStamps == 1;}
         }
 
-        /// <summary>
-        /// Whether the video frame in `Current` is at the requested decoding size or not.
-        /// </summary>
-        public virtual bool CanDrawUnscaled 
-        {
-            get { return false;}
-        }
-
         # region Shorcuts for capabilities.
+        public bool CanChangeWorkingZone
+        {
+            get { return (Flags & VideoCapabilities.CanChangeWorkingZone) != 0; }
+        }
         public bool CanDecodeOnDemand {
             get { return (Flags & VideoCapabilities.CanDecodeOnDemand) != 0; }
         }
@@ -115,16 +108,6 @@ namespace Kinovea.Video
         public bool CanChangeDeinterlacing {
             get { return (Flags & VideoCapabilities.CanChangeDeinterlacing) != 0; }
         }
-        public bool CanChangeWorkingZone {
-            get { return (Flags & VideoCapabilities.CanChangeWorkingZone) != 0; }
-        }
-        public bool CanChangeDecodingSize {
-            get { return (Flags & VideoCapabilities.CanChangeDecodingSize) != 0; }
-        }
-        public bool CanScaleIndefinitely
-        {
-            get { return (Flags & VideoCapabilities.CanScaleIndefinitely) != 0; }
-        }
         public bool CanStabilize
         {
             get { return (Flags & VideoCapabilities.CanStabilize) != 0; }
@@ -143,6 +126,12 @@ namespace Kinovea.Video
         protected PlayerState playerState = null;
 
         #region Open/Close
+
+        /// <summary>
+        /// Open the video.
+        /// At the end of this call the reader must have initialized its Info 
+        /// and VideoGeometry properties.
+        /// </summary>
         public abstract OpenVideoResult Open(string filePath);
         
         public abstract void Close();
@@ -151,14 +140,6 @@ namespace Kinovea.Video
         /// Open the video file as fast as possible to extract basic information and thumbnails.
         /// </summary>
         public abstract VideoSummary ExtractSummary(string filePath, int thumbsToLoad, Size maxImageSize);
-
-        /// <summary>
-        /// Start prebuffering if supported and not already in full caching mode.
-        /// This is normally called during first opening of the video.
-        /// Calls to UpdateWorkingZone inhibited prebuffering due to 
-        /// unreliable preferred decoding size. Once the UI is loaded we can try again.
-        /// </summary>
-        public abstract void StartPrebufferingIfNotCaching();
 
         #endregion
 
@@ -201,13 +182,24 @@ namespace Kinovea.Video
         /// <returns>false if the end of file has been reached</returns>
         public abstract bool MoveTo(long from, long target);
         #endregion
-        
+
         #region Decoding mode, play loop and frame enumeration
+
+        /// <summary>
+        /// Start prebuffering if supported and not already in full caching mode.
+        /// This is normally called during first opening of the video or after 
+        /// changing the presentation size.
+        /// The first call to UpdateWorkingZone inhibits prebuffering as we don't 
+        /// have a valid presentation size yet. Once the UI is loaded we can try again.
+        /// </summary>
+        public virtual void StartPrebufferingIfNotCaching()
+        {
+        }
 
         /// <summary>
         /// Called right before starting the play loop.
         /// Might be used to ensure the prebuffering thread is started.
-        /// Does nothing by default. Override to implement.
+        /// Override to implement.
         /// </summary>
         public virtual void BeforePlayloop()
         {
@@ -224,7 +216,7 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Compute the expected frame timestamp the player would like to see right now.
-        /// The player does its own computation independently using the same code.
+        /// The player does its own computation independently using similar code.
         /// </summary>
         public long GetExpectedTimestamp(PlayerState state)
         {
@@ -331,88 +323,15 @@ namespace Kinovea.Video
         }
         #endregion
         
-        #region Image adjustments (aspect, rotation, demosaicing, deinterlace, stabilization)
-        /// <summary>
-        /// Force a specific aspect ratio.
-        /// </summary>
-        /// <returns>returns true if the cache has been invalidated by the operation</returns>
-        public virtual bool ChangeAspectRatio(ImageAspectRatio ratio)
-        {
-            // Does nothing by default. Override to implement.
-            return false;
-        }
+        #region Video geometry
 
         /// <summary>
-        /// Force a specific image rotation.
+        /// Requests the reader to recalculate the video geometry and
+        /// invalidate any cache if necessary.
+        /// The resulting geometry is published in the VideoGeometry property.
+        /// Returns true if a cache has been invalidated.
         /// </summary>
-        /// <returns>returns true if the cache has been invalidated by the operation</returns>
-        public virtual bool ChangeImageRotation(ImageRotation rotation)
-        {
-            // Does nothing by default. Override to implement.
-            return false;
-        }
-
-        /// <summary>
-        /// Force a specific demosaicing pattern.
-        /// </summary>
-        /// <returns>returns true if the cache has been invalidated by the operation</returns>
-        public virtual bool ChangeDemosaicing(Demosaicing demosaicing)
-        {
-            // Does nothing by default. Override to implement.
-            return false;
-        }
-
-        /// <summary>
-        /// Set deinterlace on or off.
-        /// </summary>
-        /// <returns>returns true if the cache has been invalidated by the operation</returns>
-        public virtual bool ChangeDeinterlace(bool deint)
-        {
-            // Does nothing by default. Override to implement.
-            return false;
-        }
-
-        /// <summary>
-        /// Pass stabilization data to the reader.
-        /// </summary>
-        /// <returns>returns true if the cache has been invalidated by the operation</returns>
-        public virtual bool SetStabilizationData(List<TimedPoint> points)
-        {
-            // Does nothing by default. Override to implement.
-            return false;
-        }
-        #endregion
-
-        #region Decoding size
-        /// <summary>
-        /// Ask the reader to provide its images at a specific size.
-        /// Not necessarily honored by the reader.
-        /// Returns true if the change was accepted or not required.
-        /// </summary>
-        public virtual bool ChangeDecodingSize(Size size)
-        {
-            // Does nothing by default. Override to implement.
-            return false;
-        }
-
-        /// <summary>
-        /// Change the preferred decoding size without trigerring cache clearing and
-        /// without starting the prebuffer thread.
-        /// </summary>
-        public virtual void SetPreferredDecodingSize(Size size)
-        {
-        }
-
-        /// <summary>
-        /// Inform the reader to allow or disallow custom decoding size.
-        /// This is used when the player is doing operations that are not compatible with 
-        /// decoding at smaller size and rendering unscaled. Object tracking for example 
-        /// needs to get patches of the image at the original resolution for better precision.
-        /// </summary>
-        public virtual void SetAllowCustomDecodingSize(bool allow)
-        {
-            // Does nothing by default. Override to implement.
-        }
+        public abstract bool UpdateVideoGeometry(VideoGeometryRequest request);
         #endregion
     }
 }

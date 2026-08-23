@@ -24,8 +24,8 @@ namespace Kinovea.ScreenManager
             leftPlayer.view.BeforeExportVideo();
             rightPlayer.view.BeforeExportVideo();
 
-            Size sizeLeft = leftPlayer.FrameServer.VideoReader.Info.ReferenceSize;
-            Size sizeRight = rightPlayer.FrameServer.VideoReader.Info.ReferenceSize;
+            Size sizeLeft = leftPlayer.FrameServer.VideoReader.Geometry.ReferenceSize;
+            Size sizeRight = rightPlayer.FrameServer.VideoReader.Geometry.ReferenceSize;
             Size sizeComp = ImageHelper.GetSideBySideCompositeSize(sizeLeft, sizeRight, isVideo, false, horizontal);
 
             var format = PixelFormat.Format24bppRgb;

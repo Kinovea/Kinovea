@@ -51,6 +51,9 @@ namespace Kinovea.Video.Bitmap
         public override VideoInfo Info { 
             get { return videoInfo;} 
         }
+        public override VideoGeometry Geometry {
+            get { return videoGeometry; }
+        }
         public override bool Loaded { 
             get{ return initialized; } 
         }
@@ -69,8 +72,9 @@ namespace Kinovea.Video.Bitmap
         private VideoFrame current = new VideoFrame();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
+        private VideoGeometry videoGeometry = new VideoGeometry();
         #endregion
-        
+
         #region Public methods
         public override OpenVideoResult Open(string filePath)
         {
@@ -119,7 +123,6 @@ namespace Kinovea.Video.Bitmap
 
             return summary;
         }
-        public override void StartPrebufferingIfNotCaching(){}
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
             long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
@@ -149,10 +152,39 @@ namespace Kinovea.Video.Bitmap
         public override void BeforeFrameEnumeration(){}
         public override void AfterFrameEnumeration(){}
 
-        public override bool ChangeImageRotation(ImageRotation rotation)
+
+        public override bool UpdateVideoGeometry(VideoGeometryRequest request)
         {
-            generator.SetRotation(rotation);
-            UpdateSizeInfo();
+            // We support rotation by re-opening the file from scratch.
+            generator.SetRotation(request.Rotation);
+            videoInfo.OriginalSize = generator.OriginalSize;
+            videoInfo.OriginalRotation = generator.OriginalRotation;
+
+            Size referenceSize = videoInfo.OriginalSize;
+            if (request.Rotation == ImageRotation.Rotate90 || request.Rotation == ImageRotation.Rotate270)
+            {
+                referenceSize = new Size(referenceSize.Height, referenceSize.Width);
+            }
+
+            Size outputSize = referenceSize;
+            float decodingScale = 1.0f;
+
+            bool isPreScaled = outputSize == request.PresentationSize;
+
+            int generation = 0;
+
+            videoGeometry = new VideoGeometry(
+                referenceSize,
+                outputSize,
+                isPreScaled,
+                decodingScale,
+                ImageAspectRatio.Auto,
+                videoInfo.OriginalRotation,
+                Demosaicing.None,
+                false,
+                false,
+                generation);
+            
             return false;
         }
         #endregion
@@ -195,16 +227,20 @@ namespace Kinovea.Video.Bitmap
             videoInfo.FrameIntervalMilliseconds = 1000 / videoInfo.FramesPerSeconds;
             videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
 
-            UpdateSizeInfo();
+            videoInfo.OriginalSize = generator.OriginalSize;
+            videoInfo.OriginalRotation = generator.OriginalRotation;
         }
 
-        private void UpdateSizeInfo()
-        {
-            videoInfo.OriginalSize = generator.OriginalSize;
-            videoInfo.AspectRatioSize = generator.ReferenceSize;
-            videoInfo.ReferenceSize = generator.ReferenceSize;
-            videoInfo.ImageRotation = generator.ImageRotation;
-        }
+        /// <summary>
+        /// Update the low level video info original size.
+        /// </summary>
+        //private void UpdateSizeInfo()
+        //{
+        //    videoInfo.OriginalSize = generator.OriginalSize;
+        //    //videoInfo.AspectRatioSize = generator.ReferenceSize;
+        //    //videoInfo.ReferenceSize = generator.ReferenceSize;
+        //    //videoInfo.ImageRotation = generator.ImageRotation;
+        //}
 
         private bool UpdateCurrent(long timestamp)
         {

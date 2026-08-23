@@ -45,7 +45,7 @@ namespace Kinovea.Video
         /// <summary>
         /// Orientation of images.
         /// </summary>
-        ImageRotation ImageRotation { get; }
+        ImageRotation OriginalRotation { get; }
 
         /// <summary>
         /// Open the file.

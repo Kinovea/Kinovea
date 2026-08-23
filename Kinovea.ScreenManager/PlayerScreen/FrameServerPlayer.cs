@@ -84,6 +84,14 @@ namespace Kinovea.ScreenManager
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
+
+        #region Video geometry settings
+        // Settings that aren't saved in metadata.
+        Size presentationSize = Size.Empty;
+        bool allowPreScaling = true;
+        List<TimedPoint> stabilizationData = null;
+        #endregion
+
         private bool savingMetada;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -163,13 +171,23 @@ namespace Kinovea.ScreenManager
             {
                 if(videoReader != null)
                 {
-                    videoReader.Options = new VideoOptions(
-                        PreferencesManager.PlayerPreferences.AspectRatio, 
-                        ImageRotation.Rotate0, 
-                        Demosaicing.None, 
-                        PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
+                    
+                    // Open will set up videoReader.Info and videoReader.Geometry.
+                    OpenVideoResult res = videoReader.Open(filePath);
 
-                    return videoReader.Open(filePath);
+                    if (res == OpenVideoResult.Success)
+                    {
+                        // Deinterlacing and Image aspect ratio have already been initialized
+                        // to the default from preferences in Metadata constructor.
+                        metadata.ImageRotation = videoReader.Info.OriginalRotation;
+
+                        // Publish an initial geometry request to serve as reference for the reader.
+                        // This one will have presentationSize at 0x0 and allowPreScaling = true.
+                        PublishVideoGeometryRequest();
+                    }
+
+                    return res;
+
                 }
                 else
                 {
@@ -203,16 +221,16 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetupMetadata(bool init)
         {
-            // Setup Metadata global infos in case we want to flush it to a file (or mux).
+            // Setup Metadata global infos in case we want to flush it to a file.
             
             if(metadata == null || videoReader == null)
                 return;
 
             if (init)
             {
-                metadata.ImageSize = videoReader.Info.ReferenceSize;
-                metadata.ImageRotation = videoReader.Info.ImageRotation;
-                // aspect and mirror ?
+                metadata.ImageSize = videoReader.Geometry.ReferenceSize;
+                metadata.ImageRotation = videoReader.Info.OriginalRotation;
+                // aspect, mirror, deinterlace, etc. should have the same defaults.
 
                 metadata.BaselineFrameInterval = videoReader.Info.FrameIntervalMilliseconds;
                 metadata.AverageTimeStampsPerFrame = videoReader.Info.AverageTimeStampsPerFrame;
@@ -224,125 +242,6 @@ namespace Kinovea.ScreenManager
             metadata.PostSetupVideo(init);
             
             log.Debug("Setup metadata.");
-        }
-
-        public bool ChangeImageAspect(ImageAspectRatio value)
-        {
-            if (!VideoReader.CanChangeAspectRatio)
-                return false;
-
-            if (value == metadata.ImageAspect)
-                return false;
-            
-            metadata.ImageAspect = value;
-            return VideoReader.ChangeAspectRatio(value);
-        }
-
-        public bool ChangeImageRotation(ImageRotation value)
-        {
-            if (!VideoReader.CanChangeImageRotation)
-                return false;
-
-            if (value == metadata.ImageRotation)
-                return false;
-
-            metadata.ImageRotation = value;
-            return VideoReader.ChangeImageRotation(value);
-        }
-
-        public bool ChangeMirror(bool value)
-        {
-            // Nothing else to do, mirroring is handled at render time.
-            metadata.Mirrored = value;
-            return false;
-        }
-
-        public bool ChangeDemosaicing(Demosaicing value)
-        {
-            if (!VideoReader.CanChangeDemosaicing)
-                return false;
-
-            metadata.Demosaicing = value;
-            return VideoReader.ChangeDemosaicing(value);
-        }
-
-        public bool ChangeDeinterlacing(bool value)
-        {
-            if (!VideoReader.CanChangeDeinterlacing)
-                return false;
-
-            metadata.Deinterlacing = value;
-            return VideoReader.ChangeDeinterlace(value);
-        }
-
-        public bool ChangeBackgroundColor(Color value)
-        {
-            metadata.BackgroundColor = value;
-            return false;
-        }
-
-        public bool SetStabilizationTrack(Guid id)
-        {
-            if (!VideoReader.CanStabilize)
-                return false;
-
-            // This function is called either when selecting a track in the 
-            // Image > Stabilization menu, or when reloading a KVA file.
-            // In the case of loading the following assignation is redundant.
-            metadata.StabilizationTrack = id;
-
-            if (id == Guid.Empty)
-            {
-                VideoReader.SetStabilizationData(null);
-            }
-            else
-            {
-                // Find the track object.
-                var drawing = metadata.GetDrawing(metadata.TrackManager.Id, id);
-                DrawingTrack track = drawing as DrawingTrack;
-                if (track == null)
-                {
-                    log.ErrorFormat("Stabilization track not found: {0}", id);
-                    return false;
-                }
-
-                List<TimedPoint> points = track.GetTimedPoints();
-                VideoReader.SetStabilizationData(points);
-            }
-
-            return true;
-            // Find the track object.
-            //var drawing = frameServer.Metadata.GetDrawing(frameServer.Metadata.TrackManager.Id, trackId);
-            //DrawingTrack track2 = drawing as DrawingTrack;
-            //if (track2 == null)
-            //{
-            //    throw new InvalidProgramException();
-            //}
-
-            //// Tell the metadata that we are stabilizing on this track.
-            //metadata.StabilizationTrack = track2.Id;
-            
-            //// Hide the track.
-            //track.IsVisible = false;
-
-            //bool uncached = frameServer.VideoReader.SetStabilizationData(points);
-
-            //if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-            //    view.UpdateWorkingZone(true);
-        }
-
-        /// <summary>
-        /// Consolidate image options after metadata import.
-        /// </summary>
-        public void RestoreImageOptions()
-        {
-            ChangeImageAspect(metadata.ImageAspect);
-            ChangeImageRotation(metadata.ImageRotation);
-            ChangeMirror(metadata.Mirrored);
-            ChangeDemosaicing(metadata.Demosaicing);
-            ChangeDeinterlacing(metadata.Deinterlacing);
-            ChangeBackgroundColor(metadata.BackgroundColor);
-            SetStabilizationTrack(metadata.StabilizationTrack);
         }
 
         /// <summary>
@@ -397,6 +296,164 @@ namespace Kinovea.ScreenManager
             metadata.DeactivateVideoFilter();
         }
 
+        #endregion
+
+        #region Update video geometry
+        public bool ChangePresentationSize(Size value)
+        {
+            if (value == presentationSize)
+                return false;
+
+            presentationSize = value;
+
+            return PublishVideoGeometryRequest();
+        }
+
+        public bool ChangeAllowPrescaling(bool value)
+        {
+            if (value == allowPreScaling)
+                return false;
+
+            allowPreScaling = value;
+
+            return PublishVideoGeometryRequest();
+        }
+
+        public bool ChangeImageAspect(ImageAspectRatio value)
+        {
+            if (!VideoReader.CanChangeAspectRatio)
+                return false;
+
+            if (value == metadata.ImageAspect)
+                return false;
+
+            metadata.ImageAspect = value;
+
+            return PublishVideoGeometryRequest();
+        }
+
+        public bool ChangeImageRotation(ImageRotation value)
+        {
+            if (!VideoReader.CanChangeImageRotation)
+                return false;
+
+            if (value == metadata.ImageRotation)
+                return false;
+
+            metadata.ImageRotation = value;
+
+            // If we are sideways change the presentation size.
+            // This is a temporary hack because we pre-constrain the canvas inside the viewport.
+            // When we switch to normal zooming we should be able to pass the zoom factor and 
+            // the full viewport size and let the reader do the maths.
+            if (value == ImageRotation.Rotate90 || value == ImageRotation.Rotate270)
+            {
+                presentationSize = new Size(presentationSize.Height, presentationSize.Width);
+            }
+
+            return PublishVideoGeometryRequest();
+        }
+
+        public bool ChangeDemosaicing(Demosaicing value)
+        {
+            if (!VideoReader.CanChangeDemosaicing)
+                return false;
+
+            metadata.Demosaicing = value;
+
+            return PublishVideoGeometryRequest();
+        }
+
+        public bool ChangeDeinterlacing(bool value)
+        {
+            if (!VideoReader.CanChangeDeinterlacing)
+                return false;
+
+            metadata.Deinterlacing = value;
+
+            return PublishVideoGeometryRequest();
+        }
+
+        public bool ChangeStabilizationTrack(Guid id)
+        {
+            if (!VideoReader.CanStabilize)
+                return false;
+
+            metadata.StabilizationTrack = id;
+            UpdateStabilizationData();
+
+            return PublishVideoGeometryRequest();
+        }
+
+        private void UpdateStabilizationData()
+        {
+            Guid id = metadata.StabilizationTrack;
+            if (id == Guid.Empty)
+            {
+                stabilizationData = null;
+            }
+            else
+            {
+                // Find the track object.
+                var drawing = metadata.GetDrawing(metadata.TrackManager.Id, id);
+                DrawingTrack track = drawing as DrawingTrack;
+                if (track == null)
+                {
+                    log.ErrorFormat("Stabilization track not found: {0}", id);
+                    stabilizationData = null;
+                }
+
+                List<TimedPoint> points = track.GetTimedPoints();
+                stabilizationData = points;
+            }
+        }
+
+        public bool ChangeMirror(bool value)
+        {
+            // Nothing else to do, mirroring is handled at render time.
+            metadata.Mirrored = value;
+            return false;
+        }
+
+        public bool ChangeBackgroundColor(Color value)
+        {
+            metadata.BackgroundColor = value;
+            return false;
+        }
+
+        /// <summary>
+        /// Consolidate image options after metadata import.
+        /// </summary>
+        public void RestoreImageOptions()
+        {
+            // Note: for now we assume the reader for this video has the same capabilities as 
+            // what is saved in the metadata file.
+            // If not, the reader should ignore unsupported options anyway.
+            UpdateStabilizationData();
+            PublishVideoGeometryRequest();
+
+            // Options affecting render side only.
+            ChangeMirror(metadata.Mirrored);
+            ChangeBackgroundColor(metadata.BackgroundColor);
+        }
+
+        private bool PublishVideoGeometryRequest()
+        {
+            log.DebugFormat("Video geometry request: Presentation size: {0}x{1}, Allow pre-scaling: {2}.",
+                presentationSize.Width, presentationSize.Height, allowPreScaling);
+
+            VideoGeometryRequest request = new VideoGeometryRequest(
+                presentationSize,
+                allowPreScaling,
+                metadata.ImageAspect,
+                metadata.ImageRotation,
+                metadata.Demosaicing,
+                metadata.Deinterlacing,
+                stabilizationData
+            );
+
+            return VideoReader.UpdateVideoGeometry(request);
+        }
         #endregion
 
         #region Support functions for exporters that need the images

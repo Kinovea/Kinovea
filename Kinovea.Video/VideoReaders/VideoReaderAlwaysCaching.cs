@@ -64,7 +64,6 @@ namespace Kinovea.Video
             m_Cache.Clear();
         }
         
-        public override void StartPrebufferingIfNotCaching(){}
         public override void UpdateWorkingZone(
             VideoSection newZone, 
             CacheLoadMode loadMode, 

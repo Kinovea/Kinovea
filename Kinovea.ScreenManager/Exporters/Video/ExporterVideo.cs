@@ -68,7 +68,7 @@ namespace Kinovea.ScreenManager
             // at the cost of having an empty columns/rows of pixels on the side.
             // We won't stretch the source image, just paint it unscaled on a sligthly enlarged canvas.
             // This doesn't change drawings location either.
-            Size renderingSize = player.FrameServer.VideoReader.Info.ReferenceSize;
+            Size renderingSize = player.FrameServer.VideoReader.Geometry.ReferenceSize;
 
             if (renderingSize.Width % 4 != 0)
                 renderingSize.Width += 4 - (renderingSize.Width % 4);

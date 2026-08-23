@@ -108,8 +108,7 @@ namespace Kinovea.ScreenManager
             set
             {
                 bool invalidated = frameServer.ChangeImageAspect(value);
-                
-                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                if (invalidated)
                 {
                     view.UpdateWorkingZone(CacheLoadMode.Reload);
                 }
@@ -123,8 +122,7 @@ namespace Kinovea.ScreenManager
             set
             {
                 bool invalidated = frameServer.ChangeImageRotation(value);
-
-                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                if (invalidated)
                 {
                     view.UpdateWorkingZone(CacheLoadMode.Reload);
                 }
@@ -135,12 +133,10 @@ namespace Kinovea.ScreenManager
         public override Demosaicing Demosaicing
         {
             get { return frameServer.Metadata.Demosaicing; }
-
             set
             {
                 bool invalidated = frameServer.ChangeDemosaicing(value);
-
-                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                if (invalidated)
                 {
                     view.UpdateWorkingZone(CacheLoadMode.Reload);
                 }
@@ -151,25 +147,14 @@ namespace Kinovea.ScreenManager
         public Guid StabilizationTrack
         {
             get { return frameServer.Metadata.StabilizationTrack; }
-
             set 
             {
-                bool invalidated = frameServer.SetStabilizationTrack(value);
-
-                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                bool invalidated = frameServer.ChangeStabilizationTrack(value);
+                if (invalidated)
                 {
                     view.UpdateWorkingZone(CacheLoadMode.Reload);
                 }
 
-                RefreshImage();
-            }
-        }
-        public override bool Mirrored
-        {
-            get { return frameServer.Metadata.Mirrored; }
-            set
-            {
-                frameServer.ChangeMirror(value);
                 RefreshImage();
             }
         }
@@ -179,11 +164,21 @@ namespace Kinovea.ScreenManager
             set
             {
                 bool invalidated = frameServer.ChangeDeinterlacing(value);
-                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                if (invalidated)
                 {
                     view.UpdateWorkingZone(CacheLoadMode.Reload);
                 }
 
+                RefreshImage();
+            }
+        }
+
+        public override bool Mirrored
+        {
+            get { return frameServer.Metadata.Mirrored; }
+            set
+            {
+                frameServer.ChangeMirror(value);
                 RefreshImage();
             }
         }

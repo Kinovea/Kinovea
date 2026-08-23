@@ -37,7 +37,7 @@ namespace Kinovea.Video.Synthetic
             get { return OriginalSize; }
         }
 
-        public ImageRotation ImageRotation
+        public ImageRotation OriginalRotation
         {
             get { return ImageRotation.Rotate0; }
         }

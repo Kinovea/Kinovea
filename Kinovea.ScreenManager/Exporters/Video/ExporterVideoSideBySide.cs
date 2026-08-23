@@ -121,8 +121,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void PrepareStagingBitmaps(SavingSettings s)
         {
-            Size sizeLeft = leftPlayer.FrameServer.VideoReader.Info.ReferenceSize;
-            Size sizeRight = rightPlayer.FrameServer.VideoReader.Info.ReferenceSize;
+            Size sizeLeft = leftPlayer.FrameServer.VideoReader.Geometry.ReferenceSize;
+            Size sizeRight = rightPlayer.FrameServer.VideoReader.Geometry.ReferenceSize;
             Size sizeComp = ImageHelper.GetSideBySideCompositeSize(sizeLeft, sizeRight, true, s.Merged, s.Horizontal);
 
             bmpLeft = new Bitmap(sizeLeft.Width, sizeLeft.Height, PixelFormat.Format24bppRgb);

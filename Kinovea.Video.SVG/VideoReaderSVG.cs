@@ -41,17 +41,15 @@ namespace Kinovea.Video.SVG
         }
         public override VideoCapabilities Flags
         {
-            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone | 
-                VideoCapabilities.CanChangeDecodingSize | VideoCapabilities.CanScaleIndefinitely; }
-        }
-
-        public override bool CanDrawUnscaled
-        {
-            get { return true; }
+            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone; }
         }
         public override VideoInfo Info
         {
             get { return videoInfo; }
+        }
+        public override VideoGeometry Geometry
+        {
+            get { return videoGeometry; }
         }
         public override bool Loaded
         {
@@ -74,7 +72,8 @@ namespace Kinovea.Video.SVG
         private VideoFrame current = new VideoFrame();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
-        private Size decodingSize = new Size(640, 480);
+        private VideoGeometry videoGeometry = new VideoGeometry();
+        private Size outputSize = new Size(640, 480);
         #endregion
 
         #region Public methods
@@ -118,7 +117,6 @@ namespace Kinovea.Video.SVG
 
             return summary;
         }
-        public override void StartPrebufferingIfNotCaching() { }
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
             long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
@@ -149,11 +147,35 @@ namespace Kinovea.Video.SVG
         public override void BeforeFrameEnumeration() { }
         public override void AfterFrameEnumeration() { }
 
-        public override bool ChangeDecodingSize(Size size)
+        public override bool UpdateVideoGeometry(VideoGeometryRequest request)
         {
-            decodingSize = size;
-            return true;
+            ResolveVideoGeometry(request);
+            return false;
         }
+
+        private void ResolveVideoGeometry(VideoGeometryRequest request)
+        {
+            // We support arbitrary scaling so presentation size is always honored.
+            Size referenceSize = videoInfo.OriginalSize;
+            Size outputSize = FitHelper.Fit(videoInfo.OriginalSize, request.PresentationSize, true);
+            bool isPrescaled = true;
+            float scale = outputSize.Width / (float)referenceSize.Width;
+
+            videoGeometry = new VideoGeometry(
+                referenceSize,
+                outputSize,
+                isPrescaled,
+                scale,
+                ImageAspectRatio.Auto,
+                ImageRotation.Rotate0,
+                Demosaicing.None,
+                false,
+                false,
+                0);
+
+            this.outputSize = videoGeometry.OutputSize;
+        }
+
         #endregion
 
         #region Private methods
@@ -183,10 +205,23 @@ namespace Kinovea.Video.SVG
             videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
 
             videoInfo.OriginalSize = generator.OriginalSize != Size.Empty ? generator.OriginalSize : new Size(640, 480);
-            videoInfo.AspectRatioSize = videoInfo.OriginalSize;
-            videoInfo.ReferenceSize = videoInfo.OriginalSize;
-            
-            decodingSize = videoInfo.ReferenceSize;
+
+            bool isPreScaled = false; // We don't have a presentation size yet.
+            float scale = 1.0f;
+
+            videoGeometry = new VideoGeometry(
+                videoInfo.OriginalSize,
+                videoInfo.OriginalSize,
+                isPreScaled,
+                scale,
+                ImageAspectRatio.Auto,
+                ImageRotation.Rotate0,
+                Demosaicing.None,
+                false,
+                false,
+                0);
+
+            outputSize = videoGeometry.OutputSize;
         }
 
         private bool UpdateCurrent(long timestamp)
@@ -200,7 +235,7 @@ namespace Kinovea.Video.SVG
             if (current != null && current.Image != null)
                 generator.DisposePrevious(current.Image);
 
-            Bitmap bmp = generator.Generate(timestamp, decodingSize);
+            Bitmap bmp = generator.Generate(timestamp, outputSize);
             current.Image = bmp;
             current.Timestamp = timestamp;
 

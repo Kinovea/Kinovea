@@ -342,7 +342,7 @@ namespace Kinovea.ScreenManager
         private bool m_bManualSqueeze = true; // If it's allowed to manually reduce the rendering surface under the aspect ratio size.
         private static readonly Pen m_PenImageBorder = Pens.SteelBlue;
         private static readonly Size m_MinimalSize = new Size(160, 120);
-        private bool allowCustomDecodingSize = true;
+        private bool allowPreScaling = true;
 
         // Selection and current timestamp.
         // trkSelection.minimum and maximum are also in absolute timestamps.
@@ -657,8 +657,8 @@ namespace Kinovea.ScreenManager
             m_FrameServer.SetupMetadata(true);
             m_FrameServer.Metadata.VideoPath = m_FrameServer.VideoReader.FilePath;
             m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_iSelStart);
-            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
-            m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
+            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Geometry.ReferenceSize);
+            m_viewportManipulator.Initialize(m_FrameServer);
 
             FileInfo fileInfo = new FileInfo(m_FrameServer.VideoReader.FilePath);
             if (fileInfo.Exists)
@@ -671,16 +671,11 @@ namespace Kinovea.ScreenManager
             sidePanelTracking.SetMetadata(m_FrameServer.Metadata);
 
             // Screen position and size.
-            m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
+            m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Geometry.ReferenceSize);
             m_FrameServer.ImageTransform.ResetZoom();
             zoomHelper.Value = 1.0f;
             m_PointerTool.SetZoomLocation(new Point(-1, -1));
             OnPoke();
-
-            // Initialize the preferred decoding size to the whole image size as a fallback.
-            // This should be overriden when the UI is fully loaded, and before we start
-            // the prebuffering thread.
-            m_FrameServer.VideoReader.SetPreferredDecodingSize(m_FrameServer.VideoReader.Info.ReferenceSize);
 
             // Check for launch description and startup kva.
             // This is also how we can backup and restore stuff between loads in the same screen.
@@ -980,16 +975,13 @@ namespace Kinovea.ScreenManager
             fpb.Dispose();
 
             // If the load was cancelled, we should now be in on-demand mode.
-            // At this point we should have a reliable preferred size to 
+            // At this point we should have a reliable presentation size to 
             // start the prebuffering thread if possible.
             if (fpb.Cancelled)
             {
                 StretchSqueezeSurface(true);
-                m_FrameServer.VideoReader.SetPreferredDecodingSize(m_viewportManipulator.PreferredDecodingSize);
-
                 if (m_FrameServer.VideoReader.CanPreBuffer)
                 {
-                    // Prebuffering thread without triggering full cache.
                     m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
                 }
             }
@@ -1148,9 +1140,9 @@ namespace Kinovea.ScreenManager
         }
         public void ReferenceImageSizeChanged()
         {
-            m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.ReferenceSize;
-            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
-            m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
+            m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Geometry.ReferenceSize;
+            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Geometry.ReferenceSize);
+            m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Geometry.ReferenceSize);
             UpdateInfobar();
             ResetZoom(false);
         }
@@ -1535,10 +1527,8 @@ namespace Kinovea.ScreenManager
             // because we can't reliably know the preferred decoding size.
             // At this point we should be either in full caching mode (only for files 
             // and if it fits in memory), or in on-demand mode.
-            // Make sure the reader knows the preferred decoding size.
-            // This is used in case we go into prebuffering mode, to start directly on the right size.
+            // Make sure the reader recalculates the decoding size.
             StretchSqueezeSurface(true);
-            m_FrameServer.VideoReader.SetPreferredDecodingSize(m_viewportManipulator.PreferredDecodingSize);
 
             // Start prebuffering if supported and not already in full caching mode.
             m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
@@ -1553,6 +1543,7 @@ namespace Kinovea.ScreenManager
             ShowHideRenderingSurface(true);
             ResizeUpdate(true);
 
+            
             // Handle auto-playback for replay watchers.
             if (screenDescriptor != null && screenDescriptor.Autoplay)
             {
@@ -1923,7 +1914,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.InitializeEnd(true);
             m_FrameServer.Metadata.StopAllTracking();
             m_FrameServer.Metadata.DeselectAll();
-            CheckCustomDecodingSize(false);
+            UpdateAllowPreScaling(true);
         }
         private void ValidateDrawing()
         {
@@ -2637,27 +2628,39 @@ namespace Kinovea.ScreenManager
             if (!m_fill && m_lastUserStretch != m_viewportManipulator.Stretch)
                 targetStretch = m_lastUserStretch;
 
-            // Stretch factor, zoom, or container size have been updated, update the rendering and decoding sizes.
-            // During the process, stretch and fill may be forced to different values.
-            // Custom scaling vs caching modes:
-            // - We try to decode the images at the smallest size possible.
-            // - Some operations like tracking or video export aren't compatible with this, this is tracked in allowCustomDecodingSize.
-            // Note: do not update decoding scale here, as this function is called during stretching of the rendering surface,
-            // while the decoding size isn't updated.
-
-            bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
-            bool canCustomDecodingSize = allowCustomDecodingSize && scalable;
-
+            // Stretch factor, zoom, or container size have been updated.
+            // Update the presentation size and signal the change to the reader.
+            // During the process, stretch may be forced to a different value.
             bool rotatedCanvas = false;
             if (videoFilterIsActive)
+            {
                 rotatedCanvas = m_FrameServer.Metadata.ActiveVideoFilter.RotatedCanvas;
+            }
 
-            m_viewportManipulator.Manipulate(finished, panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, canCustomDecodingSize, rotatedCanvas);
+            m_viewportManipulator.Manipulate(rotatedCanvas, panelCenter.Size, targetStretch, m_fill);
 
+            // Update the rendering surface.
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
-            m_FrameServer.ImageTransform.Stretch = m_viewportManipulator.Stretch;
             ReplaceResizers();
+
+            if (finished)
+            {
+                // Signal the change to the reader.
+                // This may stop the prebuffering thread.
+                // The full cache mode should never be invalidated by this
+                // since it's always using full reference size.
+                bool changed = m_FrameServer.ChangePresentationSize(m_viewportManipulator.RenderingSize);
+                if (changed && m_FrameServer.VideoReader.CanPreBuffer)
+                {
+                    m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
+                }
+
+                // Stretch is between the reference and what we draw.
+                // Scale is between the reference and what we get from the reader.
+                m_FrameServer.ImageTransform.Stretch = m_viewportManipulator.Stretch;
+                m_FrameServer.ImageTransform.DecodingScale = m_FrameServer.VideoReader.Geometry.Scale;
+            }
         }
         private void ReplaceResizers()
         {
@@ -2734,23 +2737,27 @@ namespace Kinovea.ScreenManager
             if (!targetSize.FitsIn(panelCenter.Size))
                 return;
 
-            if (!m_bManualSqueeze && !m_FrameServer.VideoReader.Info.ReferenceSize.FitsIn(targetSize))
+            Size referenceSize = m_FrameServer.VideoReader.Geometry.ReferenceSize;
+
+            if (!m_bManualSqueeze && !referenceSize.FitsIn(targetSize))
+            {
                 return;
+            }
 
             // Area of the original size is sticky on the inside.
-            if (!m_FrameServer.VideoReader.Info.ReferenceSize.FitsIn(targetSize) &&
-               (m_FrameServer.VideoReader.Info.ReferenceSize.Width - _iTargetWidth < 40 &&
-                m_FrameServer.VideoReader.Info.ReferenceSize.Height - _iTargetHeight < 40))
+            if (!referenceSize.FitsIn(targetSize) &&
+               (referenceSize.Width - _iTargetWidth < 40 &&
+                referenceSize.Height - _iTargetHeight < 40))
             {
-                _iTargetWidth = m_FrameServer.VideoReader.Info.ReferenceSize.Width;
-                _iTargetHeight = m_FrameServer.VideoReader.Info.ReferenceSize.Height;
+                _iTargetWidth = referenceSize.Width;
+                _iTargetHeight = referenceSize.Height;
             }
 
             if (!m_MinimalSize.FitsIn(targetSize))
                 return;
 
-            double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoReader.Info.ReferenceSize.Height);
-            double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoReader.Info.ReferenceSize.Width);
+            double fHeightFactor = ((_iTargetHeight) / (double)referenceSize.Height);
+            double fWidthFactor = ((_iTargetWidth) / (double)referenceSize.Width);
 
             m_FrameServer.ImageTransform.Stretch = (fWidthFactor + fHeightFactor) / 2;
             m_fill = false;
@@ -2767,10 +2774,9 @@ namespace Kinovea.ScreenManager
             ResizeUpdate(true);
         }
 
-
         /// <summary>
         /// Stretch or squeeze the video image in the viewport.
-        /// Optionally trigger a decoding size change at the reader level.
+        /// May trigger a decoding size change at the reader level.
         /// </summary>
         private void ResizeUpdate(bool finished)
         {
@@ -2781,18 +2787,6 @@ namespace Kinovea.ScreenManager
 
             if (finished)
             {
-                // Update the decoding size at the file reader level.
-                // If we are prebuffering this may stop, clear and restart the 
-                // prebuffering thread.
-                if (m_FrameServer.VideoReader.CanChangeDecodingSize)
-                {
-                    bool accepted = m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.PreferredDecodingSize);
-                    if (accepted)
-                    {
-                        m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
-                    }
-                }
-
                 m_FrameServer.Metadata.ResizeFinished();
                 RefreshImage();
             }
@@ -2801,19 +2795,23 @@ namespace Kinovea.ScreenManager
                 DoInvalidate();
             }
         }
-        private void CheckCustomDecodingSize(bool forceDisallow)
+
+        /// <summary>
+        /// Allow or disallow prescaling depending on current player state.
+        /// Prescaling is not compatible with tracking or video export.
+        /// The passed value is for one known element but this still tests
+        /// any other source of incompatibility.
+        /// </summary>
+        private void UpdateAllowPreScaling(bool allow)
         {
             if (!m_FrameServer.Loaded)
                 return;
 
-            // Allow or disallow custom decoding size depending on current state.
-            // Custom decoding size is not compatible with tracking or video export.
-            // This is an optimization for prebuffering mode.
-
-            allowCustomDecodingSize = !forceDisallow && !m_FrameServer.Metadata.AnyTracking;
-            m_FrameServer.VideoReader.SetAllowCustomDecodingSize(allowCustomDecodingSize);
+            allowPreScaling = allow && !m_FrameServer.Metadata.AnyTracking;
+            log.DebugFormat("Allow prescaling: {0}", allowPreScaling ? "ENABLED" : "DISABLED");
+            
+            m_FrameServer.ChangeAllowPrescaling(allowPreScaling);
             ResizeUpdate(true);
-            log.DebugFormat("Custom decoding size: {0}", allowCustomDecodingSize ? "ENABLED" : "DISABLED");
         }
         #endregion
 
@@ -3086,7 +3084,7 @@ namespace Kinovea.ScreenManager
             if (isCurrentlyPlaying && m_FrameServer.Metadata.AnyTrackFailed())
                 StopPlaying(true);
 
-            CheckCustomDecodingSize(false);
+            UpdateAllowPreScaling(true);
         }
 
         private void Application_Idle(object sender, EventArgs e)
@@ -3520,7 +3518,7 @@ namespace Kinovea.ScreenManager
             if (drawing is DrawingTrack)
             {
                 ((DrawingTrack)drawing).DisplayClosestFrame = DisplayClosestFrame;
-                ((DrawingTrack)drawing).CheckCustomDecodingSize = CheckCustomDecodingSize;
+                ((DrawingTrack)drawing).UpdateAllowPreScaling = UpdateAllowPreScaling;
 
                 // TODO: move this to a tool.
                 m_ActiveTool = m_PointerTool;
@@ -4366,8 +4364,9 @@ namespace Kinovea.ScreenManager
             // What makes the most difference is being able to render the image without scaling.
             // Using unmanaged BitBlt or StretchBlt doesn't seem to do much, DrawingUnscaled() must already do that.
             // The scaling better be done directly in ffmpeg, this cuts on memory usage too.
-            // This is why we try to decode the image directly at the rendering size (customDecodingSize).
-            // When rescaling is required:
+            // This is why we try to pre-scale the image directly in the reader.
+            // This is incompatible with some states like tracking being active or enumerating frames for export.
+            // If rescaling is still required:
             // - Using a matrix transform instead of the buit-in interpolation doesn't seem to do much.
             // - InterpolationMode has a sensible effect, but nearest neighbor can look bad.
 
@@ -4383,11 +4382,9 @@ namespace Kinovea.ScreenManager
             Rectangle rDst = new Rectangle(Point.Empty, _renderingSize);
 
             bool drawn = false;
-            if (m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
+            if (m_FrameServer.VideoReader.Geometry.IsPreScaled)
             {
                 // Source image should be at the right size, unless it has been temporarily disabled.
-                // This is an optimization where the video reader is asked to decode images that might be smaller than the original size,
-                // in order to match the rendering size.
                 if (!m_FrameServer.Metadata.Mirrored  && _transform.ZoomWindowInDecodedImage.Size.CloseTo(_renderingSize, 4))
                 {
                     g.DrawImageUnscaled(_sourceImage, -_transform.ZoomWindowInDecodedImage.Left, -_transform.ZoomWindowInDecodedImage.Top);
@@ -4537,7 +4534,12 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Draw the magnifier source rectangle and magnified area.
-            m_FrameServer.Metadata.Magnifier.Draw(currentImage, canvas, transform, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.ReferenceSize);
+            m_FrameServer.Metadata.Magnifier.Draw(
+                currentImage, 
+                canvas, 
+                transform, 
+                m_FrameServer.Metadata.Mirrored, 
+                m_FrameServer.VideoReader.Geometry.ReferenceSize);
 
             // Redraw the annotations on top of the magnified area.
             m_FrameServer.Metadata.Magnifier.TransformCanvas(canvas, transform);
@@ -5356,7 +5358,7 @@ namespace Kinovea.ScreenManager
         {
             // Track the point.
             // m_DescaledMouse would have been set during the MouseDown event.
-            CheckCustomDecodingSize(true);
+            UpdateAllowPreScaling(false);
 
             DrawingTrack track = new DrawingTrack(m_DescaledMouse, currentTimestamp, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             track.Status = TrackStatus.Edit;
@@ -5553,8 +5555,7 @@ namespace Kinovea.ScreenManager
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
 
-            // Tracking is not compatible with custom decoding size, force the use of the original size.
-            CheckCustomDecodingSize(true);
+            UpdateAllowPreScaling(false);
             ShowNextFrame(currentTimestamp, true);
             ToggleTrackingCommand.Execute(drawing);
             RefreshImage();
@@ -5706,7 +5707,10 @@ namespace Kinovea.ScreenManager
 
             // Trigger a refresh of the export to spreadsheet menu, in case we don't have any more trajectory left to export.
             OnPoke();
-            CheckCustomDecodingSize(false);
+
+            // This track no longer disallows pre-scaling.
+            // This will still test if any other track is open.
+            UpdateAllowPreScaling(true);
         }
         private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
         {
@@ -5818,8 +5822,7 @@ namespace Kinovea.ScreenManager
         {
             ITrackable drawing = m_FrameServer.Metadata.Magnifier as ITrackable;
 
-            // Tracking is not compatible with custom decoding size, force the use of the original size.
-            CheckCustomDecodingSize(true);
+            UpdateAllowPreScaling(false);
             ShowNextFrame(currentTimestamp, true);
             ToggleTrackingCommand.Execute(drawing);
         }
@@ -5955,7 +5958,7 @@ namespace Kinovea.ScreenManager
             else
                 rDst = new Rectangle(0, 0, copySize.Width, copySize.Height);
 
-            if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
+            if(m_FrameServer.VideoReader.Geometry.IsPreScaled)
                 g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.ImageTransform.ZoomWindowInDecodedImage, GraphicsUnit.Pixel);
             else
                 g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.ImageTransform.ZoomWindow, GraphicsUnit.Pixel);
@@ -6104,7 +6107,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             BeforeExportVideo();
-            Size size = m_FrameServer.VideoReader.Info.ReferenceSize;
+            Size size = m_FrameServer.VideoReader.Geometry.ReferenceSize;
             Bitmap bmp = new Bitmap(size.Width, size.Height, PixelFormat.Format24bppRgb);
             PaintFlushedImage(bmp);
             Clipboard.SetImage(bmp);
@@ -6121,8 +6124,8 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             OnPauseAsked();
 
-            // Force disable custom decoding size as we want to export at the original size.
-            CheckCustomDecodingSize(true);
+            // Force disable pre-scaling as we want to export at the original size.
+            UpdateAllowPreScaling(false);
             memoTimestamp = currentTimestamp;
             saveInProgress = true;
         }
@@ -6135,8 +6138,8 @@ namespace Kinovea.ScreenManager
             saveInProgress = false;
             dualSaveInProgress = false;
 
-            // Restore custom decoding size if possible.
-            CheckCustomDecodingSize(false);
+            // Restore prescaling if possible.
+            UpdateAllowPreScaling(true);
 
             framesToDecode = 1;
             ShowNextFrame(memoTimestamp, true);
@@ -6148,7 +6151,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void PaintFlushedImage(Bitmap output)
         {
-            Size inputSize = m_FrameServer.VideoReader.Info.ReferenceSize;
+            Size inputSize = m_FrameServer.VideoReader.Geometry.ReferenceSize;
             if (inputSize != output.Size)
             {
                 log.ErrorFormat("Exporting unscaled images: passed bitmap has the wrong size.");

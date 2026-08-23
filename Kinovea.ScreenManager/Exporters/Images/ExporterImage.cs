@@ -21,7 +21,7 @@ namespace Kinovea.ScreenManager
         public void Export(string file, PlayerScreen player)
         {
             player.view.BeforeExportVideo();
-            Size size = player.FrameServer.VideoReader.Info.ReferenceSize;
+            Size size = player.FrameServer.VideoReader.Geometry.ReferenceSize;
             Bitmap bmp = new Bitmap(size.Width, size.Height, PixelFormat.Format24bppRgb);
 
             player.view.PaintFlushedImage(bmp);

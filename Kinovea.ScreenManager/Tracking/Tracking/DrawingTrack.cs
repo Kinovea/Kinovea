@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         // Ask the UI to display the frame closest to selected pos. Used for the interactive track feature.
         public DisplayClosestFrame DisplayClosestFrame;
         // Ask the UI to enable or disable custom decoding size, which is incompatible with tracking.
-        public CheckCustomDecodingSize CheckCustomDecodingSize;
+        public UpdateAllowPreScaling UpdateAllowPreScaling;
         #endregion
 
         #region Properties
@@ -1512,7 +1512,7 @@ namespace Kinovea.ScreenManager
             if (trackStatus == TrackStatus.Edit)
                 return;
 
-            CheckCustomDecodingSize(true);
+            UpdateAllowPreScaling(false);
             trackStatus = TrackStatus.Edit;
             lastTrackingFailed = false;
             AfterTrackingStatusChanged();
@@ -1528,9 +1528,8 @@ namespace Kinovea.ScreenManager
 
             trackStatus = TrackStatus.Interactive;
             lastTrackingFailed = false;
-            CheckCustomDecodingSize(false);
+            UpdateAllowPreScaling(true);
             AfterTrackingStatusChanged();
-            //TrackerParametersChanged?.Invoke(this, EventArgs.Empty);
             TrackingStatusChanged?.Invoke(this, EventArgs.Empty);
         }
 

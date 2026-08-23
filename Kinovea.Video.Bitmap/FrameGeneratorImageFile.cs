@@ -40,7 +40,7 @@ namespace Kinovea.Video.Bitmap
             get { return referenceSize; }
         }   
 
-        public ImageRotation ImageRotation {
+        public ImageRotation OriginalRotation {
             get { return rotation; }
         }
 

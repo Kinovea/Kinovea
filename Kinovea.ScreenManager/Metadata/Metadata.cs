@@ -617,6 +617,12 @@ namespace Kinovea.ScreenManager
             autoSaver = new AutoSaver(this);
             calibrationHelper.CalibrationChanged += (s, e) => AfterCalibrationChanged();
 
+            this.ImageAspect = PreferencesManager.PlayerPreferences.AspectRatio;
+            this.ImageRotation = ImageRotation.Rotate0;
+            this.Demosaicing = Demosaicing.None;
+            this.Deinterlacing = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;
+            this.stabilizationTrack = Guid.Empty;
+
             CreateSingletonDrawings();
             CreateVideoFilters();
             ResetContentHash();
@@ -624,25 +630,28 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructed new Metadata object.");
         }
-        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
-            : this(historyStack, timecodeBuilder)
-        {
-            // This should reflect what we do in FrameServerPlayer.SetupMetadata
-            imageSize = info.ReferenceSize;
-            baselineFrameInterval = info.FrameIntervalMilliseconds;
-            averageTimeStampsPerFrame = info.AverageTimeStampsPerFrame;
-            averageTimeStampsPerSecond = info.AverageTimeStampsPerSeconds;
-            calibrationHelper.CaptureFramesPerSecond = info.FramesPerSeconds;
-            firstTimeStamp = info.FirstTimeStamp;
 
-            videoPath = info.FilePath;
 
-            FileInfo fileInfo = new FileInfo(videoPath);
-            videoByteLength = fileInfo.Length;
+        //public Metadata(string kvaString,  VideoReader reader, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
+        //    : this(historyStack, timecodeBuilder)
+        //{
+        //    // This should reflect what we do in FrameServerPlayer.SetupMetadata
+        //    imageSize = reader.Geometry.ReferenceSize;
 
-            MetadataSerializer serializer = new MetadataSerializer();
-            serializer.Load(this, kvaString, false);
-        }
+        //    baselineFrameInterval = reader.Info.FrameIntervalMilliseconds;
+        //    averageTimeStampsPerFrame = reader.Info.AverageTimeStampsPerFrame;
+        //    averageTimeStampsPerSecond = reader.Info.AverageTimeStampsPerSeconds;
+        //    firstTimeStamp = reader.Info.FirstTimeStamp;
+        //    calibrationHelper.CaptureFramesPerSecond = reader.Info.FramesPerSeconds;
+
+        //    videoPath = reader.Info.FilePath;
+
+        //    FileInfo fileInfo = new FileInfo(videoPath);
+        //    videoByteLength = fileInfo.Length;
+
+        //    MetadataSerializer serializer = new MetadataSerializer();
+        //    serializer.Load(this, kvaString, false);
+        //}
 
         public void Dispose()
         {

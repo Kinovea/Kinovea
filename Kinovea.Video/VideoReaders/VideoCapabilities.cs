@@ -21,10 +21,8 @@ namespace Kinovea.Video
         CanChangeDeinterlacing = 32,
         CanChangeVideoDuration = 64,
         CanChangeFrameRate = 128,
-        CanChangeDecodingSize = 256,
-        CanScaleIndefinitely = 512,
-        CanChangeImageRotation = 1024,
-        CanChangeDemosaicing = 2048,
-        CanStabilize = 4096,
+        CanChangeImageRotation = 256,
+        CanChangeDemosaicing = 512,
+        CanStabilize = 1024,
     }
 }
