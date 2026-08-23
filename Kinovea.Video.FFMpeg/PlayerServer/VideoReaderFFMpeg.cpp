@@ -614,8 +614,12 @@ void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
 #pragma endregion
 
 #pragma region Frame requests
-bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
+bool VideoReaderFFMpeg::MoveNext(bool decodeIfNecessary)
 {
+    //-----------------------------------------------------
+    // This runs in the UI thread.
+    //-----------------------------------------------------
+
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
         return false;
 
@@ -624,13 +628,13 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
         mStopwatch->Restart();
-        ReadResult res = ReadFrame(-1, _skip + 1);
+        ReadResult res = ReadFrame(-1, 1);
         log->DebugFormat("Synchronous MoveNext(): {0} ms.", mStopwatch->ElapsedMilliseconds);
         moved = res == ReadResult::Success;
     }
     else if (mCachingMode == VideoDecodingMode::Caching)
     {
-        moved = mCache->MoveBy(_skip + 1);
+        moved = mCache->MoveBy(1);
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
@@ -659,52 +663,27 @@ bool VideoReaderFFMpeg::MoveNext(int _skip, bool _decodeIfNecessary)
     return moved && HasMoreFrames();
 }
 
-bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
+bool VideoReaderFFMpeg::MoveTo(int64_t target)
 {
     //-----------------------------------------------------
     // This runs in the UI thread.
     //-----------------------------------------------------
 
-    // The player is informing that the expected timestamp to display right now.
+    // The player is asking for a frame to present.
 
     if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
         return false;
 
-    
     bool moved = false;
-    target = MapTimestamp(target);
-    //log->DebugFormat("VideoReaderFFMpeg::MoveTo: {0} -> {1}.", from, target);
+    //target = MapTimestamp(target);
 
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
-        if (!mSingleFrameContainer->IsEmpty && mSingleFrameContainer->CurrentFrame->Timestamp == target)
-        {
-            return true;
-        }
-        else
-        {
-            // Synchronous read of the requested frame.
-            // The ReadFrame will call `store` on the single-frame frame container
-            // which will set the `Current` property to the requested frame.
-            ReadResult res = ReadFrame(target, 1);
-            return (res == ReadResult::Success);
-        }
-
+        return MoveOnDemand(target);
     }
     else if (mCachingMode == VideoDecodingMode::Caching)
     {
-        if (mCache->Empty)
-        {
-            // FIXME: we load the cache asynchronously but the UI will ask for the frame immediately.
-            // We should either force read synchronously or keep a copy of the first frame somewhere.
-            return false;
-        }
-        else
-        {
-            // Move the current frame pointer to the requested frame in the cache.
-            return mCache->MoveTo(target);
-        }
-
+        return MoveCaching(target);
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
@@ -715,14 +694,45 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
             log->ErrorFormat("MoveTo([{0}]): empty prebuffer.", target);
             return false;
         }
-        else
-        {
-            // Find the closest cached frame and set it as `Current`. 
-            // This call will trigger an eviction of one or more frames that
-            // are behind the new current and pulse the decoder waiting in Prebuffer.Add().
-            mPreBuffer->AcquireClosest(target);
-            return true;
-        }
+
+        // The cache is possibly sparse, get whatever is closest.
+        mPreBuffer->AcquireClosest(target);
+        return true;
+    }
+}
+
+
+bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
+{
+    if (!mSingleFrameContainer->IsEmpty && 
+        mSingleFrameContainer->CurrentFrame->Timestamp == target)
+    {
+        return true;
+    }
+    else
+    {
+        // Synchronous read of the requested frame.
+        // The ReadFrame will call `store` on the single-frame frame container
+        // which will set the `Current` property to the requested frame.
+        ReadResult res = ReadFrame(target, 1);
+        return (res == ReadResult::Success);
+    }
+}
+
+
+bool VideoReaderFFMpeg::MoveCaching(int64_t target)
+{
+    if (mCache->Empty)
+    {
+        // In theory the UI shouldn't ask for a frame until the modal progress bar 
+        // of the caching operation is closed so we should always have a frame.
+        return false;
+    }
+    else
+    {
+        // Move the current frame pointer to the requested frame in the cache.
+        // TODO: the input target is in UI space, we should ask with tolerance.
+        return mCache->MoveTo(target);
     }
 }
 #pragma endregion
@@ -731,6 +741,7 @@ bool VideoReaderFFMpeg::MoveTo(int64_t from, int64_t target)
 void VideoReaderFFMpeg::BeforePlayloop()
 {
     // Just in case something wrong happened, make sure the decoding thread is alive.
+    // FIXME: this is just StartPrebufferingIfNotCaching().
 
     if (DecodingMode == VideoDecodingMode::Caching)
     {
@@ -1303,6 +1314,8 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     ReadResult res = ReadFrame(section.Start, 1);
     success = (res == ReadResult::Success);
     read++;
+
+    mLoopWatcher->Restart();
     
     while (true)
     {
@@ -1317,7 +1330,8 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         if (res == ReadResult::EOFReached)
         {
             // Unexpected but not fatal.
-            log->WarnFormat("EOF while caching [{0}]. Read: {1} frames.", mCurrentTimestamp, read);
+            log->WarnFormat("EOF while caching [{0}]. Read: {1} frames in {2} ms.", 
+                mCurrentTimestamp, read, stopwatchCaching->ElapsedMilliseconds);
             success = true;
             break;
         }
@@ -1340,9 +1354,13 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
         // Read the next frame.
         res = ReadFrame(-1, 1);
         read++;
-        
+
+        //mLoopWatcher->LoopEnd();
+
         bgWorker->ReportProgress(read, totalFrames);
     }
+
+    log->DebugFormat("ReadManyToCache. Average: {0:0.000} ms.", mLoopWatcher->Average);
 
     // Update the working zone with real values.
     // The request may have been an approximation from pixel mapping.
@@ -1413,8 +1431,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
     // It's possible to get here with a target timestamp equal to the current timestamp.
     // For example when we change the output size.
-    // Currently this means we'll seek back to the start of the GOP and decode many frames again.
-    // This should only happen in on-demand mode though, which shouldn't really be a thing.
+    // We have to seek back to the start of the GOP and decode many frames again.
 
     // Do an initial seek if a seek target is specified.
     // This should land us at the start of the GOP containing the target.
@@ -1436,8 +1453,11 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     }
 
     // Get the first frame after the seek or the next frame available in the decoder.
+    mLoopWatcher->LoopStart();
     AVFrame* frame = av_frame_alloc();
     result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+    mLoopWatcher->LoopEnd();
+
     //log->DebugFormat("ReadFrame. Decoded frame at [{0}]. Frame type: {1}", frame->best_effort_timestamp, GetFrameTypeString(frame->pict_type));
     if (result != ReadResult::Success)
     {
@@ -1479,15 +1499,14 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // of the GOP to fill it densely. In that case we shouldn't discard the existing
     // frames from the cache so the target might already be there.
 
+    PlayerState^ playerState = Volatile::Read(this->playerState);
 
-    // Decoding policy.
-    if (mDecodingPolicy == DecodingPolicy::Behind || mDecodingPolicy == DecodingPolicy::FarBehind)
+    if (playerState->Mode == PlayerStateMode::Playback)
     {
-        // Skip scale/convert/store if we are behind.
-        // But keep presenting progress frames periodically.
-        PlayerState^ playerState = Volatile::Read(this->playerState);
-        if (playerState != nullptr && playerState->IsPlaying)
+        if (mDecodingPolicy == DecodingPolicy::Behind || mDecodingPolicy == DecodingPolicy::FarBehind)
         {
+            // If we are behind the player we skip scale/convert/store as much as possible.
+            // We keep presenting progress frames periodically.
             // Compute the next publish timestamp based on how many frames fit within the refresh interval.
             // 
             // Example:
@@ -1497,7 +1516,6 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
             //
             // For every presented frame we have to decode 5 frames.
             // We compute the expected timestamp of the 5th frame and discard the first 4.
-
             int64_t lastPublished = mCurrentTimestamp;
             double frames = playerState->RefreshInterval / playerState->PlaybackFrameInterval;
             double timestampsPerPublish = frames * mVideoInfo.AverageTimeStampsPerFrame;
@@ -1514,9 +1532,8 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
                 return ReadResult::Success;
             }
         }
-
     }
-    
+
 
     if (seeking)
     {
@@ -2495,6 +2512,14 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
     UpdateDecodingPolicy(DecodingPolicy::Normal);
     mDecodedFrames = 0;
 
+    // Main decoding loop.
+    // This loop is live as long as we are in Prebuffering mode.
+    // While in this loop the thread is either:
+    // - decoding frames as fast as possible.
+    // - waiting in Prebuffer.Add() for a free slot in the cache.
+    // - TODO: wait at the end of the working zone until we get a new player state.
+    // - TODO: wait idle when switching from playback to frame by frame.
+    // The trick is that the player state can come in while we are in any of these states.
     while (true)
     {
         if (canceler->CancellationPending)
@@ -2504,127 +2529,120 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
         }
 
         // Read the last published snapshot of the player state to inform decoding strategy.
+        // TODO: check if we changed generation.
         PlayerState^ playerState = Volatile::Read(this->playerState);
-        if (playerState != nullptr)
+        if (playerState->Mode == PlayerStateMode::Playback)
         {
-            if (playerState->IsPlaying)
+            // Estimate how far behind we are compared to the player.
+            // Note: this lag is in presentation space and independent from the speed slider.
+            long expectedTimestamp = this->GetPlaybackTimestamp(playerState);
+            double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
+
+            String^ logLine = String::Format("Predicted player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame:{5}.",
+                expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
+
+            log->DebugFormat(logLine);
+                
+            // Check worst case scenario first.
+            if (lag > mSeekAheadLagThreshold)
             {
-                // Estimate how far behind we are and skip work if needed.
-                // Note: this lag is in presentation space and independent from the speed slider.
-                long expectedTimestamp = this->GetExpectedTimestamp(playerState);
-                double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
-
-                String^ logLine = String::Format("Predicted player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame:{5}.",
-                    expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
-
-                log->DebugFormat(logLine);
+                log->ErrorFormat("Lag of {0:0.000}s is over seek-ahead threshold. Decoded frames: {1}. Cache: {2}/{3}.", 
+                    lag, mDecodedFrames, mPreBuffer->Count, mPreBuffer->Capacity);
                 
-                if (lag > mSeekAheadLagThreshold)
+                // We are hopelessly behind, try to seek ahead.
+                // Note: calling seek directly with min, target, max, doesn't always work.
+                // First, some decoders just fallback to AVSEEK_FLAG_BACKWARD which moves us 
+                // back in time and is worse than doing nothing.
+                // Secondly, seek is done in a different "domain" than the timestamps we get from decoding frames.
+                // The values of packet->pts don't always match the values of frame->best_effort_timestamp. 
+                // 
+                // As decoding progresses we keep track of the timestamps of key frame packets and use that 
+                // to check if seek ahead is actually possible.
+                //
+                // Poll the index for the closest keyframe before the target timestamp.
+                AVStream* stream = mFormatCtx->streams[mVideoStreamIndex];
+                const AVIndexEntry* entry = avformat_index_get_entry_from_timestamp(stream, expectedTimestamp, AVSEEK_FLAG_BACKWARD);
+                if (entry != nullptr)
                 {
-                    log->ErrorFormat("Lag of {0:0.000}s is over seek-ahead threshold. Decoded frames: {1}. Cache: {2}/{3}.", 
-                        lag, mDecodedFrames, mPreBuffer->Count, mPreBuffer->Capacity);
-                
-
-                    // We are hopelessly behind, try to seek ahead.
-                    // Note: calling seek directly with min, target, max, doesn't always work.
-                    // First, some decoders just fallback to AVSEEK_FLAG_BACKWARD which moves us 
-                    // back in time and is worse than doing nothing.
-                    // Secondly, seek is done in a different "domain" than the timestamps we get from decoding frames.
-                    // The values of packet->pts don't always match the values of frame->best_effort_timestamp. 
-                    // 
-                    // As decoding progresses we keep track of the timestamps of key frame packets and use that 
-                    // to check if seek ahead is actually possible.
-                    //
-                    // Poll the index for the closest keyframe before the target timestamp.
-                    AVStream* stream = mFormatCtx->streams[mVideoStreamIndex];
-                    const AVIndexEntry* entry = avformat_index_get_entry_from_timestamp(stream, expectedTimestamp, AVSEEK_FLAG_BACKWARD);
-                    if (entry != nullptr)
-                    {
-                        //log->DebugFormat("Found index entry for timestamp [{0}]. Key at [{1}].", expectedTimestamp, entry->timestamp);
+                    //log->DebugFormat("Found index entry for timestamp [{0}]. Key at [{1}].", expectedTimestamp, entry->timestamp);
                     
-                        // Only seek if the keyframe is ahead of the current GOP start. 
-                        // Otherwise we would just seeking back in time.
-                        int64_t seekTimestamp = entry->timestamp;
-                        if (seekTimestamp > mCurrentGopTimestamp)
-                        {
-                            log->WarnFormat("Decoding thread synchronization. Seeking ahead to [{0}]", seekTimestamp);
-                            int res = avformat_seek_file(
-                                mFormatCtx,
-                                mVideoStreamIndex,
-                                seekTimestamp,
-                                seekTimestamp,
-                                seekTimestamp,
-                                0);
+                    // Only seek if the keyframe is ahead of the current GOP start. 
+                    // Otherwise we would just seeking back in time.
+                    int64_t seekTimestamp = entry->timestamp;
+                    if (seekTimestamp > mCurrentGopTimestamp)
+                    {
+                        log->WarnFormat("Decoding thread synchronization. Seeking ahead to [{0}]", seekTimestamp);
+                        int res = avformat_seek_file(
+                            mFormatCtx,
+                            mVideoStreamIndex,
+                            seekTimestamp,
+                            seekTimestamp,
+                            seekTimestamp,
+                            0);
                         
-                            if (res >= 0)
-                            {
-                                avcodec_flush_buffers(mVideoCodecCtx);
-                                mCurrentTimestamp = AV_NOPTS_VALUE;
-                                mCurrentGopTimestamp = AV_NOPTS_VALUE;
-                            }
+                        if (res >= 0)
+                        {
+                            avcodec_flush_buffers(mVideoCodecCtx);
+                            mCurrentTimestamp = AV_NOPTS_VALUE;
+                            mCurrentGopTimestamp = AV_NOPTS_VALUE;
                         }
                     }
-                }
-                else
-                {
-                    // Figure the decoding policy we should apply.
-                    // Different thresholds for entering and leaving the levels to avoid oscillations.
-
-                    // Behind mode: drop the scale/convert work for frames that aren't presented.
-                    // Only switch back when we are comfortably ahead.
-                    double thresholdEnterBehind = 0.000;
-                    double thresholdLeaveBehind = -0.200;
-
-                    // Far behind mode: drop decoding of B-frames at ffmpeg level.
-                    // This only makes a difference for files that have B-frames in the first place.
-                    double thresholdEnterFarBehind = 0.400;
-                    double thresholdLeaveFarBehind = 0.200;
-                    
-                    DecodingPolicy oldPolicy = mDecodingPolicy;
-                    switch (mDecodingPolicy)
-                    {
-                    case DecodingPolicy::Normal:
-                        if (lag > thresholdEnterFarBehind)
-                        {
-                            UpdateDecodingPolicy(DecodingPolicy::FarBehind);
-                        }
-                        else if (lag > thresholdEnterBehind)
-                        {
-                            UpdateDecodingPolicy(DecodingPolicy::Behind);
-                        }
-                        break;
-                    case DecodingPolicy::Behind:
-                        if (lag > thresholdEnterFarBehind)
-                        {
-                            UpdateDecodingPolicy(DecodingPolicy::FarBehind);
-                        }
-                        else if (lag < thresholdLeaveBehind)
-                        {
-                            UpdateDecodingPolicy(DecodingPolicy::Normal);
-                        }
-                        break;
-                    case DecodingPolicy::FarBehind:
-                        if (lag < thresholdLeaveFarBehind)
-                        {
-                            UpdateDecodingPolicy(DecodingPolicy::Behind);
-                        }
-                        break;
-                    }
-
-                    /*if (oldPolicy != mDecodingPolicy)
-                    {
-                        log->DebugFormat(logLine);
-                    }*/
                 }
             }
             else
             {
-                // TODO: if we are not currently playing, switch back to a dense decoding policy 
-                // to handle frame by frame nav.
-                // Check the playerState.Generation to see if we just changed mode.
+                // Figure the decoding policy we should apply.
+                // Different thresholds for entering and leaving the levels to avoid oscillations.
+
+                // Behind mode: drop the scale/convert work for frames that aren't presented.
+                // Only switch back when we are comfortably ahead.
+                double thresholdEnterBehind = 0.000;
+                double thresholdLeaveBehind = -0.200;
+
+                // Far behind mode: drop decoding of B-frames at ffmpeg level.
+                // This only makes a difference for files that have B-frames in the first place.
+                double thresholdEnterFarBehind = 0.400;
+                double thresholdLeaveFarBehind = 0.200;
+                    
+                DecodingPolicy oldPolicy = mDecodingPolicy;
+                switch (mDecodingPolicy)
+                {
+                case DecodingPolicy::Normal:
+                    if (lag > thresholdEnterFarBehind)
+                    {
+                        UpdateDecodingPolicy(DecodingPolicy::FarBehind);
+                    }
+                    else if (lag > thresholdEnterBehind)
+                    {
+                        UpdateDecodingPolicy(DecodingPolicy::Behind);
+                    }
+                    break;
+                case DecodingPolicy::Behind:
+                    if (lag > thresholdEnterFarBehind)
+                    {
+                        UpdateDecodingPolicy(DecodingPolicy::FarBehind);
+                    }
+                    else if (lag < thresholdLeaveBehind)
+                    {
+                        UpdateDecodingPolicy(DecodingPolicy::Normal);
+                    }
+                    break;
+                case DecodingPolicy::FarBehind:
+                    if (lag < thresholdLeaveFarBehind)
+                    {
+                        UpdateDecodingPolicy(DecodingPolicy::Behind);
+                    }
+                    break;
+                }
             }
         }
-
+        else
+        {
+            // TODO: if we are not currently playing, switch back to a dense decoding policy 
+            // to handle frame by frame nav.
+            // Check the playerState.Generation to see if we just changed mode.
+        }
+        
         // Read the next frame.
         // This will perform decoding, scaling, format conversion, rotation, etc.
         // Then attempt to store the frame in the async cache.
@@ -2639,6 +2657,7 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ _canceler)
         }
 
         // Check if we hit the end of the zone.
+        // TODO: replace with a wait/idle.
         if (mCurrentTimestamp > mWorkingZone.End || res == ReadResult::EOFReached)
         {
             ReadFrame(mWorkingZone.Start, 1);

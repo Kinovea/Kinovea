@@ -46,7 +46,12 @@ namespace Kinovea.Video.Bitmap
             get { return current; }
         }
         public override VideoCapabilities Flags { 
-            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone | VideoCapabilities.CanChangeImageRotation;}
+            get 
+            { 
+                return VideoCapabilities.CanDecodeOnDemand | 
+                       VideoCapabilities.CanChangeWorkingZone | 
+                       VideoCapabilities.CanChangeImageRotation;
+            }
         }
         public override VideoInfo Info { 
             get { return videoInfo;} 
@@ -75,7 +80,7 @@ namespace Kinovea.Video.Bitmap
         private VideoGeometry videoGeometry = new VideoGeometry();
         #endregion
 
-        #region Public methods
+        #region Open/Close/Summary
         public override OpenVideoResult Open(string filePath)
         {
             OpenVideoResult res = InstanciateGenerator(filePath);
@@ -123,7 +128,10 @@ namespace Kinovea.Video.Bitmap
 
             return summary;
         }
-        public override bool MoveNext(int skip, bool decodeIfNecessary)
+        #endregion
+
+        #region Navigation and player state
+        public override bool MoveNext(bool decodeIfNecessary)
         {
             long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
             
@@ -136,23 +144,20 @@ namespace Kinovea.Video.Bitmap
 
             return UpdateCurrent(target);
         }
-        public override bool MoveTo(long from, long target)
+        public override bool MoveTo(long target)
         {
             return UpdateCurrent(target);
         }
-        public override void UpdateWorkingZone(
-            VideoSection newZone,
-            CacheLoadMode loadMode,
-            int maxMemory, 
-            Action<DoWorkEventHandler> workerFn)
+        #endregion
+
+        #region Working zone and decoding mode
+        public override void UpdateWorkingZone(VideoSection newZone, CacheLoadMode loadMode, int maxMemory, Action<DoWorkEventHandler> workerFn)
         {
             workingZone = newZone;
         }
+        #endregion 
 
-        public override void BeforeFrameEnumeration(){}
-        public override void AfterFrameEnumeration(){}
-
-
+        #region Video geometry
         public override bool UpdateVideoGeometry(VideoGeometryRequest request)
         {
             // We support rotation by re-opening the file from scratch.
@@ -230,18 +235,6 @@ namespace Kinovea.Video.Bitmap
             videoInfo.OriginalSize = generator.OriginalSize;
             videoInfo.OriginalRotation = generator.OriginalRotation;
         }
-
-        /// <summary>
-        /// Update the low level video info original size.
-        /// </summary>
-        //private void UpdateSizeInfo()
-        //{
-        //    videoInfo.OriginalSize = generator.OriginalSize;
-        //    //videoInfo.AspectRatioSize = generator.ReferenceSize;
-        //    //videoInfo.ReferenceSize = generator.ReferenceSize;
-        //    //videoInfo.ImageRotation = generator.ImageRotation;
-        //}
-
         private bool UpdateCurrent(long timestamp)
         {
             // We can generate at any timestamp, but we still need to report when the

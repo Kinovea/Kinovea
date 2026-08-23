@@ -586,7 +586,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Move timeline to the target timestamp and get the image.
-                videoReader.MoveTo(currentTimestamp, kf.Timestamp);
+                videoReader.MoveTo(kf.Timestamp);
                 VideoFrame vf = videoReader.Current;
                 currentTimestamp = vf.Timestamp;
 

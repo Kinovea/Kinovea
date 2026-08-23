@@ -31,9 +31,21 @@ namespace Kinovea.Video.GIF
 {
     // A video reader for animated GIFs.
     [SupportedExtensions(".gif")]
-    public class VideoReaderGIF : VideoReaderAlwaysCaching
+    public class VideoReaderGIF : VideoReader
     {
         #region Properties
+        public override VideoFrame Current {
+            get { return cache.CurrentFrame;}
+        }
+        public override VideoSection WorkingZone {
+            get { return cache.WorkingZone; }
+        }
+        public override IWorkingZoneFramesContainer WorkingZoneFrames {
+            get { return cache;}
+        }
+        protected Cache Cache {
+            get { return cache;}
+        }
         public override VideoCapabilities Flags {
             get { return VideoCapabilities.CanCache; }
         }
@@ -58,19 +70,20 @@ namespace Kinovea.Video.GIF
         private VideoGeometry videoGeometry;
         private int count;
         private Image gif;
+        private Cache cache = new Cache();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
-        #region Public Methods
+
+        #region Open/Close/Summary
         public override OpenVideoResult Open(string filePath)
         {
-            if(loaded)
+            if (loaded)
                 Close();
-                
+
             videoInfo.FirstTimeStamp = 0;
             videoInfo.AverageTimeStampsPerSeconds = 100;
             videoInfo.FilePath = filePath;
-            
+
             // This reader can only function in frozen cache mode,
             // so we systematically load the cache during opening.
             OpenVideoResult res = LoadFile(filePath, true);
@@ -78,14 +91,18 @@ namespace Kinovea.Video.GIF
             DumpInfo();
             return res;
         }
+        public override void Close()
+        {
+            cache.Clear();
+        }
         public override VideoSummary ExtractSummary(string filePath, int thumbsToGet, Size maxSize)
         {
             VideoSummary summary = new VideoSummary(filePath);
-           
+
             OpenVideoResult res = LoadFile(filePath, false);
             FrameDimension dimension = new FrameDimension(gif.FrameDimensionsList[0]);
-            
-            if(res == OpenVideoResult.Success)
+
+            if (res == OpenVideoResult.Success)
             {
                 summary.IsImage = count == 1;
                 summary.DurationMilliseconds = (int)((double)count * videoInfo.FrameIntervalMilliseconds);
@@ -97,23 +114,37 @@ namespace Kinovea.Video.GIF
                     for (int i = 0; i < count; i += step)
                         summary.Thumbs.Add(GetFrameAt(dimension, i));
                 }
-                
+
                 summary.ImageSize = videoInfo.OriginalSize;
             }
-            
-            if(loaded)
+
+            if (loaded)
                 Close();
-            
+
             gif.Dispose();
             return summary;
         }
+        #endregion
+
+        #region Navigation
+        public override bool MoveNext(bool _decodeIfNecessary)
+        {
+            return cache.MoveBy(1);
+        }
+        public override bool MoveTo(long target)
+        {
+            return cache.MoveTo(target);
+        }
+        #endregion
+
+        #region Video geometry
         public override bool UpdateVideoGeometry(VideoGeometryRequest request)
         {
             // We don't support any video geometry request.
+            // TODO: update pre-scaled?
             return false;
         }
-
-        #endregion
+        #endregion 
 
         #region Private Methods
         private OpenVideoResult LoadFile(string filePath, bool cache)

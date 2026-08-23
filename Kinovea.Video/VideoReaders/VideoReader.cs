@@ -116,20 +116,17 @@ namespace Kinovea.Video
 
         #endregion
 
-        // Map of requested timestamps vs actual timestamps.
-        // The request are based on average time stamp but the files often
-        // have non regular timestamps intervals.
-        private Dictionary<long, long> tsMap = new Dictionary<long, long>();
-
+        #region Members
         // Latest snapshot of the player state.
-        // Used by the decoding thread to predict what should be decoded next.
-        protected PlayerState playerState = null;
+        // Used by the Move function to acquire current frame and 
+        // used by the decoding thread to predict what should be decoded next.
+        protected PlayerState playerState = PlayerState.Empty;
+        #endregion
 
-        #region Open/Close
-
+        #region Open/Close/Summary
         /// <summary>
         /// Open the video.
-        /// At the end of this call the reader must have initialized its Info 
+        /// At the end of this call the reader must have initialized Info 
         /// and VideoGeometry properties.
         /// </summary>
         public abstract OpenVideoResult Open(string filePath);
@@ -143,71 +140,28 @@ namespace Kinovea.Video
 
         #endregion
 
-        #region Low level frame requests
+        #region Navigation and player state
 
         /// <summary>
-        /// Map requested timestamp to actual timestamp, if we have seen it before.
+        /// The player requests a synchronous decode of the next frame.
+        /// Used during frame enumeration for export, playback while tracking.
+        /// TODO: instead of decode if necessary = false, call PlayerDemand(timestamp).
         /// </summary>
-        public long MapTimestamp(long requested)
-        {
-            if (tsMap.ContainsKey(requested))
-                return tsMap[requested];
-            
-            return requested;
-        }
-
-        public void AddTimestampMapping(long requested, long actual)
-        {
-            if (!tsMap.ContainsKey(requested))
-                tsMap.Add(requested, actual);
-        }
+        public abstract bool MoveNext(bool _decodeIfNecessary);
 
         /// <summary>
-        /// Must set `Current` to the next video frame.
-        /// For async readers, if the frame is not available right now, call it a drop.
-        /// Decoding of that next frame should have happened in the decoding thread already.
-        /// If `decodeIfNecessary` is true then force sync and only return after the frame has 
-        /// been placed into `Current`. This is for scenarios like saving, next button, etc.
+        /// Synchronous decode of the frame at the requested timestamp.
+        /// TODO: REMOVE.
+        /// Use PlayerDemand(timestamp) or PlayerDemand(PlayerState) instead.
         /// </summary>
-        /// <returns>false if the end of file has been reached</returns>
-        public abstract bool MoveNext(int _skip, bool _decodeIfNecessary);
-        
-        /// <summary>
-        /// Informs the reader that the player is asking for the passed timestamp.
-        /// For synchronous reading this should set `Current` to the exact requested frame.
-        /// For asynchronous reading this should set `Current` the nearest known frame,
-        /// and synchronize the player state (target and speed) with the decoding thread
-        /// so it can take decisions on what to decode next.
-        /// </summary>
-        /// <returns>false if the end of file has been reached</returns>
-        public abstract bool MoveTo(long from, long target);
-        #endregion
-
-        #region Decoding mode, play loop and frame enumeration
-
-        /// <summary>
-        /// Start prebuffering if supported and not already in full caching mode.
-        /// This is normally called during first opening of the video or after 
-        /// changing the presentation size.
-        /// The first call to UpdateWorkingZone inhibits prebuffering as we don't 
-        /// have a valid presentation size yet. Once the UI is loaded we can try again.
-        /// </summary>
-        public virtual void StartPrebufferingIfNotCaching()
-        {
-        }
-
-        /// <summary>
-        /// Called right before starting the play loop.
-        /// Might be used to ensure the prebuffering thread is started.
-        /// Override to implement.
-        /// </summary>
-        public virtual void BeforePlayloop()
-        {
-        }
+        public abstract bool MoveTo(long target);
 
         /// <summary>
         /// The player changed state and publishes the new state.
         /// This is used to inform which frames to decode next.
+        /// 
+        /// REMOVE: replace with PlayerDemand(PlayerState).
+        /// 
         /// </summary>
         public void PublishPlayerState(PlayerState newPlayerState)
         {
@@ -215,12 +169,13 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Compute the expected frame timestamp the player would like to see right now.
+        /// During a playback loop, compute the expected frame timestamp 
+        /// the player would like to see right now.
         /// The player does its own computation independently using similar code.
         /// </summary>
-        public long GetExpectedTimestamp(PlayerState state)
+        public long GetPlaybackTimestamp(PlayerState state)
         {
-            if (state == null || !state.IsPlaying)
+            if (state == null || state.Mode != PlayerStateMode.Playback)
                 return 0;
 
             long now = Stopwatch.GetTimestamp();
@@ -232,6 +187,21 @@ namespace Kinovea.Video
         }
 
         /// <summary>
+        /// Called right before starting the play loop.
+        /// Might be used to ensure the prebuffering thread is started.
+        /// Override to implement.
+        /// 
+        /// TO REMOVE: this should go through player demand / player state.
+        /// 
+        /// </summary>
+        public virtual void BeforePlayloop()
+        {
+        }
+        #endregion
+
+        #region Working zone and decoding mode
+
+        /// <summary>
         /// The player is asking the reader to update the working zone.
         /// This will update the bounds and try to switch to full caching mode.
         /// If it fits in memory it will use the provided background worker to load it.
@@ -240,15 +210,20 @@ namespace Kinovea.Video
         /// Otherwise it will stay in "on-demand" synchrounous mode.
         /// </summary>
         /// <param name="_workerFn">A function that will start a background thread for the actual import</param>
-        public abstract void UpdateWorkingZone(
-            VideoSection _newZone,
-            CacheLoadMode loadMode,
-            int _maxMemory,
-            Action<DoWorkEventHandler> _workerFn);
+        public virtual void UpdateWorkingZone(VideoSection _newZone, CacheLoadMode loadMode, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
+        {
+        }
 
-        public abstract void BeforeFrameEnumeration();
-
-        public abstract void AfterFrameEnumeration();
+        /// <summary>
+        /// Start prebuffering if supported and not already in full caching mode.
+        /// This is normally called during first opening of the video or after 
+        /// changing the presentation size.
+        /// The first call to UpdateWorkingZone inhibits prebuffering as we don't 
+        /// have a valid presentation size yet. Once the UI is loaded we can try again.
+        /// </summary>
+        public virtual void StartPrebufferingIfNotCaching()
+        {
+        }
 
         public bool CanSwitchDecodingMode(VideoDecodingMode mode)
         {
@@ -266,6 +241,39 @@ namespace Kinovea.Video
                     return false;
             }
         }
+        #endregion
+
+        #region Frame enumeration
+        public virtual void BeforeFrameEnumeration()
+        {
+        }
+
+        public virtual void AfterFrameEnumeration()
+        {
+        }
+
+        /// <summary>
+        /// Provide a lazy enumerator on each frame of the Working Zone.
+        /// interval is the time in timestamps between each frame.
+        /// </summary>
+        public IEnumerable<VideoFrame> EnumerateFrames(double interval)
+        {
+            if (DecodingMode == VideoDecodingMode.PreBuffering)
+                throw new ThreadStateException("Frame enumerator called while prebuffering");
+
+            bool hasMore = MoveTo(WorkingZone.Start);
+            yield return Current;
+
+            while (hasMore)
+            {
+                if (interval == 0)
+                    hasMore = MoveNext(true);
+                else
+                    hasMore = MoveTo((long)Math.Round(Current.Timestamp + interval));
+
+                yield return Current;
+            }
+        }
 
         /// <summary>
         /// Returns true if the enumerator may still move to the next frame in the working zone.
@@ -278,48 +286,6 @@ namespace Kinovea.Video
             double nextTimestamp = Current.Timestamp + Info.AverageTimeStampsPerFrame;
             bool result = nextTimestamp <= WorkingZone.End;
             return result;
-        }
-
-        /// <summary>
-        /// Provide a lazy enumerator on each frame of the Working Zone.
-        /// interval is the time in timestamps between each frame.
-        /// </summary>
-        public IEnumerable<VideoFrame> EnumerateFrames(double interval)
-        {
-            if (DecodingMode == VideoDecodingMode.PreBuffering)
-                throw new ThreadStateException("Frame enumerator called while prebuffering");
-
-            bool hasMore = MoveTo(Current.Timestamp, WorkingZone.Start);
-            yield return Current;
-
-            while (hasMore)
-            {
-                if (interval == 0)
-                    hasMore = MoveNext(0, true);
-                else
-                    hasMore = MoveTo(Current.Timestamp, (long)Math.Round(Current.Timestamp + interval));
-
-                yield return Current;
-            }
-        }
-
-        #endregion
-
-        #region Move playhead shortcuts
-        public bool MoveBy(int frames, bool decodeIfNecessary)
-        {
-            if(frames == 1)
-            {
-                return MoveNext(0, decodeIfNecessary);
-            }
-            else
-            {
-                long currentTimestamp = Current == null ? 0 : Current.Timestamp;
-                long target = currentTimestamp + (long)Math.Round(Info.AverageTimeStampsPerFrame * frames);
-                target = Math.Max(0, target);
-                
-                return MoveTo(currentTimestamp, target);
-            }
         }
         #endregion
 

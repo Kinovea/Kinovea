@@ -142,7 +142,6 @@ namespace Kinovea.Root
                 videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
                 videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
                 videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
-                videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
                 VideoTypeManager.LoadVideoReaders(videoReaders);
                 log.DebugFormat("Loaded video readers:{0} ms.", stopwatch.ElapsedMilliseconds);
             }

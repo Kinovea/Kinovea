@@ -182,6 +182,7 @@
     <Compile Include="Caching\IVideoFramesContainer.cs" />
     <Compile Include="Caching\IWorkingZoneContainer.cs" />
     <Compile Include="Caching\PreBuffer2.cs" />
+    <Compile Include="Caching\PlayerStateMode.cs" />
     <Compile Include="Caching\SingleFrame.cs" />
     <Compile Include="Caching\PreBuffer.cs" />
     <Compile Include="OpenVideoResult.cs" />
@@ -196,7 +197,6 @@
     <Compile Include="VideoReaders\IFrameGenerator.cs" />
     <Compile Include="Caching\PlayerState.cs" />
     <Compile Include="Caching\VideoDecodingMode.cs" />
-    <Compile Include="VideoReaders\VideoReaderAlwaysCaching.cs" />
     <Compile Include="VideoReaders\VideoReader.cs" />
     <Compile Include="Caching\ThreadCanceler.cs" />
     <Compile Include="Delegates.cs" />

@@ -93,43 +93,57 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     )]
     public ref class VideoReaderFFMpeg : VideoReader
     {
-    // Properties (VideoReader subclassing).
     public: 
-        virtual property VideoCapabilities Flags {
-            VideoCapabilities get() override { 
+        virtual property VideoCapabilities Flags 
+        {
+            VideoCapabilities get() override 
+            {
                 return	mCapabilities; 
             }
         }
-        virtual property VideoDecodingMode DecodingMode {
-            VideoDecodingMode get() override { 
+        virtual property VideoDecodingMode DecodingMode 
+        {
+            VideoDecodingMode get() override 
+            { 
                 return	mCachingMode; 
             }
         }
-        virtual property bool Loaded {
-            bool get() override { return mIsLoaded; }
+        virtual property bool Loaded 
+        {
+            bool get() override 
+            { 
+                return mIsLoaded; 
+            }
         }
-        virtual property VideoInfo Info {
+        virtual property VideoInfo Info 
+        {
             VideoInfo get() override { return mVideoInfo; }
         }
-        virtual property IWorkingZoneFramesContainer^ WorkingZoneFrames {
-            IWorkingZoneFramesContainer^ get() override { 
+        virtual property IWorkingZoneFramesContainer^ WorkingZoneFrames 
+        {
+            IWorkingZoneFramesContainer^ get() override 
+            { 
                 if(mCachingMode == VideoDecodingMode::Caching)
                     return mCache;
                 else 
                     return nullptr;
             }
         }
-        virtual property VideoSection WorkingZone {
+        virtual property VideoSection WorkingZone 
+        {
             VideoSection get() override { return mWorkingZone; }
         }
-        virtual property VideoFrame^ Current {
-            VideoFrame^ get() override { 
+        virtual property VideoFrame^ Current 
+        {
+            VideoFrame^ get() override 
+            { 
                 return mFrameContainer != nullptr ? mFrameContainer->CurrentFrame : nullptr; 
             }
         }
-        
-        virtual property VideoGeometry^ Geometry {
-            VideoGeometry^ get() override {
+        virtual property VideoGeometry^ Geometry 
+        {
+            VideoGeometry^ get() override 
+            {
                 return mVideoGeometry;
             }
         }
@@ -141,8 +155,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     protected:
         !VideoReaderFFMpeg();
 
-
     public:
+        
+        //-------------------
+        // Open/Close/Summary
+        //-------------------
         
         /// Open the video and call Load().
         virtual OpenVideoResult Open(String^ _filePath) override;
@@ -153,20 +170,30 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Open/Load the video, extract a few frames + basic info, close the video.
         virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
         
+        //-------------------
+        // Navigation and player state
+        //-------------------
+        virtual bool MoveNext(bool decodeIfNecessary) override;
+        virtual bool MoveTo(int64_t target) override;
+        virtual void BeforePlayloop() override;
+
+        //-------------------
+        // Working zone and decoding mode
+        //-------------------
+        virtual void UpdateWorkingZone(VideoSection newZone, CacheLoadMode loadMode, int maxMemory, Action<DoWorkEventHandler^>^ workerFn) override;
+
         /// If we are not caching yet, try to switch to prebuffering.
         virtual void StartPrebufferingIfNotCaching() override;
 
-        // Frame requests.
-        virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
-        virtual bool MoveTo(int64_t from, int64_t target) override;
-        
-        // Decoding mode, play loop and frame enumeration.
-        virtual void BeforePlayloop() override;
-        virtual void UpdateWorkingZone(VideoSection newZone, CacheLoadMode loadMode, int maxMemory, Action<DoWorkEventHandler^>^ workerFn) override;
+        //-------------------
+        // Frame enumeration
+        //-------------------
         virtual void BeforeFrameEnumeration() override;
         virtual void AfterFrameEnumeration() override;
 
-        // Video geometry
+        //-------------------
+        // Frame enumeration
+        //-------------------
         virtual bool UpdateVideoGeometry(VideoGeometryRequest^ request) override;
 
     // Members
@@ -224,6 +251,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         AVFormatContext* mFormatCtx;
         AVCodecContext* mVideoCodecCtx;
         
+        // Player state generation counter.
+        // Used to detect discontinuities in the timeline position.
+        int mLastPlayerGeneration; 
 
         // The frame-domain timestamp of the last stored frame (frame->best_effort_timestamp).
         // Stored as in put in the active frame container and available to the player.
@@ -270,11 +300,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Generic stopwatch for instrumentation/debugging purposes. 
         // Production logic should use its own stopwatch if needed.
         Stopwatch^ mStopwatch = gcnew Stopwatch();
-
+        LoopWatcher^ mLoopWatcher = gcnew LoopWatcher();
         // Simple counter, only used for debugging and logging.
         int mDecodedFrames = 0;
     
     private:
+
+        //-------------------
+        // Open/Close/Summary
+        //-------------------
 
         void DataInit();
         
@@ -284,6 +318,21 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Estimate the frame rate of the video stream.
         /// Updates mVideoInfo.FramesPerSeconds.
         void GuessFrameRate(AVFormatContext* formatCtx, AVCodecContext* videoCodecCtx, int streamIndex, bool verbose);
+
+
+        //-------------------
+        // Navigation / player demands
+        //-------------------
+        bool MoveOnDemand(int64_t target);
+        bool MoveCaching(int64_t target);
+
+
+
+
+
+        //-------------------
+        // Seeking/decoding
+        //-------------------
 
         /// Read one frame from the video stream and add it to the active frame container.
         /// Seeks backwards if needed.
@@ -303,6 +352,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Demux and feed packets to libav until one frame is decoded or the end of the stream is reached.
         /// If a frame is already available doesn't demux anything.
         ReadResult DecodeOneFrame(AVFormatContext* formatCtx, int streamIndex, AVCodecContext* codecCtx, AVFrame* frame);
+
+        /// Release the memory allocated by libav for the frame buffer.
+        static void DisposeFrame(VideoFrame^ _frame);
+
+        //-------------------
+        // scale/conversion/store
+        //-------------------
 
         /// Convert the libav AVFrame to a .NET Bitmap and store it to the container.
         /// 
@@ -347,21 +403,21 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
         AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
 
-        /// Change the ffmpeg codec context based on the passed policy. 
-        /// This determines whether we will decode everything or skip some frames.
-        void UpdateDecodingPolicy(DecodingPolicy policy);
-        
-        /// Release the memory allocated by libav for the frame buffer.
-        static void DisposeFrame(VideoFrame^ _frame);
-        
+        //-------------------
         // Video geometry
+        //-------------------
         void ResolveGeometry(VideoGeometryRequest^ request);
         bool SetStabilizationData(List<TimedPoint^>^ points);
         
-        // Computes the reference size and set an initial scaled size.
+        /// Computes the reference size and set an initial scaled size.
         void ComputeReferenceSize(ImageAspectRatio aspectRatio, ImageRotation rotation);
         Size PadSize(Size size, bool isSideway);
         
+
+        //-------------------
+        // Working zone and decoding mode
+        //-------------------
+
         /// Returns how many megabytes the working zone requires to be fully loaded in memory.
         /// This is for full size frames, not decoding size.
         double WorkingZoneMemoryRequirement(VideoSection _newZone);
@@ -372,7 +428,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             bool fitsInMemory,
             Action<DoWorkEventHandler^>^ workerFn) override;
 
-
         /// Clears the old frame container and points it to the one of the new mode.
         /// This should be called after validating that the mode is available.
         /// This function stops and starts the prebuffer thread if needed.
@@ -380,19 +435,32 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void ChangeCachingMode(VideoDecodingMode wantedMode);
 
         void ChangeToBestAfterCaching();
+
         void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
+        
         bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
         
+
+        //-------------------
+        // Prebuffering
+        //-------------------
+
         /// Start the prebuffering thread.
         void StartPreBufferingThread(int64_t startTimestamp);
-
+        
         /// Stop the prebuffering thread.
         /// Does not clear the frame cache, does not change the caching mode.
         void StopPreBufferingThread();
-
+        
         void PreBufferingWorker(Object^ _canceler);
 
-        // Logging helpers.
+        /// Change the ffmpeg codec context based on the passed policy. 
+        /// This determines whether we will decode everything or skip some frames.
+        void UpdateDecodingPolicy(DecodingPolicy policy);
+
+        //-------------------
+        // Logging helpers
+        //-------------------
         void LogFileInfo();
         static void LogPacketInfo(AVPacket* packet);
         static void LogFrameInfo(AVFrame* frame);

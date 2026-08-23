@@ -8,6 +8,7 @@ namespace Kinovea.Video
 {
     /// <summary>
     /// Cache for asynchronous reading/decoding.
+    /// This cache may be sparse or dense depending on the decoding policy.
     /// </summary>
     public class PreBuffer2 : IDisposable, IVideoFramesContainer
     {
@@ -121,7 +122,9 @@ namespace Kinovea.Video
             }
         }
 
-
+        /// <summary>
+        /// Unblock any thread waiting in Add().
+        /// </summary>
         public void InterruptAdd()
         {
             lock (sync)

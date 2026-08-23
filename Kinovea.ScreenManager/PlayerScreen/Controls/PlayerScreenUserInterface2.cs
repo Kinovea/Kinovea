@@ -303,7 +303,7 @@ namespace Kinovea.ScreenManager
         private bool showCacheInTimeline = false;
 
         // Active playback
-        private PlayerState playerState;      // Current player state snapshot.
+        private PlayerState playerState = PlayerState.Empty;      // Current player state snapshot.
         private double monitorRefreshRate = 60;
         private uint multimediaTimerID;
         private bool isCurrentlyPlaying;
@@ -600,14 +600,13 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Post load process.");
 
             // Publish the initial player state snapshot to the decoder.
-            PlayerState state = new PlayerState(0, 0, 0, 0, 0, false);
-            playerState = state;
-            m_FrameServer.VideoReader.PublishPlayerState(state);
+            playerState = MakeFrameByFramePlayerState(m_FrameServer.VideoReader.Info.FirstTimeStamp);
+            m_FrameServer.VideoReader.PublishPlayerState(playerState);
 
             //-----------------------------
             // Read/decode the first frame.
             //-----------------------------
-            ShowNextFrame(m_FrameServer.VideoReader.Info.FirstTimeStamp, true);
+            PresentFrame(m_FrameServer.VideoReader.Info.FirstTimeStamp, true);
 
             // Bail out on any error.
             if (m_FrameServer.VideoReader.Current == null)
@@ -788,7 +787,7 @@ namespace Kinovea.ScreenManager
                 CollapseKeyframePanel(false);
 
             framesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
+            PresentFrame(m_iSelStart, true);
             UpdatePositionUI();
             ActivateKeyframe(currentTimestamp);
 
@@ -919,7 +918,7 @@ namespace Kinovea.ScreenManager
             // The first frame of the wz should always be decoded synchronously
             // to make sure we have something.
             framesToDecode = 1;
-            ShowNextFrame(m_FrameServer.VideoReader.WorkingZone.Start, true);
+            PresentFrame(m_FrameServer.VideoReader.WorkingZone.Start, true);
             
             // The working zone request is mapped from pixel values.
             // Reset the start value on the actual timestamp.
@@ -1006,7 +1005,7 @@ namespace Kinovea.ScreenManager
             if (currentTimestamp > m_iSelEnd)
                 currentTimestamp = m_iSelEnd;
 
-            ShowNextFrame(currentTimestamp, allowUIUpdate);
+            PresentFrame(currentTimestamp, allowUIUpdate);
 
             if (allowUIUpdate)
             {
@@ -1031,7 +1030,7 @@ namespace Kinovea.ScreenManager
                 // Special case for +1 frame.
                 if (currentTimestamp < m_iSelEnd)
                 {
-                    ShowNextFrame(-1, allowUIUpdate);
+                    PresentFrame(-1, allowUIUpdate);
                 }
             }
             else
@@ -1042,7 +1041,7 @@ namespace Kinovea.ScreenManager
                     currentTimestamp = m_iSelEnd;
                 }
 
-                ShowNextFrame(currentTimestamp, allowUIUpdate);
+                PresentFrame(currentTimestamp, allowUIUpdate);
             }
 
             if (allowUIUpdate)
@@ -1056,7 +1055,7 @@ namespace Kinovea.ScreenManager
             // For cases where surfaceScreen.Invalidate() is not enough.
             // Not needed if we are playing.
             if (m_FrameServer.Loaded && !isCurrentlyPlaying)
-                ShowNextFrame(currentTimestamp, true);
+                PresentFrame(currentTimestamp, true);
         }
         public void RefreshUICulture()
         {
@@ -2011,7 +2010,7 @@ namespace Kinovea.ScreenManager
                 OnPauseAsked();
 
                 framesToDecode = 1;
-                ShowNextFrame(m_iSelStart, true);
+                PresentFrame(m_iSelStart, true);
 
                 UpdatePositionUI();
                 ActivateKeyframe(currentTimestamp);
@@ -2032,13 +2031,13 @@ namespace Kinovea.ScreenManager
                 if ((currentTimestamp <= m_iSelStart) || (currentTimestamp > m_iSelEnd))
                 {
                     framesToDecode = 1;
-                    ShowNextFrame(m_iSelStart, true);
+                    PresentFrame(m_iSelStart, true);
                 }
                 else
                 {
                     long oldPos = currentTimestamp;
                     framesToDecode = -1;
-                    ShowNextFrame(-1, true);
+                    PresentFrame(-1, true);
 
                     // If it didn't work, try going back two frames to unstuck the situation.
                     // Todo: check if we're going to endup outside the working zone ?
@@ -2046,7 +2045,7 @@ namespace Kinovea.ScreenManager
                     {
                         log.Debug("Seeking to previous frame did not work. Moving backward 2 frames.");
                         framesToDecode = -2;
-                        ShowNextFrame(-1, true);
+                        PresentFrame(-1, true);
                     }
 
                     // Reset to normal.
@@ -2082,9 +2081,13 @@ namespace Kinovea.ScreenManager
             // which sort of breaks our sentinels.
             if (((currentTimestamp < m_iSelStart) || (currentTimestamp >= m_iSelEnd)) &&
                 (currentTimestamp >= firstTimestamp))
-                ShowNextFrame(m_iSelStart, true);
+            {
+                PresentFrame(m_iSelStart, true);
+            }
             else
-                ShowNextFrame(-1, true);
+            {
+                PresentFrame(-1, true);
+            }
 
             UpdatePositionUI();
             ActivateKeyframe(currentTimestamp);
@@ -2116,7 +2119,7 @@ namespace Kinovea.ScreenManager
             int newPercentage = nextStep * round;
             long newPosition = m_iSelStart + (long)(((float)newPercentage / 100) * m_iSelDuration);
 
-            ShowNextFrame(newPosition, true);
+            PresentFrame(newPosition, true);
 
             UpdatePositionUI();
             ActivateKeyframe(currentTimestamp);
@@ -2133,7 +2136,7 @@ namespace Kinovea.ScreenManager
                 OnPauseAsked();
 
                 framesToDecode = 1;
-                ShowNextFrame(m_iSelEnd, true);
+                PresentFrame(m_iSelEnd, true);
 
                 UpdatePositionUI();
                 ActivateKeyframe(currentTimestamp);
@@ -2293,7 +2296,7 @@ namespace Kinovea.ScreenManager
                 OnPauseAsked();
                 framesToDecode = 1;
 
-                ShowNextFrame(trkSelection.SelPos, true);
+                PresentFrame(trkSelection.SelPos, true);
                 currentTimestamp = trkSelection.SelPos + trkSelection.Minimum;
 
                 UpdatePositionUI();
@@ -2378,17 +2381,17 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
             {
                 if (m_FrameServer.VideoReader.Current == null)
-                    ShowNextFrame(m_iSelStart, true);
+                    PresentFrame(m_iSelStart, true);
                 else
-                    ShowNextFrame(m_FrameServer.VideoReader.Current.Timestamp, true);
+                    PresentFrame(m_FrameServer.VideoReader.Current.Timestamp, true);
             }
             else if (currentTimestamp < m_iSelStart || currentTimestamp > m_iSelEnd)
             {
                 framesToDecode = 1;
                 if (currentTimestamp < m_iSelStart)
-                    ShowNextFrame(m_iSelStart, true);
+                    PresentFrame(m_iSelStart, true);
                 else
-                    ShowNextFrame(m_iSelEnd, true);
+                    PresentFrame(m_iSelEnd, true);
             }
 
             UpdatePositionUI();
@@ -2508,9 +2511,11 @@ namespace Kinovea.ScreenManager
             //log.DebugFormat("Update frame current position: {0}.", trkFrame.Position);
             // The timestamps provided by the tracker control may not align with actual timestamps,
             // as they don't follow the strict average timestamp per frame.
-            currentTimestamp = m_FrameServer.VideoReader.MapTimestamp(trkFrame.Position);
+            //currentTimestamp = m_FrameServer.VideoReader.MapTimestamp(trkFrame.Position);
+            currentTimestamp = trkFrame.Position;
             framesToDecode = 1;
-            ShowNextFrame(currentTimestamp, true);
+            PresentFrame(currentTimestamp, true);
+            //PresentFrame(trkFrame.Position, true);
 
             // The following may readjust the cursor in case the mouse wasn't on a valid timestamp value.
             if (_bUpdateNavCursor)
@@ -2829,7 +2834,7 @@ namespace Kinovea.ScreenManager
 
             // Time keeping.
             // The timer itself doesn't need to be high frequency.
-            // We will translate from real elapsed time to video elapsed time based on the playback speed.
+            // We translate from elapsed real clock time to elapsed video time based on the playback speed.
             // Cap it at the monitor refresh rate.
             double playbackFrameInterval = GetPlaybackFrameInterval();
             uint refreshInterval = (uint)Math.Round(Math.Max(playbackFrameInterval, (1000.0 / monitorRefreshRate)));
@@ -2840,11 +2845,12 @@ namespace Kinovea.ScreenManager
             // Snapshot the playback state and publish it to the reader.
             PlayerState state = new PlayerState(
                 playerState.Generation + 1,
+                PlayerStateMode.Playback,
                 currentTimestamp,
                 Stopwatch.GetTimestamp(),
                 playbackFrameInterval,
                 refreshInterval,
-                true);
+                0);
 
             playerState = state;
             m_FrameServer.VideoReader.PublishPlayerState(state);
@@ -2866,12 +2872,13 @@ namespace Kinovea.ScreenManager
             Application.Idle -= Application_Idle;
             m_FrameServer.Metadata.UnpauseAutosave();
 
-            PlayerState state = new PlayerState(playerState.Generation + 1, currentTimestamp, 0, 0, 0, false);
-            playerState = state;
-            m_FrameServer.VideoReader.PublishPlayerState(state);
+            // Publish the paused state.
+            playerState = MakeFrameByFramePlayerState(currentTimestamp);
+            m_FrameServer.VideoReader.PublishPlayerState(playerState);
 
             log.DebugFormat("Playback paused. Avg frame time: {0:0.000} ms. Drop ratio: {1:0.00}", loopWatcher.Average, dropWatcher.Ratio);
         }
+        
         private void MultimediaTimer_Tick(uint uTimerID, uint uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2)
         {
             if (!m_FrameServer.Loaded)
@@ -2892,24 +2899,27 @@ namespace Kinovea.ScreenManager
 
                 // Recomputing the target timestamp is done later on the UI thread
                 // to account for any delay between posting and execution.
-                BeginInvoke((Action)delegate { Rendering_Invoked(0); });
+                BeginInvoke((Action)delegate { PresentPlayback(); });
             }
         }
 
-        private void Rendering_Invoked(int missedFrames)
+        /// <summary>
+        /// Present the next frame to be rendered during playback based on the current time.
+        /// </summary>
+        private void PresentPlayback()
         {
             //------------------------------
             // Runs in UI thread, in the context of playback.
             //------------------------------
             timeWatcher.Restart();
 
-            if (!playerState.IsPlaying || playerState.PlaybackFrameInterval == 0)
+            if (playerState.Mode != PlayerStateMode.Playback || playerState.PlaybackFrameInterval == 0)
             {
                 log.ErrorFormat("Rendering_Invoked called while not playing. Generation: {0}.", playerState.Generation);
                 return;   
             }
 
-            // Compute expected timestamp for the next frame to be rendered.
+            // Compute expected timestamp for the next frame to be presented.
             double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
             long now = Stopwatch.GetTimestamp();
             double realElapsedSeconds = (double)(now - playerState.StartPlaybackEpoch) / Stopwatch.Frequency;
@@ -2917,7 +2927,7 @@ namespace Kinovea.ScreenManager
             double elapsedTimestamps = elapsedFrames * avgtspf;
 
             // There should be only two cases.
-            // - We are tracking: force frame by frame.
+            // - We are tracking: force frame by frame and disregard synchronization with the clock.
             // - We are not tracking: calculate the expected timestamp and jump to it.
             // Decoding of the video happens in a background thread and pushes frames to a buffer.
             long expectedTimestamp = 0;
@@ -2952,11 +2962,11 @@ namespace Kinovea.ScreenManager
             // the active buffer type (cache, pre-buffer, on-demand).
             if (isTracking)
             {
-                m_FrameServer.VideoReader.MoveNext(0, false);
+                m_FrameServer.VideoReader.MoveNext(true);
             }
             else
             {
-                m_FrameServer.VideoReader.MoveTo(currentTimestamp, expectedTimestamp);
+                m_FrameServer.VideoReader.MoveTo(expectedTimestamp);
             }
 
             // Bail out on error.
@@ -2991,7 +3001,7 @@ namespace Kinovea.ScreenManager
             if (m_bSynched && currentTimestamp < oldTimestamp)
             {
                 StopPlaying();
-                ShowNextFrame(m_iSelStart, true);
+                PresentFrame(m_iSelStart, true);
                 UpdatePositionUI();
                 framesToDecode = 1;
             }
@@ -3008,12 +3018,12 @@ namespace Kinovea.ScreenManager
             if (m_bSynched)
             {
                 StopPlaying();
-                ShowNextFrame(m_iSelStart, true);
+                PresentFrame(m_iSelStart, true);
             }
             else 
             {
                 StopMultimediaTimer();
-                ShowNextFrame(m_iSelStart, true);
+                PresentFrame(m_iSelStart, true);
 
                 if (currentTimestamp == m_iSelStart)
                 {
@@ -3103,40 +3113,77 @@ namespace Kinovea.ScreenManager
             loopWatcher.AddLoopTime(timeWatcher.RawTime("Back to idleness"));
         }
 
+        private PlayerState MakeFrameByFramePlayerState(long targetTimestamp)
+        {
+            return new PlayerState(
+                playerState.Generation + 1, 
+                PlayerStateMode.Timestamp, 
+                0, 0, 0, 0, 
+                targetTimestamp);
+        }
+
         /// <summary>
-        /// Asks the reader to change the current frame, either by timestamp or by relative jump.
-        /// This is only called for static changes like browsing, key presses or buttons, not playback.
+        /// Asks the reader to change the frame pointed to by Current, to the best it has in store.
+        /// This doesn't typically triggers a decode, the frame should already be waiting in a cache.
+        /// This is only called for frame by frame navigation, for playback see PresentPlayback().
         /// </summary>
-        private void ShowNextFrame(long targetTimestamp, bool allowUIUpdate)
+        private void PresentFrame(long targetTimestamp, bool allowUIUpdate)
         {
             if (!m_FrameServer.VideoReader.Loaded)
                 return;
 
             if (isCurrentlyPlaying)
-                throw new InvalidProgramException("ShowNextFrame called while play loop.");
-
+                throw new InvalidProgramException("PresentFrame called while playing.");
 
             //--------------------------------
-            // TODO: More refactoring needed.
+            // 
+            // Big refactoring in progress.
+            // 
             // Currently this is called with a hidden argument in the global `framesToDecode`
             // corresponding to the relative jump required.
-            //--------------------------------
+            // TODO: caller should detect if the target is past the end point and wrap around.
+            // Caller should publish a player state so the reader can react to the request.
+            
+            // For now pretend everything is an arbitrary frame move.
 
-            // TODO: detect if the target is past the end point and wrap around.
+            // Temporary code to translate between old and new API.
+            if (targetTimestamp == -1)
+            {
+                playerState = new PlayerState(
+                    playerState.Generation + 1,
+                    PlayerStateMode.Timestamp,
+                    0, 0, 0, 0,
+                    (long)Math.Round(currentTimestamp + framesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
+            }
+            else
+            {
+                playerState = MakeFrameByFramePlayerState(targetTimestamp);
+            }
 
+            // TODO: replace.
+            m_FrameServer.VideoReader.PublishPlayerState(playerState);
+            //m_FrameServer.VideoReader.PlayerDemand(playerState);
 
             bool refreshInPlace = targetTimestamp == currentTimestamp;
             if (targetTimestamp >= 0)
             {
-                m_FrameServer.VideoReader.MoveTo(currentTimestamp, targetTimestamp);
+                m_FrameServer.VideoReader.MoveTo(targetTimestamp);
             }
             else
             {
-                m_FrameServer.VideoReader.MoveBy(framesToDecode, true);
+                m_FrameServer.VideoReader.MoveNext(true);
             }
 
-            // Bail out if there are no frames.
-            // This should never happen.
+
+            // TODO:
+            // This is to be replaced with an asynchronous system.
+            // When possible (when not enumerating or tracking),
+            // the request above will return immediately with a boolean indicating if the frame is already available or not.
+            // If not, the reader will decode the frame in a background thread and notify the player when it's ready.
+            // All that is below will be moved to a separate function.
+
+
+            // Bail out if there is no frame.
             if (m_FrameServer.VideoReader.Current == null)
             {
                 log.Error("No frame available");
@@ -3144,6 +3191,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            // This is the actual timestamp from the file, may differ from the pixel-space one in the request.
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
 
             if (videoFilterIsActive)
@@ -3185,7 +3233,11 @@ namespace Kinovea.ScreenManager
                 isBusyRendering = false;
             }
 
-            framesToDecode = 0;
+            // Lightweight present request.
+            // The reader should already have been alerted of the stop and 
+            // already prepared the switch to frame by frame.
+            //framesToDecode = 0;
+            m_FrameServer.VideoReader.MoveTo(currentTimestamp);
 
             if (_bAllowUIUpdate)
             {
@@ -4143,7 +4195,7 @@ namespace Kinovea.ScreenManager
 
                 // FIXME: Ignore / skip if busy.
                 framesToDecode = 1;
-                ShowNextFrame(target, true);
+                PresentFrame(target, true);
                 UpdatePositionUI();
             }
             else if (videoFilterIsActive && !isCtrl)
@@ -4899,7 +4951,7 @@ namespace Kinovea.ScreenManager
             if (currentTimestamp != keyframe.Timestamp)
             {
                 framesToDecode = 1;
-                ShowNextFrame(keyframe.Timestamp, true);
+                PresentFrame(keyframe.Timestamp, true);
                 UpdatePositionUI();
             }
 
@@ -5071,7 +5123,7 @@ namespace Kinovea.ScreenManager
             trkSelection.SelPos = targetPosition;
             framesToDecode = 1;
 
-            ShowNextFrame(targetPosition, true);
+            PresentFrame(targetPosition, true);
             currentTimestamp = targetPosition;
 
             UpdatePositionUI();
@@ -5547,7 +5599,7 @@ namespace Kinovea.ScreenManager
 
             long target = drawing.InfosFading.ReferenceTimestamp;
             framesToDecode = 1;
-            ShowNextFrame(target, true);
+            PresentFrame(target, true);
             UpdatePositionUI();
             ActivateKeyframe(currentTimestamp);
         }
@@ -5556,7 +5608,7 @@ namespace Kinovea.ScreenManager
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
 
             UpdateAllowPreScaling(false);
-            ShowNextFrame(currentTimestamp, true);
+            PresentFrame(currentTimestamp, true);
             ToggleTrackingCommand.Execute(drawing);
             RefreshImage();
         }
@@ -5785,7 +5837,7 @@ namespace Kinovea.ScreenManager
 
             // move to corresponding timestamp.
             framesToDecode = 1;
-            ShowNextFrame(trackPoints[closestPointIndex].T, true);
+            PresentFrame(trackPoints[closestPointIndex].T, true);
             UpdatePositionUI();
         }
         #endregion
@@ -5823,7 +5875,7 @@ namespace Kinovea.ScreenManager
             ITrackable drawing = m_FrameServer.Metadata.Magnifier as ITrackable;
 
             UpdateAllowPreScaling(false);
-            ShowNextFrame(currentTimestamp, true);
+            PresentFrame(currentTimestamp, true);
             ToggleTrackingCommand.Execute(drawing);
         }
 
@@ -6091,7 +6143,7 @@ namespace Kinovea.ScreenManager
         private void AfterAnnotationsFileOp()
         {
             framesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
+            PresentFrame(m_iSelStart, true);
             ActivateKeyframe(currentTimestamp);
         }
         #endregion
@@ -6142,7 +6194,7 @@ namespace Kinovea.ScreenManager
             UpdateAllowPreScaling(true);
 
             framesToDecode = 1;
-            ShowNextFrame(memoTimestamp, true);
+            PresentFrame(memoTimestamp, true);
             ActivateKeyframe(currentTimestamp);
         }
 

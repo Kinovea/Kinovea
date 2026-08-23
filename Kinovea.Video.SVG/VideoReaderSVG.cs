@@ -76,7 +76,7 @@ namespace Kinovea.Video.SVG
         private Size outputSize = new Size(640, 480);
         #endregion
 
-        #region Public methods
+        #region Open/Close/Summary
         public override OpenVideoResult Open(string filePath)
         {
             OpenVideoResult res = InstanciateGenerator(filePath);
@@ -117,7 +117,10 @@ namespace Kinovea.Video.SVG
 
             return summary;
         }
-        public override bool MoveNext(int skip, bool decodeIfNecessary)
+        #endregion
+
+        #region Navigation and player state
+        public override bool MoveNext(bool decodeIfNecessary)
         {
             long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
 
@@ -130,23 +133,20 @@ namespace Kinovea.Video.SVG
 
             return UpdateCurrent(target);
         }
-        public override bool MoveTo(long from, long target)
+        public override bool MoveTo(long target)
         {
             return UpdateCurrent(target);
         }
-        
-        public override void UpdateWorkingZone(
-            VideoSection newZone, 
-            CacheLoadMode loadMode,
-            int maxMemory, 
-            Action<DoWorkEventHandler> workerFn)
+        #endregion 
+
+        #region Working zone and decoding mode
+        public override void UpdateWorkingZone(VideoSection newZone, CacheLoadMode loadMode, int maxMemory, Action<DoWorkEventHandler> workerFn)
         {
             workingZone = newZone;
         }
+        #endregion
 
-        public override void BeforeFrameEnumeration() { }
-        public override void AfterFrameEnumeration() { }
-
+        #region Video geometry
         public override bool UpdateVideoGeometry(VideoGeometryRequest request)
         {
             ResolveVideoGeometry(request);
@@ -175,7 +175,6 @@ namespace Kinovea.Video.SVG
 
             this.outputSize = videoGeometry.OutputSize;
         }
-
         #endregion
 
         #region Private methods
