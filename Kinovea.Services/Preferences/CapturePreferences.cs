@@ -128,8 +128,8 @@ namespace Kinovea.Services
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private double displaySynchronizationFramerate = 25.0;
         private CaptureRecordingMode recordingMode = CaptureRecordingMode.Delay;
-        private bool saveUncompressedVideo;
-        private EncodingQuality encodingQuality = EncodingQuality.High;
+        private bool saveUncompressedVideo = false;
+        private EncodingQuality encodingQuality = EncodingQuality.Good;
         private bool verboseStats = false;
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
