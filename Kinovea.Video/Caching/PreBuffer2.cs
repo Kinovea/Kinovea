@@ -106,25 +106,29 @@ namespace Kinovea.Video
                 // Block until the cache has some room to spare or we are cancelled.
                 while (true)
                 {
+                    if (interruptAdd)
+                    {
+                        return CacheAddResult.Interrupted;
+                    }
+
+                    // Test if full before testing for duplicate.
+                    // This avoids decoding the same frames multiple times when 
+                    // moving backwards at full capacity.
+                    if (frames.Count >= capacity)
+                    {
+                        log.DebugFormat("Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
+                        Monitor.Wait(sync);
+                        continue;
+                    }
+
+                    // Test duplicate.
                     if (frames.ContainsKey(frame.Timestamp))
                     {
                         log.DebugFormat("Duplicate add request for [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
                         return CacheAddResult.Duplicate;
                     }
 
-                    if (interruptAdd)
-                    {
-                        return CacheAddResult.Interrupted;
-                    }
-
-                    if (frames.Count < capacity)
-                    {
-                        break;
-                    }
-
-                    // Keep waiting.
-                    log.DebugFormat("Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
-                    Monitor.Wait(sync);
+                    break;
                 }
 
                 frames.Add(frame.Timestamp, frame);
@@ -218,6 +222,16 @@ namespace Kinovea.Video
                         log.DebugFormat("PrepareForNewJob: dense forward from [{0}] to [{1}]", acquiredTimestamp, denseEnd);
                     }
 
+                    // Test if the target is the frame just before the start of the cache.
+                    // Real test will be using cached frame .previous.
+                    // For now test if it's less than 3 tolerance away.
+                    bool isPrevious = !targetAcquired && target < frames.Keys[0] && (frames.Keys[0] - target) <= 3 * tolerance;
+                    if (isPrevious)
+                    {
+                        denseForward = true;
+                        denseEnd = frames.Keys[frames.Count - 1];
+                    }
+
                     // Evict non-useful frames.
                     if (targetAcquired)
                     {
@@ -234,6 +248,13 @@ namespace Kinovea.Video
                         // 2. If the next job is sparse, we don't care about gaps and the 
                         // decoder can continue from wherever it is.
 
+                    }
+                    else if (isPrevious)
+                    {
+                        // Evict last.
+                        // When we go back out of the cache we should probably make enough
+                        // room so that the target lands in the middle after the initial seek.
+                        removed = EvictOne(frames.Count - 1);
                     }
                     else
                     {

@@ -366,23 +366,17 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Seeking/decoding
         //-------------------
 
-        /// Read one frame at the start of the GOP containing the target timestamp.
+        /// Read one frame at the start of the GOP containing the target.
         ReadResult ReadFrameThumbnail(int64_t targetTimestamp);
 
-        /// Read the next frame from the video and store it.
+        /// Read the next frame.
         ReadResult VideoReaderFFMpeg::ReadFrameNext();
 
-        /// Read one frame from the video stream and add it to the active frame container.
-        /// Seeks backwards if needed.
-        /// 
-        /// If we are in the context of summary extraction seek to the nearest keyframe
-        /// and decode only one frame, even if it's not the target.
-        /// 
-        /// Otherwise advance as many frames as needed to reach the target timestamp or frame.
-        /// targetJumpFrame is relative to the current frame.
-        ReadResult ReadFrame(int64_t targetTimestamp, int targetJumpFrame);
+        /// Seek and decode until the target is reached.
+        /// Store the reached frame to the container.
+        ReadResult ReadFrameSeek(int64_t targetTimestamp);
         
-        /// Seek to a frame at or before the target. 
+        /// Seek to or before the target. 
         /// Does not decode any frames.
         int SeekTo(int64_t targetTimestamp);
 

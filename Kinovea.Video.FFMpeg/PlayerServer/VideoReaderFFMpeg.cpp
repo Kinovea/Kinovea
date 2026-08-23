@@ -175,7 +175,7 @@ VideoSummary^ VideoReaderFFMpeg::ExtractSummary(String^ filePath, int count, Siz
         
         ReadResult read = ReadFrameThumbnail(ts);
 
-        //log->DebugFormat("After ReadFrame {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
+        //log->DebugFormat("After ReadFrameSeek {0} [{1}]: {2} ms.", i, mTimestampInfo.CurrentTimestamp, stopwatchSummary->ElapsedMilliseconds);
 
         if (read == ReadResult::Same)
         {
@@ -655,7 +655,7 @@ bool VideoReaderFFMpeg::MoveNext(bool decodeIfNecessary)
         //    // Stop thread, decode frame, move to it, restart thread.
         //    log->DebugFormat("MoveNext, stopping pre-buffering.");
         //    StopPreBufferingThread();
-        //    ReadResult res = ReadFrame(-1, _skip + 1);
+        //    ReadResult res = ReadFrameSeek(-1, _skip + 1);
         //    if (res == ReadResult::Success)
         //        moved = mPreBuffer->MoveBy(_skip + 1);
         //    StartPreBufferingThread();
@@ -778,9 +778,9 @@ bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
     else
     {
         // Synchronous read of the requested frame.
-        // The ReadFrame will call `store` on the single-frame frame container
+        // The ReadFrameSeek will call `store` on the single-frame frame container
         // which will set the `Current` property to the requested frame.
-        ReadResult res = ReadFrame(target, 1);
+        ReadResult res = ReadFrameSeek(target);
         return (res == ReadResult::Success);
     }
 }
@@ -1374,7 +1374,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     // Seek to first frame.
     int read = 0;
     bool success = true;
-    ReadResult res = ReadFrame(section.Start, 1);
+    ReadResult res = ReadFrameSeek(section.Start);
     success = (res == ReadResult::Success);
     read++;
 
@@ -1510,6 +1510,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameNext()
 
     // Get the next frame available in the decoder.
     mLoopWatcher->LoopStart();
+    //mStopwatch->Restart();
     AVFrame* frame = av_frame_alloc();
     result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
     mLoopWatcher->LoopEnd();
@@ -1518,7 +1519,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameNext()
     {
         // FIXME: we should keep the decoded frame as pending here.
         // The next job might be able to just restart from there.
-        log->DebugFormat("ReadFrame. Job changed during decoding. Abandoning.");
+        log->DebugFormat("ReadFrameSeek. Job changed during decoding. Abandoning.");
         av_frame_free(&frame);
         return ReadResult::NewJob;
     }
@@ -1545,7 +1546,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameNext()
 }
 
 
-ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrameJump)
+ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp)
 {
     mStopwatch->Restart();
 
@@ -1561,70 +1562,47 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     ReadResult result = ReadResult::UnknownError;
 
     // This is used for both seeking and relative jump.
-    bool seeking = targetTimestamp >= 0;
-    int	framesToDecode = targetFrameJump;
+    int	framesToDecode = 1;
     int framesDecoded = 0;
     int res = 0;
-
-    // Convert negative jump to a seek target.
-    if (targetFrameJump < 0)
-    {
-        targetTimestamp = (int64_t)Math::Round(mFrameContainer->CurrentFrame->Timestamp + (targetFrameJump * mVideoInfo.AverageTimeStampsPerFrame));
-    
-        // Never seek before start.
-        targetTimestamp = std::max(targetTimestamp, 0LL);
-        seeking = true;
-    }
-
-    // At this point there are 3 cases.
-    // 1. Move forward to the next frame.
-    // 2. Advance forward by n frames.
-    // 3. Seek and advance to a specific timestamp.
 
     // It's possible to get here with a target timestamp equal to the current timestamp.
     // For example when we change the output size.
     // We have to seek back to the start of the GOP and decode many frames again.
 
-    // Do an initial seek if a seek target is specified.
+    // Initial seek.
     // This should land us at the start of the GOP containing the target.
     // Note that even if the seek target is in the current GOP we go through the 
     // seeking call and reset the libav internal buffers, because we can't know it beforehand.
-    if (seeking)
+    //log->DebugFormat("Seeking to {0}", targetTimestamp);
+    res = SeekTo(targetTimestamp);
+    if (res < 0)
     {
-        framesToDecode = 1;
-        //log->DebugFormat("Seeking to {0}", targetTimestamp);
-        res = SeekTo(targetTimestamp);
-        if (res < 0)
-        {
-            LogFFMpegError("SeekTo", res);
-            log->ErrorFormat("Error trying to seek to: [{1}]", targetTimestamp);
-
-            // Switch to decoding the next frame.
-            seeking = false;
-        }
+        LogFFMpegError("SeekTo", res);
+        log->ErrorFormat("Error trying to seek to: [{1}]", targetTimestamp);
+        return ReadResult::UnknownError;
     }
 
-    // Get the first frame after the seek or the next frame available in the decoder.
+    // Get the first frame after the seek.
     mLoopWatcher->LoopStart();
     AVFrame* frame = av_frame_alloc();
     result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
     mLoopWatcher->LoopEnd();
 
-    //log->DebugFormat("ReadFrame. Decoded frame at [{0}]. Frame type: {1}", frame->best_effort_timestamp, GetFrameTypeString(frame->pict_type));
-    
-    if (HasJobChanged())
-    {
-        // FIXME: we should keep the decoded frame as pending here.
-        // The next job might be able to just restart from there.
-        log->DebugFormat("ReadFrame. Job changed during decoding. Abandoning.");
-        av_frame_free(&frame);
-        return ReadResult::NewJob;
-    }
-
+    //log->DebugFormat("ReadFrameSeek. Decoded frame at [{0}]. Frame type: {1}", frame->best_effort_timestamp, GetFrameTypeString(frame->pict_type));
     if (result != ReadResult::Success)
     {
         av_frame_free(&frame);
         return result;
+    }
+
+    if (HasJobChanged())
+    {
+        // FIXME: we should keep the decoded frame as pending here.
+        // The next job might be able to just restart from there.
+        log->DebugFormat("ReadFrameSeek. Job changed during decoding. Abandoning.");
+        av_frame_free(&frame);
+        return ReadResult::NewJob;
     }
 
     framesDecoded = 1;
@@ -1632,7 +1610,7 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
     // If seeking landed beyond the target log it but don't fail. 
     // It might happen if the very first packet is not a keyframe, 
     // possibly from cut-off stream or corrupted file.
-    if (seeking && frame->best_effort_timestamp > targetTimestamp)
+    if (frame->best_effort_timestamp > targetTimestamp)
     {
         log->WarnFormat("Seek({0}) landed at {1}. Frame type: {2}",
             targetTimestamp,
@@ -1646,100 +1624,54 @@ ReadResult VideoReaderFFMpeg::ReadFrame(int64_t targetTimestamp, int targetFrame
 
     //log->DebugFormat("Decoded frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
 
-    // During playback we decode sequentially so the first decode should be the target, 
-    // but we might want to skip storing if we are behind the player.
-    if (mWorkingPlayerState->Mode == PlayerStateMode::Playback)
-    {
-        if (!ShouldStoreFrame())
-        {
-            //log->DebugFormat("Policy: skipping frame [{0}]. Behind next presentation [{1}].", mDecodedTimestamp, nextPresentationTimestamp);
-            av_frame_free(&frame);
-            return ReadResult::Success;
-        }
-    }
      
-    if (seeking)
+    // Check if the initial decode is already at or after the seek target.
+    if (mDecodedTimestamp >= targetTimestamp)
     {
-        // Check if the initial decode is already at the seek target.
-        if (mDecodedTimestamp >= targetTimestamp)
+        log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
+        result = ConvertAndStoreFrame(frame, false);
+        av_frame_free(&frame);
+        return result;
+    }
+
+    // Otherwise keep decoding frames until we get to the target, or EOF.
+    while (true)
+    {
+        result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
+            
+        if (result != ReadResult::Success)
+        {
+            av_frame_free(&frame);
+            return result;
+        }
+
+        if (HasJobChanged())
+        {
+            av_frame_free(&frame);
+            return ReadResult::NewJob;
+        }
+
+        //LogFrameInfo(frame);
+        framesDecoded++;
+        mDecodedTimestamp = frame->best_effort_timestamp;
+        
+        if (frame->best_effort_timestamp >= targetTimestamp)
         {
             log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
             result = ConvertAndStoreFrame(frame, false);
             av_frame_free(&frame);
-            return result;
+            break;
         }
 
-        // Otherwise keep decoding frames until we get to the target, or EOF.
-        while (true)
+        if (HasJobChanged())
         {
-            result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
-            
-            if (result != ReadResult::Success)
-            {
-                av_frame_free(&frame);
-                return result;
-            }
-
-            //LogFrameInfo(frame);
-            framesDecoded++;
-            mDecodedTimestamp = frame->best_effort_timestamp;
-        
-            if (frame->best_effort_timestamp >= targetTimestamp)
-            {
-                log->DebugFormat("Found seek target, decoded {0} frames.", framesDecoded);
-                result = ConvertAndStoreFrame(frame, false);
-                av_frame_free(&frame);
-                break;
-            }
-
-            // Keep decoding.
-        }
-
-        return result;
-    }
-    else
-    {
-        // Check initial decode is already the right number of frames.
-        if (framesToDecode == 1)
-        {
-            // We are done.
-            //log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
-            result = ConvertAndStoreFrame(frame, false);
             av_frame_free(&frame);
-            return result;
+            return ReadResult::NewJob;
         }
 
-        // Otherwise keep decoding frames until we get the right number, or EOF.
-        while (true)
-        {
-            result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
-
-            if (result != ReadResult::Success)
-            {
-                av_frame_free(&frame);
-                return result;
-            }
-
-            //LogFrameInfo(frame);
-            framesDecoded++;
-            mDecodedTimestamp = frame->best_effort_timestamp;
-
-            if (framesDecoded >= framesToDecode)
-            {
-                // We are done.
-                //log->DebugFormat("Found target, decoded {0} frames.", framesDecoded);
-                result = ConvertAndStoreFrame(frame, false);
-                av_frame_free(&frame);
-                break;
-            }
-
-            // Keep decoding.
-        }
-
-        return result;
+        // Keep decoding.
     }
 
-    // We don't get here.
     return result;
 }
 
@@ -2142,6 +2074,10 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
     // cache is full.
     CacheAddResult addResult = mFrameContainer->Add(vf);
 
+    if (addResult == CacheAddResult::Added)
+    {
+        mCurrentTimestamp = mDecodedTimestamp;
+    }
     if (addResult == CacheAddResult::Duplicate)
     {
         DisposeFrame(vf);
@@ -2154,11 +2090,7 @@ ReadResult VideoReaderFFMpeg::ConvertAndStoreFrame(AVFrame* decodedFrame, bool f
         log->DebugFormat("Cache add interrupted. Marking [{0}] as pending.", mDecodedTimestamp);
         mPendingFrame = vf;
     }
-    else
-    {
-        mCurrentTimestamp = mDecodedTimestamp;
-    }
-
+    
     //log->DebugFormat("Stored frame [{0}]. {1} ms.", mDecodedTimestamp, mStopwatch->ElapsedMilliseconds);
 
     return ReadResult::Success;
@@ -2619,7 +2551,7 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
     // Read the first frame outside the decoding thread so the UI may request it immediately.
     if (startTimestamp >= 0)
     {
-        ReadResult res = ReadFrame(startTimestamp, 1);
+        ReadResult res = ReadFrameSeek(startTimestamp);
         if (res == ReadResult::Success)
         {
             log->DebugFormat("Read first frame synchronously. [{0}].", mCurrentTimestamp);
@@ -2735,6 +2667,8 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
     log->DebugFormat("PreBuffering thread, processing job #{0} {1} -----------------------", 
         mWorkingPlayerState->Id, mWorkingPlayerState->Mode);
 
+    mPreBuffer->Print();
+
     ReadResult res = ReadResult::Success;
 
     while (true)
@@ -2768,7 +2702,7 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
         // Check if we were cancelled while waiting in Add().
         if (canceller->CancellationPending)
         {
-            log->DebugFormat("PreBuffering thread, cancellation after ReadFrame().");
+            log->DebugFormat("PreBuffering thread, cancellation after ReadFrameSeek().");
             break;
         }
 
@@ -3145,14 +3079,14 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     //            log->WarnFormat("BeginJob {0}, target is far ahead. Seek to [{1}]. Lag: {2:0.000}s.",
     //                state, target, lag);
 
-    //            res = ReadFrame(target, 1);
+    //            res = ReadFrameSeek(target, 1);
     //        }
     //        else
     //        {
     //            log->WarnFormat("BeginJob {0}, target is behind. Seek to [{1}]. Lag: {2:0.000}s.",
     //                state, target, lag);
 
-    //            res = ReadFrame(target, 1);
+    //            res = ReadFrameSeek(target, 1);
     //        }
     //    }
 
@@ -3246,14 +3180,14 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     //            log->WarnFormat("BeginJob {0}, target is far ahead. Seek to [{1}]. Lag: {2:0.000}s.", 
     //                state, target, lag);
 
-    //            res = ReadFrame(target, 1);
+    //            res = ReadFrameSeek(target, 1);
     //        }
     //        else
     //        {
     //            log->WarnFormat("BeginJob {0}, target is behind. Seek to [{1}]. Lag: {2:0.000}s.",
     //                state, target, lag);
 
-    //            res = ReadFrame(target, 1);
+    //            res = ReadFrameSeek(target, 1);
     //        }
     //    }
 
@@ -3263,7 +3197,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     //{
     //    // Check if we already have the frame in cache ?
     //    // In any case we need to continue decoding.
-    //    //res = ReadFrame(state->ReferenceTimestamp, 1);
+    //    //res = ReadFrameSeek(state->ReferenceTimestamp, 1);
     //    break;
     //}
     //case PlayerStateMode::StepBackward:
@@ -3313,7 +3247,9 @@ ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, Decodin
     {
         log->DebugFormat("ExecuteDecodingJobPlan: seeking to [{0}].", plan->TargetTimestamp);
 
-        res = ReadFrame(plan->TargetTimestamp, 1);
+        // Seek and decode until the target.
+        // TODO: have another argument to tell if we should store the intermediate frames.
+        res = ReadFrameSeek(plan->TargetTimestamp);
     }
     else if (plan->DecoderInitAction == DecoderInitAction::Advance)
     {
@@ -3331,8 +3267,10 @@ ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, Decodin
         if (plan->ResubmitPending && mPendingFrame != nullptr)
         {
             CacheAddResult result = mPreBuffer->Add(mPendingFrame);
+
             if (result == CacheAddResult::Added)
             {
+                mCurrentTimestamp = mPendingFrame->Timestamp;
                 mPendingFrame = nullptr;
             }
             else if (result == CacheAddResult::Duplicate)
@@ -3340,7 +3278,7 @@ ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, Decodin
                 DisposeFrame(mPendingFrame);
                 mPendingFrame = nullptr;
             }
-            else
+            else if (result == CacheAddResult::Interrupted)
             {
                 // Interrupted.
                 // Then the frame stays in pending state.
