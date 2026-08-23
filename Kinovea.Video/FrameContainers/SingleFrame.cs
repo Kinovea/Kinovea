@@ -25,15 +25,24 @@ namespace Kinovea.Video
     // A "cache" with a capacity of a single frame, used for synchronous decoding.
     public class SingleFrame : IVideoFramesContainer
     {
-        public VideoFrame CurrentFrame {
+        #region Properties
+        public VideoFrame CurrentFrame 
+        {
             get { return current; }
         }
-        
+        public bool IsEmpty
+        {
+            get { return current == null; }
+        }
+
+        #endregion
+
+
         #region Construction / Destruction
         public SingleFrame(){}
         public SingleFrame(VideoFrameDisposer disposer)
         {
-            this.disposer = disposer;
+            this.frameDisposer = disposer;
         }
         public void Dispose()
         {
@@ -52,28 +61,39 @@ namespace Kinovea.Video
         #endregion
         
         #region Members
-        private VideoFrame current = new VideoFrame();
-        private VideoFrameDisposer disposer;
+        private VideoFrame current = null;
+        private VideoFrameDisposer frameDisposer;
         #endregion
         
         public void Add(VideoFrame frame)
         {
             Clear();
-            current.Image = frame.Image;
-            current.Timestamp = frame.Timestamp;
+            current = frame;
         }
         public void Clear()
         {
-            if(current.Image != null)
+            if (current == null)
+                return;
+            
+            if(frameDisposer != null)
             {
-                if(disposer != null)
-                    disposer(current);
-                else
-                    current.Image.Dispose();
+                frameDisposer(current);
+            }
+            else
+            {
+                current.Image.Dispose();
             }
             
-            current.Image = null;
-            current.Timestamp = 0;
+            current = null;
+        }
+
+        /// <summary>
+        /// Clear the frame without disposing the bitmap.
+        /// Used when the frame has been transferred to a different container.
+        /// </summary>
+        public void Forget()
+        {
+            current = null;
         }
     }
 }

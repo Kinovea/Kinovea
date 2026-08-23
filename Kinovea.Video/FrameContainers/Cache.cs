@@ -35,11 +35,17 @@ namespace Kinovea.Video
     public class Cache : IVideoFramesContainer, IWorkingZoneFramesContainer
     {
         #region Properties
-        public VideoFrame CurrentFrame {
+        public VideoFrame CurrentFrame 
+        {
             get { return currentFrame; }
         }
-        public VideoSection WorkingZone {
+        public VideoSection WorkingZone 
+        {
             get { return workingZone;}
+        }
+        public bool Empty
+        {
+            get { return frames.Count == 0; }
         }
         #endregion
         
@@ -92,12 +98,17 @@ namespace Kinovea.Video
             UpdateCurrentFrame();
             return true;
         }
+        
+        /// <summary>
+        /// Move Current to point to the target.
+        /// Returns true if Current was set to the target.
+        /// </summary>
         public bool MoveTo(long target)
         {
             if(!Contains(target))
                 return false;
             
-            if( currentFrame != null && target == currentFrame.Timestamp)
+            if (currentFrame != null && target == currentFrame.Timestamp)
                 return true;
 
             currentIndex = frames.FindIndex(f => f.Timestamp >= target);

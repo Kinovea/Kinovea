@@ -107,10 +107,12 @@ namespace Kinovea.ScreenManager
             get { return frameServer.Metadata.ImageAspect; }
             set
             {
-                bool uncached = frameServer.ChangeImageAspect(value);
+                bool invalidated = frameServer.ChangeImageAspect(value);
                 
-                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    view.UpdateWorkingZone(true);
+                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                {
+                    view.UpdateWorkingZone(CacheLoadMode.Reload);
+                }
                     
                 view.ReferenceImageSizeChanged();
             }
@@ -120,10 +122,12 @@ namespace Kinovea.ScreenManager
             get { return frameServer.Metadata.ImageRotation; }
             set
             {
-                bool uncached = frameServer.ChangeImageRotation(value);
+                bool invalidated = frameServer.ChangeImageRotation(value);
 
-                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    view.UpdateWorkingZone(true);
+                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                {
+                    view.UpdateWorkingZone(CacheLoadMode.Reload);
+                }
 
                 view.ReferenceImageSizeChanged();
             }
@@ -134,10 +138,12 @@ namespace Kinovea.ScreenManager
 
             set
             {
-                bool uncached = frameServer.ChangeDemosaicing(value);
+                bool invalidated = frameServer.ChangeDemosaicing(value);
 
-                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    view.UpdateWorkingZone(true);
+                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                {
+                    view.UpdateWorkingZone(CacheLoadMode.Reload);
+                }
 
                 RefreshImage();
             }
@@ -148,10 +154,12 @@ namespace Kinovea.ScreenManager
 
             set 
             {
-                bool uncached = frameServer.SetStabilizationTrack(value);
+                bool invalidated = frameServer.SetStabilizationTrack(value);
 
-                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    view.UpdateWorkingZone(true);
+                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                {
+                    view.UpdateWorkingZone(CacheLoadMode.Reload);
+                }
 
                 RefreshImage();
             }
@@ -170,10 +178,11 @@ namespace Kinovea.ScreenManager
             get { return frameServer.Metadata.Deinterlacing; }
             set
             {
-                bool uncached = frameServer.ChangeDeinterlacing(value);
-
-                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    view.UpdateWorkingZone(true);
+                bool invalidated = frameServer.ChangeDeinterlacing(value);
+                if (invalidated && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                {
+                    view.UpdateWorkingZone(CacheLoadMode.Reload);
+                }
 
                 RefreshImage();
             }

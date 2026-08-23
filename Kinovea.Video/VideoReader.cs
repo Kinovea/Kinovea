@@ -153,9 +153,12 @@ namespace Kinovea.Video
         public abstract VideoSummary ExtractSummary(string filePath, int thumbsToLoad, Size maxImageSize);
 
         /// <summary>
-        /// Called after load and before the first decode request.
+        /// Start prebuffering if supported and not already in full caching mode.
+        /// This is normally called during first opening of the video.
+        /// Calls to UpdateWorkingZone inhibited prebuffering due to 
+        /// unreliable preferred decoding size. Once the UI is loaded we can try again.
         /// </summary>
-        public abstract void PostLoad();
+        public abstract void StartPrebufferingIfNotCaching();
 
         #endregion
 
@@ -237,11 +240,19 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Updates the internal working zone. 
-        /// Imports whole zone to cache if possible.
+        /// The player is asking the reader to update the working zone.
+        /// This will update the bounds and try to switch to full caching mode.
+        /// If it fits in memory it will use the provided background worker to load it.
+        /// If it doesn't fit and the reader supports async decoding, it will switch to
+        /// prebuffering mode and start the decoding thread.
+        /// Otherwise it will stay in "on-demand" synchrounous mode.
         /// </summary>
         /// <param name="_workerFn">A function that will start a background thread for the actual import</param>
-        public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
+        public abstract void UpdateWorkingZone(
+            VideoSection _newZone,
+            CacheLoadMode loadMode,
+            int _maxMemory,
+            Action<DoWorkEventHandler> _workerFn);
 
         public abstract void BeforeFrameEnumeration();
 
@@ -273,7 +284,8 @@ namespace Kinovea.Video
                 return false;
 
             double nextTimestamp = Current.Timestamp + Info.AverageTimeStampsPerFrame;
-            return nextTimestamp <= WorkingZone.End;
+            bool result = nextTimestamp <= WorkingZone.End;
+            return result;
         }
 
         /// <summary>
@@ -384,12 +396,20 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Ask the reader to reset the decoding size to the "aspect ratio" size.
+        /// Change the preferred decoding size without trigerring cache clearing and
+        /// without starting the prebuffer thread.
+        /// </summary>
+        public virtual void SetPreferredDecodingSize(Size size)
+        {
+        }
+
+        /// <summary>
+        /// Inform the reader to allow or disallow custom decoding size.
         /// This is used when the player is doing operations that are not compatible with 
         /// decoding at smaller size and rendering unscaled. Object tracking for example 
         /// needs to get patches of the image at the original resolution for better precision.
         /// </summary>
-        public virtual void DisableCustomDecodingSize()
+        public virtual void SetAllowCustomDecodingSize(bool allow)
         {
             // Does nothing by default. Override to implement.
         }

@@ -80,7 +80,8 @@ namespace Kinovea.Video
         public void Add(VideoFrame frame)
         {
             //---------------------------------
-            // This runs on the decoding thread.
+            // This runs on the decoding thread, with one exception,
+            // we decode and store the start of the selection synchronously on the UI thread.
             //---------------------------------
 
             //log.DebugFormat("Request to add [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);

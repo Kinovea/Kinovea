@@ -129,9 +129,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
                 return mFrameContainer != nullptr ? mFrameContainer->CurrentFrame : nullptr; 
             }
         }
-        virtual property bool CanDrawUnscaled {
-            bool get() override {
-                return mCanDrawUnscaled;
+        virtual property bool CanDrawUnscaled 
+        {
+            bool get() override 
+            {
+                return mDecodingSize == mPreferredDecodingSize;
             }
         }
 
@@ -154,17 +156,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Open/Load the video, extract a few frames + basic info, close the video.
         virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
         
-        /// Try to switch to a better caching strategy if possible.
-        virtual void PostLoad() override;
+        /// If we are not caching yet, try to switch to prebuffering.
+        virtual void StartPrebufferingIfNotCaching() override;
 
         // Frame requests.
         virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
         virtual bool MoveTo(int64_t from, int64_t target) override;
         
         // Decoding mode, play loop and frame enumeration.
-        // TODO: these should be moved to C#.
         virtual void BeforePlayloop() override;
-        virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
+        virtual void UpdateWorkingZone(VideoSection newZone, CacheLoadMode loadMode, int maxMemory, Action<DoWorkEventHandler^>^ workerFn) override;
         virtual void BeforeFrameEnumeration() override;
         virtual void AfterFrameEnumeration() override;
 
@@ -176,8 +177,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual bool SetStabilizationData(List<TimedPoint^>^ points) override;
         
         // Decoding size
+        virtual void SetPreferredDecodingSize(Size size) override;
         virtual bool ChangeDecodingSize(Size _size) override;
-        virtual void DisableCustomDecodingSize() override;
+        virtual void SetAllowCustomDecodingSize(bool allow) override;
 
     // Members
     private:
@@ -201,10 +203,19 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoSection mWorkingZone;
         VideoSection mSectionToPrepend;
         VideoSection mSectionToAppend;
-        
-        // Output size after decode and scale filter.
+        bool mIsFirstWZUpdate = true;
+
+        // The actual value we use as output size in the scaling filter.
         Size mDecodingSize;
-        bool mCanDrawUnscaled;
+
+        // Decoding size preferred by the player. 
+        // Used when the viewport is smaller than the video.
+        // Only honored for prebuffering.
+        Size mPreferredDecodingSize;
+
+        // True if the player allows custom decoding size.
+        // This can be set to false during some operations that require full size images like tracking.
+        bool mAllowCustomDecodingSize = true;
 
         // Frame containers
         // mFrameContainer references one of the three below.
@@ -240,8 +251,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Determines if we should skip decoding or skip scaling/converting/storing 
         // some frames in case we fall behind the player demands.
         DecodingPolicy mDecodingPolicy = DecodingPolicy::Normal;
-
-        
 
         // FFmpeg filter graph for scaling/converting the decoded frame to its final form.
         AVFilterGraph* mFilterGraph = nullptr;
@@ -344,18 +353,17 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// This is just ctx->pix_fmt unless the user has specified a demosaicing option.
         AVPixelFormat GetSourceFormat(AVCodecContext* videoCodecCtx);
 
-        /// <summary>
         /// Change the ffmpeg codec context based on the passed policy. 
         /// This determines whether we will decode everything or skip some frames.
-        /// </summary>
         void UpdateDecodingPolicy(DecodingPolicy policy);
         
-
         /// Release the memory allocated by libav for the frame buffer.
         static void DisposeFrame(VideoFrame^ _frame);
         
-        // Decoding size.
+        /// Set the decoding size to the default.
+        /// Does not change the preferred decoding size.
         void ResetDecodingSize();
+
         void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);
         Size FixSize(Size _size, bool sideways);
 
@@ -363,14 +371,33 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// This is for full size frames, not decoding size.
         double WorkingZoneMemoryRequirement(VideoSection _newZone);
 
+        void FirstUpdateWorkingZone(
+            VideoSection newZone, 
+            CacheLoadMode loadMode,
+            bool fitsInMemory,
+            Action<DoWorkEventHandler^>^ workerFn) override;
+
+
         // DecodeScheduler
         // The following functions should eventually be refactored and moved to different classes.
         bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
+        
+        /// Clears the old cache and points the main container to the one of the active mode.
+        /// This should be called after validating that the mode is available.
+        /// This function stops and starts the prebuffer thread if needed.
         void ChangeCachingMode(VideoDecodingMode wantedMode);
+
         void ChangeToBestAfterCaching();
         void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
-        void StartPreBuffering();
-        void StopPreBuffering();
+        
+        /// Start the prebuffering thread.
+        void StartPreBufferingThread(int64_t startTimestamp);
+
+        /// Stop the prebuffering thread. 
+        /// Does not clear the frame cache.
+        /// Does not change the caching mode.
+        void StopPreBufferingThread();
+
         void PreBufferingWorker(Object^ _canceler);
 
         // Logging helpers.

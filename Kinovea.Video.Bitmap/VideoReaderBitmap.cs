@@ -119,7 +119,7 @@ namespace Kinovea.Video.Bitmap
 
             return summary;
         }
-        public override void PostLoad(){}
+        public override void StartPrebufferingIfNotCaching(){}
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
             long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
@@ -137,10 +137,15 @@ namespace Kinovea.Video.Bitmap
         {
             return UpdateCurrent(target);
         }
-        public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxMemory, Action<DoWorkEventHandler> workerFn)
+        public override void UpdateWorkingZone(
+            VideoSection newZone,
+            CacheLoadMode loadMode,
+            int maxMemory, 
+            Action<DoWorkEventHandler> workerFn)
         {
             workingZone = newZone;
         }
+
         public override void BeforeFrameEnumeration(){}
         public override void AfterFrameEnumeration(){}
 

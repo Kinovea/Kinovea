@@ -342,7 +342,7 @@ namespace Kinovea.ScreenManager
         private bool m_bManualSqueeze = true; // If it's allowed to manually reduce the rendering surface under the aspect ratio size.
         private static readonly Pen m_PenImageBorder = Pens.SteelBlue;
         private static readonly Size m_MinimalSize = new Size(160, 120);
-        private bool customDecodingSizeIsEnabled = true;
+        private bool allowCustomDecodingSize = true;
 
         // Selection and current timestamp.
         // trkSelection.minimum and maximum are also in absolute timestamps.
@@ -376,7 +376,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
         private MessageToaster m_MessageToaster;
         private bool m_Constructed;
-        private bool workingZoneLoaded;
+        private bool workingZoneInitializedFromKVA; // The working zone has been ingested during init from a KVA sidecar. 
         private ScreenPointerManager cursorManager = new ScreenPointerManager();
 
         #region Context Menus
@@ -594,7 +594,7 @@ namespace Kinovea.ScreenManager
         public int PostLoadProcess()
         {
             //---------------------------------------------------------------------------
-            // Configure the interface according to he video and try to read first frame.
+            // Read the first frame and configure the UI.
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
             log.DebugFormat("Post load process.");
@@ -604,10 +604,12 @@ namespace Kinovea.ScreenManager
             playerState = state;
             m_FrameServer.VideoReader.PublishPlayerState(state);
 
+            //-----------------------------
             // Read/decode the first frame.
-            ShowNextFrame(-1, true);
-            UpdatePositionUI();
+            //-----------------------------
+            ShowNextFrame(m_FrameServer.VideoReader.Info.FirstTimeStamp, true);
 
+            // Bail out on any error.
             if (m_FrameServer.VideoReader.Current == null)
             {
                 m_FrameServer.Unload();
@@ -622,10 +624,8 @@ namespace Kinovea.ScreenManager
                 return -2;
             }
 
-            log.DebugFormat("First frame loaded. Adjusted ts: {0}.", currentTimestamp);
-
             //---------------------------------------------------------------------------------------
-            // First frame loaded.
+            // First frame is now loaded.
             //
             // We will now update the internal data of the screen ui and
             // set up the various child controls (like the timelines).
@@ -634,7 +634,9 @@ namespace Kinovea.ScreenManager
             // We fix what we can with the help of data read from the first frame or
             // from the analysis mode switch if successful.
             //---------------------------------------------------------------------------------------
-            DoInvalidate();
+            //DoInvalidate();
+            log.DebugFormat("First frame loaded: [{0}].", currentTimestamp);
+            UpdatePositionUI();
 
             firstTimestamp = currentTimestamp;
             m_iTotalDuration = m_FrameServer.VideoReader.Info.DurationTimeStamps;
@@ -643,7 +645,9 @@ namespace Kinovea.ScreenManager
             m_iSelDuration = m_iTotalDuration;
 
             if (!m_FrameServer.VideoReader.CanChangeWorkingZone)
+            {
                 EnableDisableWorkingZoneControls(false);
+            }
 
             // Update the control.
             // FIXME - already done in ImportSelectionToMemory ?
@@ -671,7 +675,12 @@ namespace Kinovea.ScreenManager
             m_FrameServer.ImageTransform.ResetZoom();
             zoomHelper.Value = 1.0f;
             m_PointerTool.SetZoomLocation(new Point(-1, -1));
-            SetUpForNewMovie();
+            OnPoke();
+
+            // Initialize the preferred decoding size to the whole image size as a fallback.
+            // This should be overriden when the UI is fully loaded, and before we start
+            // the prebuffering thread.
+            m_FrameServer.VideoReader.SetPreferredDecodingSize(m_FrameServer.VideoReader.Info.ReferenceSize);
 
             // Check for launch description and startup kva.
             // This is also how we can backup and restore stuff between loads in the same screen.
@@ -737,6 +746,10 @@ namespace Kinovea.ScreenManager
 
             m_FrameServer.Metadata.StartAutosave();
 
+            // We are done.
+            // Some of the UI calls take some time and we'll wait until everything 
+            // is set up and the UI thread is idle again to continue.
+            // Next step is to try to load the working zone to memory.
             log.DebugFormat("End of post load process, waiting for idle.");
             IsWaitingForIdle = true;
             Application.Idle += PostLoad_Idle;
@@ -757,12 +770,20 @@ namespace Kinovea.ScreenManager
             m_iSelEnd = m_FrameServer.Metadata.SelectionEnd;
             m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
-            bool invalidateCache = !screenDescriptor.IsReplayWatcher;
-            UpdateWorkingZone(invalidateCache);
+            // For replay watchers we disallow full caching mode
+            // to avoid disrupting the instant-replay feedback loop.
+            CacheLoadMode mode = CacheLoadMode.Reload;
+            if (screenDescriptor.IsReplayWatcher)
+            {
+                mode = CacheLoadMode.DoNotLoad;
+            }
 
-            // Remember that we already loaded the working zone, to avoid an unnecessary caching operation during the
-            // initialization of the screen. This is only for the first load into this screen.
-            workingZoneLoaded = true;
+            UpdateWorkingZone(mode);
+
+            // Remember that we already loaded the working zone,
+            // to avoid double load during initialization.
+            // This is only used for the first load into this screen.
+            workingZoneInitializedFromKVA = true;
 
             RestoreActiveVideoFilter();
 
@@ -858,45 +879,65 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Try to load the working zone into the cache if possible
-        /// and consolidate the boundary values afterwards.
+        /// Send the working zone boundaries from the player to the video reader.
+        /// This might change the reader caching mode.
+        /// May update the boundaries afterwards from actual values from the reader.
         /// </summary>
-        public void UpdateWorkingZone(bool invalidateCache)
+        public void UpdateWorkingZone(CacheLoadMode loadMode)
         {
             if (!m_FrameServer.Loaded)
                 return;
 
+            long oldTimestamp = currentTimestamp;
+
+            // Remember if we were previously aligned with the start of the working zone.
+            // If so, keep it that way, otherwise use the absolute value.
+            // A side effect of this approach is that when the start of the zone is moved
+            // forward so as to overtake the current time origin, it will scoop it and drag it along with it.
+            bool timeOriginWasAligned = m_FrameServer.Metadata.TimeOrigin == m_iSelStart;
+
             VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-            log.DebugFormat("Working zone update. Current:{0}, Asked:{1}.", m_FrameServer.VideoReader.WorkingZone, newZone);
+            log.DebugFormat("Working zone update. {0} -> {1}.", m_FrameServer.VideoReader.WorkingZone, newZone);
 
             if (m_FrameServer.VideoReader.CanChangeWorkingZone)
             {
                 StopPlaying();
                 OnPauseAsked();
-                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, invalidateCache, PreferencesManager.PlayerPreferences.WorkingZoneMemory, ProgressWorker);
+
+                m_FrameServer.VideoReader.UpdateWorkingZone(
+                    newZone,
+                    loadMode,
+                    PreferencesManager.PlayerPreferences.WorkingZoneMemory, 
+                    WorkingZoneCacheLoadWorker);
+
+
+                // We may have exited prebuferring for caching.
+                // In that case the decoding size has changed.
                 ResizeUpdate(true);
+
             }
 
-            // Time origin: check if we were previously aligned with the start of the working zone.
-            // If so, keep it that way, otherwise keep the absolute value.
-            // A side effect of this approach is that when the start of the zone is moved forward so as to overtake the current time origin,
-            // it will scoop it and drag it along with it.
-            bool timeOriginIsAligned = m_FrameServer.Metadata.TimeOrigin == m_iSelStart;
-            
-            // Decode and show the first frame of the new working zone.
+            // Present the first frame of the new working zone.
+            // FIXME:
+            // updating the wz may have changed the container and disposed
+            // the old `Current` frame.
+            // The first frame of the wz should always be decoded synchronously
+            // to make sure we have something.
             framesToDecode = 1;
-            long targetTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
-            ShowNextFrame(targetTimestamp, true);
-
-            // It's possible that the first frame of the working zone is after the asked one.
-            // This happens on some files where we seek to a target and it returns a frame after the target.
-            // Reset the values afterwards on the actual timestamp.
+            ShowNextFrame(m_FrameServer.VideoReader.WorkingZone.Start, true);
+            
+            // The working zone request is mapped from pixel values.
+            // Reset the start value on the actual timestamp.
+            // For caching mode we have accurate timestamps for start and end.
+            // For prebuffering only for start.
             m_iSelStart = currentTimestamp;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
             m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
-            if (timeOriginIsAligned)
+            if (timeOriginWasAligned)
+            {
                 m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
+            }
 
             // Update the metadata internal values.
             m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_FrameServer.Metadata.TimeOrigin);
@@ -908,13 +949,17 @@ namespace Kinovea.ScreenManager
                     m_FrameServer.VideoReader.WorkingZone.Start, m_FrameServer.Metadata.SelectionStart, m_iSelStart);
             }
 
+            // UI mapping
             if (trkSelection.SelStart != m_iSelStart)
+            {
                 trkSelection.SelStart = m_iSelStart;
+            }
 
             if (trkSelection.SelEnd != m_iSelEnd)
+            {
                 trkSelection.SelEnd = m_iSelEnd;
+            }
 
-            // Reset timeline mapping.
             trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             UpdatePositionUI();
@@ -923,12 +968,33 @@ namespace Kinovea.ScreenManager
             RestoreActiveVideoFilter();
             OnSelectionChanged(true);
         }
-        private void ProgressWorker(DoWorkEventHandler _doWork)
+
+        /// <summary>
+        /// Function to wrap the loading of the cache in a background worker
+        /// and on a progress bar dialog.
+        /// </summary>
+        private void WorkingZoneCacheLoadWorker(DoWorkEventHandler _doWork)
         {
             formProgressBar2 fpb = new formProgressBar2(true, false, _doWork);
             fpb.ShowDialog();
             fpb.Dispose();
+
+            // If the load was cancelled, we should now be in on-demand mode.
+            // At this point we should have a reliable preferred size to 
+            // start the prebuffering thread if possible.
+            if (fpb.Cancelled)
+            {
+                StretchSqueezeSurface(true);
+                m_FrameServer.VideoReader.SetPreferredDecodingSize(m_viewportManipulator.PreferredDecodingSize);
+
+                if (m_FrameServer.VideoReader.CanPreBuffer)
+                {
+                    // Prebuffering thread without triggering full cache.
+                    m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
+                }
+            }
         }
+
         public void DisplayAsActiveScreen(bool _bActive)
         {
             // Called from ScreenManager.
@@ -1220,7 +1286,7 @@ namespace Kinovea.ScreenManager
         private void ResetData()
         {
             framesToDecode = 1;
-            workingZoneLoaded = false;
+            workingZoneInitializedFromKVA = false;
 
             isCurrentlyPlaying = false;
             m_fill = false;
@@ -1277,10 +1343,6 @@ namespace Kinovea.ScreenManager
             // Update internal state only, doesn't trigger the events.
             trkSelection.UpdateInternalState(m_iSelStart, m_iSelEnd, m_iSelStart, m_iSelEnd, m_iSelStart);
             UpdateSelectionLabels();
-        }
-        private void SetUpForNewMovie()
-        {
-            OnPoke();
         }
         
         private void LoadKVA(string path)
@@ -1455,16 +1517,31 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            // This is a good time to start the prebuffering/caching if supported.
-            m_FrameServer.VideoReader.PostLoad();
-
-            if (!workingZoneLoaded)
+            // If we haven't send the working zone from a KVA do it now.
+            if (!workingZoneInitializedFromKVA)
             {
                 // In replay mode we focus on simple playback and synchronization,
                 // and we want the video to load as fast as possible. So no caching.
-                bool isReplayWatcher = screenDescriptor != null && screenDescriptor.IsReplayWatcher;
-                UpdateWorkingZone(!isReplayWatcher);
+                CacheLoadMode mode = CacheLoadMode.Reload;
+                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
+                {
+                    mode = CacheLoadMode.DoNotLoad;
+                }
+
+                UpdateWorkingZone(mode);
             }
+
+            // On the first call to UpdateWorkingZone prebuffering is disallowed 
+            // because we can't reliably know the preferred decoding size.
+            // At this point we should be either in full caching mode (only for files 
+            // and if it fits in memory), or in on-demand mode.
+            // Make sure the reader knows the preferred decoding size.
+            // This is used in case we go into prebuffering mode, to start directly on the right size.
+            StretchSqueezeSurface(true);
+            m_FrameServer.VideoReader.SetPreferredDecodingSize(m_viewportManipulator.PreferredDecodingSize);
+
+            // Start prebuffering if supported and not already in full caching mode.
+            m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
 
             // Signal post-load idle event to listeners.
             // This is used to setup synchronization in case of launching a workspace with two videos.
@@ -2210,7 +2287,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Loaded)
             {
                 UpdateSelectionDataFromControl();
-                UpdateWorkingZone(false);
+                UpdateWorkingZone(CacheLoadMode.Keep);
 
                 AfterSelectionChanged();
             }
@@ -2262,7 +2339,7 @@ namespace Kinovea.ScreenManager
                 trkSelection.SelStart = currentTimestamp;
                 UpdateSelectionDataFromControl();
                 UpdateSelectionLabels();
-                UpdateWorkingZone(false);
+                UpdateWorkingZone(CacheLoadMode.Keep);
                 trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
                 AfterSelectionChanged();
@@ -2276,7 +2353,7 @@ namespace Kinovea.ScreenManager
                 trkSelection.SelEnd = currentTimestamp;
                 UpdateSelectionDataFromControl();
                 UpdateSelectionLabels();
-                UpdateWorkingZone(false);
+                UpdateWorkingZone(CacheLoadMode.Keep);
                 trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
                 AfterSelectionChanged();
@@ -2290,8 +2367,10 @@ namespace Kinovea.ScreenManager
                 trkSelection.Reset();
                 UpdateSelectionDataFromControl();
 
-                // We need to force the reloading of all frames.
-                UpdateWorkingZone(true);
+                // Force the reloading of all frames.
+                // Note: We could just add the missing frames on both sides,
+                // but we use this button as a manual "reset" button.
+                UpdateWorkingZone(CacheLoadMode.Reload);
 
                 AfterSelectionChanged();
             }
@@ -2560,16 +2639,14 @@ namespace Kinovea.ScreenManager
 
             // Stretch factor, zoom, or container size have been updated, update the rendering and decoding sizes.
             // During the process, stretch and fill may be forced to different values.
-            // Custom scaling vs decoding modes:
+            // Custom scaling vs caching modes:
             // - We try to decode the images at the smallest size possible.
-            // - Some states of the applications like tracking prevent this, this is stored in m_bEnableCustomDecodingSize.
-            // - Some decoding modes also prevent changing the decoding size, this is set in scalable here.
+            // - Some operations like tracking or video export aren't compatible with this, this is tracked in allowCustomDecodingSize.
             // Note: do not update decoding scale here, as this function is called during stretching of the rendering surface,
             // while the decoding size isn't updated.
 
-            // TODO: move this to a function on video readers.
             bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
-            bool canCustomDecodingSize = customDecodingSizeIsEnabled && scalable;
+            bool canCustomDecodingSize = allowCustomDecodingSize && scalable;
 
             bool rotatedCanvas = false;
             if (videoFilterIsActive)
@@ -2689,6 +2766,12 @@ namespace Kinovea.ScreenManager
         {
             ResizeUpdate(true);
         }
+
+
+        /// <summary>
+        /// Stretch or squeeze the video image in the viewport.
+        /// Optionally trigger a decoding size change at the reader level.
+        /// </summary>
         private void ResizeUpdate(bool finished)
         {
             if (!m_FrameServer.Loaded)
@@ -2699,14 +2782,17 @@ namespace Kinovea.ScreenManager
             if (finished)
             {
                 // Update the decoding size at the file reader level.
-                // This may clear and restart the prebuffering.
-                // It may not be honored by the video reader.
+                // If we are prebuffering this may stop, clear and restart the 
+                // prebuffering thread.
                 if (m_FrameServer.VideoReader.CanChangeDecodingSize)
                 {
                     bool accepted = m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.PreferredDecodingSize);
                     if (accepted)
+                    {
                         m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
+                    }
                 }
+
                 m_FrameServer.Metadata.ResizeFinished();
                 RefreshImage();
             }
@@ -2715,27 +2801,19 @@ namespace Kinovea.ScreenManager
                 DoInvalidate();
             }
         }
-        private void CheckCustomDecodingSize(bool _forceDisable)
+        private void CheckCustomDecodingSize(bool forceDisallow)
         {
-            // Enable or disable custom decoding size depending on current state.
-            // Custom decoding size is not compatible with tracking.
-            // The boolean will later be used each time we attempt to change decoding size in StretchSqueezeSurface.
-            // This is not concerned with decoding mode (prebuffering, caching, etc.) as this will be checked inside the reader.
-            
-            bool wasEnabled = customDecodingSizeIsEnabled;
-            customDecodingSizeIsEnabled = !_forceDisable && !m_FrameServer.Metadata.AnyTracking;
+            if (!m_FrameServer.Loaded)
+                return;
 
-            if (wasEnabled && !customDecodingSizeIsEnabled)
-            {
-                m_FrameServer.VideoReader.DisableCustomDecodingSize();
-                ResizeUpdate(true);
-                log.DebugFormat("Custom decoding size: DISABLED");
-            }
-            else if (!wasEnabled && customDecodingSizeIsEnabled)
-            {
-                ResizeUpdate(true);
-                log.DebugFormat("Custom decoding size: ENABLED");
-            }
+            // Allow or disallow custom decoding size depending on current state.
+            // Custom decoding size is not compatible with tracking or video export.
+            // This is an optimization for prebuffering mode.
+
+            allowCustomDecodingSize = !forceDisallow && !m_FrameServer.Metadata.AnyTracking;
+            m_FrameServer.VideoReader.SetAllowCustomDecodingSize(allowCustomDecodingSize);
+            ResizeUpdate(true);
+            log.DebugFormat("Custom decoding size: {0}", allowCustomDecodingSize ? "ENABLED" : "DISABLED");
         }
         #endregion
 
@@ -2937,12 +3015,16 @@ namespace Kinovea.ScreenManager
             else 
             {
                 StopMultimediaTimer();
-                bool rewound = ShowNextFrame(m_iSelStart, true);
+                ShowNextFrame(m_iSelStart, true);
 
-                if (rewound)
+                if (currentTimestamp == m_iSelStart)
+                {
                     StartMultimediaTimer();
+                }
                 else
+                {
                     StopPlaying();
+                }
             }
 
             UpdatePositionUI();
@@ -3024,79 +3106,73 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Asks the reader to display the next frame.
-        /// This is only called for static changes like user navigation or seeking, not playback.
+        /// Asks the reader to change the current frame, either by timestamp or by relative jump.
+        /// This is only called for static changes like browsing, key presses or buttons, not playback.
         /// </summary>
-        private bool ShowNextFrame(long targetTimestamp, bool _bAllowUIUpdate)
+        private void ShowNextFrame(long targetTimestamp, bool allowUIUpdate)
         {
             if (!m_FrameServer.VideoReader.Loaded)
-                return false;
+                return;
 
-            //if (targetTimestamp >= 0)
-            //    log.DebugFormat("ShowNextFrame: {0}", targetTimestamp);
-
-            // TODO: More refactoring needed.
-            // Eradicate the scheme where we use the targetTimestamp parameter to mean two things.
             if (isCurrentlyPlaying)
-                throw new ThreadStateException("ShowNextFrame called while play loop.");
+                throw new InvalidProgramException("ShowNextFrame called while play loop.");
+
+
+            //--------------------------------
+            // TODO: More refactoring needed.
+            // Currently this is called with a hidden argument in the global `framesToDecode`
+            // corresponding to the relative jump required.
+            //--------------------------------
+
+            // TODO: detect if the target is past the end point and wrap around.
+
 
             bool refreshInPlace = targetTimestamp == currentTimestamp;
-            bool hasMore = false;
-
-            if (targetTimestamp < 0)
+            if (targetTimestamp >= 0)
             {
-                hasMore = m_FrameServer.VideoReader.MoveBy(framesToDecode, true);
+                m_FrameServer.VideoReader.MoveTo(currentTimestamp, targetTimestamp);
             }
             else
             {
-                hasMore = m_FrameServer.VideoReader.MoveTo(currentTimestamp, targetTimestamp);
+                m_FrameServer.VideoReader.MoveBy(framesToDecode, true);
             }
 
-            if (m_FrameServer.VideoReader.Current != null)
+            // Bail out if there are no frames.
+            // This should never happen.
+            if (m_FrameServer.VideoReader.Current == null)
             {
-                if (videoFilterIsActive)
-                {
-                    m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(m_FrameServer.VideoReader.Current.Timestamp);
-                }
-
-                currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
-
-                bool contiguous = targetTimestamp < 0 && framesToDecode <= 1;
-                if (!refreshInPlace)
-                {
-                    ComputeOrStopTracking(contiguous);
-                }
-                else
-                {
-                    // Sync drawings bound to tracks.
-                    m_FrameServer.Metadata.BeforeTrackingStep(currentTimestamp);
-                    m_FrameServer.Metadata.SyncTrackableDrawings(currentTimestamp);
-                    m_FrameServer.Metadata.CameraTrackingStep();
-
-                    // Not sure why when manually navigating refresh in place is true.
-                    sidePanelTracking.UpdateContent();
-                }
-
-                if (_bAllowUIUpdate)
-                    DoInvalidate();
-
-                ReportForSyncMerge();
+                log.Error("No frame available");
+                currentTimestamp = 0;
+                return;
             }
 
-            if (!hasMore)
+            currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
+
+            if (videoFilterIsActive)
             {
-                // End of working zone reached.
-                currentTimestamp = m_iSelEnd;
-                if (_bAllowUIUpdate)
-                {
-                    trkSelection.SelPos = currentTimestamp;
-                    DoInvalidate();
-                }
-
-                m_FrameServer.Metadata.StopAllTracking();
+                m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(currentTimestamp);
             }
 
-            return hasMore;
+            bool contiguous = targetTimestamp < 0 && framesToDecode <= 1;
+            if (!refreshInPlace)
+            {
+                ComputeOrStopTracking(contiguous);
+            }
+            else
+            {
+                // Sync drawings bound to tracks.
+                m_FrameServer.Metadata.BeforeTrackingStep(currentTimestamp);
+                m_FrameServer.Metadata.SyncTrackableDrawings(currentTimestamp);
+                m_FrameServer.Metadata.CameraTrackingStep();
+
+                // Not sure why when manually navigating refresh in place is true.
+                sidePanelTracking.UpdateContent();
+            }
+
+            if (allowUIUpdate)
+                DoInvalidate();
+
+            ReportForSyncMerge();
         }
 
         private void StopPlaying(bool _bAllowUIUpdate)

@@ -34,6 +34,10 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class formProgressBar2 : Form
     {
+        #region Properties
+        public bool Cancelled { get; set; } = false;
+        #endregion
+
         #region Members
         private bool m_Idle;
         private bool m_AsPercentage;
@@ -93,6 +97,7 @@ namespace Kinovea.ScreenManager
             // This will switch to the UI thread but it will still be freezed as it's a modal dialog.
             // Any cleanup must be done directly in the background thread upon detecting cancellation.
             btnCancel.Enabled = false;
+            Cancelled = true;
             m_bgWorker.CancelAsync();
         }
     }

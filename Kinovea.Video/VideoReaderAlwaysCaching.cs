@@ -64,8 +64,15 @@ namespace Kinovea.Video
             m_Cache.Clear();
         }
         
-        public override void PostLoad(){}
-        public override void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler> _workerFn){}
+        public override void StartPrebufferingIfNotCaching(){}
+        public override void UpdateWorkingZone(
+            VideoSection newZone, 
+            CacheLoadMode loadMode, 
+            int maxMemory, 
+            Action<DoWorkEventHandler> workerFn)
+        {
+        }
+
         public override void BeforeFrameEnumeration(){}
         public override void AfterFrameEnumeration(){}
         #endregion
