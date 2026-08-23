@@ -33,12 +33,13 @@ namespace Kinovea.Video
         /// <summary>
         /// Whether we should Stay there, Advance or Seek.
         /// </summary>
-        public DecoderInitAction DecoderInitAction{ get; set; }
+        public DecoderInitAction DecoderInitAction { get; set; }
 
         /// <summary>
-        /// Whether we should resume decoding after init or not.
+        /// True if the pending frame should be resubmitted to the decoder.
         /// </summary>
-        public bool ResumeDecoding { get; set; }
+        public bool ResubmitPending { get; set; }
+
 
         public DecodingJobPlan()
         {
@@ -46,13 +47,13 @@ namespace Kinovea.Video
             TargetTimestamp = -1;
             TargetIsResolved = false;
             DecoderInitAction = DecoderInitAction.None;
-            ResumeDecoding = false;
+            ResubmitPending = false;
         }
 
         public override string ToString()
         {
-            return string.Format("DecodingJobPlan: RequestedTimestamp: [~{0}]. TargetTimestamp: [{1}]. TargetIsResolved:{2}. DecoderInitAction: {3}. ResumeDecoding: {4}.",
-                RequestedTimestamp, TargetTimestamp, TargetIsResolved, DecoderInitAction, ResumeDecoding);
+            return string.Format("DecodingJobPlan: RequestedTimestamp: [~{0}]. TargetTimestamp: [{1}]. TargetIsResolved:{2}. DecoderInitAction: {3}. Resubmit pending: {4}.",
+                RequestedTimestamp, TargetTimestamp, TargetIsResolved, DecoderInitAction, ResubmitPending);
         }
     }
 }

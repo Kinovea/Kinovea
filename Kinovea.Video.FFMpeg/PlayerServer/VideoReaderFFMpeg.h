@@ -508,7 +508,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Change the ffmpeg codec context based on the passed policy. 
         /// This determines whether we will decode everything or skip certain frames.
         /// Only used during playback.
-        void ImplementDecodingPolicy(DecodingPolicy policy);
+        void ExecuteDecodingPolicy(DecodingPolicy policy);
 
         bool ShouldStoreFrame();
 
@@ -516,11 +516,14 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Prebuffering > Job initialization.
         //------------------
 
-        bool BeginJob(PlayerState^ state);
+        /// Prepare the decoder for the next job.
+        void InitDecodingJob(PlayerState^ state);
         
+        /// Get a plan for whether the decoder should seek, advance or stay in place,
+        /// store frames along the way and resubmit a pending frame.
         DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult);
         
-        ReadResult ImplementDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
+        ReadResult ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
         
         /// Returns true if the pending frame is a continuation of the prebuffer.
         bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd);

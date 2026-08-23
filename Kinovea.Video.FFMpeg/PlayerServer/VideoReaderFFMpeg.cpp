@@ -1990,6 +1990,7 @@ int VideoReaderFFMpeg::SeekTo(int64_t targetTimestamp)
     // Reset the internal codec state. 
     avcodec_flush_buffers(mVideoCodecCtx);
     mCurrentTimestamp = AV_NOPTS_VALUE;
+    mDecodedTimestamp = AV_NOPTS_VALUE;
     mCurrentGopTimestamp = AV_NOPTS_VALUE;
     return res;
 }
@@ -2681,7 +2682,7 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ objCanceller)
     //-------------------------------
 
     mDecodedFrames = 0;
-    ImplementDecodingPolicy(DecodingPolicy::Normal);
+    ExecuteDecodingPolicy(DecodingPolicy::Normal);
 
     mWorkingPlayerState = WaitForNewJobReady(canceller, -1);
 
@@ -2698,12 +2699,11 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ objCanceller)
             break;
         }
 
-        bool hasWork = BeginJob(mWorkingPlayerState);
+        InitDecodingJob(mWorkingPlayerState);
 
-        if (!hasWork)
+        if (HasJobChanged())
         {
             mWorkingPlayerState = WaitForNewJobReady(canceller, mWorkingPlayerState->Id);
-            log->DebugFormat("Woken up by new job or cancellation - after no-work.");
             continue;
         }
 
@@ -2732,7 +2732,8 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
     // The decoder will have been moved to the right spot during BeginJob().
 
 
-    log->DebugFormat("PreBuffering thread, processing job [{0}].", mWorkingPlayerState);
+    log->DebugFormat("PreBuffering thread, processing job #{0} {1} -----------------------", 
+        mWorkingPlayerState->Id, mWorkingPlayerState->Mode);
 
     ReadResult res = ReadResult::Success;
 
@@ -2839,10 +2840,10 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
     long expectedTimestamp = this->GetPlaybackTimestamp(mWorkingPlayerState);
     double lag = (expectedTimestamp - mCurrentTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-    String^ logLine = String::Format("UpdateDecodePolicy: estimated player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame:{5}.",
+    String^ logLine = String::Format("UpdateDecodePolicy: estimated player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame: {5}.",
         expectedTimestamp, mCurrentTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
 
-    //log->DebugFormat(logLine);
+    log->DebugFormat(logLine);
             
     // Check worst case scenario first.
     if (lag > mSeekAheadLagThreshold)
@@ -2911,34 +2912,34 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
         case DecodingPolicy::Normal:
             if (lag > thresholdEnterFarBehind)
             {
-                ImplementDecodingPolicy(DecodingPolicy::FarBehind);
+                ExecuteDecodingPolicy(DecodingPolicy::FarBehind);
             }
             else if (lag > thresholdEnterBehind)
             {
-                ImplementDecodingPolicy(DecodingPolicy::Behind);
+                ExecuteDecodingPolicy(DecodingPolicy::Behind);
             }
             break;
         case DecodingPolicy::Behind:
             if (lag > thresholdEnterFarBehind)
             {
-                ImplementDecodingPolicy(DecodingPolicy::FarBehind);
+                ExecuteDecodingPolicy(DecodingPolicy::FarBehind);
             }
             else if (lag < thresholdLeaveBehind)
             {
-                ImplementDecodingPolicy(DecodingPolicy::Normal);
+                ExecuteDecodingPolicy(DecodingPolicy::Normal);
             }
             break;
         case DecodingPolicy::FarBehind:
             if (lag < thresholdLeaveFarBehind)
             {
-                ImplementDecodingPolicy(DecodingPolicy::Behind);
+                ExecuteDecodingPolicy(DecodingPolicy::Behind);
             }
             break;
         }
     }
 }
 
-void VideoReaderFFMpeg::ImplementDecodingPolicy(DecodingPolicy policy)
+void VideoReaderFFMpeg::ExecuteDecodingPolicy(DecodingPolicy policy)
 {
     if (policy == mDecodingPolicy)
         return;
@@ -2968,13 +2969,13 @@ void VideoReaderFFMpeg::ImplementDecodingPolicy(DecodingPolicy policy)
     }
 }
 
-bool VideoReaderFFMpeg::BeginJob(PlayerState^ state)
+void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
 {
     //-------------------------------
     // Runs in the prebuffer thread.
     //-------------------------------
 
-    log->DebugFormat("PreBuffering thread, Begin job {0}", mWorkingPlayerState);
+    log->DebugFormat("PreBuffering thread, Initializing job {0}", mWorkingPlayerState);
 
     // By this point we have abandonned all work from the old job,
     // the reader has finished preparing the cache for the new job.
@@ -2985,8 +2986,7 @@ bool VideoReaderFFMpeg::BeginJob(PlayerState^ state)
     mPreBuffer->ResetInterruptAdd();
 
     // Reset decoding policy.
-    ImplementDecodingPolicy(DecodingPolicy::Normal);
-
+    ExecuteDecodingPolicy(DecodingPolicy::Normal);
 
     CachePreparationResult^ cachePrepResult = Volatile::Read(this->mPreBufferPreparation);
 
@@ -2994,13 +2994,10 @@ bool VideoReaderFFMpeg::BeginJob(PlayerState^ state)
 
     log->Debug(plan);
 
-    ReadResult res = ImplementDecodingJobPlan(state, plan);
+    ReadResult res = ExecuteDecodingJobPlan(state, plan);
 
     // TODO: maybe we can check if the initial move returned EOF or something.
-
-    return plan->ResumeDecoding;
 }
-
 
 DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult)
 {
@@ -3035,7 +3032,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     plan->TargetTimestamp = targetTimestamp;
     plan->TargetIsResolved = isAcquired;
     plan->DecoderInitAction = DecoderInitAction::Seek;
-    plan->ResumeDecoding = true;
+    plan->ResubmitPending = false;
     
     // Specific scenarios.
     // 1. acquired + full cache + pending frame matching next: we are done, no more work to do.
@@ -3064,22 +3061,9 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     {
         if (isAcquired)
         {
-            if (cacheFull && state->Mode != PlayerStateMode::Playback)
-            {
-                plan->DecoderInitAction = DecoderInitAction::None;
-                plan->ResumeDecoding = false;
-                return plan;
-            }
-            else
-            {
-                // Re-submit the pending frame and resume decoding.
-                mPreBuffer->Add(mPendingFrame);
-                mPendingFrame = nullptr;
-
-                plan->DecoderInitAction = DecoderInitAction::None;
-                plan->ResumeDecoding = true;
-                return plan;
-            }
+           plan->DecoderInitAction = DecoderInitAction::None;
+           plan->ResubmitPending = true;
+           return plan;
         }
         else
         {
@@ -3088,6 +3072,15 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
 
 
         }
+    }
+
+
+    if (hasPending && !plan->ResubmitPending)
+    {
+        log->DebugFormat("Discarding pending frame [{0}].", mPendingFrame->Timestamp);
+        DisposeFrame(mPendingFrame);
+        mPendingFrame = nullptr;
+        hasPending = false;
     }
  
 
@@ -3287,7 +3280,6 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
 
 }
 
-
 bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd)
 {
     // Test if the previousTimestamp of the pending frame matches the last frame of the cache.
@@ -3311,8 +3303,7 @@ bool VideoReaderFFMpeg::IsPendingNext(int64_t cacheEnd)
     return false;
 }
 
-
-ReadResult VideoReaderFFMpeg::ImplementDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
+ReadResult VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
 {
     // Initialize the decoder according to the plan.
 
@@ -3320,7 +3311,7 @@ ReadResult VideoReaderFFMpeg::ImplementDecodingJobPlan(PlayerState^ state, Decod
 
     if (plan->DecoderInitAction == DecoderInitAction::Seek)
     {
-        log->DebugFormat("ImplementDecodingJobPlan: seeking to [{0}].", plan->TargetTimestamp);
+        log->DebugFormat("ExecuteDecodingJobPlan: seeking to [{0}].", plan->TargetTimestamp);
 
         res = ReadFrame(plan->TargetTimestamp, 1);
     }
@@ -3335,6 +3326,28 @@ ReadResult VideoReaderFFMpeg::ImplementDecodingJobPlan(PlayerState^ state, Decod
     else if (plan->DecoderInitAction == DecoderInitAction::None)
     {
         // Do not move, the decoder is already in the right spot.
+        // This may immediately block in add() again, but that's ok.
+        // We'll just get woken up when the player moves forward or when a new job arrives.
+        if (plan->ResubmitPending && mPendingFrame != nullptr)
+        {
+            CacheAddResult result = mPreBuffer->Add(mPendingFrame);
+            if (result == CacheAddResult::Added)
+            {
+                mPendingFrame = nullptr;
+            }
+            else if (result == CacheAddResult::Duplicate)
+            {
+                DisposeFrame(mPendingFrame);
+                mPendingFrame = nullptr;
+            }
+            else
+            {
+                // Interrupted.
+                // Then the frame stays in pending state.
+                log->DebugFormat("ExecuteDecodingJobPlan: [{0}] is still pending.", mPendingFrame->Timestamp);
+            }
+        }
+
         res = ReadResult::Success;
     }
 
