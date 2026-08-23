@@ -432,10 +432,6 @@
       <Project>{2507e203-236d-4b02-8477-5fcbc30a670c}</Project>
       <Name>Kinovea.Video.SVG</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kinovea.Video.Synthetic\Kinovea.Video.Synthetic.csproj">
-      <Project>{94d6de5a-b99a-4eed-af5b-c08746ea568e}</Project>
-      <Name>Kinovea.Video.Synthetic</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>
