@@ -135,6 +135,11 @@ namespace Kinovea.Video.GIF
         {
             return cache.MoveTo(target);
         }
+
+        public override bool PlayerRequest(PlayerState newState)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Video geometry

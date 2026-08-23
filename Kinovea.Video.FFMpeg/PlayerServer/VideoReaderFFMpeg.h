@@ -175,6 +175,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         //-------------------
         virtual bool MoveNext(bool decodeIfNecessary) override;
         virtual bool MoveTo(int64_t target) override;
+        virtual bool PlayerRequest(PlayerState^ newState) override;
         virtual void BeforePlayloop() override;
 
         //-------------------
@@ -206,25 +207,18 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoCapabilities mCapabilities;
         bool mIsLoaded;
         VideoInfo mVideoInfo;
+        int64_t mTimestampOffset = 0;
+
+        // Summary extraction
+        bool mIsForSummary;
+        int64_t mSummaryPreviousSeek = AV_NOPTS_VALUE;
+
 
         // Video Geometry configuration (rotation, deinterlacing, etc.)
         VideoGeometry^ mVideoGeometry;                  // Current published geometry.
         VideoGeometryRequest^ mVideoGeometryRequest;    // Last player side request.
         Dictionary<int64_t, TimedPoint^>^ mStabOffsets = gcnew Dictionary<int64_t, TimedPoint^>();
         
-        // Summary extraction
-        bool mIsForSummary;
-        int64_t mSummaryPreviousSeek = AV_NOPTS_VALUE;
-
-        // Decoding mode & working zone.
-        int64_t mTimestampOffset = 0;
-        VideoDecodingMode mCachingMode;
-        VideoSection mWorkingZone;
-        VideoSection mSectionToPrepend;
-        VideoSection mSectionToAppend;
-        bool mIsFirstWZUpdate = true;
-
-        // Image size.
         // We deal with a bunch of sizes for different purposes.
         // 1. original size -> size of images out of the decoder. Stored in mVideoInfo.OriginalSize. 
         // 2. scaled size -> size of images out of the scaler, taking aspect ratio force into account.
@@ -238,9 +232,19 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         Size mReferenceSize;    // ex: 1080 x 1920.
         Size mOutputSize;       // ex: 540 x 960.
 
+
+        // Working zone.
+        VideoSection mWorkingZone;
+        bool mIsFirstWZUpdate = true;
+
+        // Caching modes.
+        VideoDecodingMode mCachingMode;
+        VideoSection mSectionToPrepend;
+        VideoSection mSectionToAppend;
+
         // Frame containers
         // mFrameContainer references one of the three below.
-        // Only one is active at a time.
+        // Only one is active at a time based on the caching mode.
         IVideoFramesContainer^ mFrameContainer; 
         SingleFrame^ mSingleFrameContainer;
         PreBuffer2^ mPreBuffer;
@@ -250,10 +254,29 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         int mVideoStreamIndex;
         AVFormatContext* mFormatCtx;
         AVCodecContext* mVideoCodecCtx;
+
+
+        //------------------------
+        // Player state and prebuffering
+        //------------------------
         
-        // Player state generation counter.
-        // Used to detect discontinuities in the timeline position.
-        int mLastPlayerGeneration; 
+        // The player state currently being worked on by the prebuffer thread.
+        // This belongs solely to the prebuffer thread.
+        PlayerState^ mWorkingPlayerState = PlayerState::Empty;
+
+        // The job id matching the player state that has been 
+        // received and prepared by the reader.
+        // Written by the reader, read by the prebuffer thread.
+        // All access must be protected by mLockReadyJobId.
+        int mReadyJobId = -1;
+
+        // Sync object to schedule the arrival and preparation of new player state
+        // by the reader while the decoder is busy decoding/scaling/converting, 
+        // waiting in cache.Add(), or waiting after EOF.
+        Object^ mLockReadyJobId = gcnew Object();
+
+        Thread^ mPreBufferingThread;
+        ThreadCanceler^ mPreBufferingThreadCanceler;
 
         // The frame-domain timestamp of the last stored frame (frame->best_effort_timestamp).
         // Stored as in put in the active frame container and available to the player.
@@ -276,6 +299,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // some frames in case we fall behind the player demands.
         DecodingPolicy mDecodingPolicy = DecodingPolicy::Normal;
 
+        bool mWasPrebufferingBeforeEnumeration;
+        
+
+        //------------------------
+        // Scale/convert
+        //------------------------
+         
         // FFmpeg filter graph for scaling/converting the decoded frame to its final form.
         AVFilterGraph* mFilterGraph = nullptr;
         AVFilterContext* mFilterSource = nullptr;
@@ -291,10 +321,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         int mFilterDstHeight = 0;
         bool mFilterDeinterlace = false;
 
-        // Others
-        bool mWasPrebuffering;
-        Thread^ mPreBufferingThread;
-        ThreadCanceler^ mPreBufferingThreadCanceler;
+        //------------------------
+        // Debugging
+        //------------------------
         bool mVerbose = true;
         
         // Generic stopwatch for instrumentation/debugging purposes. 
@@ -454,9 +483,25 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         void PreBufferingWorker(Object^ _canceler);
 
+        bool HasJobChanged();
+
+        PlayerState^ WaitForNewJobReady(ThreadCanceler^ canceller, int currentJobId);
+
+        void BeginJob(PlayerState^ state);
+        
+        ReadResult ProcessJob(ThreadCanceler^ canceller);
+
+        /// Update the playback decode policy based on how behind we 
+        /// are falling back compared to the player.
+        /// Only used during playback.
+        void UpdateDecodePolicy();
+
         /// Change the ffmpeg codec context based on the passed policy. 
-        /// This determines whether we will decode everything or skip some frames.
-        void UpdateDecodingPolicy(DecodingPolicy policy);
+        /// This determines whether we will decode everything or skip certain frames.
+        /// Only used during playback.
+        void ImplementDecodingPolicy(DecodingPolicy policy);
+
+        bool ShouldStoreFrame();
 
         //-------------------
         // Logging helpers

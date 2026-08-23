@@ -111,12 +111,12 @@ namespace Kinovea.Video
                     }
 
                     // Keep waiting.
-                    //log.DebugFormat("Cache full. Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
+                    log.DebugFormat("Prebuffer waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
                     Monitor.Wait(sync);
                 }
 
                 frames.Add(frame.Timestamp, frame);
-                //log.DebugFormat("Added frame [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
+                log.DebugFormat("Added frame [{0}] to cache. Cached: {1}.", frame.Timestamp, frames.Count);
 
                 Monitor.PulseAll(sync);
             }
@@ -143,8 +143,86 @@ namespace Kinovea.Video
             }
         }
 
+        public void WakeWaiters()
+        {
+            lock (sync)
+            {
+                Monitor.PulseAll(sync);
+            }
+        }
+
+        public void PrepareForNewJob(PlayerState state)
+        {
+            List<VideoFrame> removed = new List<VideoFrame>();
+
+            lock (sync)
+            {
+                if (state.Mode == PlayerStateMode.Playback)
+                {
+                    // If we were in non-playback mode, the cache should contain 
+                    // a dense set of frames around the current frame. We can keep them.
+                }
+                else
+                {
+                    // We are moving in timestamp or stepped mode.
+                    // This means we may jump to a completely different part of the video.
+                    // For now just evict everything except current.
+                    
+                    // FIXME:
+                    // Check the target/reference timestamp and see
+                    // if we already have frames around it.
+                    // This is very possible when doing step or manual navigation.
+
+                    for (int i = frames.Count - 1; i >= 0; i--)
+                    {
+                        VideoFrame frame = frames.Values[i];
+                        if (!ReferenceEquals(frame, current))
+                        {
+                            frames.RemoveAt(i);
+                            removed.Add(frame);
+                        }
+                    }
+                }
+
+                // Interrupt blocked Add().
+                interruptAdd = true;
+                Monitor.PulseAll(sync);
+            }
+
+            foreach (var frame in removed)
+            {
+                DisposeFrame(frame);
+            }
+        }
+
+        public void Clear()
+        {
+            VideoFrame[] framesToDispose;
+
+            log.Debug("Clearing cache.");
+
+            lock (sync)
+            {
+                framesToDispose = frames.Values.ToArray();
+                frames.Clear();
+                current = null;
+
+                Monitor.PulseAll(sync);
+            }
+
+            foreach (var frame in framesToDispose)
+            {
+                DisposeFrame(frame);
+            }
+        }
+        #endregion
+
+        #region Acquisition methods, move current to a different frame.
+
         /// <summary>
-        /// Find the closest frame to the target timestamp and set it as "current".
+        /// Finds the closest frame to the target timestamp and set it as "current".
+        /// Evicts old frames outside of retention window.
+        /// Called during playback.
         /// </summary>
         public void AcquireClosest(long timestamp)
         {
@@ -189,36 +267,69 @@ namespace Kinovea.Video
             }
         }
 
-        public void WakeWaiters()
+        /// <summary>
+        /// Finds the closest frame to the target and set it as "current" only if 
+        /// it is no further than `tolerance` timestamps.
+        /// Returns true if the frame was acquired.
+        /// </summary>
+        public bool TryAcquireClosest(long timestamp, double tolerance)
         {
+            //---------------------------------
+            // Runs on the UI thread.
+            //---------------------------------
+
+            // TODO:
+            // eviction strategy may be different than during playback.
+
             lock (sync)
             {
-                Monitor.PulseAll(sync);
+                if (frames.Count == 0)
+                {
+                    current = null;
+                    return false;
+                }
+
+                VideoFrame closest = FindClosest(timestamp);
+
+                if (Math.Abs(closest.Timestamp - timestamp) <= tolerance)
+                {
+                    current = closest;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
+
         }
+
+        /// <summary>
+        /// Finds the frame immediately next to the passed timestamp.
+        /// </summary>
+        public bool TryAcquireNext(long timestamp)
+        {
+            //---------------------------------
+            // Runs on the UI thread.
+            //---------------------------------
+
+            return false;
+        }
+
+        /// <summary>
+        /// Finds the frame immediately previous to the passed timestamp.
+        /// </summary>
+        public bool TryAcquirePrevious(long timestamp)
+        {
+            //---------------------------------
+            // Runs on the UI thread.
+            //---------------------------------
+
+            return false;
+        }
+
         #endregion
 
-
-        public void Clear()
-        {
-            VideoFrame[] framesToDispose;
-
-            log.Debug("Clearing cache.");
-
-            lock (sync)
-            {
-                framesToDispose = frames.Values.ToArray();
-                frames.Clear();
-                current = null;
-
-                Monitor.PulseAll(sync);
-            }
-            
-            foreach (var frame in framesToDispose)
-            {
-                DisposeFrame(frame);
-            }
-        }
 
         #region Private methods
         private void DisposeFrame(VideoFrame frame)

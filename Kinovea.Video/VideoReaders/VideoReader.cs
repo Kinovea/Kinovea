@@ -117,10 +117,11 @@ namespace Kinovea.Video
         #endregion
 
         #region Members
-        // Latest snapshot of the player state.
-        // Used by the Move function to acquire current frame and 
-        // used by the decoding thread to predict what should be decoded next.
-        protected PlayerState playerState = PlayerState.Empty;
+        // Player state from the latest player request.
+        // Used by the MoveTo function to calculate which frame to acquire during playback.
+        // Used by the reader to schedule decoding.
+        // The decoder uses it to predict what should be decoded next.
+        protected PlayerState requestedPlayerState = PlayerState.Empty;
         #endregion
 
         #region Open/Close/Summary
@@ -157,17 +158,16 @@ namespace Kinovea.Video
         public abstract bool MoveTo(long target);
 
         /// <summary>
-        /// The player changed state and publishes the new state.
-        /// This is used to inform which frames to decode next.
+        /// The player changed state and publishes it.
+        /// This is for timeline navigation and start/pause playback.
         /// 
-        /// REMOVE: replace with PlayerDemand(PlayerState).
-        /// 
+        /// Ultimately this will replace MoveNext and MoveTo for all 
+        /// asynchronous scenarios.
+        /// MoveTo can still be used for a lightweight acquire during 
+        /// playback as state doesn't change during playback.
         /// </summary>
-        public void PublishPlayerState(PlayerState newPlayerState)
-        {
-            Volatile.Write(ref playerState, newPlayerState);
-        }
-
+        public abstract bool PlayerRequest(PlayerState newState);
+        
         /// <summary>
         /// During a playback loop, compute the expected frame timestamp 
         /// the player would like to see right now.
@@ -179,10 +179,10 @@ namespace Kinovea.Video
                 return 0;
 
             long now = Stopwatch.GetTimestamp();
-            double realElapsedSeconds = (double)(now - playerState.StartPlaybackEpoch) / Stopwatch.Frequency;
-            double elapsedFrames = realElapsedSeconds * 1000.0 / playerState.PlaybackFrameInterval;
+            double realElapsedSeconds = (double)(now - requestedPlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / requestedPlayerState.PlaybackFrameInterval;
             double elapsedTimestamps = elapsedFrames * Info.AverageTimeStampsPerFrame;
-            long expectedTimestamp = (long)Math.Round(playerState.StartPlaybackTimestamp + elapsedTimestamps);
+            long expectedTimestamp = (long)Math.Round(requestedPlayerState.StartPlaybackTimestamp + elapsedTimestamps);
             return expectedTimestamp;
         }
 

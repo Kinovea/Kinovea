@@ -25,9 +25,22 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	public enum class ReadResult
 	{
 		Success,
+
+        /// A seek operation would have landed in the same GOP as the current one.
+        /// This is used by summary extraction to avoid decoding the
+        /// same thumbnail twice.
         Same,
+
+        /// End of file.
         EOFReached,
-        NotReady, 
+
+        /// A newer player state has been detected.
+        /// Current workload has been abandoned.
+        NewJob,
+
+        ThreadCancelled,
+
+        NotReady,
 		NotConverted,
         UnknownError,
 	};

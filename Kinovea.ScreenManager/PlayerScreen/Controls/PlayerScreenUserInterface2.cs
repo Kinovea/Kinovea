@@ -599,10 +599,6 @@ namespace Kinovea.ScreenManager
             //---------------------------------------------------------------------------
             log.DebugFormat("Post load process.");
 
-            // Publish the initial player state snapshot to the decoder.
-            playerState = MakeFrameByFramePlayerState(m_FrameServer.VideoReader.Info.FirstTimeStamp);
-            m_FrameServer.VideoReader.PublishPlayerState(playerState);
-
             //-----------------------------
             // Read/decode the first frame.
             //-----------------------------
@@ -2844,7 +2840,7 @@ namespace Kinovea.ScreenManager
 
             // Snapshot the playback state and publish it to the reader.
             PlayerState state = new PlayerState(
-                playerState.Generation + 1,
+                playerState.Id + 1,
                 PlayerStateMode.Playback,
                 currentTimestamp,
                 Stopwatch.GetTimestamp(),
@@ -2853,7 +2849,7 @@ namespace Kinovea.ScreenManager
                 0);
 
             playerState = state;
-            m_FrameServer.VideoReader.PublishPlayerState(state);
+            m_FrameServer.VideoReader.PlayerRequest(state);
 
             uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
             multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, timerCallback, UIntPtr.Zero, eventType);
@@ -2872,10 +2868,7 @@ namespace Kinovea.ScreenManager
             Application.Idle -= Application_Idle;
             m_FrameServer.Metadata.UnpauseAutosave();
 
-            // Publish the paused state.
-            playerState = MakeFrameByFramePlayerState(currentTimestamp);
-            m_FrameServer.VideoReader.PublishPlayerState(playerState);
-
+            // Whoever called this should move the playhead to the right place if needed.
             log.DebugFormat("Playback paused. Avg frame time: {0:0.000} ms. Drop ratio: {1:0.00}", loopWatcher.Average, dropWatcher.Ratio);
         }
         
@@ -2915,7 +2908,7 @@ namespace Kinovea.ScreenManager
 
             if (playerState.Mode != PlayerStateMode.Playback || playerState.PlaybackFrameInterval == 0)
             {
-                log.ErrorFormat("Rendering_Invoked called while not playing. Generation: {0}.", playerState.Generation);
+                log.ErrorFormat("Rendering_Invoked called while not playing. Generation: {0}.", playerState.Id);
                 return;   
             }
 
@@ -3116,7 +3109,7 @@ namespace Kinovea.ScreenManager
         private PlayerState MakeFrameByFramePlayerState(long targetTimestamp)
         {
             return new PlayerState(
-                playerState.Generation + 1, 
+                playerState.Id + 1, 
                 PlayerStateMode.Timestamp, 
                 0, 0, 0, 0, 
                 targetTimestamp);
@@ -3147,10 +3140,10 @@ namespace Kinovea.ScreenManager
             // For now pretend everything is an arbitrary frame move.
 
             // Temporary code to translate between old and new API.
-            if (targetTimestamp == -1)
+            if (targetTimestamp < 0)
             {
                 playerState = new PlayerState(
-                    playerState.Generation + 1,
+                    playerState.Id + 1,
                     PlayerStateMode.Timestamp,
                     0, 0, 0, 0,
                     (long)Math.Round(currentTimestamp + framesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
@@ -3160,18 +3153,28 @@ namespace Kinovea.ScreenManager
                 playerState = MakeFrameByFramePlayerState(targetTimestamp);
             }
 
-            // TODO: replace.
-            m_FrameServer.VideoReader.PublishPlayerState(playerState);
-            //m_FrameServer.VideoReader.PlayerDemand(playerState);
-
             bool refreshInPlace = targetTimestamp == currentTimestamp;
-            if (targetTimestamp >= 0)
+
+            bool moved = false;
+
+            log.DebugFormat("PresentFrame called. Target: {0}. Current: {1}. Frames to decode: {2}. Refresh in place: {3}.", 
+                targetTimestamp, currentTimestamp, framesToDecode, refreshInPlace);
+
+
+            if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
             {
-                m_FrameServer.VideoReader.MoveTo(targetTimestamp);
+                moved = m_FrameServer.VideoReader.PlayerRequest(playerState);
             }
             else
             {
-                m_FrameServer.VideoReader.MoveNext(true);
+                if (targetTimestamp < 0)
+                {
+                    m_FrameServer.VideoReader.MoveNext(true);
+                }
+                else
+                {
+                    m_FrameServer.VideoReader.MoveTo(targetTimestamp);
+                }
             }
 
 

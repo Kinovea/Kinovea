@@ -23,16 +23,14 @@ namespace Kinovea.Video
     public class PlayerState
     {
         /// <summary>
-        /// A monotonic counter incremented each time the player changes state. 
-        /// (play, pause, wrap, move).
+        /// Counter incremented each time the player changes state. 
         /// </summary>
-        public int Generation { get; }
+        public int Id { get; }
 
         /// <summary>
-        /// True if the player is currently playing, false if paused.
+        /// The kind of timeline action the player is currently doing.
+        /// playback/jump/step forward/step backward.
         /// </summary>
-        //public bool IsPlaying { get; }
-
         public PlayerStateMode Mode { get; }
 
         /// <summary>
@@ -61,9 +59,8 @@ namespace Kinovea.Video
 
         /// <summary>
         /// The timestamp reference for non-playback mode. 
-        /// For mode exact, this is the target timestamp.
+        /// For mode timestamp, this is the target of a jump.
         /// For mode step forward or step backward, this is the starting timestamp.
-        /// For mode idle, this is the current timestamp.
         /// </summary>
         public long ReferenceTimestamp { get; }
 
@@ -73,7 +70,7 @@ namespace Kinovea.Video
             long startPlaybackTimestamp, long startPlaybackEpoch, double playbackFrameInterval, double refreshInterval, 
             long frameByFrameTimestamp)
         {
-            Generation = generation;
+            Id = generation;
             Mode = mode;
             StartPlaybackTimestamp = startPlaybackTimestamp;
             StartPlaybackEpoch = startPlaybackEpoch;
@@ -83,5 +80,14 @@ namespace Kinovea.Video
         }
 
         public static PlayerState Empty => new PlayerState(0, PlayerStateMode.Timestamp, 0, 0, 0, 0, 0);
+    
+        public override string ToString()
+        {
+            if (Mode == PlayerStateMode.Playback)
+                return string.Format("{0} [{1}]", Id, Mode);
+            else
+                return string.Format("{0} [{1}] [{2}]", Id, Mode, ReferenceTimestamp);
+        }
+
     }
 }

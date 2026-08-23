@@ -137,6 +137,11 @@ namespace Kinovea.Video.SVG
         {
             return UpdateCurrent(target);
         }
+
+        public override bool PlayerRequest(PlayerState newState)
+        {
+            throw new NotImplementedException();
+        }
         #endregion 
 
         #region Working zone and decoding mode
