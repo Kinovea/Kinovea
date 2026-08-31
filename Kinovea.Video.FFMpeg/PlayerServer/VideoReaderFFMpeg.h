@@ -261,7 +261,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Player state and prebuffering
         //------------------------
         
-        // The player state currently being worked on by the prebuffer thread.
+        // The player state / job being worked on by the prebuffer thread.
         // This belongs solely to the prebuffer thread.
         PlayerState^ mWorkingPlayerState = PlayerState::Empty;
 
@@ -271,12 +271,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // All access must be protected by mLockNewJobReady.
         int mReadyJobId = -1;
 
-        // Sync object to schedule the arrival and preparation of new player state
-        // by the reader while the decoder is busy decoding/scaling/converting, 
-        // waiting in cache.Add(), or waiting after EOF.
+        // Whether the request was fulfilled during the initial phase.
+        // Written by the reader, read by the prebuffer thread.
+        bool mRequestFulfilled = false;
+
+        // Sync object to schedule the arrival and preparation of new player requests.
         Object^ mLockNewJobReady = gcnew Object();
 
-        CachePreparationResult^ mPreBufferPreparation = nullptr;
+
+        TryAcquireResult^ mTryAcquireResult = nullptr;
 
         Thread^ mPreBufferingThread;
         ThreadCanceler^ mPreBufferingThreadCanceler;
@@ -521,7 +524,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         /// Get a plan for whether the decoder should seek, advance or stay in place,
         /// store frames along the way and resubmit a pending frame.
-        DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, CachePreparationResult^ cachePrepResult);
+        DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, TryAcquireResult^ tryAcquireResult);
         
         bool ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
         

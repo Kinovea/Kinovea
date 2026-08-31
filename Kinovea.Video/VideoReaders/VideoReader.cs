@@ -130,10 +130,8 @@ namespace Kinovea.Video
 
         #region Members
         // Player state from the latest player request.
-        // Used by the MoveTo function to calculate which frame to acquire during playback.
         // Used by the reader to schedule decoding.
-        // The decoder uses it to predict what should be decoded next.
-        protected PlayerState requestedPlayerState = PlayerState.Empty;
+        protected PlayerState mRequestedPlayerState = PlayerState.Empty;
         #endregion
 
         #region Open/Close/Summary
@@ -191,10 +189,10 @@ namespace Kinovea.Video
                 return 0;
 
             long now = Stopwatch.GetTimestamp();
-            double realElapsedSeconds = (double)(now - requestedPlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
-            double elapsedFrames = realElapsedSeconds * 1000.0 / requestedPlayerState.PlaybackFrameInterval;
+            double realElapsedSeconds = (double)(now - mRequestedPlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / mRequestedPlayerState.PlaybackFrameInterval;
             double elapsedTimestamps = elapsedFrames * Info.AverageTimeStampsPerFrame;
-            long expectedTimestamp = (long)Math.Round(requestedPlayerState.ReferenceTimestamp + elapsedTimestamps);
+            long expectedTimestamp = (long)Math.Round(mRequestedPlayerState.ReferenceTimestamp + elapsedTimestamps);
             return expectedTimestamp;
         }
 

@@ -246,7 +246,7 @@ namespace Kinovea.Video
         {
             lock (sync)
             {
-                log.Debug("Interrupting Add().");
+                log.Debug("Closing cache for business xxxxxxxx");
                 interruptAdd = true;
                 Monitor.PulseAll(sync);
             }
@@ -259,57 +259,46 @@ namespace Kinovea.Video
         {
             lock (sync)
             {
+                log.Debug("Opening cache for business oooooooo");
                 interruptAdd = false;
             }
         }
 
 
         /// <summary>
-        /// Prepare the cache for a new job.
-        /// Try to acquire the target. 
-        /// Interrupts add and pulses waiters.
-        /// Returns whether the target was acquired.
+        /// Try to acquire the target of the player state.
+        /// Evicts old frames outside of retention window of the closest match.
         /// </summary>
-        public CachePreparationResult PrepareForNewJob(PlayerState state)
+        public TryAcquireResult TryAcquire(PlayerState state)
         {
-            log.DebugFormat("PrepareForNewJob: target [~{0}].", state.ReferenceTimestamp);
-
-            CachePreparationResult result = CachePreparationResult.Empty();
+            TryAcquireResult result = TryAcquireResult.Empty();
             List<VideoFrame> removed = null;
             long target = state.ReferenceTimestamp;
 
             lock (sync)
             {
-                if (frames.Count > 0)
+                if (frames.Count == 0)
                 {
-                    // Try to acquire the target.
-                    bool targetAcquired = false;
-                    long acquiredTimestamp = -1;
-                    VideoFrame closest = FindClosest(frames, target);
-                    int index = frames.IndexOfKey(closest.Timestamp);
-                    if (Math.Abs(closest.Timestamp - target) <= tolerance)
-                    {
-                        current = closest;
-                        targetAcquired = true;
-                        acquiredTimestamp = closest.Timestamp;
-                        log.DebugFormat("PrepareForNewJob: target acquired [~{0}] -> [{1}]", target, acquiredTimestamp);
-                    }
-
-                    // Do the normal eviction of old frames outside the retention window.
-                    // (Whether the target was acquired or not).
-                    removed = EvictBehind(index, framesToKeepBehind);
-                    if (removed != null && removed.Contains(current))
-                    {
-                        current = closest;
-                    }
-
-                    result = new CachePreparationResult(targetAcquired, acquiredTimestamp);
+                    return new TryAcquireResult(false, -1);
                 }
 
-                // Close for business and wake up the decoder thread if blocked in Add().
-                // If it was blocked it will keep the frame as pending.
-                interruptAdd = true;
-                Monitor.PulseAll(sync);
+                bool targetAcquired = false;
+                long acquiredTimestamp = -1;
+                VideoFrame closest = FindClosest(frames, target);
+                int index = frames.IndexOfKey(closest.Timestamp);
+                if (Math.Abs(closest.Timestamp - target) <= tolerance)
+                {
+                    current = closest;
+                    targetAcquired = true;
+                    acquiredTimestamp = closest.Timestamp;
+                    log.DebugFormat("TryAcquire: target acquired [~{0}] -> [{1}]", target, acquiredTimestamp);
+                }
+
+                // Do the normal eviction of old frames outside the retention window.
+                // (Even if the target wasn't acquired).
+                removed = EvictBehind(index, framesToKeepBehind);
+                
+                result = new TryAcquireResult(targetAcquired, acquiredTimestamp);
             }
 
             if (removed != null)
@@ -350,6 +339,7 @@ namespace Kinovea.Video
                 current = null;
 
                 // Close for business.
+                log.Debug("Shutdown - Closing cache for business xxxxxxxx");
                 interruptAdd = true;
 
                 // Unblock the decoder if waiting in Add().
@@ -413,7 +403,7 @@ namespace Kinovea.Video
                     VideoFrame frame = frames.Values[i];
                     if (ReferenceEquals(frame, current))
                     {
-                        sb.AppendFormat("[>>> {0} <<<] ", frame.Timestamp);
+                        sb.AppendFormat("[> {0} <] ", frame.Timestamp);
                     }
                     else
                     {
@@ -560,7 +550,7 @@ namespace Kinovea.Video
                 removed.Add(frame);
             }
 
-            log.DebugFormat("Evicted {0} frames. Cached: {1}.", removed.Count, frames.Count);
+            //log.DebugFormat("EvictBehind evicted {0} frames. Cached: {1}.", removed.Count, frames.Count);
             return removed;
         }
 

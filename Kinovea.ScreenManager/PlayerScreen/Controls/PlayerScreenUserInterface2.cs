@@ -303,17 +303,16 @@ namespace Kinovea.ScreenManager
         private bool showCacheInTimeline = false;
 
         // Player state requests sent to the reader.
-        private PlayerState inFlightPlayerState = PlayerState.Empty; // Player state sent to the reader.
-        private PlayerState pendingPlayerState = PlayerState.Empty;  // Player state that couldn't be sent to the reader.
-        private bool isPlayerRequestInFlight = false;
+        private PlayerState activePlayerState = PlayerState.Empty; // Player state sent to the reader.
+        private PlayerState pendingPlayerState = null;             // Player state that couldn't be sent to the reader.
+        private bool isTimestampRequestInFlight = false;
         private int nextPlayerStateId = 0;
         private double monitorRefreshRate = 60;
         private uint multimediaTimerID;
         private bool isCurrentlyPlaying;
         private NativeMethods.TimerCallback timerCallback;
 
-
-        // Timing
+        // Time coordinates mapping.
         // Time mapper links the speed slider, the playback frame rate and the capture frame rate.
         // slowMotion is the ratio to the nominal playback speed of the video.
         // ex: 0.5 plays the video at half speed, irrespectively of whether the video itself is in slow motion.
@@ -792,12 +791,9 @@ namespace Kinovea.ScreenManager
 
             framesToDecode = 1;
             PresentFrame(m_iSelStart, true);
-            UpdatePositionUI();
-            ActivateKeyframe(currentTimestamp);
 
             double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
             double captureInterval = 1000 / m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond;
-
 
 
             m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.BaselineFrameInterval / captureInterval;
@@ -1010,12 +1006,6 @@ namespace Kinovea.ScreenManager
                 currentTimestamp = m_iSelEnd;
 
             PresentFrame(currentTimestamp, allowUIUpdate);
-
-            if (allowUIUpdate)
-            {
-                UpdatePositionUI();
-                ActivateKeyframe(currentTimestamp);
-            }
         }
         public void ForceCurrentFrame(long frameSinceSelStart, bool allowUIUpdate)
         {
@@ -1047,19 +1037,15 @@ namespace Kinovea.ScreenManager
 
                 PresentFrame(currentTimestamp, allowUIUpdate);
             }
-
-            if (allowUIUpdate)
-            {
-                UpdatePositionUI();
-                ActivateKeyframe(currentTimestamp);
-            }
         }
         public void RefreshImage()
         {
             // For cases where surfaceScreen.Invalidate() is not enough.
             // Not needed if we are playing.
             if (m_FrameServer.Loaded && !isCurrentlyPlaying)
+            {
                 PresentFrame(currentTimestamp, true);
+            }
         }
         public void RefreshUICulture()
         {
@@ -1163,7 +1149,6 @@ namespace Kinovea.ScreenManager
             {
                 StopPlaying();
                 OnPauseAsked();
-                ActivateKeyframe(currentTimestamp);
             }
 
             PrepareKeyframesDock();
@@ -2012,12 +1997,7 @@ namespace Kinovea.ScreenManager
                 OnPoke();
                 StopPlaying();
                 OnPauseAsked();
-
-                framesToDecode = 1;
                 PresentFrame(m_iSelStart, true);
-
-                UpdatePositionUI();
-                ActivateKeyframe(currentTimestamp);
             }
         }
         public void buttonGotoPrevious_Click(object sender, EventArgs e)
@@ -2034,30 +2014,16 @@ namespace Kinovea.ScreenManager
                 //---------------------------------------------------------------------------
                 if ((currentTimestamp <= m_iSelStart) || (currentTimestamp > m_iSelEnd))
                 {
-                    framesToDecode = 1;
                     PresentFrame(m_iSelStart, true);
                 }
                 else
                 {
-                    long oldPos = currentTimestamp;
                     framesToDecode = -1;
                     PresentFrame(-1, true);
-
-                    // If it didn't work, try going back two frames to unstuck the situation.
-                    // Todo: check if we're going to endup outside the working zone ?
-                    //if (currentTimestamp == oldPos)
-                    //{
-                    //    log.Debug("Seeking to previous frame did not work. Moving backward 2 frames.");
-                    //    framesToDecode = -2;
-                    //    PresentFrame(-1, true);
-                    //}
 
                     // Reset to normal.
                     framesToDecode = 1;
                 }
-
-                UpdatePositionUI();
-                ActivateKeyframe(currentTimestamp);
             }
 
         }
@@ -2077,8 +2043,7 @@ namespace Kinovea.ScreenManager
             OnPoke();
             StopPlaying();
             OnPauseAsked();
-            framesToDecode = 1;
-
+            
             // If we are outside the primary zone or going to get out, seek to start.
             // We also only do the seek if we are after the m_iStartingPosition,
             // Sometimes, the second frame will have a time stamp inferior to the first,
@@ -2090,11 +2055,9 @@ namespace Kinovea.ScreenManager
             }
             else
             {
+                framesToDecode = 1;
                 PresentFrame(-1, true);
             }
-
-            UpdatePositionUI();
-            ActivateKeyframe(currentTimestamp);
         }
 
 
@@ -2123,10 +2086,9 @@ namespace Kinovea.ScreenManager
             int newPercentage = nextStep * round;
             long newPosition = m_iSelStart + (long)(((float)newPercentage / 100) * m_iSelDuration);
 
+            // This should be a forced-sync operation to make sure we restart the playback
+            // right after.
             PresentFrame(newPosition, true);
-
-            UpdatePositionUI();
-            ActivateKeyframe(currentTimestamp);
 
             if (wasPlaying)
                 EnsurePlaying();
@@ -2138,12 +2100,7 @@ namespace Kinovea.ScreenManager
                 OnPoke();
                 StopPlaying();
                 OnPauseAsked();
-
-                framesToDecode = 1;
                 PresentFrame(m_iSelEnd, true);
-
-                UpdatePositionUI();
-                ActivateKeyframe(currentTimestamp);
             }
         }
         public void OnButtonPlay()
@@ -2163,8 +2120,6 @@ namespace Kinovea.ScreenManager
                 // Pause playback.
                 StopPlaying();
                 OnPauseAsked();
-                buttonPlay.Image = Resources.flatplay;
-                ActivateKeyframe(currentTimestamp);
             }
             else
             {
@@ -2301,10 +2256,7 @@ namespace Kinovea.ScreenManager
                 framesToDecode = 1;
 
                 PresentFrame(trkSelection.SelPos, true);
-                currentTimestamp = trkSelection.SelPos + trkSelection.Minimum;
-
-                UpdatePositionUI();
-                ActivateKeyframe(currentTimestamp);
+                //currentTimestamp = trkSelection.SelPos + trkSelection.Minimum;
             }
 
         }
@@ -2397,8 +2349,6 @@ namespace Kinovea.ScreenManager
                 else
                     PresentFrame(m_iSelEnd, true);
             }
-
-            UpdatePositionUI();
         }
         private void UpdateSelectionLabels()
         {
@@ -2472,8 +2422,6 @@ namespace Kinovea.ScreenManager
                 UpdateFrameCurrentPosition(false);
                 UpdateCurrentPositionLabel();
                 lblTimeTip.Visible = true;
-
-                ActivateKeyframe(currentTimestamp);
             }
         }
         private void trkFrame_PositionChanged(object sender, TimeEventArgs e)
@@ -2491,7 +2439,6 @@ namespace Kinovea.ScreenManager
                 UpdateFrameCurrentPosition(true);
                 
                 lblTimeTip.Visible = false;
-                ActivateKeyframe(currentTimestamp);
             }
         }
         private void trkFrame_KeyframeDropped(object sender, EventArgs e)
@@ -2505,7 +2452,7 @@ namespace Kinovea.ScreenManager
         private void UpdateFrameCurrentPosition(bool _bUpdateNavCursor)
         {
             // Relocation request coming from the timeline (trkFrame).
-            if (trkFrame.Position != inFlightPlayerState.ReferenceTimestamp)
+            if (trkFrame.Position != activePlayerState.ReferenceTimestamp)
             {
                 PresentFrame(trkFrame.Position, true);
             }
@@ -2832,12 +2779,13 @@ namespace Kinovea.ScreenManager
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
                 PlayerStateMode.Playback,
+                true,
                 currentTimestamp,
                 Stopwatch.GetTimestamp(),
                 playbackFrameInterval,
                 refreshInterval);
 
-            SubmitPlayerRequest(state);
+            SubmitPlaybackRequest(state);
 
             uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
             multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, timerCallback, UIntPtr.Zero, eventType);
@@ -2863,6 +2811,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.UnpauseAutosave();
 
             // Whoever called this should move the playhead to the right place if needed.
+            
             log.DebugFormat("Avg frame time: {0:0.000} ms. <<<<<<<<<", loopWatcher.Average);
         }
 
@@ -2871,8 +2820,8 @@ namespace Kinovea.ScreenManager
             // Compute expected timestamp for the next frame to be presented.
             double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
             long now = Stopwatch.GetTimestamp();
-            double realElapsedSeconds = (double)(now - inFlightPlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
-            double elapsedFrames = realElapsedSeconds * 1000.0 / inFlightPlayerState.PlaybackFrameInterval;
+            double realElapsedSeconds = (double)(now - activePlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / activePlayerState.PlaybackFrameInterval;
             double elapsedTimestamps = elapsedFrames * avgtspf;
 
             return elapsedTimestamps;
@@ -2912,9 +2861,9 @@ namespace Kinovea.ScreenManager
             //------------------------------
             timeWatcher.Restart();
 
-            if (inFlightPlayerState.Mode != PlayerStateMode.Playback || inFlightPlayerState.PlaybackFrameInterval == 0)
+            if (activePlayerState.Mode != PlayerStateMode.Playback || activePlayerState.PlaybackFrameInterval == 0)
             {
-                log.ErrorFormat("PresentPlayback called while not playing. Player state id: {0}.", inFlightPlayerState.Id);
+                log.ErrorFormat("PresentPlayback called while not playing. Player state id: {0}.", activePlayerState.Id);
                 return;   
             }
 
@@ -2932,7 +2881,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                expectedTimestamp = (long)Math.Round(inFlightPlayerState.ReferenceTimestamp + elapsedTimestamps);
+                expectedTimestamp = (long)Math.Round(activePlayerState.ReferenceTimestamp + elapsedTimestamps);
                 //log.DebugFormat("Playback tick. Current: [{0}]. Target: [~{1}].", currentTimestamp, expectedTimestamp);
             }
 
@@ -2995,8 +2944,8 @@ namespace Kinovea.ScreenManager
             if (m_bSynched && currentTimestamp < oldTimestamp)
             {
                 StopPlaying();
+
                 PresentFrame(m_iSelStart, true);
-                UpdatePositionUI();
                 framesToDecode = 1;
             }
         }
@@ -3108,7 +3057,7 @@ namespace Kinovea.ScreenManager
         /// This doesn't typically triggers a decode, the frame should already be waiting in a cache.
         /// This is only called for frame by frame navigation, for playback see PresentPlayback().
         /// </summary>
-        private void PresentFrame(long targetTimestamp, bool allowUIUpdate)
+        private void PresentFrame(long targetTimestamp, bool allowUIUpdate, bool synchronous = false)
         {
             if (!m_FrameServer.VideoReader.Loaded)
                 return;
@@ -3142,6 +3091,7 @@ namespace Kinovea.ScreenManager
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
                 PlayerStateMode.Timestamp,
+                synchronous,
                 targetTimestamp
                 );
             
@@ -3157,35 +3107,35 @@ namespace Kinovea.ScreenManager
             bool acquired = false;
             if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
             {
-                if (isPlayerRequestInFlight)
+                if (isTimestampRequestInFlight)
                 {
-                    log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, inFlightPlayerState.Id);
+                    log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
                     pendingPlayerState = state;
                     acquired = false;
                 }
                 else
                 {
-                    acquired = SubmitPlayerRequest(state);
+                    acquired = SubmitTimestampRequest(state);
                 }
             }
             else if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
             {
                 if (targetTimestamp < 0)
                 {
-                    inFlightPlayerState = state;
+                    activePlayerState = state;
                     acquired = m_FrameServer.VideoReader.MoveNext(true);
                 }
                 else
                 {
-                    if (isPlayerRequestInFlight)
+                    if (isTimestampRequestInFlight)
                     {
-                        log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, inFlightPlayerState.Id);
+                        log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
                         pendingPlayerState = state;
                         acquired = false;
                     }
                     else
                     {
-                        acquired = SubmitPlayerRequest(state);
+                        acquired = SubmitTimestampRequest(state);
                     }
                 }
             }
@@ -3193,12 +3143,12 @@ namespace Kinovea.ScreenManager
             {
                 if (targetTimestamp < 0)
                 {
-                    inFlightPlayerState = state;
+                    activePlayerState = state;
                     acquired = m_FrameServer.VideoReader.MoveNext(true);
                 }
                 else
                 {
-                    inFlightPlayerState = state;
+                    activePlayerState = state;
                     acquired = m_FrameServer.VideoReader.MoveTo(targetTimestamp);
                 }
             }
@@ -3229,15 +3179,30 @@ namespace Kinovea.ScreenManager
             BeginInvoke((Action)delegate { AfterRequestFailed(e.Value); });
         }
 
+
+        /// <summary>
+        /// The frame of a timestamp request was acquired by the reader.
+        /// Either synchronously or asynchronously.
+        /// </summary>
         private void AfterFrameAcquired(PlayerState state)
         {
-            log.DebugFormat("Received frame acquired for request #{0} (latest=#{1}). Present [{2}].",
-                state.Id, pendingPlayerState.Id, currentTimestamp);
+            log.DebugFormat("Received frame acquired for request #{0}. In flight: #{1}. Pending: #{2}.",
+                state.Id, 
+                activePlayerState.Id, 
+                pendingPlayerState == null ? "-" : pendingPlayerState.Id.ToString());
+
+            if (state.Mode == PlayerStateMode.Playback)
+            {
+                // This happens when the player loops around and the decoder goes through an
+                // initialization phase again because it jumps asynchronously to the start of the video.
+                // We don't care about this event here, the true updates goes through PresentPlayback().
+                return;
+            }
 
             // Bail out if it's not the one in flight.
-            if (state.Id != inFlightPlayerState.Id)
+            if (state.Id != activePlayerState.Id)
             {
-                // This can happen if we make a first request that requires decoding,
+                // This can happen if we make a first request that requires async decoding,
                 // then make a second one that is acquired synchronously.
                 log.WarnFormat("Received frame acquired for obsolete request #{0}", state.Id);
                 AfterRequestCompleted(state);
@@ -3257,10 +3222,13 @@ namespace Kinovea.ScreenManager
             // It may differ from the one in the request.
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
 
-            // TODO: check if we are on the UI thread.
-            // We may be on a background thread during export.
-            DoInvalidate();
-            UpdatePositionUI();
+            bool isOnUIThread = !InvokeRequired;
+            if (isOnUIThread)
+            {
+                DoInvalidate();
+                UpdatePositionUI();
+                ActivateKeyframe(currentTimestamp);
+            }
 
             if (videoFilterIsActive)
             {
@@ -3274,7 +3242,6 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.Metadata.SyncTrackableDrawings(currentTimestamp);
                 m_FrameServer.Metadata.CameraTrackingStep();
 
-                // Not sure why when manually navigating refresh in place is true.
                 sidePanelTracking.UpdateContent();
             }
             else
@@ -3284,47 +3251,77 @@ namespace Kinovea.ScreenManager
                 ComputeOrStopTracking(contiguous);
             }
 
-
-
             ReportForSyncMerge();
 
-
             AfterRequestCompleted(state);
         }
 
+        /// <summary>
+        /// A timestamp request failed.
+        /// </summary>
         private void AfterRequestFailed(PlayerState state)
         {
+            if (state.Mode == PlayerStateMode.Playback)
+                return;
+
             AfterRequestCompleted(state);
         }
 
+        /// <summary>
+        /// A timestamp request completed.
+        /// Check if a pending request is waiting and submit it.
+        /// </summary>
         private void AfterRequestCompleted(PlayerState state)
         {
-            isPlayerRequestInFlight = false;
-            
-            if (pendingPlayerState.Id > state.Id)
+            log.DebugFormat("After request completed: #{0}.", state.Id);
+
+            isTimestampRequestInFlight = false;
+
+            if (state.Mode == PlayerStateMode.Playback)
+                return;
+
+            // Note: only timestamps requests can be marked pending.
+            if (pendingPlayerState != null && pendingPlayerState.Id > state.Id)
             {
-                log.DebugFormat("Found pending request #{0}.", pendingPlayerState.Id);
-                bool acquired = SubmitPlayerRequest(pendingPlayerState);
+                PlayerState newState = pendingPlayerState;
+                pendingPlayerState = null;
+
+                log.DebugFormat("Found pending request #{0}.", newState.Id);
+                bool acquired = SubmitTimestampRequest(newState);
                 if (acquired)
                 {
-                    AfterFrameAcquired(pendingPlayerState);
+                    AfterFrameAcquired(newState);
                 }
             }
         }
 
-        private bool SubmitPlayerRequest(PlayerState state)
+        /// <summary>
+        /// Submits a timestamp player request and returns immediately.
+        /// Returns true if the request was acquired synchronously.
+        /// </summary>
+        private bool SubmitTimestampRequest(PlayerState state)
         {
-            log.DebugFormat("Submit player request #{0}", state.Id);
-            inFlightPlayerState = state;
-            isPlayerRequestInFlight = true;
-            bool acquired = m_FrameServer.VideoReader.PlayerRequest(state);
+            log.DebugFormat("Submitting timestamp player request #{0}", state.Id);
+            activePlayerState = state;
+            pendingPlayerState = null;
+            isTimestampRequestInFlight = true;
+            return m_FrameServer.VideoReader.PlayerRequest(state.Clone()); ;
+        }
 
-            if (acquired)
-            {
-                log.DebugFormat("Request #{0} acquired synchronously", state.Id);
-            }
-
-            return acquired;
+        /// <summary>
+        /// Submits a playback start request and returns immediately.
+        /// </summary>
+        private bool SubmitPlaybackRequest(PlayerState state)
+        {
+            // Note: this request is only for "starting" playback.
+            // During the actual playback we send lightweight requests.
+            // These requests should always be marked as "synchronous fulfillment",
+            // thus they are not considered "in flight".
+            log.DebugFormat("Submitting playback player request #{0}", state.Id);
+            activePlayerState = state;
+            pendingPlayerState = null;
+            isTimestampRequestInFlight = false;
+            return m_FrameServer.VideoReader.PlayerRequest(state.Clone());
         }
 
         private int GetNextPlayerStateId()
@@ -3338,12 +3335,12 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            if (!isCurrentlyPlaying || inFlightPlayerState.Mode != PlayerStateMode.Playback)
+            if (!isCurrentlyPlaying || activePlayerState.Mode != PlayerStateMode.Playback)
                 return;
             
-            // Estimate where we should be at this time.
+            // Compute final expected timestamp.
             double elapsedTimestamps = GetPlaybackElapsedTimestamps();
-            long expectedTimestamp = (long)Math.Round(inFlightPlayerState.ReferenceTimestamp + elapsedTimestamps);
+            long expectedTimestamp = (long)Math.Round(activePlayerState.ReferenceTimestamp + elapsedTimestamps);
             if (expectedTimestamp > m_iSelEnd)
             {
                 expectedTimestamp = m_iSelEnd;
@@ -3564,7 +3561,6 @@ namespace Kinovea.ScreenManager
                 // MouseDown while playing: pause the video.
                 StopPlaying();
                 OnPauseAsked();
-                ActivateKeyframe(currentTimestamp);
             }
 
             m_FrameServer.Metadata.AllDrawingTextToNormalMode();
@@ -3610,7 +3606,6 @@ namespace Kinovea.ScreenManager
                 // MouseDown while playing: Halt the video.
                 StopPlaying();
                 OnPauseAsked();
-                ActivateKeyframe(currentTimestamp);
             }
 
             HandToolDown();
@@ -4312,7 +4307,6 @@ namespace Kinovea.ScreenManager
                 // FIXME: Ignore / skip if busy.
                 framesToDecode = 1;
                 PresentFrame(target, true);
-                UpdatePositionUI();
             }
             else if (videoFilterIsActive && !isCtrl)
             {
@@ -5068,7 +5062,6 @@ namespace Kinovea.ScreenManager
             {
                 framesToDecode = 1;
                 PresentFrame(keyframe.Timestamp, true);
-                UpdatePositionUI();
             }
 
             if (m_FrameServer.CurrentImage == null)
@@ -5240,10 +5233,6 @@ namespace Kinovea.ScreenManager
             framesToDecode = 1;
 
             PresentFrame(targetPosition, true);
-            currentTimestamp = targetPosition;
-
-            UpdatePositionUI();
-            ActivateKeyframe(currentTimestamp);
         }
 
         private void KeyframeControl_ShowCommentsAsked(object sender, EventArgs e)
@@ -5716,8 +5705,6 @@ namespace Kinovea.ScreenManager
             long target = drawing.InfosFading.ReferenceTimestamp;
             framesToDecode = 1;
             PresentFrame(target, true);
-            UpdatePositionUI();
-            ActivateKeyframe(currentTimestamp);
         }
         private void mnuDrawingTrackingToggle_Click(object sender, EventArgs e)
         {
@@ -5954,7 +5941,6 @@ namespace Kinovea.ScreenManager
             // move to corresponding timestamp.
             framesToDecode = 1;
             PresentFrame(trackPoints[closestPointIndex].T, true);
-            UpdatePositionUI();
         }
         #endregion
 
@@ -6260,7 +6246,6 @@ namespace Kinovea.ScreenManager
         {
             framesToDecode = 1;
             PresentFrame(m_iSelStart, true);
-            ActivateKeyframe(currentTimestamp);
         }
         #endregion
 
@@ -6311,7 +6296,6 @@ namespace Kinovea.ScreenManager
 
             framesToDecode = 1;
             PresentFrame(memoTimestamp, true);
-            ActivateKeyframe(currentTimestamp);
         }
 
         /// <summary>
