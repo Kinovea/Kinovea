@@ -374,7 +374,7 @@ namespace Kinovea.Video
                 long acquiredTimestamp = -1;
                 int index = 0;
 
-                if (state.Mode == PlayerStateMode.StepForward)
+                if (state.Action == PlayerAction.StepForward)
                 {
                     if (current == null || frames.Count == 1)
                     {
@@ -397,7 +397,7 @@ namespace Kinovea.Video
                         log.DebugFormat("TryAcquire: target acquired [NEXT] -> [{0}]", acquiredTimestamp);
                     }
                 }
-                else if (state.Mode == PlayerStateMode.StepBackward)
+                else if (state.Action == PlayerAction.StepBackward)
                 {
                     if (current == null || frames.Count == 1)
                     {

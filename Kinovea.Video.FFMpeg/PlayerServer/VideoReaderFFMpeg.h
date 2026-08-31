@@ -277,7 +277,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         // The player state / job being worked on by the prebuffer thread.
         // This belongs solely to the prebuffer thread.
-        PlayerState^ mWorkingPlayerState = PlayerState::Empty;
+        PlayerState^ mWorkingPlayerState = PlayerState::MakeInvalid();
 
         // The job id matching the player state that has been 
         // received and prepared by the reader.
@@ -395,7 +395,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         /// Seek and decode until the target is reached.
         /// Store the reached frame to the container.
-        ReadResult ReadFrameSeek(int64_t targetTimestamp, bool doSeek, bool preRoll);
+        ReadResult ReadFrameSeek(
+            int64_t targetTimestamp, 
+            bool doSeek, 
+            bool preRoll, 
+            bool allowInterrupt);
         
         /// Seek to or before the target. Does not decode any frames.
         int SeekTo(int64_t targetTimestamp);

@@ -123,11 +123,11 @@ namespace Kinovea.Video.SVG
         public override bool PlayerRequest(PlayerState newState)
         {
             long target = newState.ReferenceTimestamp;
-            if (newState.Mode == PlayerStateMode.StepForward)
+            if (newState.Action == PlayerAction.StepForward)
             {
                 target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
             }
-            else if (newState.Mode == PlayerStateMode.StepBackward)
+            else if (newState.Action == PlayerAction.StepBackward)
             {
                 target = (long)Math.Round(Current.Timestamp - videoInfo.AverageTimeStampsPerFrame);
             }

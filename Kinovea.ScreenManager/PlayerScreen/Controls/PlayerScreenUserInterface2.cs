@@ -302,13 +302,14 @@ namespace Kinovea.ScreenManager
         private bool showCacheInTimeline = false;
 
         // Player state requests sent to the reader.
-        private PlayerState activePlayerState = PlayerState.Empty; // Player state sent to the reader.
+        private PlayerState activePlayerState = PlayerState.MakeInvalid(); // Player state sent to the reader.
         private PlayerState pendingPlayerState = null;             // Player state that couldn't be sent to the reader.
         private bool isTimestampRequestInFlight = false;
         private int nextPlayerStateId = 0;
         private double monitorRefreshRate = 60;
         private uint multimediaTimerID;
         private bool isCurrentlyPlaying;
+        private int renderingDrops;
         private NativeMethods.TimerCallback timerCallback;
 
         // Time coordinates mapping.
@@ -943,9 +944,9 @@ namespace Kinovea.ScreenManager
         /// Function to wrap the loading of the cache in a background worker
         /// and on a progress bar dialog.
         /// </summary>
-        private void WorkingZoneCacheLoadWorker(DoWorkEventHandler _doWork)
+        private void WorkingZoneCacheLoadWorker(DoWorkEventHandler workEventHandler)
         {
-            formProgressBar2 fpb = new formProgressBar2(true, false, _doWork);
+            formProgressBar2 fpb = new formProgressBar2(true, false, workEventHandler);
             fpb.ShowDialog();
             fpb.Dispose();
 
@@ -2718,27 +2719,30 @@ namespace Kinovea.ScreenManager
             bool synchronous = true;
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
-                PlayerStateMode.Playback,
+                PlayerAction.Playback,
                 synchronous,
                 startTimestamp,
                 playbackFrameInterval,
                 refreshInterval);
 
             SubmitPlaybackRequest(state);
+            
+            currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
 
             // Publish the sync mark for both player and decoder to independently compute elapsed time.
             m_FrameServer.VideoReader.StartPlaybackEpoch = Stopwatch.GetTimestamp();
             
+            isCurrentlyPlaying = true;
+            renderingDrops = 0;
             uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
             multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, timerCallback, UIntPtr.Zero, eventType);
-            isCurrentlyPlaying = true;
         }
 
         /// <summary>
         /// Stop the playback timer.
         /// Does not create a player request by itself, the caller is responsible
         /// for this as it knows whether the playback is really being stopped
-        /// or just briefly paused while we change the framerate.
+        /// or just briefly paused while we change the framerate or go back to the start.
         /// </summary>
         private void StopMultimediaTimer()
         {
@@ -2782,7 +2786,10 @@ namespace Kinovea.ScreenManager
             {
                 // Bail out if busy.
                 if (isBusyRendering)
+                {
+                    renderingDrops++;
                     return;
+                }
 
                 // The flag will be set to false in the Application.Idle event handler or when pausing playback.
                 isBusyRendering = true;
@@ -2855,6 +2862,8 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Detect EOF based on projected timestamp.
+                // Note that this means that if the decoder is late it will wrap around from
+                // a location that is not at the end of the working zone. 
                 if (expectedTimestamp > workingZone.End)
                 {
                     EOFDuringPlayback();
@@ -2991,6 +3000,8 @@ namespace Kinovea.ScreenManager
             sidePanelTracking.UpdateContent();
             UpdateFramesMarkers();
 
+            // If a track fails stop the playback immediately so the user can 
+            // fix the problem without letting the tracking go rogue.
             if (isCurrentlyPlaying && m_FrameServer.Metadata.AnyTrackFailed())
             {
                 StopPlaying();
@@ -3009,6 +3020,7 @@ namespace Kinovea.ScreenManager
             lock (lockBusyRendering)
             {
                 isBusyRendering = false;
+                renderingDrops = 0;
             }
 
             timeWatcher.LogTime("Back to idleness");
@@ -3037,7 +3049,7 @@ namespace Kinovea.ScreenManager
 
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
-                PlayerStateMode.Timestamp,
+                PlayerAction.Timestamp,
                 forceSynchronous,
                 targetTimestamp);
             
@@ -3074,7 +3086,7 @@ namespace Kinovea.ScreenManager
 
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
-                forward ? PlayerStateMode.StepForward : PlayerStateMode.StepBackward,
+                forward ? PlayerAction.StepForward : PlayerAction.StepBackward,
                 forceSynchronous,
                 currentTimestamp);
 
@@ -3133,7 +3145,7 @@ namespace Kinovea.ScreenManager
                 activePlayerState.Id, 
                 pendingPlayerState == null ? "-" : pendingPlayerState.Id.ToString());
 
-            if (state.Mode == PlayerStateMode.Playback)
+            if (state.Action == PlayerAction.Playback)
             {
                 // This happens when the player loops around and the decoder goes through an
                 // initialization phase again because it jumps asynchronously to the start of the video.
@@ -3179,28 +3191,15 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(currentTimestamp);
             }
 
-            if (state.Mode == PlayerStateMode.RefreshInPlace)
-            {
-                // Sync drawings bound to tracks.
-                m_FrameServer.Metadata.BeforeTrackingStep(currentTimestamp);
-                m_FrameServer.Metadata.SyncTrackableDrawings(currentTimestamp);
-                m_FrameServer.Metadata.CameraTrackingStep();
+            bool contiguous =
+                state.Action == PlayerAction.StepForward ||
+                state.Action == PlayerAction.StepBackward;
 
-                sidePanelTracking.UpdateContent();
-            }
-            else
-            {
-                bool contiguous = 
-                    state.Mode == PlayerStateMode.StepForward ||
-                    state.Mode == PlayerStateMode.StepBackward ||
-                    state.Mode == PlayerStateMode.RefreshInPlace;
+            TimestampRelation relPrev = m_FrameServer.VideoReader.RelateTimestamps(oldTimestamp, currentTimestamp);
+            contiguous = contiguous || relPrev == TimestampRelation.Match;
+            contiguous = contiguous || m_FrameServer.VideoReader.Current.PreviousTimestamp == oldTimestamp;
 
-                TimestampRelation relPrev = m_FrameServer.VideoReader.RelateTimestamps(oldTimestamp, currentTimestamp);
-                contiguous = contiguous || relPrev == TimestampRelation.Match;
-                contiguous = contiguous || m_FrameServer.VideoReader.Current.PreviousTimestamp == oldTimestamp;
-
-                ComputeOrStopTracking(contiguous);
-            }
+            ComputeOrStopTracking(contiguous);
 
             ReportForSyncMerge();
 
@@ -3212,7 +3211,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void AfterRequestFailed(PlayerState state)
         {
-            if (state.Mode == PlayerStateMode.Playback)
+            if (state.Action == PlayerAction.Playback)
                 return;
 
             AfterRequestCompleted(state);
@@ -3228,7 +3227,7 @@ namespace Kinovea.ScreenManager
 
             isTimestampRequestInFlight = false;
 
-            if (state.Mode == PlayerStateMode.Playback)
+            if (state.Action == PlayerAction.Playback)
                 return;
 
             // Note: only timestamps requests can be marked pending.
@@ -3291,7 +3290,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            if (!isCurrentlyPlaying || activePlayerState.Mode != PlayerStateMode.Playback)
+            if (!isCurrentlyPlaying || activePlayerState.Action != PlayerAction.Playback)
                 return;
             
             // Compute final expected timestamp.

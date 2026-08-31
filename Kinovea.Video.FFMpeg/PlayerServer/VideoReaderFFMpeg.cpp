@@ -673,11 +673,11 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
         int64_t target = mRequestedPlayerState->ReferenceTimestamp;
         mWorkingPlayerState = mRequestedPlayerState;
 
-        if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
+        if (mRequestedPlayerState->Action == PlayerAction::StepForward)
         {
             acquired = MoveRequestOnDemand(true, -1);
         }
-        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward &&
+        else if (mRequestedPlayerState->Action == PlayerAction::StepBackward &&
                  mSingleFrameContainer->CurrentFrame != nullptr && 
                  mSingleFrameContainer->CurrentFrame->PreviousTimestamp >= 0)
         {
@@ -699,11 +699,11 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
         int64_t target = mRequestedPlayerState->ReferenceTimestamp;
         mWorkingPlayerState = mRequestedPlayerState;
 
-        if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
+        if (mRequestedPlayerState->Action == PlayerAction::StepForward)
         {
             acquired = MoveRequestCaching(true, -1);
         }
-        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward &&
+        else if (mRequestedPlayerState->Action == PlayerAction::StepBackward &&
                  mCache->CurrentFrame != nullptr &&
                  mCache->CurrentFrame->PreviousTimestamp >= 0)
         {
@@ -746,17 +746,29 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     {
         // The relocation of the decoder must happen here before returning.
         log->DebugFormat("Cache contiguity: {0}.", mPreBuffer->IsContiguous());
+        
+        if (acquired)
+        {
+            // If already aquired we don't need to stop/restart the buffering thread,
+            // but we will still need to handle a possible pending frame.
+            lock l(mLockNewJobReady);
+            {
+                log->DebugFormat("Marking job #{0} as ready.", mRequestedPlayerState->Id);
+                mReadyJobId = mRequestedPlayerState->Id;
+                mRequestFulfilled = true;
 
-        // If already aquired we don't need to stop/restart the buffering thread,
-        // but we will still need to handle a possible pending frame.
-
-        if (!acquired)
+                // Wake up the decoder thread.
+                Monitor::PulseAll(mLockNewJobReady);
+                l.release();
+            }
+        }
+        else
         {
             // Relocate synchronously.
             // Note that we don't try to optimize for the "near ahead" case,
             // we always stop the thread and do a seek.
             // 
-            // An example of this request subtype is when we are about to start playback,
+            // An example of this request subtype is when we are about to start playback:
             // we need to be sure the decoder is relocated before the actual playback starts.
             
             StopPreBufferingThread();
@@ -766,9 +778,12 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
             // Make sure the relocation, which is performed on the UI thread before the decoding thread 
             // restarts, already knows about the new request.
             // When the decoding thread itself starts it initializes itself with job id -1 
-            // so it will find it again in the first call to "HasJobChanged" and will wait until
-            // we mark it as ready below.
-            mWorkingPlayerState = mRequestedPlayerState;
+            // so it will immediately find that "HasJobChanged".
+            // We don't need to lock here since the decoding thread is dead.
+            {
+                mReadyJobId = mRequestedPlayerState->Id;
+                mRequestFulfilled = true;
+            }
 
             // Handling of next/prev request subtype.
             // We may not have the neighbor frame so we don't know the exact timestamps.
@@ -777,38 +792,38 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
             // For now we estimate the target to be one frame away for simplicity.
             // ReadFrameSeek decodes until it is past that and then calls AcquireClosest().
             int64_t target = mRequestedPlayerState->ReferenceTimestamp;
-            if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
+            if (mRequestedPlayerState->Action == PlayerAction::StepForward)
             {
                 target = target + mVideoInfo.AverageTimeStampsPerFrame;
             }
-            else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward)
+            else if (mRequestedPlayerState->Action == PlayerAction::StepBackward)
             {
                 target = target - mVideoInfo.AverageTimeStampsPerFrame;
             }
 
             // Move to the target location and restart the thread, which will immediately
-            // wait for the new job to be marked as ready.
+            // found that the new job is ready.
             StartPreBufferingThread(mRequestedPlayerState->ReferenceTimestamp);
             mPreBuffer->AcquireClosest(mRequestedPlayerState->ReferenceTimestamp);
+        
+            acquired = true;
         }
-
-        acquired = true;
-        fulfilled = true;
     }
-
-    // The new job is now ready to be worked on.
-    lock l(mLockNewJobReady);
+    else
     {
-        // By now the decoding thread should be waiting in WaitForReadyJob().
-        log->DebugFormat("Marking job #{0} as ready.", mRequestedPlayerState->Id);
-        mReadyJobId = mRequestedPlayerState->Id;
-        mRequestFulfilled = fulfilled;
+        lock l(mLockNewJobReady);
+        {
+            // By now the decoding thread should be waiting in WaitForReadyJob().
+            log->DebugFormat("Marking job #{0} as ready.", mRequestedPlayerState->Id);
+            mReadyJobId = mRequestedPlayerState->Id;
+            mRequestFulfilled = fulfilled;
 
-        // Wake up the decoder thread.
-        Monitor::PulseAll(mLockNewJobReady);
-        l.release();
+            // Wake up the decoder thread.
+            Monitor::PulseAll(mLockNewJobReady);
+            l.release();
+        }
     }
-
+    
     return acquired;
 }
 
@@ -863,7 +878,7 @@ bool VideoReaderFFMpeg::MoveRequestOnDemand(bool next, int64_t target)
         // Synchronous read of the requested frame.
         // ReadFrameSeek will call `store` on the single-frame frame container
         // which will set the `Current` property to the requested frame.
-        ReadResult res = ReadFrameSeek(target, true, false);
+        ReadResult res = ReadFrameSeek(target, true, false, false);
         return (res == ReadResult::Success);
     }
 }
@@ -1236,7 +1251,9 @@ void VideoReaderFFMpeg::ResolveGeometry(VideoGeometryRequest^ request)
     // Prescaled means we output at the presentation size and the player 
     // can draw directly without rescaling.
     // Whether we decode at the full size or not is orthogonal.
-    bool isPrescaled = mOutputSize == request->PresentationSize;
+    bool isPrescaled = 
+        Math::Abs(mOutputSize.Width - request->PresentationSize.Width) <= 4 && 
+        Math::Abs(mOutputSize.Height - request->PresentationSize.Height) <= 4;
 
     mVideoGeometry = gcnew VideoGeometry(
         mReferenceSize,
@@ -1250,9 +1267,11 @@ void VideoReaderFFMpeg::ResolveGeometry(VideoGeometryRequest^ request)
         true,
         0);
 
-    log->DebugFormat("Video geometry resolved: Original size: {0}x{1}, Scaled size:{2}x{3}.",
+    log->DebugFormat("Video geometry resolved: Original: {0}x{1}, Scaled:{2}x{3}, Presentation:{4}x{5}, Prescaling: {6}.",
         mOriginalSize.Width, mOriginalSize.Height,
-        mScaledSize.Width, mScaledSize.Height);
+        mScaledSize.Width, mScaledSize.Height,
+        request->PresentationSize.Width, request->PresentationSize.Height,
+        isPrescaled);
 
     LogVideoGeometry(mVideoGeometry);
 }
@@ -1363,6 +1382,10 @@ void VideoReaderFFMpeg::ImportWorkingZoneToCache(System::Object^ sender, DoWorkE
 
 bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection section)
 {
+    //--------------------------
+    // Runs on the cache thread.
+    //--------------------------
+
     // Load the asked section to cache (doesn't move the playhead).
     // Called when filling the cache with the Working Zone.
     // This method is always called on a background thread.
@@ -1420,7 +1443,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     // Seek to first frame.
     int read = 0;
     bool success = true;
-    ReadResult res = ReadFrameSeek(section.Start, true, false);
+    ReadResult res = ReadFrameSeek(section.Start, true, false, false);
     success = (res == ReadResult::Success);
     read++;
 
@@ -1592,7 +1615,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameNext()
 }
 
 
-ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek, bool preRoll)
+ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek, bool preRoll, bool allowInterrupt)
 {
     //-----------------------------------
     // This runs in either the main thread or the prebuffering thread.
@@ -1658,7 +1681,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
             return ReadResult::ThreadCancelled;
         }
 
-        if (HasJobChanged())
+        if (allowInterrupt && HasJobChanged())
         {
             av_frame_free(&frame);
             return ReadResult::NewJob;
@@ -1727,7 +1750,7 @@ bool VideoReaderFFMpeg::ShouldStoreFrame()
     if (mCachingMode != VideoDecodingMode::PreBuffering)
         return true;
 
-    if (mWorkingPlayerState->Mode != PlayerStateMode::Playback)
+    if (mWorkingPlayerState->Action != PlayerAction::Playback)
         return true;
 
     if (!mAllowFrameSkipping)
@@ -2579,6 +2602,9 @@ void VideoReaderFFMpeg::DisposeFrame(VideoFrame^ videoFrame)
 
 void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
 {
+    //--------------------------
+    // Runs on the UI thread.
+    //--------------------------
     if (!CanPreBuffer)
     {
         throw gcnew InvalidProgramException();
@@ -2604,7 +2630,8 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
     // Read the first frame outside the decoding thread so the UI may request it immediately.
     if (startTimestamp >= 0)
     {
-        ReadResult res = ReadFrameSeek(startTimestamp, true, true);
+        log->DebugFormat("Buffering thread. Relocating to [~{0}] before starting the thread.", startTimestamp);
+        ReadResult res = ReadFrameSeek(startTimestamp, true, true, false);
         if (res == ReadResult::Success)
         {
             // Note that the frame actually closest to the target timestamp may be the 
@@ -2723,7 +2750,7 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
     // The decoder has already been relocated.
 
     log->DebugFormat("ProcessJob. Starting sequential decoding for job #{0} ({1}) -----------------------", 
-        mWorkingPlayerState->Id, mWorkingPlayerState->Mode);
+        mWorkingPlayerState->Id, mWorkingPlayerState->Action);
 
     mPreBuffer->Print();
 
@@ -2752,7 +2779,7 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
         // During playback each step can be skipped depending on the lag.
         // If the cache is full this will wait in PreBuffer.Add().
 
-        if (mWorkingPlayerState->Mode == PlayerStateMode::Playback)
+        if (mWorkingPlayerState->Action == PlayerAction::Playback)
         {
             UpdateFrameSkippingPolicy();
         }
@@ -2785,12 +2812,18 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
 bool VideoReaderFFMpeg::HasJobChanged()
 {
     PlayerState^ latestPlayerState = Volatile::Read(this->mRequestedPlayerState);
+
+    if (mWorkingPlayerState == nullptr)
+    {
+        log->ErrorFormat("mWorkingPlayerState == nullptr");
+        return true;
+    }
+
     return latestPlayerState->Id > mWorkingPlayerState->Id;
 }
 
 PlayerState^ VideoReaderFFMpeg::WaitForNewJobReady(ThreadCanceler^ canceller, int currentJobId)
 {
-
     lock l(mLockNewJobReady);
     {
         while (true)
@@ -2835,7 +2868,7 @@ void VideoReaderFFMpeg::UpdateFrameSkippingPolicy()
     if (!mAllowFrameSkipping)
         return;
 
-    if (mWorkingPlayerState->Mode != PlayerStateMode::Playback)
+    if (mWorkingPlayerState->Action != PlayerAction::Playback)
         return;
 
     // Estimate how far behind we are compared to the player.
@@ -3099,12 +3132,12 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     // In these cases the reference timestamp was set to the current frame.
     if (!isAcquired)
     {
-        if (state->Mode == PlayerStateMode::StepForward)
+        if (state->Action == PlayerAction::StepForward)
         {
             targetTimestamp = state->ReferenceTimestamp + mVideoInfo.AverageTimeStampsPerFrame;
             plan->TargetTimestamp = targetTimestamp;
         }
-        else if (state->Mode == PlayerStateMode::StepBackward)
+        else if (state->Action == PlayerAction::StepBackward)
         {
             targetTimestamp = state->ReferenceTimestamp - mVideoInfo.AverageTimeStampsPerFrame;
             plan->TargetTimestamp = targetTimestamp;
@@ -3328,6 +3361,10 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
 
 bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
 {
+    //-------------------------------
+    // Runs on the prebuffer thread.
+    //-------------------------------
+    
     // Relocate the decoder according to the plan.
     // 
     // The first thing we need to handle is the pending frame if any.
@@ -3362,7 +3399,7 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
         DisposePending();
 
         // Seek and decode until the target.
-        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, true, true);
+        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, true, true, true);
         if (res == ReadResult::Success)
         {
             mPreBuffer->AcquireClosest(plan->TargetTimestamp);
@@ -3391,7 +3428,7 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
             DisposePending();
         }
 
-        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, false, true);
+        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, false, true, true);
         if (res == ReadResult::Success)
         {
             mPreBuffer->AcquireClosest(plan->TargetTimestamp);

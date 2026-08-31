@@ -138,7 +138,7 @@ namespace Kinovea.Video
         #region Members
         // Player state from the latest player request.
         // Used by the reader to schedule decoding.
-        protected PlayerState mRequestedPlayerState = PlayerState.Empty;
+        protected PlayerState mRequestedPlayerState = PlayerState.MakeInvalid();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -221,7 +221,7 @@ namespace Kinovea.Video
         /// </summary>
         public long GetPlaybackTimestamp(PlayerState state)
         {
-            if (state == null || state.Mode != PlayerStateMode.Playback)
+            if (state == null || state.Action != PlayerAction.Playback)
                 return 0;
 
             long now = Stopwatch.GetTimestamp();

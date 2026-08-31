@@ -187,7 +187,7 @@
     <Compile Include="Caching\IVideoFramesContainer.cs" />
     <Compile Include="Caching\IWorkingZoneContainer.cs" />
     <Compile Include="Caching\PreBuffer2.cs" />
-    <Compile Include="Caching\PlayerStateMode.cs" />
+    <Compile Include="Caching\PlayerAction.cs" />
     <Compile Include="Caching\SingleFrame.cs" />
     <Compile Include="OpenVideoResult.cs" />
     <Compile Include="RecordingResult.cs" />

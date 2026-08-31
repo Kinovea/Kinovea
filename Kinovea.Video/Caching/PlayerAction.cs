@@ -9,11 +9,13 @@ namespace Kinovea.Video
     /// <summary>
     /// Type of presentation requests from the player.
     /// </summary>
-    public enum PlayerStateMode
+    public enum PlayerAction
     {
         /// <summary>
-        /// The player is in playback mode, the frame can be set to 
-        /// the closest available in cache, best-effort basis.
+        /// The player is starting playback. 
+        /// The target frame should be set exactly.
+        /// Future requests will go through the lightweight MoveRequest 
+        /// until playback is stopped.
         /// </summary>
         Playback,
 
@@ -23,15 +25,13 @@ namespace Kinovea.Video
         Timestamp,
 
         /// <summary>
-        /// The player requests the very next frame.
+        /// The player requests the next media frame.
         /// </summary>
         StepForward,
 
         /// <summary>
-        /// The player requests the very previous frame.
+        /// The player requests the previous media frame.
         /// </summary>
         StepBackward,
-
-        RefreshInPlace,
     }
 }

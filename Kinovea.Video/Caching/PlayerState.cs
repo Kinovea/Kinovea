@@ -31,7 +31,7 @@ namespace Kinovea.Video
         /// The kind of timeline action the player is currently doing.
         /// playback/timestamp/step forward/step backward.
         /// </summary>
-        public PlayerStateMode Mode { get; }
+        public PlayerAction Action { get; }
 
         /// <summary>
         /// Whether the decoder must be relocated before the 
@@ -63,14 +63,14 @@ namespace Kinovea.Video
 
         public PlayerState(
             int generation, 
-            PlayerStateMode mode,
+            PlayerAction type,
             bool synchronous,
             long referenceTimestamp,
             double playbackFrameInterval = 0, 
             double refreshInterval = 0) 
         {
             Id = generation;
-            Mode = mode;
+            Action = type;
             SynchronousFulfill = synchronous;
             ReferenceTimestamp = referenceTimestamp;
             PlaybackFrameInterval = playbackFrameInterval;
@@ -79,17 +79,18 @@ namespace Kinovea.Video
 
         public PlayerState Clone()
         {
-            return new PlayerState(Id, Mode, SynchronousFulfill, ReferenceTimestamp, PlaybackFrameInterval, RefreshInterval);
+            return new PlayerState(Id, Action, SynchronousFulfill, ReferenceTimestamp, PlaybackFrameInterval, RefreshInterval);
         }
 
-
-
-        public static PlayerState Empty => new PlayerState(0, PlayerStateMode.Timestamp, true, 0);
+        public static PlayerState MakeInvalid()
+        {
+            return new PlayerState(-1, PlayerAction.Timestamp, true, 0);
+        }
     
         public override string ToString()
         {
             return string.Format("#{0} Mode: {1}. Sync: {2}. Ref: [~{3}].", 
-                Id, Mode, SynchronousFulfill, ReferenceTimestamp);
+                Id, Action, SynchronousFulfill, ReferenceTimestamp);
         }
 
     }
