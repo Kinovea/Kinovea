@@ -598,31 +598,6 @@ namespace Kinovea.Video
             return new List<VideoFrame>() { frame };
         }
 
-        /// <summary>
-        /// Remove all frames except the one pointed to by "current".
-        /// Returns the removed frames so they can be disposed outside the lock.
-        /// Caller must hold sync.
-        /// </summary>
-        private List<VideoFrame> EvictPurge()
-        {
-            if (current == null || frames.Count < 2)
-                return null;
-
-            List<VideoFrame> removed = new List<VideoFrame>();
-            for (int i = frames.Count - 1; i >= 0; i--)
-            {
-                VideoFrame frame = frames.Values[i];
-                if (!ReferenceEquals(frame, current))
-                {
-                    frames.RemoveAt(i);
-                    removed.Add(frame);
-                }
-            }
-
-            log.DebugFormat("Evicted {0} frames. Cached: {1}.", removed.Count, frames.Count);
-
-            return removed;
-        }
         #endregion
 
     }
