@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
                 {
                     // We do not reset the time origin.
                     trkFrame.UpdateMarkers(m_FrameServer.Metadata);
-                    UpdateCurrentPositionLabel(currentTimestamp);
+                    UpdateCurrentPositionLabels(currentTimestamp);
 
                     m_bSyncMerge = false;
                     if (m_SyncMergeImage != null)
@@ -847,7 +847,7 @@ namespace Kinovea.ScreenManager
         public void UpdateTimeLabels()
         {
             UpdateSelectionLabels();
-            UpdateCurrentPositionLabel(currentTimestamp);
+            UpdateCurrentPositionLabels(currentTimestamp);
             UpdateSpeedLabel();
             UpdateInfobar();
         }
@@ -869,7 +869,7 @@ namespace Kinovea.ScreenManager
         public void TimeOriginUpdatedFromSync()
         {
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
-            UpdateCurrentPositionLabel(currentTimestamp);
+            UpdateCurrentPositionLabels(currentTimestamp);
         }
 
         /// <summary>
@@ -2203,7 +2203,7 @@ namespace Kinovea.ScreenManager
 
             m_FrameServer.Metadata.TimeOrigin = currentTimestamp;
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
-            UpdateCurrentPositionLabel(currentTimestamp);
+            UpdateCurrentPositionLabels(currentTimestamp);
             sidePanelKeyframes.UpdateTimecodes();
             if (videoFilterIsActive)
                 m_FrameServer.Metadata.ActiveVideoFilter.UpdateTimeOrigin(m_FrameServer.Metadata.TimeOrigin);
@@ -2408,7 +2408,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Frame Tracker
+        #region Frame Tracker / Main timeline
         private void trkFrame_PositionChanging(object sender, TimeEventArgs e)
         {
             if (!interactiveFrameTracker)
@@ -2416,16 +2416,17 @@ namespace Kinovea.ScreenManager
 
             if (m_FrameServer.Loaded)
             {
-                // Update image but do not touch cursor, as the user is manipulating it.
-                // If the position needs to be adjusted to an actual timestamp, it'll be done later.
                 StopPlaying();
-                UpdateFrameCurrentPosition(false);
 
+                if (trkFrame.Position != activePlayerState.ReferenceTimestamp)
+                {
+                    PresentFrame(trkFrame.Position, true);
+                }
 
-                // Updates the UI as soon as possible, using this "request" timestamp,
-                // before the image comes back and the official timestamp is known.
+                // Update image but try to not touch cursor, as the user is still manipulating it.
+                // The position will be readjusted to the resolved timestamp later.
                 lblTimeTip.Visible = true;
-                UpdateCurrentPositionLabel(trkFrame.Position);
+                UpdateCurrentPositionLabels(trkFrame.Position);
             }
         }
         private void trkFrame_PositionChanged(object sender, TimeEventArgs e)
@@ -2434,13 +2435,18 @@ namespace Kinovea.ScreenManager
             {
                 OnPoke();
 
+                // Temporary set the "resolved" timestamp to our position.
                 currentTimestamp = trkFrame.Position;
 
                 StopPlaying();
                 OnPauseAsked();
 
                 // Final update to timestamps.
-                UpdateFrameCurrentPosition(true);
+                if (trkFrame.Position != activePlayerState.ReferenceTimestamp)
+                {
+                    PresentFrame(trkFrame.Position, true);
+                }
+
                 lblTimeTip.Visible = false;
             }
         }
@@ -2452,15 +2458,7 @@ namespace Kinovea.ScreenManager
             KeyframeControl_MoveToCurrentTimeAsked(sender, e);
         }
 
-        private void UpdateFrameCurrentPosition(bool _bUpdateNavCursor)
-        {
-            // Relocation request coming from the timeline (trkFrame).
-            if (trkFrame.Position != activePlayerState.ReferenceTimestamp)
-            {
-                PresentFrame(trkFrame.Position, true);
-            }
-        }
-        private void UpdateCurrentPositionLabel(long timestamp)
+        private void UpdateCurrentPositionLabels(long timestamp)
         {
             // Note: among other places, this is run inside the playloop.
             string timecode = m_FrameServer.TimeStampsToTimecode(timestamp, TimeType.UserOrigin, timecodeFormat, true);
@@ -2471,6 +2469,12 @@ namespace Kinovea.ScreenManager
                 lblTimeTip.Left = trkFrame.CursorBlockCenter;
             }
         }
+
+        /// <summary>
+        /// Update the part of the UI showing the current time.
+        /// Main timeline location, selection timeline,
+        /// time tip, labels.
+        /// </summary>
         private void UpdatePositionUI()
         {
             // Update markers and label for position.
@@ -2478,7 +2482,7 @@ namespace Kinovea.ScreenManager
             trkFrame.Invalidate();
             trkSelection.SelPos = currentTimestamp;
             trkSelection.Invalidate();
-            UpdateCurrentPositionLabel(currentTimestamp);
+            UpdateCurrentPositionLabels(currentTimestamp);
         }
 
         private void PanelVideoControls_DragDrop(object sender, DragEventArgs e)
@@ -2525,7 +2529,7 @@ namespace Kinovea.ScreenManager
         }
         private void ChangeSpeed(int change)
         {
-            // The value is a target diff percentage.
+            // The input value is a relative percentile milestone.
             // Ex: we are on 86%, value = -25, the target is 75%.
 
             if (change == 0)
