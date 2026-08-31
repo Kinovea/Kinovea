@@ -88,13 +88,9 @@ namespace Kinovea.Video
             current = null;
         }
 
-        /// <summary>
-        /// Clear the frame without disposing the bitmap.
-        /// Used when the frame has been transferred to a different container.
-        /// </summary>
-        public void Forget()
+        public void Shutdown()
         {
-            current = null;
+            throw new NotImplementedException();
         }
     }
 }

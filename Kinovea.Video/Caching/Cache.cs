@@ -156,6 +156,12 @@ namespace Kinovea.Video
             log.Debug("Cache cleared.");
         }
         
+        public void Shutdown()
+        {
+            throw new NotImplementedException();
+        }
+
+
         /// <summary>
         /// Evict all frames outside the new working zone.
         /// </summary>

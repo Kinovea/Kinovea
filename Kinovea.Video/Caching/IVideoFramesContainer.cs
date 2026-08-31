@@ -25,7 +25,18 @@ namespace Kinovea.Video
     public interface IVideoFramesContainer
     {
         VideoFrame CurrentFrame { get; }
-        CacheAddResult Add(VideoFrame _frame);
+        
+        CacheAddResult Add(VideoFrame frame);
+
+        /// <summary>
+        /// Clear all frames even the one pointed by current.
+        /// </summary>
         void Clear();
+
+        /// <summary>
+        /// Clear all frames even the one pointed by current.
+        /// Prevent any further additions and release any waiting threads.
+        /// </summary>
+        void Shutdown();
     }
 }

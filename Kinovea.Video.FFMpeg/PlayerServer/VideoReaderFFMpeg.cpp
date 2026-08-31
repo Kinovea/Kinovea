@@ -604,7 +604,7 @@ void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
         else
         {
             // Something went very wrong.
-            mPreBuffer->Clear();
+            mPreBuffer->Shutdown();
             log->ErrorFormat("Prebuffering thread stopped.");
             mCachingMode = VideoDecodingMode::OnDemand;
         }
@@ -711,7 +711,7 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     // it will eventually see this and abandon its current job.
     // It will then wait until this new job is ready to be processed.
     Volatile::Write(requestedPlayerState, newState);
-    log->DebugFormat("Published decode job {0}", requestedPlayerState);
+    log->DebugFormat("Received player request {0}", requestedPlayerState);
 
     // Try acquire the target and prepare the cache for the new job if needed.
     bool acquired = false;
@@ -722,7 +722,7 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        log->DebugFormat("Preparing prebuffer for decode job {0} Tolerance: [{1:0.000}]", 
+        log->DebugFormat("Preparing prebuffer for player request {0} Tolerance: [{1:0.000}]", 
             requestedPlayerState, mPreBuffer->Tolerance);
 
         mPreBuffer->Print();
@@ -745,6 +745,9 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
         Monitor::PulseAll(mLockNewJobReady);
         l.release();
     }
+
+    // If we return false here we MUST raise either 
+    // OnFrameAcquired() or OnRequestFailed() at the end of InitDecodingJob
 
     return acquired;
 }
@@ -882,7 +885,7 @@ void VideoReaderFFMpeg::UpdateWorkingZone(
             
             if (loadMode == CacheLoadMode::Reload)
             {
-                mFrameContainer->Clear();
+                mCache->Clear();
                 mSectionToPrepend = newZone;
                 DoWorkEventHandler^ workHandler = gcnew DoWorkEventHandler(this, &VideoReaderFFMpeg::ImportWorkingZoneToCache);
                 workerFn(workHandler);
@@ -955,7 +958,7 @@ void VideoReaderFFMpeg::UpdateWorkingZone(
         if (mCachingMode == VideoDecodingMode::PreBuffering)
         {
             StopPreBufferingThread();
-            mPreBuffer->Clear();
+            mPreBuffer->Shutdown();
             StartPreBufferingThread(mWorkingZone.Start);
         }
         else
@@ -1037,31 +1040,36 @@ void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode newMode)
         throw gcnew CapabilityNotSupportedException();
     }
 
-    if (newMode == mCachingMode)
+    VideoDecodingMode oldMode = mCachingMode;
+
+
+    if (newMode == oldMode)
     {
         return;
     }
 
     if (mVerbose)
     {
-        log->DebugFormat("Changing caching mode: {0} -> {1}", mCachingMode, newMode);
+        log->DebugFormat("Changing caching mode: {0} -> {1}", oldMode, newMode);
     }
 
     // Clear the existing cache.
-    if (mCachingMode == VideoDecodingMode::PreBuffering)
+    switch (oldMode)
     {
+    case VideoDecodingMode::OnDemand:
+        mSingleFrameContainer->Clear();
+        break;
+    case VideoDecodingMode::PreBuffering:
         StopPreBufferingThread();
-        mFrameContainer->Clear();
+        mPreBuffer->Shutdown();
+        break;
+    case VideoDecodingMode::Caching:
+        mCache->Clear();
+        break;
     }
-    else if (mFrameContainer != nullptr)
-    {
-        mFrameContainer->Clear();
-    }
-
-    mCachingMode = newMode;
 
     // Change container.
-    switch (mCachingMode)
+    switch (newMode)
     {
     case VideoDecodingMode::OnDemand:
         mFrameContainer = mSingleFrameContainer;
@@ -1076,6 +1084,9 @@ void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode newMode)
         mFrameContainer = nullptr;
     }
 
+    // We have officially switched.
+    mCachingMode = newMode;
+
     // Recompute the geometry, to take into account a possible
     // change in allowPrescaling.
     ResolveGeometry(mVideoGeometryRequest);
@@ -1084,7 +1095,7 @@ void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode newMode)
     // For Caching, the caller should launch a background worker
     // to fill the cache.
     // For PreBuffering, we read the first frame and start the background thread.
-    if (mCachingMode == VideoDecodingMode::PreBuffering)
+    if (newMode == VideoDecodingMode::PreBuffering)
     {
         StartPreBufferingThread(mWorkingZone.Start);
     }
@@ -2559,7 +2570,7 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
         // This shouldn't happen.
         log->Error("Prebuffering thread already started");
         StopPreBufferingThread();
-        mPreBuffer->Clear();
+        mPreBuffer->Shutdown();
     }
 
     // Make sure we allow adding the first frame.
@@ -2951,11 +2962,35 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
     
     log->Debug(plan);
 
+    log->DebugFormat("Executing plan for decoding job #{0}.", state->Id);
+
+
+    // By the end of this we MUST have signalled the UI that the request is complete,
+    // so it can restart scheduling jobs.
+
+    // Treat this first in case we put the pending frame in blocking.
+    if (!plan->TargetAcquired && plan->TargetAcquiredInPlanning)
+    {
+        log->DebugFormat("Target acquired during planning of the decoding job.");
+        OnFrameAcquired(state);
+    }
+
     bool acquiredDuringInit = ExecuteDecodingJobPlan(state, plan);
-    if (!plan->TargetAcquired && acquiredDuringInit)
+
+    if (plan->TargetAcquired)
+    {
+        return;
+    }
+
+    if (acquiredDuringInit && !plan->TargetAcquiredInPlanning)
     {
         log->DebugFormat("Target acquired during execution of the decoding job plan.");
         OnFrameAcquired(state);
+    }
+    else
+    {
+        log->DebugFormat("Target failed to be acquired.");
+        OnRequestFailed(state);
     }
 
     // At this point the decoder can just start decoding frames forward until EOF or cancellation.
@@ -3016,8 +3051,18 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         // The decoder location is not known.
         // This may happen for example if we start a seek and get interrupted 
         // with a new job before decoding even the first frame.
+
+        // There is one valid case: we reached EOF and we have nothing more to decode.
+        // TODO: keep a flag, this will be more accurate.
+        if (isAcquired)
+        {
+            plan->DecoderRelocation = DecoderRelocation::None;
+            return plan;
+        }
+
+
         log->DebugFormat("DecodingJobPlan: Decoder is nowhere: seeking.");
-        mPreBuffer->Clear();
+        mPreBuffer->Purge();
         plan->DecoderRelocation = DecoderRelocation::Seek;
         return plan;
     }
@@ -3213,7 +3258,8 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         // Decoder is far ahead?
         // Normally this is impossible, the "far ahead" threshold should
         // be larger than the cache capacity.
-        // Error case.
+        // Generally an error case.
+        // One way to get this is to move the timeline quickly back and forth between far away locations.
         DisposePending();
         mPreBuffer->Purge();
         plan->ResubmitPending = false;
@@ -3303,24 +3349,20 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
     else if (plan->DecoderRelocation == DecoderRelocation::None)
     {
         // The decoder is already in the right spot.
+        bool acquiredHere = false;
         if (plan->ResubmitPending && mPendingFrame != nullptr)
         {
-            return ResubmitPending(plan->TargetTimestamp, false);
+            acquiredHere = ResubmitPending(plan->TargetTimestamp, false);
         }
         else
         {
             DisposePending();
         }
 
-        if (plan->TargetAcquiredInPlanning)
-        {
-            return true;
-        }
-
-        // Hopefully the target was acquired from the cache during the job preparation.
-        return false;
+        return acquiredHere || plan->TargetAcquiredInPlanning;
     }
 
+    // Hopefully the target was acquired from the cache during the job preparation.
     return false;
 }
 

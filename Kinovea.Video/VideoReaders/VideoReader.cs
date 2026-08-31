@@ -55,6 +55,12 @@ namespace Kinovea.Video
             FrameAcquired?.Invoke(this, new EventArgs<PlayerState>(state));
         }
 
+        public event EventHandler<EventArgs<PlayerState>> RequestFailed;
+        protected void OnRequestFailed(PlayerState state)
+        {
+            RequestFailed?.Invoke(this, new EventArgs<PlayerState>(state));
+        }
+
         #region Properties
         public abstract VideoFrame Current { get; }
         public abstract VideoCapabilities Flags { get; }

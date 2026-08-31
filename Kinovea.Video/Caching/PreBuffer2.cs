@@ -101,7 +101,7 @@ namespace Kinovea.Video
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-                Clear();
+                Shutdown();
         }
         #endregion
 
@@ -298,6 +298,10 @@ namespace Kinovea.Video
                     // Do the normal eviction of old frames outside the retention window.
                     // (Whether the target was acquired or not).
                     removed = EvictBehind(index, framesToKeepBehind);
+                    if (removed != null && removed.Contains(current))
+                    {
+                        current = closest;
+                    }
 
                     result = new CachePreparationResult(targetAcquired, acquiredTimestamp);
                 }
@@ -335,25 +339,34 @@ namespace Kinovea.Video
         /// Remove and dispose all frames including the one pointed to by "current".
         /// Pulse any waiters.
         /// </summary>
-        public void Clear()
+        public void Shutdown()
         {
-            VideoFrame[] framesToDispose;
+            List<VideoFrame> removed = new List<VideoFrame>();
 
             lock (sync)
             {
-                framesToDispose = frames.Values.ToArray();
+                removed = frames.Values.ToList();
                 frames.Clear();
                 current = null;
 
+                // Close for business.
+                interruptAdd = true;
+
+                // Unblock the decoder if waiting in Add().
                 Monitor.PulseAll(sync);
             }
 
-            foreach (var frame in framesToDispose)
+            foreach (var frame in removed)
             {
                 DisposeFrame(frame);
             }
 
             log.Debug("Cache cleared.");
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -365,34 +378,22 @@ namespace Kinovea.Video
 
             lock (sync)
             {
-                if (current == null)
-                {
-                    Clear();
-                    return;
-                }
-
-                if (frames.Count < 2)
-                    return;
-
                 for (int i = frames.Count - 1; i >= 0; i--)
                 {
                     VideoFrame frame = frames.Values[i];
-                    if (!ReferenceEquals(frame, current))
-                    {
-                        frames.RemoveAt(i);
-                        removed.Add(frame);
-                    }
+                    if (ReferenceEquals(frame, current))
+                        continue;
+
+                    frames.RemoveAt(i);
+                    removed.Add(frame);
                 }
 
                 log.DebugFormat("Cache purge. Removed {0} frames. Cached: {1}.", removed.Count, frames.Count);
             }
 
-            if (removed != null)
+            foreach (VideoFrame frame in removed)
             {
-                foreach (VideoFrame frame in removed)
-                {
-                    DisposeFrame(frame);
-                }
+                DisposeFrame(frame);
             }
         }
 
@@ -533,27 +534,33 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Remove old frames from the cache with a retention window.
-        /// Returns the removed frames so they can be disposed outside the lock.
+        /// Protects current.
         /// Caller must hold sync.
+        /// Returns the removed frames.
         /// </summary>
-        private List<VideoFrame> EvictBehind(int index, int framesToKeep)
+        private List<VideoFrame> EvictBehind(int pivotIndex, int framesToKeep)
         {
             if (frames.Count < 2)
                 return null;
 
-            int removeCount = index - framesToKeep;
-            if (removeCount <= 0)
-                return null;
+            // Retains pivot and anything after it.
+            // Of items before pivot, retain at most framesToKeep immediately before it.
+            // protect current even if it's earlier than retention window.
 
+            int retainFrom = Math.Max(0, pivotIndex - framesToKeep);
             List<VideoFrame> removed = new List<VideoFrame>();
-            for (int i = 0; i < removeCount; i++)
+
+            for (int i = retainFrom - 1; i >= 0; i--)
             {
-                VideoFrame frame = frames.Values[0];
-                frames.RemoveAt(0);
+                VideoFrame frame = frames.Values[i];
+                if (ReferenceEquals(frame, current))
+                    continue;
+
+                frames.RemoveAt(i);
                 removed.Add(frame);
             }
 
-            log.DebugFormat("Evicted {0} frames behind current. Cached: {1}.", removeCount, frames.Count);
+            log.DebugFormat("Evicted {0} frames. Cached: {1}.", removed.Count, frames.Count);
             return removed;
         }
 

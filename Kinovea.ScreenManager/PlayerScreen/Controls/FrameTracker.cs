@@ -107,6 +107,7 @@ namespace Kinovea.ScreenManager
             get { return curTimestamp; }
             set
             {
+                // The cursor is being re-adjusted from the player using real timestamps from the media.
                 curTimestamp = Clamp(value, minTimestamp, maxTimestamp);
                 UpdateCursorPosition();
             }
