@@ -3133,11 +3133,30 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     }
 
 
-    // Treat the easy cases first.
+    // Treat some sanity checks first.
+    TimestampRelation relTarget = RelateTimestamps(targetTimestamp, mDecodedTimestamp);
+    if (relTarget == TimestampRelation::FarAhead)
+    {
+        log->WarnFormat("DecodingJobPlan: Decoder is far behind player: seeking.");
+        DisposePending();
+        mPreBuffer->Purge();
+        plan->DecoderRelocation = DecoderRelocation::Seek;
+        return plan;
+    }
+
+    CacheTimestampRelation relCache = mPreBuffer->RelateTimestamp(mDecodedTimestamp);
+    if (relCache == CacheTimestampRelation::FarAhead)
+    {
+        log->WarnFormat("DecodingJobPlan: Rogue decoder far ahead of the cache: seeking.");
+        DisposePending();
+        mPreBuffer->Purge();
+        plan->DecoderRelocation = DecoderRelocation::Seek;
+        return plan;
+    }
+
     // Check if the target is completely outside the cache.
-
-    CacheTimestampRelation relCache = mPreBuffer->RelateTimestamp(targetTimestamp);
-
+    relCache = mPreBuffer->RelateTimestamp(targetTimestamp);
+    
     if (relCache == CacheTimestampRelation::Empty)
     {
         log->DebugFormat("DecodingJobPlan: Cache is empty: seeking.");
@@ -3153,8 +3172,8 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         // the frames ahead but it's tough since we lose the decoder location anyway.
         // If the player moves forward again the frames would be available,
         // and decoded as duplicates at the same time.
+        DisposePending();
         mPreBuffer->Purge();
-
         plan->DecoderRelocation = DecoderRelocation::Seek;
         return plan;
     }
@@ -3164,7 +3183,6 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
         
         // The cache has already been purged and only retains a retention 
         // window worth of frames at the end.
-
         plan->ResubmitPending = true;
         plan->DecoderRelocation = DecoderRelocation::Advance;
         return plan;
@@ -3173,39 +3191,20 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     {
         log->DebugFormat("DecodingJobPlan: Target far ahead of prebuffer: seeking.");
         
-        mPreBuffer->Purge();
-        
-        // TODO: tell the decoder to fill the cache as it arrives near the target.
-
-        plan->DecoderRelocation = DecoderRelocation::Seek;
-        return plan;
-    }
-
-    // Sanity check
-    relCache = mPreBuffer->RelateTimestamp(mDecodedTimestamp);
-    if (relCache == CacheTimestampRelation::FarAhead)
-    {
-        log->WarnFormat("DecodingJobPlan: Rogue decoder far ahead.");
+        DisposePending();
         mPreBuffer->Purge();
         plan->DecoderRelocation = DecoderRelocation::Seek;
         return plan;
     }
-    //else if (relCache == CacheTimestampRelation::Ahead)
-    //{
-    //    // Only allow if next frame?
-    //    // Is it the target ?
-    //}
-    //
 
     // By here we know the target is within the bounds of the cache.
     // Whether the target was acquired or not, for now we use the same rules.
     // Compare where the decoder is with respect to the target.
     // TODO: watch out for sparse -> dense job transition.
 
-    TimestampRelation relTarget = isAcquired ?
+    relTarget = isAcquired ?
         RelateTimestamps(mDecodedTimestamp, acquiredTimestamp) :
         RelateTimestamps(mDecodedTimestamp, targetTimestamp);
-
 
     if (relTarget == TimestampRelation::Match)
     {
@@ -3220,7 +3219,6 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, Cache
     else if (relTarget == TimestampRelation::Behind)
     {
         log->DebugFormat("DecodingJobPlan: Decoder is behind player: advancing.");
-        
         plan->ResubmitPending = true;
         plan->DecoderRelocation = DecoderRelocation::Advance;
         return plan;
@@ -3377,6 +3375,7 @@ void VideoReaderFFMpeg::DisposePending()
 {
     if (mPendingFrame != nullptr)
     {
+        log->DebugFormat("Disposing pending frame [{0}].", mPendingFrame->Timestamp);
         DisposeFrame(mPendingFrame);
         mPendingFrame = nullptr;
     }
