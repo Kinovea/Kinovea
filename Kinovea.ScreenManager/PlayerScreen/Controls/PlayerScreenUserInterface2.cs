@@ -4428,7 +4428,8 @@ namespace Kinovea.ScreenManager
                     int iKeyFrameIndex = -1;
                     if (m_iActiveKeyFrameIndex >= 0)
                     {
-                        if (m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
+                        var keyframe = m_FrameServer.Metadata[m_iActiveKeyFrameIndex];
+                        if (keyframe != null && keyframe.Drawings.Count > 0)
                         {
                             iKeyFrameIndex = m_iActiveKeyFrameIndex;
                         }
@@ -4437,7 +4438,9 @@ namespace Kinovea.ScreenManager
                     FlushOnGraphics(m_FrameServer.CurrentImage, e.Graphics, m_viewportManipulator.RenderingSize, iKeyFrameIndex, currentTimestamp, m_FrameServer.ImageTransform);
 
                     if (m_MessageToaster.Enabled)
+                    {
                         m_MessageToaster.Draw(e.Graphics);
+                    }
 
                     //log.DebugFormat("play loop to end of paint: {0}/{1}", m_Stopwatch.ElapsedMilliseconds, m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds);
                 }
@@ -6190,6 +6193,7 @@ namespace Kinovea.ScreenManager
 
             BeforeAnnotationsFileOp();
             ReloadDefaultPlayerAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            m_iActiveKeyFrameIndex = -1;
             AfterAnnotationsFileOp();
         }
 
