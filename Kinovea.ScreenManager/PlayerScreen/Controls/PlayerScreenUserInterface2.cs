@@ -976,6 +976,9 @@ namespace Kinovea.ScreenManager
         
         /// <summary>
         /// Function called by the dual player or dual video exporter.
+        /// All calls coming from the dual player/exporter are timestamp based,
+        /// there is no next/prev and during playback it computes the target timestamp
+        /// itself, so it's like manually dragging each player timeline.
         /// </summary>
         public void DualPlayerRequest(long timestamp, bool synchronous)
         {
@@ -1920,14 +1923,9 @@ namespace Kinovea.ScreenManager
 
             BeforeManualMove();
 
-            if (currentTimestamp > workingZone.Start &&
-                currentTimestamp <= workingZone.End)
+            if (currentTimestamp > workingZone.Start)
             {
                 PresentFrameStep(false);
-            }
-            else
-            {
-                PresentFrame(workingZone.Start);
             }
         }
         private void buttonPlay_Click(object sender, EventArgs e)
@@ -1945,10 +1943,12 @@ namespace Kinovea.ScreenManager
 
             BeforeManualMove();
 
-            if (currentTimestamp >= workingZone.Start &&
-                currentTimestamp < workingZone.End)
+            // Remember that the "end" of the zone is an approximation
+            // based on duration and the avgtspf.
+            TimestampRelation rel = m_FrameServer.VideoReader.RelateTimestamps(currentTimestamp, workingZone.End);
+            bool isBeforeEnd = rel == TimestampRelation.Behind || rel == TimestampRelation.FarBehind;
+            if (currentTimestamp >= workingZone.Start && isBeforeEnd)
             {
-                // check if any tracking
                 bool forceSynchronous = m_FrameServer.Metadata.AnyTracking;
                 PresentFrameStep(true, forceSynchronous);
             }
@@ -2903,6 +2903,7 @@ namespace Kinovea.ScreenManager
             ReportForSyncMerge();
 
             // In dual playback, double check if we have looped back.
+            // Just go to start, the dual player is responsible for restarting.
             if (isSynchronized && currentTimestamp < oldTimestamp)
             {
                 StopPlaying();
