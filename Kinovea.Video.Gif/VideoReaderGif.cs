@@ -137,7 +137,8 @@ namespace Kinovea.Video.GIF
 
         public override bool PlayerRequest(PlayerState newState)
         {
-            throw new NotImplementedException();
+            cache.AcquireClosest(newState.ReferenceTimestamp);
+            return true;
         }
         #endregion
 

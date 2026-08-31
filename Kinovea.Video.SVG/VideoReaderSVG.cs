@@ -140,7 +140,7 @@ namespace Kinovea.Video.SVG
 
         public override bool PlayerRequest(PlayerState newState)
         {
-            throw new NotImplementedException();
+            return UpdateCurrent(newState.ReferenceTimestamp);
         }
         #endregion 
 

@@ -151,7 +151,7 @@ namespace Kinovea.Video.Bitmap
 
         public override bool PlayerRequest(PlayerState newState)
         {
-            throw new NotImplementedException();
+            return UpdateCurrent(newState.ReferenceTimestamp);
         }
         #endregion
 
