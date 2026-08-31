@@ -52,7 +52,7 @@ namespace Kinovea.ScreenManager
         private List<PlayerScreen> players = new List<PlayerScreen>();
         private int resyncOperations = 0;
         private int maxResyncOperations = 1;
-        private HotkeyCommand[] hotkeys;
+        private List<HotkeyCommand> hotkeys = new List<HotkeyCommand>();
 
         // If two videos have creation dates within this many seconds we consider them part 
         // of the same dual recording and start them together in the replay watcher context.
@@ -81,7 +81,7 @@ namespace Kinovea.ScreenManager
             view.ExportImageAsked += (s, e) => ExportImageAsked?.Invoke(s, e);
             view.ExportvideoAsked += (s, e) => ExportVideoAsked?.Invoke(s, e);
 
-            hotkeys = HotkeySettingsManager.GetCommandBindings("DualPlayer");
+            hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("DualPlayer");
         }
         #endregion
 
@@ -542,24 +542,25 @@ namespace Kinovea.ScreenManager
             // something normally bound to controls in the common controls,
             // or it's a multiplexed command, a command that should simply be forwarded to each player.
 
+            // Check if we have a command bound to the same keys.
             HotkeyCommand dualCommand = hotkeys.FirstOrDefault(hk => hk != null && hk.KeyData == playerCommand.KeyData);
             if (dualCommand == null)
                 return;
 
-            DualPlayerCommands command = (DualPlayerCommands)dualCommand.CommandCode;
+            DualPlayerCommands command = (DualPlayerCommands)Enum.Parse(typeof(DualPlayerCommands), dualCommand.Name);
 
-            switch(command)
+            switch (command)
             {
                 case DualPlayerCommands.GotoPreviousKeyframe:
                 case DualPlayerCommands.GotoNextKeyframe:
                 case DualPlayerCommands.GotoSyncPoint:
                 case DualPlayerCommands.AddKeyframe:
-                    players[0].ExecuteScreenCommand(playerCommand.CommandCode);
-                    players[1].ExecuteScreenCommand(playerCommand.CommandCode);
+                    players[0].ExecuteScreenCommand(playerCommand.Name);
+                    players[1].ExecuteScreenCommand(playerCommand.Name);
                     break;
 
                 default:
-                    view.ExecuteDualCommand(dualCommand.CommandCode);
+                    view.ExecuteDualCommand(dualCommand.Name);
                     break;
             }
         }

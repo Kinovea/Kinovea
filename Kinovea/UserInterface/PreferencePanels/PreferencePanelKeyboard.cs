@@ -33,7 +33,6 @@ namespace Kinovea.Root
         private string description;
         private Bitmap icon;
         private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Keyboard_General };
-        private Dictionary<string, HotkeyCommand[]> hotkeys;
         private string selectedCategory;
         private string selectedCommand;
         #endregion
@@ -60,7 +59,6 @@ namespace Kinovea.Root
 
         private void ImportPreferences()
         {
-            hotkeys = HotkeySettingsManager.Hotkeys;
         }
         private void InitPage()
         {
@@ -72,7 +70,7 @@ namespace Kinovea.Root
 
             lbCategories.Items.Clear();
 
-            foreach (string category in hotkeys.Keys)
+            foreach (string category in HotkeySettingsManager.ActiveBindings.GetCategories())
                 lbCategories.Items.Add(category);
 
             if (lbCategories.Items.Count > 0)
@@ -89,8 +87,11 @@ namespace Kinovea.Root
         private void lbCategories_SelectedIndexChanged(object sender, EventArgs e)
         {
             string category = lbCategories.SelectedItem as string;
-            if (string.IsNullOrEmpty(category) || !hotkeys.ContainsKey(category))
+            if (string.IsNullOrEmpty(category) || 
+                !HotkeySettingsManager.ActiveBindings.HasCategory(category))
+            {
                 return;
+            }
 
             selectedCategory = category;
             UpdateCommandView(selectedCategory);
@@ -102,7 +103,7 @@ namespace Kinovea.Root
         private void UpdateCommandView(string category)
         {
             lvCommands.Items.Clear();
-            HotkeyCommand[] commands = hotkeys[category];
+            var commands = HotkeySettingsManager.ActiveBindings.GetCommandBindings(category);
 
             foreach (HotkeyCommand command in commands)
             {
@@ -151,7 +152,7 @@ namespace Kinovea.Root
                 return;
             }
 
-            HotkeySettingsManager.Update(selectedCategory, selectedCommand, Keys.None);
+            HotkeySettingsManager.ActiveBindings.Update(selectedCategory, selectedCommand, Keys.None);
             tbHotkey.SetKeydata(selectedCategory, selectedCommand, Keys.None);
             UpdateCommandView(selectedCategory);
         }
@@ -163,7 +164,7 @@ namespace Kinovea.Root
                 return;
             }
 
-            HotkeySettingsManager.Update(selectedCategory, selectedCommand, tbHotkey.KeyData);
+            HotkeySettingsManager.ActiveBindings.Update(selectedCategory, selectedCommand, tbHotkey.KeyData);
             UpdateCommandView(selectedCategory);
         }
 
@@ -172,9 +173,12 @@ namespace Kinovea.Root
             if (string.IsNullOrEmpty(selectedCategory) || string.IsNullOrEmpty(selectedCommand))
                 return;
 
-            HotkeySettingsManager.ResetToDefault(selectedCategory, selectedCommand);
+            HotkeySettingsManager.ResetToDefault(
+                HotkeySettingsManager.ActiveBindings, 
+                selectedCategory, 
+                selectedCommand);
 
-            HotkeyCommand updatedCommand = HotkeySettingsManager.FindByName(selectedCategory, selectedCommand);
+            HotkeyCommand updatedCommand = HotkeySettingsManager.ActiveBindings.FindByName(selectedCategory, selectedCommand);
             if (updatedCommand == null)
             {
                 return;

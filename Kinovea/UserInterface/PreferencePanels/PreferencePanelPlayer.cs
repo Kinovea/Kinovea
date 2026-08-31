@@ -358,7 +358,7 @@ namespace Kinovea.Root
             lvCommands.Items.Clear();
             foreach (string name in names)
             {
-                var command = HotkeySettingsManager.FindByName(category, name);
+                var command = HotkeySettingsManager.ActiveBindings.FindByName(category, name);
                 string key = command.KeyData == Keys.None ? "" : command.KeyData.ToText();
                 ListViewItem item = new ListViewItem(new string[] { name, key });
                 item.Tag = command;
@@ -399,7 +399,7 @@ namespace Kinovea.Root
                 return;
             }
 
-            HotkeySettingsManager.Update(category, selectedCommand, Keys.None);
+            HotkeySettingsManager.ActiveBindings.Update(category, selectedCommand, Keys.None);
             tbHotkey.SetKeydata(category, selectedCommand, Keys.None);
             UpdateCommandView();
         }
@@ -411,7 +411,7 @@ namespace Kinovea.Root
                 return;
             }
 
-            HotkeySettingsManager.Update(category, selectedCommand, tbHotkey.KeyData);
+            HotkeySettingsManager.ActiveBindings.Update(category, selectedCommand, tbHotkey.KeyData);
             UpdateCommandView();
         }
 
@@ -420,9 +420,12 @@ namespace Kinovea.Root
             if (string.IsNullOrEmpty(selectedCommand))
                 return;
 
-            HotkeySettingsManager.ResetToDefault(category, selectedCommand);
+            HotkeySettingsManager.ResetToDefault(
+                HotkeySettingsManager.ActiveBindings, 
+                category, 
+                selectedCommand);
 
-            HotkeyCommand updatedCommand = HotkeySettingsManager.FindByName(category, selectedCommand);
+            HotkeyCommand updatedCommand = HotkeySettingsManager.ActiveBindings.FindByName(category, selectedCommand);
             if (updatedCommand == null)
             {
                 return;

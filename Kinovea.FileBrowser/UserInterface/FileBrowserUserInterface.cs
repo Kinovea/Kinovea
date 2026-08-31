@@ -137,7 +137,7 @@ namespace Kinovea.FileBrowser
             activeTab = WindowManager.ActiveWindow.ActiveTab;
             
             Application.Idle += new EventHandler(this.IdleDetector);
-            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("FileExplorer");
+            this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("FileExplorer");
         }
 
         private void BuildContextMenu()
@@ -1408,9 +1408,9 @@ namespace Kinovea.FileBrowser
         #endregion
 
         #region Commands
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(string name)
         {
-            FileExplorerCommands command = (FileExplorerCommands)cmd;
+            FileExplorerCommands command = (FileExplorerCommands)Enum.Parse(typeof(FileExplorerCommands), name);
 
             switch (command)
             {
@@ -1424,7 +1424,7 @@ namespace Kinovea.FileBrowser
                     CommandDelete();
                     break;
                 default:
-                    return base.ExecuteCommand(cmd);
+                    return base.ExecuteCommand(name);
             }
 
             return true;

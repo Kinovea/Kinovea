@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
             ShowHideAddressBar(false);
             UpdateThumbnailsSize();
 
-            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("ThumbnailViewerContainer");
+            this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("ThumbnailViewerContainer");
         }
 
         private void Populate()
@@ -336,9 +336,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Commands
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(string name)
         {
-            ThumbnailViewerContainerCommands command = (ThumbnailViewerContainerCommands)cmd;
+            ThumbnailViewerContainerCommands command = (ThumbnailViewerContainerCommands)Enum.Parse(typeof(ThumbnailViewerContainerCommands), name);
 
             switch (command)
             {
@@ -349,7 +349,7 @@ namespace Kinovea.ScreenManager
                     CommandIncreaseSize();
                     break;
                 default:
-                    return base.ExecuteCommand(cmd);
+                    return base.ExecuteCommand(name);
             }
 
             return true;

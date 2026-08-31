@@ -484,7 +484,7 @@ namespace Kinovea.ScreenManager
             //mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
             //mnuPastePic.Text = ScreenManagerLang.mnuPasteImage;
             mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
-            mnuCloseScreen.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
+            mnuCloseScreen.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", "Close");
 
             // Drawings context menu
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;

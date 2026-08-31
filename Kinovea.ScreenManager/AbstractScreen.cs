@@ -179,7 +179,7 @@ namespace Kinovea.ScreenManager
         public abstract void AddImageDrawing(string filename, bool isSvg);
         public abstract void AddImageDrawing(Bitmap bmp);
         public abstract void FullScreen(bool fullScreen);
-        public abstract void ExecuteScreenCommand(int cmd);
+        public abstract void ExecuteScreenCommand(string name);
         public abstract void LoadKVA(string path);
 
 

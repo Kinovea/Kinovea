@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             BackColor = Color.White;
-            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("DualCapture");
+            this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("DualCapture");
         }
 
         public void RefreshUICulture()
@@ -79,9 +79,9 @@ namespace Kinovea.ScreenManager
 
         #region Commands
 
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(string name)
         {
-            DualCaptureCommands command = (DualCaptureCommands)cmd;
+            DualCaptureCommands command = (DualCaptureCommands)Enum.Parse(typeof(DualCaptureCommands), name);
 
             switch (command)
             {
@@ -95,15 +95,15 @@ namespace Kinovea.ScreenManager
                     TakeSnapshot();
                     break;
                 default:
-                    return base.ExecuteCommand(cmd);
+                    return base.ExecuteCommand(name);
             }
 
             return true;
         }
 
-        public void ExecuteDualCommand(int cmd)
+        public void ExecuteDualCommand(string name)
         {
-            ExecuteCommand(cmd);
+            ExecuteCommand(name);
         }
 
         #endregion

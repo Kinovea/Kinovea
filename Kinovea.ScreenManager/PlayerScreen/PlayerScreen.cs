@@ -742,9 +742,9 @@ namespace Kinovea.ScreenManager
             view.FullScreen(_bFullScreen);
         }
 
-        public override void ExecuteScreenCommand(int cmd)
+        public override void ExecuteScreenCommand(string name)
         {
-            view.ExecuteScreenCommand(cmd);
+            view.ExecuteScreenCommand(name);
         }
 
         /// <summary>

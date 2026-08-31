@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
 
             tbFilename.Text = PreferencesManager.CapturePreferences.CapturePathConfiguration.DefaultFileName;
 
-            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("CaptureScreen");
+            this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("CaptureScreen");
         }
 
         #region Public methods
@@ -681,7 +681,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Commands
-        protected override bool ExecuteCommand(int commandCode)
+        protected override bool ExecuteCommand(string name)
         {
             if (tbFilename.Focused)
                 return false;
@@ -691,21 +691,21 @@ namespace Kinovea.ScreenManager
 
             // If we are not in a dual screen context just run the command for this screen.
             if (!presenter.Synched || DualCommandReceived == null)
-                return ExecuteScreenCommand(commandCode);
+                return ExecuteScreenCommand(name);
 
             // Try to see if that command is handled by the dual capture controller.
             // At this point the command code is still the one from the single screen context.
             // Get the full command with the target shortcut key.
-            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.CommandCode == commandCode);
+            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.Name == name);
             if (command == null)
                 return false;
 
             // Look for a matching handler in the dual capture context.
-            HotkeyCommand command2 = HotkeySettingsManager.FindByKeyData("DualCapture", command.KeyData);
+            HotkeyCommand command2 = HotkeySettingsManager.ActiveBindings.FindByKeyData("DualCapture", command.KeyData);
             if (command2 == null)
             {
                 // The shortcut isn't handled at the dual screen level, run it normally.
-                return ExecuteScreenCommand(commandCode);
+                return ExecuteScreenCommand(name);
             }
             else
             {
@@ -714,9 +714,9 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public bool ExecuteScreenCommand(int cmd)
+        public bool ExecuteScreenCommand(string name)
         {
-            CaptureScreenCommands command = (CaptureScreenCommands)cmd;
+            CaptureScreenCommands command = (CaptureScreenCommands)Enum.Parse(typeof(CaptureScreenCommands), name);
 
             switch (command)
             {
@@ -813,7 +813,7 @@ namespace Kinovea.ScreenManager
                     presenter.View_Close();
                     break;
                 default:
-                    return base.ExecuteCommand(cmd);
+                    return base.ExecuteCommand(name);
             }
 
             return true;

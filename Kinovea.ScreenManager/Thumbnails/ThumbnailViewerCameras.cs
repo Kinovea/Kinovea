@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
             this.BackColor = Color.FromArgb(250, 250, 250);
             this.pnlThumbs.BackColor = Color.FromArgb(250, 250, 250);
 
-            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("ThumbnailViewerCamera");
+            this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("ThumbnailViewerCamera");
             thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
             refreshThumbnailsOfKnownCameras = true;
         }
@@ -422,9 +422,9 @@ namespace Kinovea.ScreenManager
             return handled || base.ProcessCmdKey(ref msg, keyData);
         }
 
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(string name)
         {
-            ThumbnailViewerCameraCommands command = (ThumbnailViewerCameraCommands)cmd;
+            ThumbnailViewerCameraCommands command = (ThumbnailViewerCameraCommands)Enum.Parse(typeof(ThumbnailViewerCameraCommands), name);
 
             switch (command)
             {
@@ -441,7 +441,7 @@ namespace Kinovea.ScreenManager
                     this.Focus();
                     break;
                 default:
-                    return base.ExecuteCommand(cmd);
+                    return base.ExecuteCommand(name);
             }
 
             return true;

@@ -2119,9 +2119,9 @@ namespace Kinovea.ScreenManager
             mnuCutDrawing.Text = ScreenManagerLang.mnuCutDrawing;
             mnuCopyDrawing.Text = ScreenManagerLang.mnuCopyDrawing;
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
-            mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);
-            mnuCopyDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyDrawing);
-            mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
+            mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", "CutDrawing");
+            mnuCopyDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", "CopyDrawing");
+            mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", "PasteDrawing");
 
             // View
             mnuOnePlayer.Text = ScreenManagerLang.mnuOnePlayer;
@@ -2130,7 +2130,7 @@ namespace Kinovea.ScreenManager
             mnuTwoCaptures.Text = ScreenManagerLang.mnuTwoCaptures;
             mnuTwoMixed.Text = ScreenManagerLang.mnuTwoMixed;
             mnuToggleCommonCtrls.Text = ScreenManagerLang.mnuToggleCommonCtrls;
-            mnuVerticalLayout.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.mnuVerticalLayout;
+            mnuVerticalLayout.Text = ScreenManagerLang.mnuVerticalLayout;
             mnuSwapScreens.Text = ScreenManagerLang.mnuSwapScreens;
 
             // Image
@@ -2361,7 +2361,7 @@ namespace Kinovea.ScreenManager
             if (activeScreen is PlayerScreen)
             {
                 PlayerScreen player = activeScreen as PlayerScreen;
-                player.ExecuteScreenCommand((int)PlayerScreenCommands.CutDrawing);
+                player.ExecuteScreenCommand("CutDrawing");
             }
             else if (activeScreen is CaptureScreen)
             {
@@ -2374,7 +2374,7 @@ namespace Kinovea.ScreenManager
             if (activeScreen is PlayerScreen)
             {
                 PlayerScreen player = activeScreen as PlayerScreen;
-                player.ExecuteScreenCommand((int)PlayerScreenCommands.CopyDrawing);
+                player.ExecuteScreenCommand("CopyDrawing");
             }
         }
         private void mnuPasteDrawing_OnClick(object sender, EventArgs e)
@@ -2382,7 +2382,7 @@ namespace Kinovea.ScreenManager
             if (activeScreen is PlayerScreen)
             {
                 PlayerScreen player = activeScreen as PlayerScreen;
-                player.ExecuteScreenCommand((int)PlayerScreenCommands.PasteInPlaceDrawing);
+                player.ExecuteScreenCommand("PasteInPlaceDrawing");
             }
         }
         #endregion
@@ -3429,7 +3429,10 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            switch (tokens[0])
+            string category = tokens[0];
+            string name = tokens[1];
+            
+            switch (category)
             {
                 case "Window":
                     // Handled in Kernel.cs.
@@ -3437,35 +3440,35 @@ namespace Kinovea.ScreenManager
                 case "CaptureScreen":
                     {
                         CaptureScreenCommands command;
-                        bool parsed = Enum.TryParse(tokens[1], out command);
+                        bool parsed = Enum.TryParse(name, out command);
                         if (!parsed)
                         {
-                            log.ErrorFormat("Unsupported capture screen command \"{0}\".", tokens[1]);
+                            log.ErrorFormat("Unsupported capture screen command \"{0}\".", name);
                             return;
                         }
 
                         foreach (CaptureScreen screen in captureScreens)
-                            screen.ExecuteScreenCommand((int)command);
+                            screen.ExecuteScreenCommand(name);
 
                         break;
                     }
                 case "PlayerScreen":
                     {
                         PlayerScreenCommands command;
-                        bool parsed = Enum.TryParse(tokens[1], out command);
+                        bool parsed = Enum.TryParse(name, out command);
                         if (!parsed)
                         {
-                            log.ErrorFormat("Unsupported player screen command \"{0}\".", tokens[1]);
+                            log.ErrorFormat("Unsupported player screen command \"{0}\".", name);
                             return;
                         }
 
                         foreach (PlayerScreen screen in playerScreens)
-                            screen.ExecuteScreenCommand((int)command);
+                            screen.ExecuteScreenCommand(name);
 
                         break;
                     }
                 default:
-                    log.ErrorFormat("Unsupported handler in external command: \"{0}\"", tokens[0]);
+                    log.ErrorFormat("Unsupported handler in external command: \"{0}\"", category);
                     break;
             }
         }

@@ -20,7 +20,7 @@ namespace Kinovea.Services
                 foreach (HotkeyCommand hotkey in this.Hotkeys)
                 {
                     if (hotkey != null && hotkey.KeyData == keyData)
-                        return ExecuteCommand(hotkey.CommandCode);
+                        return ExecuteCommand(hotkey.Name);
                 }
             }
 
@@ -30,8 +30,7 @@ namespace Kinovea.Services
         /// <summary>
         /// Override this method to handle form specific Hotkey commands
         /// </summary>
-        /// <param name="command"></param>
-        protected virtual bool ExecuteCommand(int command)
+        protected virtual bool ExecuteCommand(string name)
         {
             return false;
         }

@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             PostInit();
-            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("DualPlayer");
+            this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("DualPlayer");
         }
 
         private void PostInit()
@@ -167,9 +167,9 @@ namespace Kinovea.ScreenManager
 
         #region Commands
 
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(string name)
         {
-            DualPlayerCommands command = (DualPlayerCommands)cmd;
+            DualPlayerCommands command = (DualPlayerCommands)Enum.Parse(typeof(DualPlayerCommands), name);
 
             switch (command)
             {
@@ -208,15 +208,15 @@ namespace Kinovea.ScreenManager
                         AddKeyframe(this, EventArgs.Empty);
                     break;
                 default:
-                    return base.ExecuteCommand(cmd);
+                    return base.ExecuteCommand(name);
             }
 
             return true;
         }
 
-        public void ExecuteDualCommand(int cmd)
+        public void ExecuteDualCommand(string name)
         {
-            ExecuteCommand(cmd);
+            ExecuteCommand(name);
         }
 
         #endregion

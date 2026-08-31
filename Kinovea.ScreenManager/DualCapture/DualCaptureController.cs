@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
         }
         public void ExecuteDualCommand(HotkeyCommand cmd)
         {
-            view.ExecuteDualCommand(cmd.CommandCode);
+            view.ExecuteDualCommand(cmd.Name);
         }
         #endregion
 

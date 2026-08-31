@@ -18,16 +18,16 @@ namespace Kinovea.Services
         {
             writer.WriteStartElement("Hotkeys");
 
-            Dictionary<string, HotkeyCommand[]> hotkeys = HotkeySettingsManager.Hotkeys;
-            foreach (KeyValuePair<string, HotkeyCommand[]> kvp in hotkeys)
+            CommandBindings allBindings = HotkeySettingsManager.ActiveBindings;
+            foreach (string category in allBindings.GetCategories())
             {
+                List<HotkeyCommand> bindings = allBindings.GetCommandBindings(category);
                 writer.WriteStartElement("Category");
-                writer.WriteAttributeString("name", kvp.Key);
+                writer.WriteAttributeString("name", category);
 
-                foreach (HotkeyCommand hk in kvp.Value)
+                foreach (HotkeyCommand hk in bindings)
                 {
                     writer.WriteStartElement("Hotkey");
-                    writer.WriteAttributeString("command", hk.CommandCode.ToString());
                     writer.WriteAttributeString("name", hk.Name);
                     writer.WriteAttributeString("key", hk.KeyData.ToString());
                     writer.WriteEndElement();
@@ -41,7 +41,7 @@ namespace Kinovea.Services
 
         public void ReadXML(XmlReader reader)
         {
-            Dictionary<string, HotkeyCommand[]> hotkeys = new Dictionary<string, HotkeyCommand[]>();
+            CommandBindings bindings = new CommandBindings();
 
             reader.ReadStartElement();
 
@@ -49,7 +49,7 @@ namespace Kinovea.Services
             {
                 if (reader.Name == "Hotkeys")
                 {
-                    ParseHotkeys(reader, hotkeys);
+                    ParseHotkeys(reader, bindings);
                 }
                 else
                 {
@@ -59,10 +59,10 @@ namespace Kinovea.Services
 
             reader.ReadEndElement();
 
-            HotkeySettingsManager.Import(hotkeys);
+            HotkeySettingsManager.ActiveBindings.Load(bindings);
         }
 
-        private void ParseHotkeys(XmlReader reader, Dictionary<string, HotkeyCommand[]> hotkeys)
+        private void ParseHotkeys(XmlReader reader, CommandBindings bindings)
         {
             bool empty = reader.IsEmptyElement;
             reader.ReadStartElement();
@@ -72,7 +72,7 @@ namespace Kinovea.Services
             while (reader.NodeType == XmlNodeType.Element)
             {
                 if (reader.Name == "Category")
-                    ParseCategory(reader, hotkeys);
+                    ParseCategory(reader, bindings);
                 else
                     reader.ReadOuterXml();
             }
@@ -80,7 +80,7 @@ namespace Kinovea.Services
             reader.ReadEndElement();
         }
 
-        private void ParseCategory(XmlReader reader, Dictionary<string, HotkeyCommand[]> hotkeys)
+        private void ParseCategory(XmlReader reader, CommandBindings bindings)
         {
             string name = reader.GetAttribute("name");
 
@@ -89,7 +89,7 @@ namespace Kinovea.Services
             if (empty)
                 return;
 
-            if (hotkeys.ContainsKey(name))
+            if (bindings.HasCategory(name))
                 return;
             
             List<HotkeyCommand> hotkeysCommands = new List<HotkeyCommand>();
@@ -108,7 +108,7 @@ namespace Kinovea.Services
                 }
             }
 
-            hotkeys.Add(name, hotkeysCommands.ToArray());
+            bindings.AddCategory(name, hotkeysCommands);
             reader.ReadEndElement();
         }
 
@@ -121,16 +121,14 @@ namespace Kinovea.Services
                 return null;
             }
             
-            string strCommand = reader.GetAttribute("command");
             string name = reader.GetAttribute("name");
             string strKey = reader.GetAttribute("key");
 
-            int command = int.Parse(strCommand);
             Keys key = (Keys)Enum.Parse(typeof(Keys), strKey);
 
             reader.ReadStartElement();
 
-            return new HotkeyCommand(command, name, key);
+            return new HotkeyCommand(name, key);
         }
     }
 }

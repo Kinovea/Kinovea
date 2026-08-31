@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
 
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
 
-            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("ThumbnailViewerFiles");
+            this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("ThumbnailViewerFiles");
             thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
             this.pnlThumbs.ContextMenuStrip = popMenu;
             BuildContextMenus();
@@ -811,9 +811,9 @@ namespace Kinovea.ScreenManager
             return handled || base.ProcessCmdKey(ref msg, keyData);
         }
 
-        protected override bool ExecuteCommand(int cmd)
+        protected override bool ExecuteCommand(string name)
         {
-            ThumbnailViewerFilesCommands command = (ThumbnailViewerFilesCommands)cmd;
+            ThumbnailViewerFilesCommands command = (ThumbnailViewerFilesCommands)Enum.Parse(typeof(ThumbnailViewerFilesCommands), name);
 
             switch (command)
             {
@@ -831,7 +831,7 @@ namespace Kinovea.ScreenManager
                     NotificationCenter.RaiseRefreshFileList(true);
                     break;
                 default:
-                    return base.ExecuteCommand(cmd);
+                    return base.ExecuteCommand(name);
             }
 
             return true;

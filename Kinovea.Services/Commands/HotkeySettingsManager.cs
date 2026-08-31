@@ -12,193 +12,93 @@ namespace Kinovea.Services
         /// <summary>
         /// Current command bindings.
         /// </summary>
-        public static Dictionary<string, HotkeyCommand[]> Hotkeys
+        public static CommandBindings ActiveBindings
         {
-            get { return hotkeys; }
+            get { return bindings; }
         }
         #endregion
 
         #region Members
         private static ToolStripMenuItem dummy;
-        private static Dictionary<string, HotkeyCommand[]> hotkeys;
+        private static CommandBindings bindings = new CommandBindings();
+        private static CommandBindings defaultBindings = new CommandBindings();
         #endregion
 
-        /// <summary>
-        /// Get all commands in the passed category.
-        /// </summary>
-        public static HotkeyCommand[] GetCommandBindings(string category)
+        static HotkeySettingsManager()
         {
-            if (hotkeys == null)
-                hotkeys = GetDefaultBindings();
-
-            return hotkeys.ContainsKey(category) ? hotkeys[category] : null;
+            CreateDefaultBindings();
+            bindings = defaultBindings.Clone();
         }
 
-        /// <summary>
-        /// Get the command object for a specific category and name.
-        /// </summary>
-        public static HotkeyCommand FindByName(string category, string name)
+        public static Keys GetMenuShortcut(string category, string name)
         {
-            if (!hotkeys.ContainsKey(category))
-                return null;
+            var binding = bindings.FindByName(category, name);
+            if (binding == null)
+                return Keys.None;
 
-            return hotkeys[category].FirstOrDefault(c => c.Name == name);
-        }
-
-        /// <summary>
-        /// Get the command object for a specific key data.
-        /// </summary>
-        public static HotkeyCommand FindByKeyData(string category, Keys keys)
-        {
-            if (!hotkeys.ContainsKey(category))
-                return null;
-
-            return hotkeys[category].FirstOrDefault(c => c.KeyData == keys);
-        }
-
-        /// <summary>
-        /// Import the passed bindings into the local collection.
-        /// Only import known categories and command names.
-        /// This is used to load the values from the preferences.
-        /// </summary>
-        public static void Import(Dictionary<string, HotkeyCommand[]> imported)
-        {
-            if (hotkeys == null)
-            { 
-                hotkeys = GetDefaultBindings();
-            }
-
-            foreach (string category in imported.Keys)
-            {
-                if (!hotkeys.ContainsKey(category))
-                    continue;
-
-                foreach (HotkeyCommand command in imported[category])
-                {
-                    Update(category, command.Name, command.KeyData);
-                }
-            }
-        }
-
-        public static Keys GetMenuShortcut(string category, int commandCode)
-        {
+            // Some keys like 'Enter' can't be used as menu shortcuts.
             Keys keys = Keys.None;
-
-            if (hotkeys.ContainsKey(category))
+            try
             {
-                HotkeyCommand[] result = null;
-                hotkeys.TryGetValue(category, out result);
+                if (dummy == null)
+                    dummy = new ToolStripMenuItem();
 
-                foreach (HotkeyCommand c in hotkeys[category])
-                {
-                    if (c.CommandCode == commandCode)
-                    {
-                        // Some keys like 'Enter' can't be used as menu shortcuts.
-                        try
-                        {
-                            if (dummy == null)
-                                dummy = new ToolStripMenuItem();
-
-                            dummy.ShortcutKeys = c.KeyData;
-                            keys = c.KeyData;
-                        }
-                        catch
-                        {
-                            // This shortcut key cannot be used as a menu shortcut.
-                            keys = Keys.None;
-                        }
-
-                        break;
-                    }
-                }
+                dummy.ShortcutKeys = binding.KeyData;
+                keys = binding.KeyData;
+            }
+            catch
+            {
+                // This shortcut key cannot be used as a menu shortcut.
+                keys = Keys.None;
             }
 
-            return keys; 
-        }
-
-        /// <summary>
-        /// Returns false if there is a conflict on the binding in this category.
-        /// </summary>
-        public static bool IsUnique(string category, string name, Keys keyData)
-        {
-            if (!hotkeys.ContainsKey(category))
-                return true;
-
-            if (keyData == Keys.None)
-                return true;
-
-            foreach (HotkeyCommand c in hotkeys[category])
-            {
-                if (c.Name == name || c.KeyData != keyData)
-                    continue;
-
-                // Same binding on different command in the same category.
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Update a command to a new key binding.
-        /// </summary>
-        public static void Update(string category, string name, Keys keyData)
-        {
-            if (!hotkeys.ContainsKey(category))
-                return;
-
-            var command = hotkeys[category].FirstOrDefault(c => c.Name == name);
-            if (command == null)
-                return;
-
-            command.KeyData = keyData;
+            return keys;
         }
 
         /// <summary>
         /// Reset a specific command to its default binding.
         /// </summary>
-        public static void ResetToDefault(string category, string name)
+        public static void ResetToDefault(CommandBindings cbcb, string category, string name)
         {
-            Dictionary<string, HotkeyCommand[]> defaultHotkeys = GetDefaultBindings();
-            if (!defaultHotkeys.ContainsKey(category) || !hotkeys.ContainsKey(category))
+            if (!defaultBindings.HasCategory(category))
                 return;
 
-            var defaultCommand = defaultHotkeys[category].FirstOrDefault(c => c.Name == name);
-            var command = hotkeys[category].FirstOrDefault(c => c.Name == name);
+            if (!cbcb.HasCategory(category))
+                return;
+
+            var defaultCommand = defaultBindings.FindByName(category, name);
+            var command = cbcb.FindByName(category, name);
             if (defaultCommand == null || command == null)
                 return;
 
             command.KeyData = defaultCommand.KeyData;
         }
 
-        /// <summary>
-        /// Return the default command bindings.
-        /// </summary>
-        private static Dictionary<string, HotkeyCommand[]> GetDefaultBindings()
+        private static void CreateDefaultBindings()
         {
-            Func<object, Keys, HotkeyCommand> make = (en, k) => new HotkeyCommand((int)en, en.ToString(), k);
+            Func<object, Keys, HotkeyCommand> make = (en, k) => new HotkeyCommand(en.ToString(), k);
 
             // Note: it is important for all commands to be listed here, even those that don't have a 
             // default keyboard shortcut binding. Listing here is what make them appear in the 
             // keyboard shortcut preferences and allow them to be bound by the user.
             // The list in the preferences also documents the existing commands.
 
-            Dictionary<string, HotkeyCommand[]> commands = new Dictionary<string, HotkeyCommand[]>();
+            Dictionary<string, List<HotkeyCommand>> commands = new Dictionary<string, List<HotkeyCommand>>();
 
-            commands["FileExplorer"] = new HotkeyCommand[]
+            commands["FileExplorer"] = new List<HotkeyCommand>()
             {
                 make(FileExplorerCommands.LaunchSelected, Keys.Enter),
                 make(FileExplorerCommands.RenameSelected, Keys.None),
                 make(FileExplorerCommands.DeleteSelected, Keys.Delete),
             };
 
-            commands["ThumbnailViewerContainer"] = new HotkeyCommand[]
+            commands["ThumbnailViewerContainer"] = new List<HotkeyCommand>()
             {
                 make(ThumbnailViewerContainerCommands.IncreaseSize, Keys.Control | Keys.Add),
                 make(ThumbnailViewerContainerCommands.DecreaseSize, Keys.Control | Keys.Subtract),
             };
 
-            commands["ThumbnailViewerFiles"] = new HotkeyCommand[]
+            commands["ThumbnailViewerFiles"] = new List<HotkeyCommand>()
             {
                 make(ThumbnailViewerFilesCommands.LaunchSelected, Keys.Enter),
                 make(ThumbnailViewerFilesCommands.RenameSelected, Keys.F2),
@@ -206,14 +106,14 @@ namespace Kinovea.Services
                 make(ThumbnailViewerFilesCommands.Refresh, Keys.F5)
             };
 
-            commands["ThumbnailViewerCamera"] = new HotkeyCommand[]
+            commands["ThumbnailViewerCamera"] = new List<HotkeyCommand>()
             {
                 make(ThumbnailViewerCameraCommands.LaunchSelected, Keys.Enter),
                 make(ThumbnailViewerCameraCommands.RenameSelected, Keys.F2),
                 make(ThumbnailViewerCameraCommands.Refresh, Keys.F5)
             };
 
-            commands["DualPlayer"] = new HotkeyCommand[]
+            commands["DualPlayer"] = new List<HotkeyCommand>()
             {
                 make(DualPlayerCommands.TogglePlay, Keys.Space),
                 make(DualPlayerCommands.GotoPreviousImage, Keys.Left),
@@ -227,7 +127,7 @@ namespace Kinovea.Services
                 make(DualPlayerCommands.AddKeyframe, Keys.Insert)
             };
 
-            commands["PlayerScreen"] = new HotkeyCommand[]
+            commands["PlayerScreen"] = new List<HotkeyCommand>()
             {
                 // General
                 make(PlayerScreenCommands.ResetViewport, Keys.Escape),
@@ -300,14 +200,14 @@ namespace Kinovea.Services
                 make(PlayerScreenCommands.StartAllTracking, Keys.None),
             };
 
-            commands["DualCapture"] = new HotkeyCommand[]
+            commands["DualCapture"] = new List<HotkeyCommand>()
             {
                 make(DualCaptureCommands.ToggleGrabbing, Keys.Space),
                 make(DualCaptureCommands.ToggleRecording, Keys.Control | Keys.Return),
                 make(DualCaptureCommands.TakeSnapshot, Keys.Shift | Keys.Return),
             };
 
-            commands["CaptureScreen"] = new HotkeyCommand[]
+            commands["CaptureScreen"] = new List<HotkeyCommand>()
             {
                 // General
                 make(CaptureScreenCommands.ResetViewport, Keys.Escape),
@@ -342,7 +242,7 @@ namespace Kinovea.Services
                 make(CaptureScreenCommands.DecreaseDelayHalfSecond, Keys.Shift | Keys.Down),
             };
 
-            return commands;
+            defaultBindings.Initialize(commands);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Kinovea.Services
         private void UpdateText()
         {
             this.Text = keyData.ToText();
-            bool unique = HotkeySettingsManager.IsUnique(category, name, keyData);
+            bool unique = HotkeySettingsManager.ActiveBindings.IsUnique(category, name, keyData);
             this.ForeColor = unique ? Color.Black : Color.DarkRed;
         }
 
