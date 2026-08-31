@@ -208,7 +208,6 @@ namespace Kinovea.Video
         /// <summary>
         /// Add one frame to the cache.
         /// May block until space becomes available or cancellation.
-        /// If the frame is already cached or we are cancelled, the frame is disposed.
         /// </summary>
         public CacheAddResult Add(VideoFrame frame)
         {

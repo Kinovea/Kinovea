@@ -643,7 +643,7 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     // There is no queue or "pending" requests here, the caller is responsible
     // for scheduling and not submitting obsolete requests.
     // 
-    // From here the request is considered high priority and will interrupt any ongoing work.
+    // Any request received here is considered high priority and will interrupt any ongoing work.
     //
     // A decoding job lifecycle has two big phases:
     // 
@@ -700,11 +700,24 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     if (mCachingMode == VideoDecodingMode::Caching)
     {
         // Fulfill synchronously and return.
-
-        // TODO: handle next/previous.
-
+        int64_t target = mRequestedPlayerState->ReferenceTimestamp;
         mWorkingPlayerState = mRequestedPlayerState;
-        acquired = MoveCaching(mRequestedPlayerState->ReferenceTimestamp);
+
+        if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
+        {
+            // NEXT
+            target = -1;
+        }
+        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward)
+        {
+            if (mCache->CurrentFrame != nullptr &&
+                mCache->CurrentFrame->PreviousTimestamp >= 0)
+            {
+                target = mCache->CurrentFrame->PreviousTimestamp;
+            }
+        }
+
+        acquired = MoveCaching(target);
         mRequestFulfilled = true;
         return acquired;
     }
@@ -878,17 +891,16 @@ bool VideoReaderFFMpeg::MoveNext()
 
 bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
 {
-    if (!mSingleFrameContainer->IsEmpty && 
-        mSingleFrameContainer->CurrentFrame != nullptr &&
+    if (!mSingleFrameContainer->IsEmpty &&
+        mSingleFrameContainer->CurrentFrame != nullptr && 
         mSingleFrameContainer->CurrentFrame->Timestamp == target)
     {
-        // We are already there.
         return true;
     }
     else if (target >= 0)
     {
         // Synchronous read of the requested frame.
-        // The ReadFrameSeek will call `store` on the single-frame frame container
+        // ReadFrameSeek will call `store` on the single-frame frame container
         // which will set the `Current` property to the requested frame.
         ReadResult res = ReadFrameSeek(target, true, false);
         return (res == ReadResult::Success);
@@ -901,7 +913,6 @@ bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
     }
 }
 
-
 bool VideoReaderFFMpeg::MoveCaching(int64_t target)
 {
     if (mCache->Empty)
@@ -910,12 +921,14 @@ bool VideoReaderFFMpeg::MoveCaching(int64_t target)
         // of the caching operation is closed so we should always have a frame.
         return false;
     }
-    else
+    else if (target >= 0)
     {
-        // Acquire the requested frame.
-        log->DebugFormat("Player requests presentation of [~{0}].", target);
         mCache->AcquireClosest(target);
         return true;
+    }
+    else
+    {
+        return mCache->AcquireNext();
     }
 }
 
@@ -923,15 +936,19 @@ bool VideoReaderFFMpeg::MovePrebuffer(int64_t target)
 {
     if (mPreBuffer->Empty)
     {
-        log->ErrorFormat("MoveTo([{0}]): empty prebuffer.", target);
         return false;
     }
-
-    // The cache is possibly sparse, get whatever is closest.
-    log->DebugFormat("Player requests presentation of [~{0}].", target);
-    mPreBuffer->AcquireClosest(target);
-    return true;
+    else if (target >= 0)
+    {
+        mPreBuffer->AcquireClosest(target);
+        return true;
+    }
+    else
+    {
+        return mPreBuffer->AcquireNext();
+    }
 }
+
 #pragma endregion
 
 #pragma region Decoding mode, play loop and frame enumeration

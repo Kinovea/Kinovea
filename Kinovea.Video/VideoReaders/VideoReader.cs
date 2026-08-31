@@ -343,6 +343,11 @@ namespace Kinovea.Video
                 else
                 {
                     long timestamp = (long)Math.Round(Current.Timestamp + interval);
+                    if (timestamp > WorkingZone.End)
+                    {
+                        yield break;
+                    }
+
                     acquired = MoveTo(timestamp);
                 }
 
@@ -353,20 +358,6 @@ namespace Kinovea.Video
 
                 yield return Current;
             }
-        }
-
-        /// <summary>
-        /// Returns true if the enumerator may still move to the next frame in the working zone.
-        /// DEPRECATED: the caller of MoveNext should do the check.
-        /// </summary>
-        public bool HasMoreFrames()
-        {
-            if (Current == null)
-                return false;
-
-            double nextTimestamp = Current.Timestamp + Info.AverageTimeStampsPerFrame;
-            bool result = nextTimestamp <= WorkingZone.End;
-            return result;
         }
         #endregion
 

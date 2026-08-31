@@ -26,14 +26,20 @@ namespace Kinovea.Video
     {
         VideoFrame CurrentFrame { get; }
 
+        /// <summary>
+        /// Set current to the closest frame to the target.
+        /// </summary>
         void AcquireClosest(long timestamp);
 
+        /// <summary>
+        /// Set current to the next frame in the cache.
+        /// The cache filling is responsible for ensuring media contiguity.
+        /// </summary>
         bool AcquireNext();
 
         CacheAddResult Add(VideoFrame frame);
 
         CacheAddResult ForceAdd(VideoFrame frame);
-
 
         /// <summary>
         /// Clear all frames even the one pointed by current.
