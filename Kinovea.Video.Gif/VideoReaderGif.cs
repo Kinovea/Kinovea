@@ -125,21 +125,24 @@ namespace Kinovea.Video.GIF
         #endregion
 
         #region Navigation
-        public override bool MoveNext(bool _decodeIfNecessary)
+        public override bool PlayerRequest(PlayerState newState)
         {
-            return cache.MoveBy(1);
+            // TODO: handle next/prev.
+            cache.AcquireClosest(newState.ReferenceTimestamp);
+            return true;
         }
+
         public override bool MoveTo(long target)
         {
             cache.AcquireClosest(target);
             return true;
         }
 
-        public override bool PlayerRequest(PlayerState newState)
+        public override bool MoveNext()
         {
-            cache.AcquireClosest(newState.ReferenceTimestamp);
-            return true;
+            return cache.AcquireNext();
         }
+
         #endregion
 
         #region Video geometry

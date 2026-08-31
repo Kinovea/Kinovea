@@ -120,7 +120,18 @@ namespace Kinovea.Video.SVG
         #endregion
 
         #region Navigation and player state
-        public override bool MoveNext(bool decodeIfNecessary)
+        public override bool PlayerRequest(PlayerState newState)
+        {
+            // TODO: handle next/previous here as well.
+            return UpdateCurrent(newState.ReferenceTimestamp);
+        }
+
+        public override bool MoveTo(long target)
+        {
+            return UpdateCurrent(target);
+        }
+
+        public override bool MoveNext()
         {
             long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
 
@@ -133,15 +144,9 @@ namespace Kinovea.Video.SVG
 
             return UpdateCurrent(target);
         }
-        public override bool MoveTo(long target)
-        {
-            return UpdateCurrent(target);
-        }
+        
 
-        public override bool PlayerRequest(PlayerState newState)
-        {
-            return UpdateCurrent(newState.ReferenceTimestamp);
-        }
+        
         #endregion 
 
         #region Working zone and decoding mode

@@ -162,11 +162,18 @@ namespace Kinovea.Video
         #region Navigation and player state
 
         /// <summary>
-        /// The player requests a synchronous decode of the next frame.
-        /// Used during frame enumeration for export, playback while tracking.
-        /// TODO: instead of decode if necessary = false, call PlayerDemand(timestamp).
+        /// The player requests an exact frame or starts playback.
+        /// 
+        /// This function handles all three caching modes and should generally
+        /// be used for requests originating from the player UI (timeline, buttons).
+        /// 
+        /// If the caller needs a guarantee that the frame is set before 
+        /// returning set SynchronousFulfill to true.
+        /// 
+        /// MoveTo can be used for a lightweight acquire during 
+        /// playback or for background frame enumeration during export.
         /// </summary>
-        public abstract bool MoveNext(bool _decodeIfNecessary);
+        public abstract bool PlayerRequest(PlayerState newState);
 
         /// <summary>
         /// Request the frame closest to the target timestamp.
@@ -182,15 +189,14 @@ namespace Kinovea.Video
         public abstract bool MoveTo(long target);
 
         /// <summary>
-        /// The player changed state and publishes it.
-        /// This is for timeline navigation and start/pause playback.
+        /// Requests the frame next to the current frame.
         /// 
-        /// MoveTo can still be used for a lightweight acquire during 
-        /// playback as state doesn't change during playback and for 
-        /// background frame enumeration.
+        /// This is similar to MoveTo but specialized for the next frame.
+        /// Normally only used for frame enumeration or during playback + tracking.
         /// </summary>
-        public abstract bool PlayerRequest(PlayerState newState);
-        
+        public abstract bool MoveNext();
+
+
         /// <summary>
         /// During a playback loop, compute the expected frame timestamp 
         /// the player would like to see right now.
@@ -334,7 +340,7 @@ namespace Kinovea.Video
             {
                 if (interval == 0)
                 {
-                    acquired = MoveNext(true);
+                    acquired = MoveNext();
                 }
                 else
                 {

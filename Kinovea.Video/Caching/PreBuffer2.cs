@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Kinovea.Video
 {
@@ -142,7 +144,7 @@ namespace Kinovea.Video
                 current = closest;
 
                 // Remove old frames from the cache if outside the retention window.
-                int index = frames.IndexOfKey(closest.Timestamp);
+                int index = frames.IndexOfKey(current.Timestamp);
                 removed = EvictBehind(index, framesToKeepBehind);
 
                 // Unblock the decoding thread if it was waiting for space in the cache.
@@ -159,6 +161,44 @@ namespace Kinovea.Video
                     DisposeFrame(frame);
                 }
             }
+        }
+
+        public bool AcquireNext()
+        {
+            List<VideoFrame> removed = null;
+
+            lock (sync)
+            {
+                if (frames.Count < 2)
+                {
+                    return false;
+                }
+
+                int nextIndex = frames.IndexOfValue(current) + 1;
+                if (nextIndex > frames.Count - 1)
+                    return false;
+
+                current = frames.Values[nextIndex];
+
+                // Remove old frames from the cache if outside the retention window.
+                int index = frames.IndexOfKey(current.Timestamp);
+                removed = EvictBehind(index, framesToKeepBehind);
+
+                if (removed != null)
+                {
+                    Monitor.PulseAll(sync);
+                }
+            }
+
+            if (removed != null)
+            {
+                foreach (VideoFrame frame in removed)
+                {
+                    DisposeFrame(frame);
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -295,7 +335,7 @@ namespace Kinovea.Video
         /// </summary>
         public TryAcquireResult TryAcquire(PlayerState state)
         {
-            TryAcquireResult result = TryAcquireResult.Empty();
+            TryAcquireResult result = TryAcquireResult.MakeEmpty();
             List<VideoFrame> removed = null;
             long target = state.ReferenceTimestamp;
 
@@ -303,23 +343,74 @@ namespace Kinovea.Video
             {
                 if (frames.Count == 0)
                 {
-                    return new TryAcquireResult(false, -1);
+                    return result;
                 }
 
                 bool targetAcquired = false;
                 long acquiredTimestamp = -1;
-                VideoFrame closest = FindClosest(frames, target);
-                int index = frames.IndexOfKey(closest.Timestamp);
-                if (Math.Abs(closest.Timestamp - target) <= tolerance)
+                int index = 0;
+
+                if (state.Mode == PlayerStateMode.StepForward)
                 {
-                    current = closest;
-                    targetAcquired = true;
-                    acquiredTimestamp = closest.Timestamp;
-                    log.DebugFormat("TryAcquire: target acquired [~{0}] -> [{1}]", target, acquiredTimestamp);
+                    if (current == null || frames.Count == 1)
+                    {
+                        return result;
+                    }
+
+                    index = frames.IndexOfValue(current) + 1;
+                    if (index >= frames.Count)
+                    {
+                        return result;
+                    }
+
+                    // Verify that this frame.previous is actually current.
+                    // If not we don't assign current but we still do the eviction.
+                    if (frames.Values[index].PreviousTimestamp == current.Timestamp)
+                    {
+                        current = frames.Values[index];
+                        targetAcquired = true;
+                        acquiredTimestamp = current.Timestamp;
+                        log.DebugFormat("TryAcquire: target acquired [NEXT] -> [{0}]", acquiredTimestamp);
+                    }
+                }
+                else if (state.Mode == PlayerStateMode.StepBackward)
+                {
+                    if (current == null || frames.Count == 1)
+                    {
+                        return result;
+                    }
+
+                    index = frames.IndexOfValue(current) - 1;
+                    if (index < 0)
+                    {
+                        return result;
+                    }
+
+                    // Verify that current.previous is actually that frame.
+                    // If not we don't assign current but we still do the eviction.
+                    if (current.PreviousTimestamp == frames.Values[index].Timestamp)
+                    {
+                        current = frames.Values[index];
+                        targetAcquired = true;
+                        acquiredTimestamp = current.Timestamp;
+                        log.DebugFormat("TryAcquire: target acquired [PREV] -> [{0}]", acquiredTimestamp);
+                    }
+                }
+                else
+                {
+                    VideoFrame closest = FindClosest(frames, target);
+                    index = frames.IndexOfKey(closest.Timestamp);
+                    if (Math.Abs(closest.Timestamp - target) <= tolerance)
+                    {
+                        current = closest;
+                        targetAcquired = true;
+                        acquiredTimestamp = current.Timestamp;
+                        log.DebugFormat("TryAcquire: target acquired [~{0}] -> [{1}]", target, acquiredTimestamp);
+                    }
                 }
 
                 // Do the normal eviction of old frames outside the retention window.
-                // (Even if the target wasn't acquired).
+                // Note that we do this even if the target wasn't acquired.
                 removed = EvictBehind(index, framesToKeepBehind);
                 
                 result = new TryAcquireResult(targetAcquired, acquiredTimestamp);

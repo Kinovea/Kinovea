@@ -131,10 +131,23 @@ namespace Kinovea.Video.Bitmap
         #endregion
 
         #region Navigation and player state
-        public override bool MoveNext(bool decodeIfNecessary)
+
+        public override bool PlayerRequest(PlayerState newState)
+        {
+            // TODO: handle next/prev.
+
+            return UpdateCurrent(newState.ReferenceTimestamp);
+        }
+
+        public override bool MoveTo(long target)
+        {
+            return UpdateCurrent(target);
+        }
+
+        public override bool MoveNext()
         {
             long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
-            
+
             // If this is the very first frame we are asked then "next" is the frame at timestamp 0.
             if (firstFrame)
             {
@@ -144,15 +157,7 @@ namespace Kinovea.Video.Bitmap
 
             return UpdateCurrent(target);
         }
-        public override bool MoveTo(long target)
-        {
-            return UpdateCurrent(target);
-        }
 
-        public override bool PlayerRequest(PlayerState newState)
-        {
-            return UpdateCurrent(newState.ReferenceTimestamp);
-        }
         #endregion
 
         #region Working zone and decoding mode

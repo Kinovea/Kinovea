@@ -118,19 +118,16 @@ namespace Kinovea.Video
             current = FindClosest(frames, timestamp);
         }
 
-        /// <summary>
-        /// Move forward by a number of frames.
-        /// </summary>
-        public bool MoveBy(int steps)
+        public bool AcquireNext()
         {
-            if(frames.Count < 1 || steps <= 0 || current == null)
+            if(frames.Count < 2 || current == null)
                 return false;
             
-            int targetIndex = frames.IndexOfValue(current) + steps;
-            if(targetIndex > frames.Count - 1)
+            int nextIndex = frames.IndexOfValue(current) + 1;
+            if(nextIndex > frames.Count - 1)
                 return false;
             
-            current = frames.Values[targetIndex];
+            current = frames.Values[nextIndex];
             return true;
         }
         

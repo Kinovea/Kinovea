@@ -64,7 +64,19 @@ namespace Kinovea.Video
         private VideoFrame current = null;
         private VideoFrameDisposer frameDisposer;
         #endregion
-        
+
+
+        public void AcquireClosest(long timestamp)
+        {
+            // Nothing to do, we only have one frame.
+        }
+
+        public bool AcquireNext()
+        {
+            return false;
+        }
+
+
         public CacheAddResult Add(VideoFrame frame)
         {
             Clear();

@@ -57,28 +57,26 @@ namespace Kinovea.Video
         public long LastTimeStamp;
         public long DurationTimeStamps;
 
-        public static VideoInfo Empty {
-            get
+        public static VideoInfo MakeEmpty()
+        {
+            return new VideoInfo
             {
-                return new VideoInfo
-                {
-                    FilePath = "",
+                FilePath = "",
 
-                    OriginalSize = Size.Empty,
-                    OriginalRotation = ImageRotation.Rotate0,
-                    PixelAspectRatio = 1.0F,
-                    SampleAspectRatio = new Fraction(),
-                    IsCodecMpeg2 = false,
+                OriginalSize = Size.Empty,
+                OriginalRotation = ImageRotation.Rotate0,
+                PixelAspectRatio = 1.0F,
+                SampleAspectRatio = new Fraction(),
+                IsCodecMpeg2 = false,
 
-                    AverageTimeStampsPerFrame = 0,
-                    AverageTimeStampsPerSeconds = 0,
-                    FramesPerSeconds = 0,
-                    FrameIntervalMilliseconds = 0,
-                    FirstTimeStamp = 0,
-                    LastTimeStamp = 0,
-                    DurationTimeStamps = 0
-                };
-            }
+                AverageTimeStampsPerFrame = 0,
+                AverageTimeStampsPerSeconds = 0,
+                FramesPerSeconds = 0,
+                FrameIntervalMilliseconds = 0,
+                FirstTimeStamp = 0,
+                LastTimeStamp = 0,
+                DurationTimeStamps = 0
+            };
         }
     }
 }

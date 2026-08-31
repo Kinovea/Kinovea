@@ -27,7 +27,7 @@ namespace Kinovea.Video
             AcquiredTimestamp = acquiredTimestamp;
         }
 
-        public static TryAcquireResult Empty()
+        public static TryAcquireResult MakeEmpty()
         {
             return new TryAcquireResult(false, -1);
         }

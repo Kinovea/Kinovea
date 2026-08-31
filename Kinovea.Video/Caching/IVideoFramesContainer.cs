@@ -25,7 +25,11 @@ namespace Kinovea.Video
     public interface IVideoFramesContainer
     {
         VideoFrame CurrentFrame { get; }
-        
+
+        void AcquireClosest(long timestamp);
+
+        bool AcquireNext();
+
         CacheAddResult Add(VideoFrame frame);
 
         CacheAddResult ForceAdd(VideoFrame frame);

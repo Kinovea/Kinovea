@@ -1940,9 +1940,7 @@ namespace Kinovea.ScreenManager
             if (currentTimestamp > workingZone.Start &&
                 currentTimestamp <= workingZone.End)
             {
-                framesToDecode = -1;
-                PresentFrame(-1);
-                framesToDecode = 1;
+                PresentFrameStep(false);
             }
             else
             {
@@ -1967,8 +1965,7 @@ namespace Kinovea.ScreenManager
             if (currentTimestamp >= workingZone.Start &&
                 currentTimestamp < workingZone.End)
             {
-                framesToDecode = 1;
-                PresentFrame(-1);
+                PresentFrameStep(true);
             }
             else
             {
@@ -2855,15 +2852,16 @@ namespace Kinovea.ScreenManager
 
             long oldTimestamp = currentTimestamp;
 
-            // Acquire the best cached frame for the expected timestamp or next.
-            // This should return immediately and set reader.Current to the nearest frame from
-            // the active buffer type (cache, pre-buffer, on-demand).
+            
             if (isTracking)
             {
-                m_FrameServer.VideoReader.MoveNext(true);
+                // Move the decoder to the next frame and make sure it 
+                // decodes it synchronously if needed.
+                PresentFrameStep(true, true);
             }
             else
             {
+                // Get the best cached frame for the expected timestamp.
                 m_FrameServer.VideoReader.MoveTo(expectedTimestamp);
             }
 
@@ -3007,74 +3005,80 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Asks the reader to change the frame pointed to by Current, to the best it has in store.
-        /// This doesn't typically triggers a decode, the frame should already be waiting in a cache.
-        /// This is only called for frame by frame navigation, for playback see PresentPlayback().
+        /// Create and post a player state that asks the reader to move to the passed timestamp,
+        /// or the closest it has in store.
+        /// 
+        /// If synchronous is false this typically doesn't triggers a decode, 
+        /// the frame should already be waiting in a cache.
+        /// 
+        /// If the frame needs to be exact and/or needs to be available when control is returned,
+        /// pass forceSynchronous = true.
+        /// 
+        /// This is only called for frame by frame navigation. For playback see PresentPlayback().
         /// </summary>
         private void PresentFrame(long targetTimestamp, bool forceSynchronous = false)
         {
             if (!m_FrameServer.VideoReader.Loaded)
                 return;
 
-            if (isCurrentlyPlaying)
-                throw new InvalidProgramException("PresentFrame called while playing.");
-
-            //--------------------------------
-            // 
-            // Big refactoring in progress.
-            // 
-            // Currently this is called with a hidden argument in the global `framesToDecode`
-            // corresponding to the relative jump required.
-            // TODO: caller should detect if the target is past the end point and wrap around.
-            // Caller should publish a player state so the reader can react to the request.
-
-            // For now pretend everything is an arbitrary frame move.
-
-
-            // TODO: if we are already on a background thread we should call 
-            // the synchronous functions.
-
-
-
-            // Temporary code to translate between old and new API.
-            if (targetTimestamp < 0)
-            {
-                targetTimestamp = (long)Math.Round(currentTimestamp + framesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-            }
+            targetTimestamp = Math.Min(targetTimestamp, workingZone.End);
 
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
                 PlayerStateMode.Timestamp,
                 forceSynchronous,
-                Math.Min(targetTimestamp, workingZone.End)
-                );
+                targetTimestamp);
             
-            bool refreshInPlace = targetTimestamp == currentTimestamp;
-
-
-            log.DebugFormat("PresentFrame called. Target: [~{0}]. Current: [{1}]. Frames to decode: {2}. Refresh in place: {3}.", 
-                targetTimestamp, currentTimestamp, framesToDecode, refreshInPlace);
+            log.DebugFormat("PresentFrame called. Target: [~{0}]. Current: [{1}].", 
+                targetTimestamp, currentTimestamp);
 
             bool acquired = false;
 
-            // TODO: unify MoveNext into SubmitTimestampRequest.
-            if (targetTimestamp < 0)
+            if (isTimestampRequestInFlight)
             {
-                activePlayerState = state;
-                acquired = m_FrameServer.VideoReader.MoveNext(true);
+                log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
+                pendingPlayerState = state;
+                acquired = false;
             }
             else
             {
-                if (isTimestampRequestInFlight)
-                {
-                    log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
-                    pendingPlayerState = state;
-                    acquired = false;
-                }
-                else
-                {
-                    acquired = SubmitTimestampRequest(state);
-                }
+                acquired = SubmitTimestampRequest(state);
+            }
+
+            if (acquired)
+            {
+                AfterFrameAcquired(state);
+            }
+        }
+
+        /// <summary>
+        /// Same as PresentFrame but for next/previous type requests.
+        /// </summary>
+        private void PresentFrameStep(bool forward, bool forceSynchronous = false)
+        {
+            if (!m_FrameServer.VideoReader.Loaded)
+                return;
+
+            PlayerState state = new PlayerState(
+                GetNextPlayerStateId(),
+                forward ? PlayerStateMode.StepForward : PlayerStateMode.StepBackward,
+                forceSynchronous,
+                currentTimestamp);
+
+            log.DebugFormat("PresentFrameStep called. Target: [{0}]. Current: [{1}].",
+                forward ? "NEXT" : "PREV", currentTimestamp);
+
+            bool acquired = false;
+
+            if (isTimestampRequestInFlight)
+            {
+                log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
+                pendingPlayerState = state;
+                acquired = false;
+            }
+            else
+            {
+                acquired = SubmitTimestampRequest(state);
             }
 
             if (acquired)

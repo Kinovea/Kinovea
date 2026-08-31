@@ -12,14 +12,6 @@ namespace Kinovea.Video
     public class DecodingJobPlan
     {
         /// <summary>
-        /// The reference timestamp from the player request.
-        /// This may be approximate and coming from pixel or clock
-        /// mapping.
-        /// This is informative only, use TargetTimestamp.
-        /// </summary>
-        public long RequestedTimestamp { get; set; }
-
-        /// <summary>
         /// The actual media timestamp matching the requested timestamp.
         /// If TargetIsResolved is false, this is the same as RequestedTimestamp.
         /// </summary>
@@ -54,7 +46,6 @@ namespace Kinovea.Video
 
         public DecodingJobPlan()
         {
-            RequestedTimestamp = -1;
             TargetTimestamp = -1;
             TargetAcquired = false;
             TargetAcquiredInPlanning = false;
@@ -64,8 +55,8 @@ namespace Kinovea.Video
 
         public override string ToString()
         {
-            return string.Format("DecodingJobPlan: Request: [~{0}]. Target: [{1}]. Acquired: {2}. AcquiredInPlanning: {3}. DecoderInitAction: {4}. Resubmit pending: {5}.",
-                RequestedTimestamp, TargetTimestamp, TargetAcquired, TargetAcquiredInPlanning, DecoderRelocation, ResubmitPending);
+            return string.Format("DecodingJobPlan: Target: [~{0}]. Acquired: {1}. AcquiredInPlanning: {2}. DecoderInitAction: {3}. Resubmit pending: {4}.",
+                TargetTimestamp, TargetAcquired, TargetAcquiredInPlanning, DecoderRelocation, ResubmitPending);
         }
     }
 }
