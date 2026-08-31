@@ -178,6 +178,7 @@
   <ItemGroup>
     <Compile Include="Caching\CacheAddResult.cs" />
     <Compile Include="Caching\CacheLoadMode.cs" />
+    <Compile Include="Caching\RequestFulfilledEventArgs.cs" />
     <Compile Include="Caching\TryAcquireResult.cs" />
     <Compile Include="Caching\CacheTimestampRelation.cs" />
     <Compile Include="Caching\DecoderRelocation.cs" />

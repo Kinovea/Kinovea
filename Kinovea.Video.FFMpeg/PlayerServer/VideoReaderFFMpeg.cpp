@@ -581,6 +581,8 @@ void VideoReaderFFMpeg::GuessFrameRate(AVFormatContext* formatCtx, AVCodecContex
 
 void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
 {
+    // (runs in UI thread).
+    
     // In various places we have to turn off prebuffering and switch to on-demand mode.
     // After this the player should re-enable prebuffering by calling this method.
     // 
@@ -3034,6 +3036,9 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
 
     if (state->SynchronousFulfill)
     {
+        // In this case the decoder was already relocated, the request already fulfilled, 
+        // and the player acquired the target.
+        // The only thing left is the possible pending frame.
         if (mPendingFrame != nullptr)
         {
             ResubmitPending(state->ReferenceTimestamp, false);
@@ -3052,35 +3057,18 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
 
     log->DebugFormat("Executing plan for decoding job #{0}.", state->Id);
 
-    // By the end of this we MUST have signalled the UI that the request is complete,
-    // so it can restart scheduling jobs.
+    // By the end of this we MUST have signalled the player that the request is 
+    // either fulfilled or failed, so it can restart scheduling new jobs.
 
-    // Check this first in case we later block on resubmitting the pending frame.
-    if (!plan->TargetAcquired && plan->TargetAcquiredInPlanning)
-    {
-        log->DebugFormat("Target acquired during planning of the decoding job.");
-        OnFrameAcquired(state);
-    }
+    ExecuteDecodingJobPlan(state, plan);
 
-    bool acquiredDuringInit = ExecuteDecodingJobPlan(state, plan);
-
-    if (plan->TargetAcquired)
+    if (plan->TargetAcquired || plan->RequestFulfilledInPlanning)
     {
         return;
     }
 
-    if (acquiredDuringInit && !plan->TargetAcquiredInPlanning)
-    {
-        log->DebugFormat("Target acquired during execution of the decoding job plan.");
-        OnFrameAcquired(state);
-    }
-    else
-    {
-        log->DebugFormat("Target failed to be acquired.");
-        OnRequestFailed(state);
-    }
-
-    // At this point the decoder can just start decoding frames forward until EOF or cancellation.
+    // Request failed.
+    OnRequestFulfilled(state, false, -1);
 }
 
 DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAcquireResult^ tryAcquireResult)
@@ -3097,13 +3085,13 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     // the actual "job" will simply continue decoding frames sequentially 
     // until EOF or cancellation.
     // 
-    // Cache: by this point the cache has already been purged of any frames 
+    // Buffer: by this point the cache has already been purged of any frames 
     // older than the retention window compared to the closest match to the target.
     // This function will further purge if we need to seek.
     // 
     // Important: when in doubt we can always fall back to seeking to the target and 
     // restart decoding from there.
-    // Everything else is optimization, so we identify a few known scenarios 
+    // Everything else is optimization, so we identify known scenarios 
     // rather than try to handle all combinations of states.
     // If we can't prove an optimization is safe we should seek.
     //-----------------------------------------------------------------
@@ -3121,7 +3109,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     DecodingJobPlan^ plan = gcnew DecodingJobPlan();
     plan->TargetTimestamp = targetTimestamp;
     plan->TargetAcquired = isAcquired;
-    plan->TargetAcquiredInPlanning = false;
+    plan->RequestFulfilledInPlanning = false;
     plan->DecoderRelocation = DecoderRelocation::Seek;
     plan->ResubmitPending = false;
     
@@ -3192,7 +3180,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     // - acquire.
     // - do not move the decoder.
 
-    // Check the "happy surprise" case: the target was decoded while the job was in preparation.
+    // Check the "happy surprise" cases: the target was decoded while the job was in preparation.
     if (!isAcquired)
     {
         if (hasPending)
@@ -3203,16 +3191,25 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
                 log->DebugFormat("DecodingJobPlan: Pending frame matches target.");
             
                 // Target was decoded during preparation but couldn't be added to the cache at the time.
-                // Force add now and acquire immediately.
-                ResubmitPending(targetTimestamp, true);
+                // Force add now.
+                int64_t resolvedTarget = mPendingFrame->Timestamp;
+                bool addedMatch = ResubmitPending(targetTimestamp, true);
+                if (addedMatch)
+                {
+                    OnRequestFulfilled(state, true, resolvedTarget);
+                    plan->RequestFulfilledInPlanning = true;
+                }
                 
-                plan->TargetAcquiredInPlanning = true;
                 plan->ResubmitPending = false;
-                
                 plan->DecoderRelocation = DecoderRelocation::None;
                 return plan;
             }
+
+            // The pending frame doesn't match the target.
+            // Keep it around for now, we'll see in the other scenarios if we need
+            // to resubmit it or not.
         }
+
 
         // TODO: check if mCachedTimestamp matches the target. 
         // If so we can also just acquire it and continue decoding from there.
@@ -3289,6 +3286,11 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
 
         // We are in a good place, but no wiggle room.
 
+        if (!plan->TargetAcquired && !plan->RequestFulfilledInPlanning)
+        {
+            log->WarnFormat("DecodingJobPlan: Decoder matches player but request not fulfilled.");
+        }
+
         plan->ResubmitPending = true;
         plan->DecoderRelocation = DecoderRelocation::None;
         return plan;
@@ -3311,15 +3313,14 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
         
         if (!isAcquired)
         {
-            // we're good but we haven't found the exact target in the cache. 
+            // We're good but we haven't found the exact target in the cache on first try. 
             // This can happen if the cache is sparse and the request is for a frame that wasn't stored.
-            // Acquire the nearest frame now and mark the plan as fulfilled.
-            // TODO: for dense jobs we'll need to clear and restart from scratch.
-            mPreBuffer->AcquireClosest(targetTimestamp);
-            plan->TargetAcquiredInPlanning = true;
+            // Tell the player to acquire whatever is closest anyway.
+            OnRequestFulfilled(state, true, plan->TargetTimestamp);
+            plan->RequestFulfilledInPlanning = true;
 
-            log->DebugFormat("DecodingJobPlan: Target acquired during planning. Target:[~{0}]. Acquired:[{1}]", 
-                plan->TargetTimestamp, mPreBuffer->CurrentFrame->Timestamp);
+            log->DebugFormat("DecodingJobPlan: Request within cache bounds but no nearby frames. Target:[~{0}].", 
+                plan->TargetTimestamp);
 
             // This is a problem with sparse jobs.
             // If we haven't added the frame, then we won't find it now either.
@@ -3359,7 +3360,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
 }
 
 
-bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
+void VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan)
 {
     //-------------------------------
     // Runs on the prebuffer thread.
@@ -3375,20 +3376,20 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
     // Just because the target was acquired during preparation doesn't mean 
     // we don't have to move the decoder.
     // We might be behind the target and need to advance.
-    //
-    // This returns true if the target was acquired specifically during this call.
-    // If the target was already acquired during job preparation this returns false.
-
+    
 
     // Double check in case the target was decoded/stored during preparation.
     // Case 1: we managed to add it to the cache.
+    // Case 2: it was the pending frame.
+    // TODO: move this back with the other case in GetDecodingJobPlan().
     if (mCachedTimestamp > 0 && mPendingFrame == nullptr)
     {
         TimestampRelation relTarget = RelateTimestamps(mCachedTimestamp, plan->TargetTimestamp);
         if (relTarget == TimestampRelation::Match)
         {
-            mPreBuffer->AcquireClosest(plan->TargetTimestamp);
-            return true;
+            OnRequestFulfilled(state, true, mCachedTimestamp);
+            plan->RequestFulfilledInPlanning = true;
+            return;
         }
     }
 
@@ -3402,8 +3403,10 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
         ReadResult res = ReadFrameSeek(plan->TargetTimestamp, true, true, true);
         if (res == ReadResult::Success)
         {
-            mPreBuffer->AcquireClosest(plan->TargetTimestamp);
-            return true;
+            // Note: use the original request target for bracketing.
+            OnRequestFulfilled(state, true, plan->TargetTimestamp);
+            plan->RequestFulfilledInPlanning = true;
+            return;
         }
     }
     else if (plan->DecoderRelocation == DecoderRelocation::Advance)
@@ -3414,13 +3417,15 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
 
         if (plan->ResubmitPending && mPendingFrame != nullptr)
         {
-            bool acquired = ResubmitPending(plan->TargetTimestamp, true);
-
-            // Check if we reached the target already ?
-            // This shouldn't really happen but we'll take it.
-            if (acquired)
+            // We MUST advance so we use force=true to make sure this add 
+            // doesn't block and we can continue with the ReadFrameSeek below.
+            bool addedMatch = ResubmitPending(plan->TargetTimestamp, true);
+            if (addedMatch)
             {
-                return true;
+                // This should never happen but we'll take it anyway.
+                OnRequestFulfilled(state, true, plan->TargetTimestamp);
+                plan->RequestFulfilledInPlanning = true;
+                return;
             }
         }
         else
@@ -3431,30 +3436,36 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
         ReadResult res = ReadFrameSeek(plan->TargetTimestamp, false, true, true);
         if (res == ReadResult::Success)
         {
-            mPreBuffer->AcquireClosest(plan->TargetTimestamp);
-            return true;
+            // Report the original target to get bracketing.
+            OnRequestFulfilled(state, true, plan->TargetTimestamp);
+            plan->RequestFulfilledInPlanning = true;
+            return;
         }
 
-        return false;
+        return;
     }
     else if (plan->DecoderRelocation == DecoderRelocation::None)
     {
         // The decoder is already in the right spot.
-        bool acquiredHere = false;
+        bool addedMatch = false;
         if (plan->ResubmitPending && mPendingFrame != nullptr)
         {
-            acquiredHere = ResubmitPending(plan->TargetTimestamp, false);
+            // Note that here we submit with force=false.
+            // We don't want to disloge the first frame of the cache.
+            // Example scenario: flicking between frame 0 and 1, with cache filled to 32.
+            addedMatch = ResubmitPending(plan->TargetTimestamp, false);
+            if (addedMatch)
+            {
+                OnRequestFulfilled(state, true, plan->TargetTimestamp);
+                plan->RequestFulfilledInPlanning = true;
+                return;
+            }
         }
         else
         {
             DisposePending();
         }
-
-        return acquiredHere || plan->TargetAcquiredInPlanning;
     }
-
-    // Hopefully the target was acquired from the cache during the job preparation.
-    return false;
 }
 
 
@@ -3499,7 +3510,7 @@ bool VideoReaderFFMpeg::ResubmitPending(int64_t target, bool force)
             // The pending frame was the requested frame.
             // This can happen when we step forward fast enough.
             // The new request can come while we are decoding/storing it.
-            mPreBuffer->AcquireClosest(mCachedTimestamp);
+            // The caller should signal the UI that the request is now fulfilled.
             return true;
         }
     }

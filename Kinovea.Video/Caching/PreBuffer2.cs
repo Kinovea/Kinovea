@@ -122,7 +122,7 @@ namespace Kinovea.Video
         public void AcquireClosest(long timestamp)
         {
             //---------------------------------
-            // Runs on the UI thread.
+            // Runs on the UI thread or on exporter thread.
             //---------------------------------
             List<VideoFrame> removed = null;
 
@@ -169,6 +169,10 @@ namespace Kinovea.Video
         /// </summary>
         public bool AcquireNext()
         {
+            //--------------------
+            // Runs on the UI thread or on exporter thread.
+            //--------------------
+
             List<VideoFrame> removed = null;
 
             lock (sync)

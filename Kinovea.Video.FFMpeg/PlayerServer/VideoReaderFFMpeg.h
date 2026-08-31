@@ -395,6 +395,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         /// Seek and decode until the target is reached.
         /// Store the reached frame to the container.
+        /// @allowInterrupt: whether the function checks HasNewJob(), 
+        /// use true if running on the decoder thread, false if running on the main thread.
         ReadResult ReadFrameSeek(
             int64_t targetTimestamp, 
             bool doSeek, 
@@ -529,7 +531,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, TryAcquireResult^ tryAcquireResult);
 
         /// Perform the decoder relocation according to the plan.
-        bool ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
+        void ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
 
         /// Dispose the pending frame and set it to null.
         void DisposePending();

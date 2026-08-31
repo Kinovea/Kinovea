@@ -27,11 +27,13 @@ namespace Kinovea.Video
 
 
         /// <summary>
-        /// The target was acquired during the planning phase.
-        /// For example we decoded and stored the frame 
-        /// while the main thread was preparing the job.
+        /// The target was decoded during the planning phase.
+        /// For example the frame could have been decoded and stored 
+        /// in parallel to the main thread preparing the job.
+        /// This means the request is fulfilled, the player still needs
+        /// to be told about it and acquire it.
         /// </summary>
-        public bool TargetAcquiredInPlanning { get; set; }
+        public bool RequestFulfilledInPlanning { get; set; }
 
 
         /// <summary>
@@ -48,15 +50,15 @@ namespace Kinovea.Video
         {
             TargetTimestamp = -1;
             TargetAcquired = false;
-            TargetAcquiredInPlanning = false;
+            RequestFulfilledInPlanning = false;
             DecoderRelocation = DecoderRelocation.None;
             ResubmitPending = false;
         }
 
         public override string ToString()
         {
-            return string.Format("DecodingJobPlan: Target: [~{0}]. Acquired: {1}. AcquiredInPlanning: {2}. DecoderInitAction: {3}. Resubmit pending: {4}.",
-                TargetTimestamp, TargetAcquired, TargetAcquiredInPlanning, DecoderRelocation, ResubmitPending);
+            return string.Format("DecodingJobPlan: Target: [~{0}]. Acquired: {1}. FulfilledInPlanning: {2}. DecoderInitAction: {3}. Resubmit pending: {4}.",
+                TargetTimestamp, TargetAcquired, RequestFulfilledInPlanning, DecoderRelocation, ResubmitPending);
         }
     }
 }

@@ -540,8 +540,7 @@ namespace Kinovea.ScreenManager
             // It will be restored in PostLoadProcess.
 
             // 1. Reset all data.
-            m_FrameServer.VideoReader.FrameAcquired -= VideoReader_FrameAcquired;
-            m_FrameServer.VideoReader.RequestFailed -= VideoReader_RequestFailed;
+            m_FrameServer.VideoReader.RequestFulfilled -= VideoReader_RequestFulfilled;
             m_FrameServer.Unload();
 
             ResetInternalData();
@@ -609,8 +608,7 @@ namespace Kinovea.ScreenManager
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
             log.DebugFormat("Video file loaded: {0} ms --------------------", stopwatchLoad.ElapsedMilliseconds);
-            m_FrameServer.VideoReader.FrameAcquired += VideoReader_FrameAcquired;
-            m_FrameServer.VideoReader.RequestFailed += VideoReader_RequestFailed;
+            m_FrameServer.VideoReader.RequestFulfilled += VideoReader_RequestFulfilled;
 
             //-----------------------------
             // Read/decode the first frame.
@@ -3101,26 +3099,33 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void VideoReader_FrameAcquired(object sender, EventArgs<PlayerState> e)
+        private void VideoReader_RequestFulfilled(object sender, RequestFulfilledEventArgs e)
         {
             //---------------------
             // Runs in decoder/prebuffer thread
-            // The frame of a player request is available and ready to be displayed.
             //---------------------
 
-            BeginInvoke((Action)delegate { AfterFrameAcquired(e.Value); });
+            BeginInvoke((Action)delegate { AfterRequestFulfilled(e.PlayerState, e.Fulfilled, e.Timestamp); });
         }
 
-        private void VideoReader_RequestFailed(object sender, EventArgs<PlayerState> e)
+        private void AfterRequestFulfilled(PlayerState state, bool fulfilled, long timestamp)
         {
-            //---------------------
-            // Runs in decoder/prebuffer thread
-            // The request couldn't be fullfilled for some reason.
-            //---------------------
-
-            BeginInvoke((Action)delegate { AfterRequestFailed(e.Value); });
+            if (fulfilled)
+            {
+                // The frame is now ready in the cache, acquire it.
+                // The timestamp passed here is the resolved timestamp we should acquire.
+                // For example requests for next/prev don't have the exact timestamp beforehand.
+                // In the case the decoder needed to seek or advance this should generally be the 
+                // same as the original request, so that the closest frame is acquired, which 
+                // may be either the ultimate or penultimate to be decoded.
+                m_FrameServer.VideoReader.MoveTo(timestamp);
+                AfterFrameAcquired(state);
+            }
+            else
+            {
+                AfterRequestFailed(state);
+            }
         }
-
 
         /// <summary>
         /// The frame of a timestamp request was acquired by the reader.

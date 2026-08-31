@@ -49,16 +49,10 @@ namespace Kinovea.Video
     {
         public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
 
-        public event EventHandler<EventArgs<PlayerState>> FrameAcquired;
-        protected void OnFrameAcquired(PlayerState state)
+        public event EventHandler<RequestFulfilledEventArgs> RequestFulfilled;
+        protected void OnRequestFulfilled(PlayerState state, bool fulfilled, long timestamp)
         {
-            FrameAcquired?.Invoke(this, new EventArgs<PlayerState>(state));
-        }
-
-        public event EventHandler<EventArgs<PlayerState>> RequestFailed;
-        protected void OnRequestFailed(PlayerState state)
-        {
-            RequestFailed?.Invoke(this, new EventArgs<PlayerState>(state));
+            RequestFulfilled?.Invoke(this, new RequestFulfilledEventArgs(state, fulfilled, timestamp));
         }
 
         #region Properties
