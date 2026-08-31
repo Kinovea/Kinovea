@@ -918,7 +918,7 @@ void VideoReaderFFMpeg::BeforePlayloop()
     }
 }
 
-void VideoReaderFFMpeg::UpdateWorkingZone(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn)
+void VideoReaderFFMpeg::WorkingZoneUpdateRequest(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn)
 {
     if (!CanChangeWorkingZone)
     {

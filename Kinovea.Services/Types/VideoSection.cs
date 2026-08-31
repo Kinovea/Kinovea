@@ -62,6 +62,11 @@ namespace Kinovea.Services
             return new VideoSection(-1, -1);
         }
 
+        public static VideoSection MakeDefault()
+        {
+            return new VideoSection(0, 99);
+        }
+
 
         /// <summary>
         /// Returns true if this timestamp is contained in the section.

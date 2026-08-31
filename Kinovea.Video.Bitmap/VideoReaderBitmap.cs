@@ -156,7 +156,7 @@ namespace Kinovea.Video.Bitmap
         #endregion
 
         #region Working zone and decoding mode
-        public override void UpdateWorkingZone(WorkingZoneRequest request, Action<DoWorkEventHandler> workerFn)
+        public override void WorkingZoneUpdateRequest(WorkingZoneRequest request, Action<DoWorkEventHandler> workerFn)
         {
             workingZone = request.WorkingZone;
         }

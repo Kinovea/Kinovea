@@ -73,6 +73,9 @@ namespace Kinovea.ScreenManager
             }
             set
             {
+                if (value == m_iSelStart)
+                    return;
+
                 m_iSelStart = value;
                 if (m_iSelStart < m_iMinimum)
                 {
@@ -91,6 +94,9 @@ namespace Kinovea.ScreenManager
             }
             set
             {
+                if (value == m_iSelEnd)
+                    return;
+
                 m_iSelEnd = value;
                 if (m_iSelEnd < m_iSelStart) 
                 {
@@ -200,19 +206,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Methods - Timestamps to pixels.
-        public void UpdateInternalState(long _iMin, long _iMax, long _iStart, long _iEnd, long _iPos)
+        public void Initialize(long start, long end)
         {
-            // This method is only a shortcut to updating all properties at once.
-            // It should be called when the internal state of data has been modified
-            // by other means than the user manipulating the control.
-            // (for example, at initialization or reset.)
-            // This method update the appearence of the control only, it doesn't raise the events back.
-            // All input data are in absolute timestamps.
-            m_iMinimum = _iMin;
-            m_iMaximum = _iMax;
-            m_iSelStart = _iStart;
-            m_iSelEnd = _iEnd;
-            m_iSelPos = _iPos;
+            m_iMinimum = start;
+            m_iMaximum = end;
+            m_iSelStart = start;
+            m_iSelEnd = end;
+            m_iSelPos = start;
             
             UpdateAppearence();
         }

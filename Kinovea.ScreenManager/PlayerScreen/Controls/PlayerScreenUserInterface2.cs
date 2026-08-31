@@ -225,7 +225,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                return TimestampToRealtime(currentTimestamp - m_iSelStart);
+                return TimestampToRealtime(currentTimestamp - workingZone.Start);
             }
         }
 
@@ -237,7 +237,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                return TimestampToRealtime(m_iSelEnd - m_iSelStart);
+                return TimestampToRealtime(workingZone.End - workingZone.Start);
             }
         }
 
@@ -262,7 +262,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                return TimestampToRealtime(m_FrameServer.Metadata.TimeOrigin - m_iSelStart);
+                return TimestampToRealtime(m_FrameServer.Metadata.TimeOrigin - workingZone.Start);
             }
         }
 
@@ -346,10 +346,10 @@ namespace Kinovea.ScreenManager
         private static readonly Size m_MinimalSize = new Size(160, 120);
         private bool allowPreScaling = true;
 
-        // Selection and current timestamp.
+        // Current working zone and position.
+        // Everything in media timestamps.
         // trkSelection.minimum and maximum are also in absolute timestamps.
-        private long m_iSelStart;
-        private long m_iSelEnd = 99;
+        private VideoSection workingZone = VideoSection.MakeDefault();
         private long currentTimestamp;      // timestamp of the active frame or timestamp of the target frame we want to display.
         private long firstTimestamp;        // Resolved timestamp of the first frame. Might not be 0 and might not equal Info.FirstTimestamp.
         private bool selectionIsLocked;
@@ -640,9 +640,8 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
 
             firstTimestamp = currentTimestamp;
-            m_iSelStart = currentTimestamp;
-            m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
-
+            workingZone = new VideoSection(firstTimestamp, m_FrameServer.VideoReader.WorkingZone.End);
+            
             if (!m_FrameServer.VideoReader.CanChangeWorkingZone)
             {
                 EnableDisableWorkingZoneControls(false);
@@ -655,7 +654,7 @@ namespace Kinovea.ScreenManager
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
             m_FrameServer.Metadata.VideoPath = m_FrameServer.VideoReader.FilePath;
-            m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_iSelStart);
+            m_FrameServer.Metadata.InitTime(workingZone.Start, workingZone.End, workingZone.Start);
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Geometry.ReferenceSize);
             m_viewportManipulator.Initialize(m_FrameServer);
 
@@ -760,8 +759,7 @@ namespace Kinovea.ScreenManager
 
             // Restore selection.
             // Force a reload of the cache to account for possible changes in aspect ratio, image rotation, etc.
-            m_iSelStart = m_FrameServer.Metadata.SelectionStart;
-            m_iSelEnd = m_FrameServer.Metadata.SelectionEnd;
+            workingZone = new VideoSection(m_FrameServer.Metadata.SelectionStart, m_FrameServer.Metadata.SelectionEnd);
 
             // For replay watchers we disallow full caching mode
             // to avoid disrupting the instant-replay feedback loop.
@@ -786,7 +784,7 @@ namespace Kinovea.ScreenManager
                 CollapseKeyframePanel(false);
 
             framesToDecode = 1;
-            PresentFrame(m_iSelStart, true);
+            PresentFrame(workingZone.Start, true);
 
             double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
             double captureInterval = 1000 / m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond;
@@ -884,9 +882,9 @@ namespace Kinovea.ScreenManager
             // If so, keep it that way, otherwise use the absolute value.
             // A side effect of this approach is that when the start of the zone is moved
             // forward so as to overtake the current time origin, it will scoop it and drag it along with it.
-            bool timeOriginWasAligned = m_FrameServer.Metadata.TimeOrigin == m_iSelStart;
+            bool timeOriginWasAligned = m_FrameServer.Metadata.TimeOrigin == workingZone.Start;
 
-            VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
+            VideoSection newZone = workingZone;
             VideoDecodingMode oldCachingMode = m_FrameServer.VideoReader.DecodingMode;
 
             log.DebugFormat("Working zone update. {0} -> {1}.", m_FrameServer.VideoReader.WorkingZone, newZone);
@@ -901,7 +899,7 @@ namespace Kinovea.ScreenManager
             int maxMemory = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
             WorkingZoneRequest request = new WorkingZoneRequest(newZone, loadMode, maxMemory);
             
-            m_FrameServer.VideoReader.UpdateWorkingZone(request, WorkingZoneCacheLoadWorker);
+            m_FrameServer.VideoReader.WorkingZoneUpdateRequest(request, WorkingZoneCacheLoadWorker);
 
             // By this point the first frame of the new working zone is in the cache and its timestamp is resolved.
             currentTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
@@ -923,29 +921,20 @@ namespace Kinovea.ScreenManager
 
             // Update our local zone values with the resolved one.
             // Note: the end may still be in "request" space if we are not in caching mode.
-            m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
-            m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
+            workingZone = m_FrameServer.VideoReader.WorkingZone;
 
             // Update metadata.
             if (timeOriginWasAligned)
             {
-                m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
+                m_FrameServer.Metadata.TimeOrigin = workingZone.Start;
             }
 
-            m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_FrameServer.Metadata.TimeOrigin);
+            m_FrameServer.Metadata.InitTime(workingZone.Start, workingZone.End, m_FrameServer.Metadata.TimeOrigin);
             
             // Update Timeline and selection UI with resolved values.
-            if (trkSelection.SelStart != m_iSelStart)
-            {
-                trkSelection.SelStart = m_iSelStart;
-            }
-
-            if (trkSelection.SelEnd != m_iSelEnd)
-            {
-                trkSelection.SelEnd = m_iSelEnd;
-            }
-
-            trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            trkSelection.SelStart = workingZone.Start;
+            trkSelection.SelEnd = workingZone.End;
+            trkFrame.SetBounds(workingZone, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             UpdatePositionUI();
             UpdateSelectionLabels();
@@ -982,18 +971,17 @@ namespace Kinovea.ScreenManager
             // Called from ScreenManager.
             ShowBorder(_bActive);
         }
+        
         public void ForcePosition(long timestamp, bool allowUIUpdate)
         {
             framesToDecode = 1;
             StopPlaying();
 
-            currentTimestamp = timestamp;
-
-            if (currentTimestamp > m_iSelEnd)
-                currentTimestamp = m_iSelEnd;
+            currentTimestamp = Math.Min(timestamp, workingZone.End);
 
             PresentFrame(currentTimestamp, allowUIUpdate);
         }
+
         public void ForceCurrentFrame(long frameSinceSelStart, bool allowUIUpdate)
         {
             // Called during static sync.
@@ -1009,19 +997,16 @@ namespace Kinovea.ScreenManager
             if (frameSinceSelStart == -1)
             {
                 // Special case for +1 frame.
-                if (currentTimestamp < m_iSelEnd)
+                if (currentTimestamp < workingZone.End)
                 {
                     PresentFrame(-1, allowUIUpdate);
                 }
             }
             else
             {
-                currentTimestamp = (long)Math.Round(m_iSelStart + frameSinceSelStart * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-                if (currentTimestamp > m_iSelEnd)
-                {
-                    currentTimestamp = m_iSelEnd;
-                }
-
+                double offset = frameSinceSelStart * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+                long timestamp = (long)Math.Round(workingZone.Start + offset);
+                currentTimestamp = Math.Min(timestamp, workingZone.End);
                 PresentFrame(currentTimestamp, allowUIUpdate);
             }
         }
@@ -1271,8 +1256,7 @@ namespace Kinovea.ScreenManager
 
             m_bShowImageBorder = false;
 
-            m_iSelStart = 0;
-            m_iSelEnd = 99;
+            workingZone = VideoSection.MakeDefault();
             selectionIsLocked = false;
             
             currentTimestamp = 0;
@@ -1288,30 +1272,10 @@ namespace Kinovea.ScreenManager
             UpdateTimebase();
             
         }
-        private void InitWorkingZone()
-        {
-            // Setup data
-            if (m_FrameServer.Loaded)
-            {
-                m_iSelStart = firstTimestamp;
-                m_iSelEnd = (long)Math.Round(firstTimestamp + m_FrameServer.VideoReader.Info.DurationTimeStamps - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-            }
-            else
-            {
-                m_iSelStart = 0;
-                m_iSelEnd = 99;
-
-                currentTimestamp = 0;
-                firstTimestamp = 0;
-            }
-
-            m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
-        }
+        
         private void SetupPrimarySelectionPanel()
         {
-            // Setup controls & labels.
-            // Update internal state only, doesn't trigger the events.
-            trkSelection.UpdateInternalState(m_iSelStart, m_iSelEnd, m_iSelStart, m_iSelEnd, m_iSelStart);
+            trkSelection.Initialize(workingZone.Start, workingZone.End);
             UpdateSelectionLabels();
         }
         
@@ -1645,7 +1609,7 @@ namespace Kinovea.ScreenManager
                     buttonGotoLast_Click(null, EventArgs.Empty);
                     break;
                 case PlayerScreenCommands.GotoPreviousImageForceLoop:
-                    if (currentTimestamp <= m_iSelStart)
+                    if (currentTimestamp <= workingZone.Start)
                         buttonGotoLast_Click(null, EventArgs.Empty);
                     else
                         buttonGotoPrevious_Click(null, EventArgs.Empty);
@@ -1981,49 +1945,43 @@ namespace Kinovea.ScreenManager
         #region Playback Controls
         public void buttonGotoFirst_Click(object sender, EventArgs e)
         {
-            // Jump to start.
-            if (m_FrameServer.Loaded)
-            {
-                OnPoke();
-                StopPlaying();
-                OnPauseAsked();
-                PresentFrame(m_iSelStart, true);
-            }
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            OnPoke();
+            StopPlaying();
+            OnPauseAsked();
+
+            PresentFrame(workingZone.Start, true);
         }
         public void buttonGotoPrevious_Click(object sender, EventArgs e)
         {
-            if (m_FrameServer.Loaded)
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            OnPoke();
+            StopPlaying();
+            OnPauseAsked();
+
+            if (currentTimestamp > workingZone.Start &&
+                currentTimestamp <= workingZone.End)
             {
-                OnPoke();
-                StopPlaying();
-                OnPauseAsked();
-
-                //---------------------------------------------------------------------------
-                // If we are outside the primary selection or we are about to leave it,
-                // reset to the start point.
-                //---------------------------------------------------------------------------
-                if ((currentTimestamp <= m_iSelStart) || (currentTimestamp > m_iSelEnd))
-                {
-                    PresentFrame(m_iSelStart, true);
-                }
-                else
-                {
-                    framesToDecode = -1;
-                    PresentFrame(-1, true);
-
-                    // Reset to normal.
-                    framesToDecode = 1;
-                }
+                framesToDecode = -1;
+                PresentFrame(-1, true);
+                framesToDecode = 1;
             }
-
+            else
+            {
+                PresentFrame(workingZone.Start, true);
+            }
         }
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            if (m_FrameServer.Loaded)
-            {
-                OnPoke();
-                OnButtonPlay();
-            }
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            OnPoke();
+            OnButtonPlay();
         }
         public void buttonGotoNext_Click(object sender, EventArgs e)
         {
@@ -2034,19 +1992,15 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             OnPauseAsked();
 
-            // If we are outside the primary zone or going to get out, seek to start.
-            // We also only do the seek if we are after the m_iStartingPosition,
-            // Sometimes, the second frame will have a time stamp inferior to the first,
-            // which sort of breaks our sentinels.
-            bool isGoingOutside = (currentTimestamp < m_iSelStart) || (currentTimestamp >= m_iSelEnd);
-            if (isGoingOutside && (currentTimestamp >= firstTimestamp))
-            {
-                PresentFrame(m_iSelStart, true);
-            }
-            else
+            if (currentTimestamp >= workingZone.Start &&
+                currentTimestamp < workingZone.End)
             {
                 framesToDecode = 1;
                 PresentFrame(-1, true);
+            }
+            else
+            {
+                PresentFrame(workingZone.Start, true);
             }
         }
 
@@ -2067,19 +2021,19 @@ namespace Kinovea.ScreenManager
             OnPauseAsked();
             framesToDecode = 1;
 
-            long selDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            double selDuration = Math.Round(workingZone.End - workingZone.Start + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
-            float normalized = ((float)currentTimestamp - m_iSelStart) / selDuration;
+            double normalized = (currentTimestamp - workingZone.Start) / selDuration;
             int currentPercentage = (int)Math.Round(normalized * 100);
             int maxSteps = 100 / round;
             int currentStep = currentPercentage / round;
             int nextStep = forward ? currentStep + 1 : currentStep - 1;
             nextStep = Math.Max(Math.Min(nextStep, maxSteps), 0);
             int newPercentage = nextStep * round;
-            long newPosition = m_iSelStart + (long)(((float)newPercentage / 100) * selDuration);
+            long newPosition = workingZone.Start + (long)((newPercentage / 100) * selDuration);
 
-            // This should be a forced-sync operation to make sure we restart the playback
-            // right after.
+            // This should be a forced-sync operation to make sure we
+            // go to the new location before restarting playback.
             PresentFrame(newPosition, true);
 
             if (wasPlaying)
@@ -2087,14 +2041,15 @@ namespace Kinovea.ScreenManager
         }
         public void buttonGotoLast_Click(object sender, EventArgs e)
         {
-            if (m_FrameServer.Loaded)
-            {
-                OnPoke();
-                StopPlaying();
-                OnPauseAsked();
-                PresentFrame(m_iSelEnd, true);
-            }
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            OnPoke();
+            StopPlaying();
+            OnPauseAsked();
+            PresentFrame(workingZone.End, true);
         }
+
         public void OnButtonPlay()
         {
             //--------------------------------------------------------------
@@ -2109,13 +2064,11 @@ namespace Kinovea.ScreenManager
 
             if (isCurrentlyPlaying)
             {
-                // Pause playback.
                 StopPlaying();
                 OnPauseAsked();
             }
             else
             {
-                // Start playback.
                 buttonPlay.Image = Resources.flatpause3b;
                 StartMultimediaTimer();
                 PlayStarted?.Invoke(this, EventArgs.Empty);
@@ -2173,7 +2126,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // Shift + Left on first => loop backward.
-                    if (((ModifierKeys & Keys.Shift) == Keys.Shift) && currentTimestamp <= m_iSelStart)
+                    if (((ModifierKeys & Keys.Shift) == Keys.Shift) && currentTimestamp <= workingZone.Start)
                         buttonGotoLast_Click(null, EventArgs.Empty);
                     else
                         buttonGotoPrevious_Click(null, EventArgs.Empty);
@@ -2213,44 +2166,44 @@ namespace Kinovea.ScreenManager
 
         private void trkSelection_SelectionChanging(object sender, EventArgs e)
         {
-            if (m_FrameServer.Loaded)
-            {
-                StopPlaying();
-                OnPauseAsked();
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            StopPlaying();
+            OnPauseAsked();
 
-                // Update selection timestamps and labels.
-                UpdateSelectionDataFromControl();
-                UpdateSelectionLabels();
+            // Update selection timestamps and labels.
+            UpdateWorkingZoneDataFromControl();
+            UpdateSelectionLabels();
 
-                // Update the frame tracker internal timestamps (including position if needed).
-                trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-            }
+            // Update the frame tracker internal timestamps (including position if needed).
+            trkFrame.SetBounds(workingZone, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
         }
+
         private void trkSelection_SelectionChanged(object sender, EventArgs e)
         {
             // Actual update.
-            if (m_FrameServer.Loaded)
-            {
-                UpdateSelectionDataFromControl();
-                UpdateWorkingZone(CacheLoadMode.Keep);
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            UpdateWorkingZoneDataFromControl();
+            UpdateWorkingZone(CacheLoadMode.Keep);
 
-                AfterSelectionChanged();
-            }
+            AfterSelectionChanged();
         }
+
         private void trkSelection_TargetAcquired(object sender, EventArgs e)
         {
             // User clicked inside selection: Jump to position.
-            if (m_FrameServer.Loaded)
-            {
-                OnPoke();
-                StopPlaying();
-                OnPauseAsked();
-                framesToDecode = 1;
-
-                PresentFrame(trkSelection.SelPos, true);
-                //currentTimestamp = trkSelection.SelPos + trkSelection.Minimum;
-            }
-
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            OnPoke();
+            StopPlaying();
+            OnPauseAsked();
+         
+            framesToDecode = 1;
+            PresentFrame(trkSelection.SelPos, true);
         }
         private void btn_HandlersLock_Click(object sender, EventArgs e)
         {
@@ -2275,47 +2228,52 @@ namespace Kinovea.ScreenManager
         }
         private void btnSetHandlerLeft_Click(object sender, EventArgs e)
         {
-            // Set the left handler of the selection at the current frame.
-            if (m_FrameServer.Loaded && !selectionIsLocked)
-            {
-                trkSelection.SelStart = currentTimestamp;
-                UpdateSelectionDataFromControl();
-                UpdateSelectionLabels();
-                UpdateWorkingZone(CacheLoadMode.Keep);
-                trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            if (!m_FrameServer.Loaded || selectionIsLocked)
+                return;
+            
+            trkSelection.SelStart = currentTimestamp;
 
-                AfterSelectionChanged();
-            }
+            UpdateWorkingZoneDataFromControl();
+            UpdateSelectionLabels();
+            UpdateWorkingZone(CacheLoadMode.Keep);
+            trkFrame.SetBounds(workingZone, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+
+            AfterSelectionChanged();
         }
+
         private void btnSetHandlerRight_Click(object sender, EventArgs e)
         {
-            // Set the right handler of the selection at the current frame.
-            if (m_FrameServer.Loaded && !selectionIsLocked)
-            {
-                trkSelection.SelEnd = currentTimestamp;
-                UpdateSelectionDataFromControl();
-                UpdateSelectionLabels();
-                UpdateWorkingZone(CacheLoadMode.Keep);
-                trkFrame.SetBounds(m_iSelStart, m_iSelEnd, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            if (!m_FrameServer.Loaded || selectionIsLocked)
+                return;
 
-                AfterSelectionChanged();
-            }
+            trkSelection.SelEnd = currentTimestamp;
+            
+            UpdateWorkingZoneDataFromControl();
+            UpdateSelectionLabels();
+            UpdateWorkingZone(CacheLoadMode.Keep);
+            trkFrame.SetBounds(workingZone, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            
+            AfterSelectionChanged();
         }
+
         private void btnHandlersReset_Click(object sender, EventArgs e)
         {
             // Reset both selection sentinels to their max values.
-            if (m_FrameServer.Loaded && !selectionIsLocked)
-            {
-                trkSelection.Reset();
-                UpdateSelectionDataFromControl();
+            if (!m_FrameServer.Loaded || selectionIsLocked)
+                return;
+            
+            trkSelection.Reset();
+         
+            UpdateWorkingZoneDataFromControl();
+            UpdateSelectionLabels();
 
-                // Force the reloading of all frames.
-                // Note: We could just add the missing frames on both sides,
-                // but we use this button as a manual "reset" button.
-                UpdateWorkingZone(CacheLoadMode.Reload);
+            // Force the reloading of all frames.
+            // Note: We could just add the missing frames on both sides,
+            // but we use this button as a manual "reset" button.
+            UpdateWorkingZone(CacheLoadMode.Reload);
+            trkFrame.SetBounds(workingZone, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
-                AfterSelectionChanged();
-            }
+            AfterSelectionChanged();
         }
 
         private void UpdateFramePrimarySelection()
@@ -2323,34 +2281,35 @@ namespace Kinovea.ScreenManager
             //--------------------------------------------------------------
             // Update the visible image to reflect the new selection.
             // Checks that the previous current frame is still within selection,
-            // jumps to closest sentinel otherwise.
+            // jumps to closest end otherwise.
             //--------------------------------------------------------------
 
             if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
             {
                 if (m_FrameServer.VideoReader.Current == null)
-                    PresentFrame(m_iSelStart, true);
+                    PresentFrame(workingZone.Start, true);
                 else
                     PresentFrame(m_FrameServer.VideoReader.Current.Timestamp, true);
             }
-            else if (currentTimestamp < m_iSelStart || currentTimestamp > m_iSelEnd)
+            else if (currentTimestamp < workingZone.Start || currentTimestamp > workingZone.End)
             {
                 framesToDecode = 1;
-                if (currentTimestamp < m_iSelStart)
-                    PresentFrame(m_iSelStart, true);
+                if (currentTimestamp < workingZone.Start)
+                    PresentFrame(workingZone.Start, true);
                 else
-                    PresentFrame(m_iSelEnd, true);
+                    PresentFrame(workingZone.End, true);
             }
         }
+
         private void UpdateSelectionLabels()
         {
             long start = 0;
-            long duration = 0;
+            double duration = 0;
 
             if (m_FrameServer.Loaded)
             {
-                start = m_iSelStart - firstTimestamp;
-                duration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                start = workingZone.Start - firstTimestamp;
+                duration = Math.Round(workingZone.End - workingZone.Start + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
 
             string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, timecodeFormat, true);
@@ -2358,33 +2317,36 @@ namespace Kinovea.ScreenManager
 
             if (m_FrameServer.VideoReader != null)
             {
-                duration = (long)Math.Round(duration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                duration = Math.Round(duration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
 
-            string durationTimecode = m_FrameServer.TimeStampsToTimecode(duration, TimeType.Duration, timecodeFormat, true);
+            string durationTimecode = m_FrameServer.TimeStampsToTimecode((long)duration, TimeType.Duration, timecodeFormat, true);
             int right = lblSelDuration.Right;
             lblSelDuration.Text = "[" + durationTimecode + "]";
             lblSelDuration.Left = right - lblSelDuration.Width;
         }
-        private void UpdateSelectionDataFromControl()
+        private void UpdateWorkingZoneDataFromControl()
         {
-            // Update WorkingZone data according to control.
-            if ((m_iSelStart != trkSelection.SelStart) || (m_iSelEnd != trkSelection.SelEnd))
-            {
-                // Time origin: we try to maintain user-defined time origin, but we don't want the origin to stay at the absolute zero when the zone changes.
-                // Check if we were previously aligned with the start of the zone, if so, keep it that way, otherwise keep the absolute value.
-                if (m_FrameServer.Metadata.TimeOrigin == m_iSelStart)
-                    m_FrameServer.Metadata.TimeOrigin = trkSelection.SelStart;
+            if (workingZone.Start == trkSelection.SelStart && workingZone.End == trkSelection.SelEnd)
+                return;
 
-                m_iSelStart = trkSelection.SelStart;
-                m_iSelEnd = trkSelection.SelEnd;
+            // Time origin: we try to maintain user-defined time origin,
+            // but we don't want the origin to stay at the video zero when the zone changes.
+            // Check if we were previously aligned with the start of the zone, if so, keep it that way,
+            // otherwise keep the absolute value.
+            if (m_FrameServer.Metadata.TimeOrigin == workingZone.Start)
+            {
+                m_FrameServer.Metadata.TimeOrigin = trkSelection.SelStart;
             }
+
+            workingZone = new VideoSection(trkSelection.SelStart, trkSelection.SelEnd);
         }
+
         private void AfterSelectionChanged()
         {
             // Update everything as if we moved the handlers manually.
-            m_FrameServer.Metadata.SelectionStart = m_iSelStart;
-            m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
+            m_FrameServer.Metadata.SelectionStart = workingZone.Start;
+            m_FrameServer.Metadata.SelectionEnd = workingZone.End;
 
             UpdateFramesMarkers();
 
@@ -2896,7 +2858,7 @@ namespace Kinovea.ScreenManager
             }
 
             // If we predict EOF on the next frame perform the loop back and restart.
-            if (expectedTimestamp > m_iSelEnd)
+            if (expectedTimestamp > workingZone.End)
             {
                 EOFDuringPlayback();
                 return;
@@ -2948,7 +2910,7 @@ namespace Kinovea.ScreenManager
             {
                 StopPlaying();
 
-                PresentFrame(m_iSelStart, true);
+                PresentFrame(workingZone.Start, true);
                 framesToDecode = 1;
             }
         }
@@ -2964,12 +2926,12 @@ namespace Kinovea.ScreenManager
             if (m_bSynched)
             {
                 StopPlaying();
-                PresentFrame(m_iSelStart, true);
+                PresentFrame(workingZone.Start, true);
             }
             else 
             {
                 StopMultimediaTimer();
-                currentTimestamp = m_iSelStart;
+                currentTimestamp = workingZone.Start;
                 StartMultimediaTimer();
             }
         }
@@ -3344,10 +3306,7 @@ namespace Kinovea.ScreenManager
             // Compute final expected timestamp.
             double elapsedTimestamps = GetPlaybackElapsedTimestamps();
             long expectedTimestamp = (long)Math.Round(activePlayerState.ReferenceTimestamp + elapsedTimestamps);
-            if (expectedTimestamp > m_iSelEnd)
-            {
-                expectedTimestamp = m_iSelEnd;
-            }
+            expectedTimestamp = Math.Min(expectedTimestamp, workingZone.End);
 
             log.DebugFormat("Playback paused. Expected: [~{0}], Current: [{1}].", 
                 expectedTimestamp, currentTimestamp);
@@ -4305,9 +4264,8 @@ namespace Kinovea.ScreenManager
                 float dty = m_PointerTool.MouseDeltaOrigin.Y * timeGrabSpeed;
                 float dt = Math.Abs(dtx) > Math.Abs(dty) ? dtx : dty;
                 long target = m_PointerTool.OriginTime - (long)(dt * m_FrameServer.Metadata.AverageTimeStampsPerFrame);
-                target = Math.Min(Math.Max(m_iSelStart, target), m_iSelEnd);
+                target = Math.Min(Math.Max(workingZone.Start, target), workingZone.End);
 
-                // FIXME: Ignore / skip if busy.
                 framesToDecode = 1;
                 PresentFrame(target, true);
             }
@@ -4931,7 +4889,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            if (next >= 0 && m_FrameServer.Metadata[next].Timestamp <= m_iSelEnd)
+            if (next >= 0 && m_FrameServer.Metadata[next].Timestamp <= workingZone.End)
                 KeyframeControl_Selected(null, new TimeEventArgs(m_FrameServer.Metadata[next].Timestamp));
 
             if (wasPlaying)
@@ -4953,7 +4911,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            if (prev >= 0 && m_FrameServer.Metadata[prev].Timestamp >= m_iSelStart)
+            if (prev >= 0 && m_FrameServer.Metadata[prev].Timestamp >= workingZone.Start)
                 KeyframeControl_Selected(null, new TimeEventArgs(m_FrameServer.Metadata[prev].Timestamp));
 
             if (wasPlaying)
@@ -5095,7 +5053,7 @@ namespace Kinovea.ScreenManager
 
             foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
             {
-                if (kf.Timestamp >= m_iSelStart && kf.Timestamp <= m_iSelEnd)
+                if (workingZone.Contains(kf.Timestamp))
                 {
                     //kf.ImportImage(m_FrameServer.VideoReader.FrameList[(int)m_FrameServer.VideoReader.GetFrameNumber(kf.Position)].BmpImage);
                     //kf.GenerateDisabledThumbnail();
@@ -5223,7 +5181,7 @@ namespace Kinovea.ScreenManager
             // A keyframe was selected from a keyframe control (thumbnail or side panel),
             // or from a command jumping from keyframe to keyframe.
             // Move to the corresponding time.
-            if (e.Time < m_iSelStart || e.Time > m_iSelEnd)
+            if (!workingZone.Contains(e.Time))
                 return;
 
             OnPoke();
@@ -5231,10 +5189,9 @@ namespace Kinovea.ScreenManager
             OnPauseAsked();
 
             long targetPosition = e.Time;
-
             trkSelection.SelPos = targetPosition;
+            
             framesToDecode = 1;
-
             PresentFrame(targetPosition, true);
         }
 
@@ -6248,7 +6205,7 @@ namespace Kinovea.ScreenManager
         private void AfterAnnotationsFileOp()
         {
             framesToDecode = 1;
-            PresentFrame(m_iSelStart, true);
+            PresentFrame(workingZone.Start, true);
         }
         #endregion
 

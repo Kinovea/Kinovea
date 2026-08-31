@@ -256,7 +256,7 @@ namespace Kinovea.Video
         /// The start frame is resolved to an actual media timestamp.
         /// In the case of full caching the end frame is also resolved.
         /// </summary>
-        public virtual void UpdateWorkingZone(WorkingZoneRequest request, Action<DoWorkEventHandler> workerFunction)
+        public virtual void WorkingZoneUpdateRequest(WorkingZoneRequest request, Action<DoWorkEventHandler> workerFunction)
         {
         }
 

@@ -181,7 +181,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         //-------------------
         // Working zone and decoding mode
         //-------------------
-        virtual void UpdateWorkingZone(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn) override;
+        virtual void WorkingZoneUpdateRequest(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn) override;
 
         /// If we are not caching yet, try to switch to prebuffering.
         virtual void StartPrebufferingIfNotCaching() override;

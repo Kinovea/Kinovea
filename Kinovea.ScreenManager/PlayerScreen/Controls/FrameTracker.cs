@@ -231,17 +231,17 @@ namespace Kinovea.ScreenManager
         /// Update the appearance of the control after the selection end points were changed.
         /// Does not raise events back.
         /// </summary>
-        public void SetBounds(long selStart, long selEnd, double tsPerFrame)
+        public void SetBounds(VideoSection workingZone, double tsPerFrame)
         {
             // This method is only a shortcut to updating min and max properties at once.
             // This method update the appearence of the control only, it doesn't raise the events back.
-            curTimestamp = Clamp(curTimestamp, selStart, selEnd);
+            curTimestamp = Clamp(curTimestamp, workingZone.Start, workingZone.End);
 
-            this.minTimestamp = selStart;
-            this.lastFrameTimestamp = selEnd;
+            this.minTimestamp = workingZone.Start;
+            this.lastFrameTimestamp = workingZone.End;
 
             // Make room for one more frame so the gutter contains the interval of the last frame.
-            this.maxTimestamp = (long)Math.Round(selEnd + tsPerFrame);
+            this.maxTimestamp = (long)Math.Round(workingZone.End + tsPerFrame);
             this.tsPerFrame = tsPerFrame;
             
             UpdateCursorWidth();
