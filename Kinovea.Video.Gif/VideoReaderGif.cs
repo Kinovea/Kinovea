@@ -141,17 +141,18 @@ namespace Kinovea.Video.GIF
             return true;
         }
 
-        public override bool MoveTo(long target)
+        public override bool MoveRequest(bool next, long target)
         {
-            cache.AcquireClosest(target);
-            return true;
+            if (next)
+            {
+                return cache.AcquireNext();
+            }
+            else
+            {
+                cache.AcquireClosest(target);
+                return true;
+            }
         }
-
-        public override bool MoveNext()
-        {
-            return cache.AcquireNext();
-        }
-
         #endregion
 
         #region Video geometry

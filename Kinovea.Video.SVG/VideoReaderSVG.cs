@@ -135,27 +135,22 @@ namespace Kinovea.Video.SVG
             return UpdateCurrent(target);
         }
 
-        public override bool MoveTo(long target)
+        public override bool MoveRequest(bool next, long target)
         {
-            return UpdateCurrent(target);
-        }
-
-        public override bool MoveNext()
-        {
-            long target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
-
-            // If this is the very first frame we are asked then "next" is the frame at timestamp 0.
-            if (firstFrame)
+            if (next)
             {
-                target = 0;
-                firstFrame = false;
+                target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+
+                // If this is the very first frame we are asked then "next" is the frame at timestamp 0.
+                if (firstFrame)
+                {
+                    target = 0;
+                    firstFrame = false;
+                }
             }
 
             return UpdateCurrent(target);
         }
-        
-
-        
         #endregion 
 
         #region Working zone and decoding mode

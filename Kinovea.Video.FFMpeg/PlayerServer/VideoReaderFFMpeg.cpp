@@ -678,21 +678,23 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
         // Fulfill synchronously and return.
         int64_t target = mRequestedPlayerState->ReferenceTimestamp;
         mWorkingPlayerState = mRequestedPlayerState;
+
         if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
         {
-            // Call ReadFrameNext.
-            target = -1;
+            acquired = MoveRequestOnDemand(true, -1);
         }
-        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward)
+        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward &&
+                 mSingleFrameContainer->CurrentFrame != nullptr && 
+                 mSingleFrameContainer->CurrentFrame->PreviousTimestamp >= 0)
         {
-            if (mSingleFrameContainer->CurrentFrame != nullptr &&
-                mSingleFrameContainer->CurrentFrame->PreviousTimestamp >= 0)
-            {
-                target = mSingleFrameContainer->CurrentFrame->PreviousTimestamp;
-            }
+            target = mSingleFrameContainer->CurrentFrame->PreviousTimestamp;
+            acquired = MoveRequestOnDemand(false, target);
+        }
+        else
+        {
+            acquired = MoveRequestOnDemand(false, target);
         }
         
-        acquired = MoveOnDemand(target);
         mRequestFulfilled = true;
         return acquired;
     }
@@ -705,19 +707,20 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
 
         if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
         {
-            // NEXT
-            target = -1;
+            acquired = MoveRequestCaching(true, -1);
         }
-        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward)
+        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward &&
+                 mCache->CurrentFrame != nullptr &&
+                 mCache->CurrentFrame->PreviousTimestamp >= 0)
         {
-            if (mCache->CurrentFrame != nullptr &&
-                mCache->CurrentFrame->PreviousTimestamp >= 0)
-            {
-                target = mCache->CurrentFrame->PreviousTimestamp;
-            }
+            target = mCache->CurrentFrame->PreviousTimestamp;
+            acquired = MoveRequestCaching(false, target);
+        }
+        else
+        {
+            acquired = MoveRequestCaching(false, target);
         }
 
-        acquired = MoveCaching(target);
         mRequestFulfilled = true;
         return acquired;
     }
@@ -829,14 +832,14 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     return acquired;
 }
 
-bool VideoReaderFFMpeg::MoveTo(int64_t target)
+bool VideoReaderFFMpeg::MoveRequest(bool next, int64_t target)
 {
     //-----------------------------------------------------
     // This runs in the UI thread or in a video exporter background thread.
     //-----------------------------------------------------
 
     // This happens in two contexts:
-    // 1. playback: the player is weakly asking for a frame to present.
+    // 1. playback: the player is asking for a frame to present, now.
     //   In this case we may be in prebuffering mode, the request should be
     //   fulfilled immediately with whatever is the closest frame.
     // 2. Frame enumeration during export.
@@ -849,47 +852,19 @@ bool VideoReaderFFMpeg::MoveTo(int64_t target)
     bool acquired = false;
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
-        return MoveOnDemand(target);
+        return MoveRequestOnDemand(next, target);
     }
     else if (mCachingMode == VideoDecodingMode::Caching)
     {
-        return MoveCaching(target);
+        return MoveRequestCaching(next, target);
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        return MovePrebuffer(target);
+        return MoveRequestPrebuffer(next, target);
     }
 }
 
-bool VideoReaderFFMpeg::MoveNext()
-{
-    //-----------------------------------------------------
-    // This runs either in the UI thread or in a background thread for video export.
-    //-----------------------------------------------------
-
-    if (!mIsLoaded || mCachingMode == VideoDecodingMode::NotInitialized)
-        return false;
-
-    if (mCachingMode == VideoDecodingMode::OnDemand)
-    {
-        ReadResult res = ReadFrameNext();
-        return res == ReadResult::Success;
-    }
-    else if (mCachingMode == VideoDecodingMode::Caching)
-    {
-        return mCache->AcquireNext();
-    }
-    else if (mCachingMode == VideoDecodingMode::PreBuffering)
-    {
-        // This should only be used when frame skipping is disallowed, 
-        // to guarantee contiguity of the cache.
-        return mPreBuffer->AcquireNext();
-    }
-
-    return false;
-}
-
-bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
+bool VideoReaderFFMpeg::MoveRequestOnDemand(bool next, int64_t target)
 {
     if (!mSingleFrameContainer->IsEmpty &&
         mSingleFrameContainer->CurrentFrame != nullptr && 
@@ -897,7 +872,13 @@ bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
     {
         return true;
     }
-    else if (target >= 0)
+    else if (next)
+    {
+        // Synchronous read of the next frame.
+        ReadResult res = ReadFrameNext();
+        return (res == ReadResult::Success);
+    }
+    else
     {
         // Synchronous read of the requested frame.
         // ReadFrameSeek will call `store` on the single-frame frame container
@@ -905,15 +886,9 @@ bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
         ReadResult res = ReadFrameSeek(target, true, false);
         return (res == ReadResult::Success);
     }
-    else
-    {
-        // Synchronous read of the next frame.
-        ReadResult res = ReadFrameNext();
-        return (res == ReadResult::Success);
-    }
 }
 
-bool VideoReaderFFMpeg::MoveCaching(int64_t target)
+bool VideoReaderFFMpeg::MoveRequestCaching(bool next, int64_t target)
 {
     if (mCache->Empty)
     {
@@ -921,31 +896,31 @@ bool VideoReaderFFMpeg::MoveCaching(int64_t target)
         // of the caching operation is closed so we should always have a frame.
         return false;
     }
-    else if (target >= 0)
+    else if (next)
+    {
+        return mCache->AcquireNext();
+    }
+    else
     {
         mCache->AcquireClosest(target);
         return true;
     }
-    else
-    {
-        return mCache->AcquireNext();
-    }
 }
 
-bool VideoReaderFFMpeg::MovePrebuffer(int64_t target)
+bool VideoReaderFFMpeg::MoveRequestPrebuffer(bool next, int64_t target)
 {
     if (mPreBuffer->Empty)
     {
         return false;
     }
-    else if (target >= 0)
+    else if (next)
     {
-        mPreBuffer->AcquireClosest(target);
-        return true;
+        return mPreBuffer->AcquireNext();
     }
     else
     {
-        return mPreBuffer->AcquireNext();
+        mPreBuffer->AcquireClosest(target);
+        return true;
     }
 }
 

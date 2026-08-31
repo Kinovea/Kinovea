@@ -162,39 +162,46 @@ namespace Kinovea.Video
         #region Navigation and player state
 
         /// <summary>
-        /// The player requests an exact frame or starts playback.
+        /// The player UI requests an exact frame or starts playback.
+        /// This requests denotes a state change in the player and 
+        /// may trigger a restart of the decoding thread.
         /// 
-        /// This function handles all three caching modes and should generally
-        /// be used for requests originating from the player UI (timeline, buttons).
+        /// If the caller needs a guarantee that the frame be set before 
+        /// returning control, set SynchronousFulfill to true.
+        /// If SynchronousFulfill is false the requested frame may be
+        /// set asynchronously and the FrameAcquired event will be raised when the frame is ready.
         /// 
-        /// If the caller needs a guarantee that the frame is set before 
-        /// returning set SynchronousFulfill to true.
-        /// 
-        /// MoveTo can be used for a lightweight acquire during 
-        /// playback or for background frame enumeration during export.
+        /// This should be used for all timeline navigation and starting playback.
         /// </summary>
         public abstract bool PlayerRequest(PlayerState newState);
 
         /// <summary>
-        /// Request the frame closest to the target timestamp.
+        /// Lightweight request for the next frame or the frame closest to the target.
         /// 
-        /// In pre-buffering mode this will always return immediately without blocking
-        /// and provide a best-effort frame rather than an exact frame.
+        /// This call never blocks and should always be fast.
+        /// In pre-buffering mode this will provide a best-effort frame rather than an exact frame.
         /// 
-        /// This is called in two contexts:
-        /// - during playback to get a close-enough frame immediately.
-        /// - during frame enumeration when we know we are in on-demand or cached mode, as a 
-        /// simpler alternative to passing a full PlayerState object.
+        /// This should be called:
+        /// - during playback to get a close-enough frame or the next frame immediately.
+        /// - during frame enumeration when we know we are in on-demand or cached mode.
         /// </summary>
-        public abstract bool MoveTo(long target);
+        public abstract bool MoveRequest(bool next, long timestamp);
 
         /// <summary>
-        /// Requests the frame next to the current frame.
-        /// 
-        /// This is similar to MoveTo but specialized for the next frame.
-        /// Normally only used for frame enumeration or during playback + tracking.
+        /// Lightweight request for the passed timestamp.
         /// </summary>
-        public abstract bool MoveNext();
+        public bool MoveTo(long timestamp)
+        {
+            return MoveRequest(false, timestamp);
+        }
+
+        /// <summary>
+        /// Lightweight request for the next frame.
+        /// </summary>
+        public bool MoveNext()
+        {
+            return MoveRequest(true, -1);
+        }
 
         /// <summary>
         /// Whether the decoder is allowed to apply its frame skipping policy during playback.

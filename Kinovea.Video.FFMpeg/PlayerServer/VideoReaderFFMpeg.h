@@ -174,8 +174,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Navigation and player state
         //-------------------
         virtual bool PlayerRequest(PlayerState^ newState) override;
-        virtual bool MoveTo(int64_t target) override;
-        virtual bool MoveNext() override;
+        virtual bool MoveRequest(bool next, int64_t target) override;
 
         virtual void UpdateAllowFrameSkipping(bool allow) override;
 
@@ -380,9 +379,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         //-------------------
         // Navigation / player demands
         //-------------------
-        bool MoveOnDemand(int64_t target);
-        bool MoveCaching(int64_t target);
-        bool MovePrebuffer(int64_t target);
+        bool MoveRequestOnDemand(bool next, int64_t target);
+        bool MoveRequestCaching(bool next, int64_t target);
+        bool MoveRequestPrebuffer(bool next, int64_t target);
 
         //-------------------
         // Seeking/decoding
