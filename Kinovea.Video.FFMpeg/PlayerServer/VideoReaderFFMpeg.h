@@ -177,7 +177,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual bool MoveTo(int64_t target) override;
         virtual bool MoveNext() override;
 
-        virtual void BeforePlayloop() override;
+        virtual void UpdateAllowFrameSkipping(bool allow) override;
 
         //-------------------
         // Working zone and decoding mode
@@ -194,7 +194,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual void AfterFrameEnumeration() override;
 
         //-------------------
-        // Frame enumeration
+        // Video geometry
         //-------------------
         virtual bool UpdateVideoGeometry(VideoGeometryRequest^ request) override;
 
@@ -328,6 +328,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         bool mWasPrebufferingBeforeEnumeration;
         
+        bool mAllowFrameSkipping = true;
 
         //------------------------
         // Scale/convert
@@ -478,6 +479,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// This should be called after validating that the mode is available.
         /// This function stops the prebuffer thread if needed.
         /// It doesn't start the full cache loading nor the prebuffering thread.
+        /// Recomputes the geometry.
         void ChangeCachingMode(VideoDecodingMode newMode);
 
         
@@ -537,6 +539,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         //------------------
         // Prebuffering > Frame skipping policy.
         //------------------
+
+        
 
         /// Update the playback frame skipping policy based on how far behind 
         /// we are compared to the player.

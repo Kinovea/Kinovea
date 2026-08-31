@@ -196,6 +196,16 @@ namespace Kinovea.Video
         /// </summary>
         public abstract bool MoveNext();
 
+        /// <summary>
+        /// Whether the decoder is allowed to apply its frame skipping policy during playback.
+        /// This can be deactivated in the preferences to force a frame by frame playback,
+        /// even if the decoder is not fast enough to keep up with the playback speed.
+        /// </summary>
+        public virtual void UpdateAllowFrameSkipping(bool allow)
+        {
+        }
+
+
 
         /// <summary>
         /// During a playback loop, compute the expected frame timestamp 
@@ -213,18 +223,6 @@ namespace Kinovea.Video
             double elapsedTimestamps = elapsedFrames * Info.AverageTimeStampsPerFrame;
             long expectedTimestamp = (long)Math.Round(state.ReferenceTimestamp + elapsedTimestamps);
             return expectedTimestamp;
-        }
-
-        /// <summary>
-        /// Called right before starting the play loop.
-        /// Might be used to ensure the prebuffering thread is started.
-        /// Override to implement.
-        /// 
-        /// TO REMOVE: this should go through player demand / player state.
-        /// 
-        /// </summary>
-        public virtual void BeforePlayloop()
-        {
         }
 
         /// <summary>

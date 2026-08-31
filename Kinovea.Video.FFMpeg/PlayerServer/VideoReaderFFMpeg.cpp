@@ -581,6 +581,9 @@ void VideoReaderFFMpeg::GuessFrameRate(AVFormatContext* formatCtx, AVCodecContex
 
 void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
 {
+    // In various places we have to turn off prebuffering and switch to on-demand mode.
+    // After this the player should re-enable prebuffering by calling this method.
+    // 
     // During loading we have called UpdateWorkingZone already, 
     // but only allowing it to either go full caching or stay in 
     // on-demand mode, because we didn't have a reliable presentation size.
@@ -589,7 +592,7 @@ void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
     // If we aren't in full caching mode by now it means either 
     // the wz doesn't fit in memory or this was disallowed, we don't 
     // change this here.
-
+    //
     // Special case: in the case where the initial updating the working zone 
     // triggered a full cache load, but the user cancelled it, 
     // we call this first when the progress bar dialog returns, 
@@ -673,8 +676,23 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
         // Fulfill synchronously and return.
+        int64_t target = mRequestedPlayerState->ReferenceTimestamp;
         mWorkingPlayerState = mRequestedPlayerState;
-        acquired = MoveOnDemand(mRequestedPlayerState->ReferenceTimestamp);
+        if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
+        {
+            // Call ReadFrameNext.
+            target = -1;
+        }
+        else if (mRequestedPlayerState->Mode == PlayerStateMode::StepBackward)
+        {
+            if (mSingleFrameContainer->CurrentFrame != nullptr &&
+                mSingleFrameContainer->CurrentFrame->PreviousTimestamp >= 0)
+            {
+                target = mSingleFrameContainer->CurrentFrame->PreviousTimestamp;
+            }
+        }
+        
+        acquired = MoveOnDemand(target);
         mRequestFulfilled = true;
         return acquired;
     }
@@ -682,6 +700,9 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     if (mCachingMode == VideoDecodingMode::Caching)
     {
         // Fulfill synchronously and return.
+
+        // TODO: handle next/previous.
+
         mWorkingPlayerState = mRequestedPlayerState;
         acquired = MoveCaching(mRequestedPlayerState->ReferenceTimestamp);
         mRequestFulfilled = true;
@@ -691,8 +712,6 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     //-------------------
     // Prebuffering mode.
     //-------------------
-
-    // TODO: handle next/prev requests.
 
     if (mRequestedPlayerState->SynchronousFulfill)
     {
@@ -704,6 +723,8 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
         TryAcquireResult^ result = mPreBuffer->TryAcquire(mRequestedPlayerState);
         Volatile::Write(mTryAcquireResult, result);
         acquired = result->TargetAcquired;
+
+        log->DebugFormat("Cache contiguity: {0}.", mPreBuffer->IsContiguous());
 
         if (acquired)
         {
@@ -847,13 +868,9 @@ bool VideoReaderFFMpeg::MoveNext()
     }
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
-        // This is normally never called.
-        // If you need the next frame while prebuffering call a full PlayerRequest.
-        // If it needs to be synchronous, set SynchronousFulfill to true.
-        // This will set current to whatever is the next frame in the cache, which 
-        // may not be the immediate next frame in the media.
-        mPreBuffer->AcquireNext();
-        return true;
+        // This should only be used when frame skipping is disallowed, 
+        // to guarantee contiguity of the cache.
+        return mPreBuffer->AcquireNext();
     }
 
     return false;
@@ -862,16 +879,24 @@ bool VideoReaderFFMpeg::MoveNext()
 bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
 {
     if (!mSingleFrameContainer->IsEmpty && 
+        mSingleFrameContainer->CurrentFrame != nullptr &&
         mSingleFrameContainer->CurrentFrame->Timestamp == target)
     {
+        // We are already there.
         return true;
     }
-    else
+    else if (target >= 0)
     {
         // Synchronous read of the requested frame.
         // The ReadFrameSeek will call `store` on the single-frame frame container
         // which will set the `Current` property to the requested frame.
         ReadResult res = ReadFrameSeek(target, true, false);
+        return (res == ReadResult::Success);
+    }
+    else
+    {
+        // Synchronous read of the next frame.
+        ReadResult res = ReadFrameNext();
         return (res == ReadResult::Success);
     }
 }
@@ -910,26 +935,6 @@ bool VideoReaderFFMpeg::MovePrebuffer(int64_t target)
 #pragma endregion
 
 #pragma region Decoding mode, play loop and frame enumeration
-void VideoReaderFFMpeg::BeforePlayloop()
-{
-    // Just in case something wrong happened, make sure the decoding thread is alive.
-    // FIXME: this is just StartPrebufferingIfNotCaching().
-
-    if (DecodingMode == VideoDecodingMode::Caching)
-    {
-        // All set.
-        return;
-    }
-
-    if (CanPreBuffer && DecodingMode != VideoDecodingMode::PreBuffering)
-    {
-        log->Error("Forcing PreBuffering thread to restart.");
-        ChangeCachingMode(VideoDecodingMode::PreBuffering);
-
-        StartPreBufferingThread(mWorkingZone.Start);
-        mPreBuffer->AcquireClosest(mWorkingZone.Start);
-    }
-}
 
 void VideoReaderFFMpeg::WorkingZoneUpdateRequest(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn)
 {
@@ -1130,10 +1135,7 @@ void VideoReaderFFMpeg::ChangeCachingMode(VideoDecodingMode newMode)
         return;
     }
 
-    if (mVerbose)
-    {
-        log->DebugFormat("Changing caching mode: {0} -> {1}", oldMode, newMode);
-    }
+    log->DebugFormat("Changing caching mode: {0} -> {1}", oldMode, newMode);
 
     // Clear the existing cache.
     switch (oldMode)
@@ -1508,8 +1510,6 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
 
 #pragma endregion
 
-
-
 #pragma region Frame level reading/decoding/scaling/converting/storing
 
 
@@ -1756,6 +1756,9 @@ bool VideoReaderFFMpeg::ShouldStoreFrame()
         return true;
 
     if (mWorkingPlayerState->Mode != PlayerStateMode::Playback)
+        return true;
+
+    if (!mAllowFrameSkipping)
         return true;
 
     if (mFrameSkippingPolicy != FrameSkippingPolicy::Behind && 
@@ -2845,8 +2848,20 @@ PlayerState^ VideoReaderFFMpeg::WaitForNewJobReady(ThreadCanceler^ canceller, in
     return nullptr;
 }
 
+
+void VideoReaderFFMpeg::UpdateAllowFrameSkipping(bool allow)
+{
+    if (mAllowFrameSkipping == allow)
+        return;
+    
+    mAllowFrameSkipping = allow;
+    log->DebugFormat("UpdateAllowFrameSkipping: {0}", mAllowFrameSkipping);
+}
+
 void VideoReaderFFMpeg::UpdateFrameSkippingPolicy()
 {
+    if (!mAllowFrameSkipping)
+        return;
 
     if (mWorkingPlayerState->Mode != PlayerStateMode::Playback)
         return;

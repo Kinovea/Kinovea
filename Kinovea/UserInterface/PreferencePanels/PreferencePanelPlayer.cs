@@ -65,6 +65,7 @@ namespace Kinovea.Root
         };
 
         private bool detectImageSequences;
+        private bool enableFrameSkipping;
         private bool syncLockSpeeds;
         private bool syncByMotion;
         private int memoryBuffer;
@@ -105,6 +106,7 @@ namespace Kinovea.Root
         private void ImportPreferences()
         {
             detectImageSequences = PreferencesManager.PlayerPreferences.DetectImageSequences;
+            enableFrameSkipping = PreferencesManager.PlayerPreferences.EnableFrameSkipping;
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
             playbackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
@@ -126,10 +128,12 @@ namespace Kinovea.Root
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
+            chkEnableFrameSkipping.Text = "Enable frame skipping when the player is too slow";
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
             chkSyncByMotion.Text = "Use motion synchronization mode";
 
             chkDetectImageSequences.Checked = detectImageSequences;
+            chkEnableFrameSkipping.Checked = enableFrameSkipping;
             chkLockSpeeds.Checked = syncLockSpeeds;
             chkSyncByMotion.Checked = syncByMotion;
             
@@ -184,6 +188,10 @@ namespace Kinovea.Root
         private void ChkDetectImageSequencesCheckedChanged(object sender, EventArgs e)
         {
             detectImageSequences = chkDetectImageSequences.Checked;
+        }
+        private void ChkEnableFrameSkippingCheckedChanged(object sender, EventArgs e)
+        {
+            enableFrameSkipping = chkEnableFrameSkipping.Checked;
         }
         private void ChkLockSpeedsCheckedChanged(object sender, EventArgs e)
         {
@@ -263,6 +271,7 @@ namespace Kinovea.Root
         public void CommitChanges()
         {
             PreferencesManager.PlayerPreferences.DetectImageSequences = detectImageSequences;
+            PreferencesManager.PlayerPreferences.EnableFrameSkipping = enableFrameSkipping;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
             PreferencesManager.PlayerPreferences.SyncByMotion = syncByMotion;
             PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;

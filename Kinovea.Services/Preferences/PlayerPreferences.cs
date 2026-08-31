@@ -251,6 +251,11 @@ namespace Kinovea.Services
             set { sideBySideHorizontal = value; Save(); }
         }
 
+        public bool EnableFrameSkipping
+        {
+            get { BeforeRead(); return enableFrameSkipping; }
+            set { enableFrameSkipping = value; Save(); }
+        }
         #endregion
 
         #region Members
@@ -296,6 +301,7 @@ namespace Kinovea.Services
         private KeyframePresetsParameters keyframePresetsParameters = new KeyframePresetsParameters();
         private bool showCacheInTimeline = false;
         private bool sideBySideHorizontal = true;
+        private bool enableFrameSkipping = true;
         #endregion
 
         private void Save()
@@ -399,6 +405,7 @@ namespace Kinovea.Services
 
             writer.WriteElementString("PandocPath", pandocPath);
             writer.WriteElementString("SideBySideHorizontal", XmlHelper.WriteBoolean(sideBySideHorizontal));
+            writer.WriteElementString("EnableFrameSkipping", XmlHelper.WriteBoolean(enableFrameSkipping));
         }
         
         public void ReadXML(XmlReader reader)
@@ -532,6 +539,9 @@ namespace Kinovea.Services
                         break;
                     case "SideBySideHorizontal":
                         sideBySideHorizontal = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "EnableFrameSkipping":
+                        enableFrameSkipping = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

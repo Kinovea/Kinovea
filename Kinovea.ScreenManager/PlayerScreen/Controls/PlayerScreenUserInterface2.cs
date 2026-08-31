@@ -974,7 +974,7 @@ namespace Kinovea.ScreenManager
         public void ForcePosition(long timestamp, bool synchronous)
         {
             StopPlaying(false);
-
+            
             timestamp = Math.Min(timestamp, workingZone.End);
             PresentFrame(timestamp, synchronous);
         }
@@ -1960,7 +1960,9 @@ namespace Kinovea.ScreenManager
             if (currentTimestamp >= workingZone.Start &&
                 currentTimestamp < workingZone.End)
             {
-                PresentFrameStep(true);
+                // check if any tracking
+                bool forceSynchronous = m_FrameServer.Metadata.AnyTracking;
+                PresentFrameStep(true, forceSynchronous);
             }
             else
             {
@@ -2650,11 +2652,29 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
+            bool wasAllowed = allowPreScaling;
+
             allowPreScaling = allow && !m_FrameServer.Metadata.AnyTracking;
-            log.DebugFormat("Allow prescaling: {0}", allowPreScaling ? "ENABLED" : "DISABLED");
             
-            m_FrameServer.ChangeAllowPrescaling(allowPreScaling);
-            ResizeUpdate(true);
+            // Note: only do the resize update if the status has changed, 
+            // otherwise it will go recursive and stack overflows.
+            if (wasAllowed && !allowPreScaling)
+            {
+                log.DebugFormat("Disabling prescaling");
+                m_FrameServer.ChangeAllowPrescaling(false);
+                ResizeUpdate(true);
+
+                // If this has killed the prebuffering thread, restart it.
+                if (m_FrameServer.VideoReader.CanPreBuffer)
+                {
+                    m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
+                }
+            }
+            else if (!wasAllowed && allowPreScaling)
+            {
+                log.DebugFormat("Enabling prescaling");
+                ResizeUpdate(true);
+            }
         }
         #endregion
 
@@ -2670,7 +2690,7 @@ namespace Kinovea.ScreenManager
             loopWatcher.Restart();
 
             Application.Idle += Application_Idle;
-            m_FrameServer.VideoReader.BeforePlayloop();
+            m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
             m_FrameServer.Metadata.PauseAutosave();
 
             // Time keeping.
@@ -2683,8 +2703,18 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Starting playback on [{0}]. Frame interval:{1:0.000} ms, refresh interval:{2} ms.",
                 startTimestamp, playbackFrameInterval, refreshInterval);
 
+            // Allow or disallow frame skipping based on preferences and whether we are tracking.
+            bool allowFrameSkipping = 
+                PreferencesManager.PlayerPreferences.EnableFrameSkipping && 
+                !m_FrameServer.Metadata.AnyTracking;
+
+            m_FrameServer.VideoReader.UpdateAllowFrameSkipping(allowFrameSkipping);
+
             // Snapshot the playback state and publish it to the reader.
-            // This is a synchronous request, it can only come back after the decoder is relocated.
+            // This is a synchronous request, it can only come back after the decoder is relocated
+            // to the start of the playback. This is important for wrapping around the end of the
+            // working zone, as the first frame might be in the middle of a GOP and take some time 
+            // to get there.
             bool synchronous = true;
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
@@ -2779,57 +2809,76 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if (activePlayerState.Mode != PlayerStateMode.Playback || activePlayerState.PlaybackFrameInterval == 0)
-            {
-                log.ErrorFormat("PresentPlayback called while not playing. Player state id: {0}.", activePlayerState.Id);
-                return;   
-            }
-
-            double elapsedTimestamps = GetPlaybackElapsedTimestamps();
-
-            // There should be only two cases.
-            // - We are tracking: force frame by frame and disregard synchronization with the clock.
-            // - We are not tracking: calculate the expected timestamp and jump to it.
-            // Decoding of the video happens in a background thread and pushes frames to a buffer.
-            long expectedTimestamp = 0;
-            bool isTracking = m_FrameServer.Metadata.AnyTracking;
-            if (isTracking)
-            {
-                expectedTimestamp = (long)(currentTimestamp + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-            }
-            else
-            {
-                expectedTimestamp = (long)Math.Round(activePlayerState.ReferenceTimestamp + elapsedTimestamps);
-                //log.DebugFormat("Playback tick. Current: [{0}]. Target: [~{1}].", currentTimestamp, expectedTimestamp);
-            }
-
-            // Bail out if we are already there.
-            // FIXME: don't do this if tracking, this may not be the real next frame.
-            if (expectedTimestamp == currentTimestamp)
-            {
-                return;
-            }
-
-            // If we predict EOF on the next frame perform the loop back and restart.
-            if (expectedTimestamp > workingZone.End)
-            {
-                EOFDuringPlayback();
-                return;
-            }
+            //-------------------------------------------------------------
+            // Frame skipping policy.
+            //
+            // We have two modes of operation:
+            // 1. frame skipping: we compute the expected timestamp based on the elapsed time and jump to it.
+            // 2. frame by frame: we just move to the next frame in the cache, regardless of the expected timestamp.
+            // 
+            // The second mode is mandatory if we are tracking, to ensure contiguity.
+            // Since we ONLY send MoveNext() requests, we are guaranteed that the 
+            // cache is contiguous and we don't have to worry about missing frames and the
+            // sparsness of the prebuffer.
+            //
+            // The result is that the playback speed ignores the speed slider and just 
+            // process frames as fast as it can, (still based on the multimedia timer 
+            // interval).
+            //
+            // In frame skipping mode, both the player and the decoder compute the expected timestamp
+            // based on the elapsed time and the playback speed.
+            // The decoder will apply its own frame skipping heuristics and decide to not store some 
+            // frames in the cache, not decode B-frames, or even seek ahead by several frames, in 
+            // an attempt to mainain the correct playback speed.
+            //-------------------------------------------------------------
 
             long oldTimestamp = currentTimestamp;
 
-            
-            if (isTracking)
+            bool isTracking = m_FrameServer.Metadata.AnyTracking;
+            bool allowFrameSkipping = PreferencesManager.PlayerPreferences.EnableFrameSkipping;
+
+            if (allowFrameSkipping && !isTracking)
             {
-                // Move the decoder to the next frame and make sure it 
-                // decodes it synchronously if needed.
-                PresentFrameStep(true, true);
+                // Frame skipping mode:
+                // - On the player side we may drop frames during rendering and
+                //   the next request will try to catch up.
+                // - On the decoder side it compares the expected timestamp of the player
+                //   with what it is able to decode + store in the cache, and applies various
+                //   levels of frame skipping based on the lag.
+                double elapsedTimestamps = GetPlaybackElapsedTimestamps();
+                long expectedTimestamp = (long)Math.Round(activePlayerState.ReferenceTimestamp + elapsedTimestamps);
+
+                // Bail out if we are already there somehow.
+                if (expectedTimestamp == currentTimestamp)
+                {
+                    return;
+                }
+
+                // Detect EOF based on projected timestamp.
+                if (expectedTimestamp > workingZone.End)
+                {
+                    EOFDuringPlayback();
+                    return;
+                }
+
+                // Get the best cached frame for the expected timestamp.
+                // It may be late but that's ok, we are in "best effort" mode.
+                m_FrameServer.VideoReader.MoveTo(expectedTimestamp);
             }
             else
             {
-                // Get the best cached frame for the expected timestamp.
-                m_FrameServer.VideoReader.MoveTo(expectedTimestamp);
+                // Contiguous frame by frame mode.
+                // Disregard synchronization with the clock.
+
+                // Detect EOF based on current frame.
+                long expectedTimestamp = (long)(currentTimestamp + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                if (expectedTimestamp > workingZone.End)
+                {
+                    EOFDuringPlayback();
+                    return;
+                }
+
+                m_FrameServer.VideoReader.MoveNext();
             }
 
             // Bail out on error.
@@ -2841,20 +2890,17 @@ namespace Kinovea.ScreenManager
             // Update to the resolved timestamp.
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
             
-            //double lag = (expectedTimestamp - currentTimestamp) / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-            //log.DebugFormat("Player lag: {0:0.00} s", lag);
-
             if (videoFilterIsActive)
             {
                 m_FrameServer.Metadata.ActiveVideoFilter.UpdateTime(currentTimestamp);
             }
 
-            DoInvalidate();
-
             // Perform the tracking step (tracks and camera).
-            // This updates the tracks based on their stored data or computes the tracking for
-            // the active tracks.
+            // This updates the tracks based on their stored data or performs
+            // the tracking for the active tracks.
             ComputeOrStopTracking(isTracking);
+
+            DoInvalidate();
 
             UpdatePositionUI();
 
@@ -2927,18 +2973,18 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if (!contiguous)
+            if (contiguous)
+            {
+                m_FrameServer.Metadata.BeforeTrackingStep(timestamp);
+                m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
+                m_FrameServer.Metadata.CameraTrackingStep();
+            }
+            else
             {
                 m_FrameServer.Metadata.StopAllTracking();
 
                 m_FrameServer.Metadata.BeforeTrackingStep(timestamp);
                 m_FrameServer.Metadata.SyncTrackableDrawings(timestamp);
-                m_FrameServer.Metadata.CameraTrackingStep();
-            }
-            else
-            {
-                m_FrameServer.Metadata.BeforeTrackingStep(timestamp);
-                m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
                 m_FrameServer.Metadata.CameraTrackingStep();
             }
 
@@ -2950,6 +2996,7 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
             }
 
+            // Check if we still need to disallow prescaling.
             UpdateAllowPreScaling(true);
         }
 
@@ -2994,12 +3041,13 @@ namespace Kinovea.ScreenManager
                 forceSynchronous,
                 targetTimestamp);
             
-            log.DebugFormat("PresentFrame called. Target: [~{0}]. Current: [{1}].", 
-                targetTimestamp, currentTimestamp);
+            log.DebugFormat("PresentFrame. Target: [~{0}]. Current: [{1}]. Sync: {2}. Mode: {3}.", 
+                targetTimestamp, currentTimestamp, forceSynchronous, 
+                m_FrameServer.VideoReader.DecodingMode);
 
             bool acquired = false;
 
-            if (isTimestampRequestInFlight)
+            if (!forceSynchronous && isTimestampRequestInFlight)
             {
                 log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
                 pendingPlayerState = state;
@@ -3030,12 +3078,13 @@ namespace Kinovea.ScreenManager
                 forceSynchronous,
                 currentTimestamp);
 
-            log.DebugFormat("PresentFrameStep called. Target: [{0}]. Current: [{1}].",
-                forward ? "NEXT" : "PREV", currentTimestamp);
+            log.DebugFormat("PresentFrameStep. Target: [{0}]. Current: [{1}]. Sync: {2}. Mode: {3}",
+                forward ? "NEXT" : "PREV", currentTimestamp, forceSynchronous, 
+                m_FrameServer.VideoReader.DecodingMode);
 
             bool acquired = false;
 
-            if (isTimestampRequestInFlight)
+            if (!forceSynchronous && isTimestampRequestInFlight)
             {
                 log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
                 pendingPlayerState = state;
@@ -3111,6 +3160,8 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            long oldTimestamp = currentTimestamp;
+
             // Get the resolved timestamp from the file.
             // It may differ from the one in the request.
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
@@ -3139,7 +3190,15 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                bool contiguous = state.Mode == PlayerStateMode.StepForward;
+                bool contiguous = 
+                    state.Mode == PlayerStateMode.StepForward ||
+                    state.Mode == PlayerStateMode.StepBackward ||
+                    state.Mode == PlayerStateMode.RefreshInPlace;
+
+                TimestampRelation relPrev = m_FrameServer.VideoReader.RelateTimestamps(oldTimestamp, currentTimestamp);
+                contiguous = contiguous || relPrev == TimestampRelation.Match;
+                contiguous = contiguous || m_FrameServer.VideoReader.Current.PreviousTimestamp == oldTimestamp;
+
                 ComputeOrStopTracking(contiguous);
             }
 
@@ -3253,7 +3312,10 @@ namespace Kinovea.ScreenManager
 
             if (present)
             {
-                PresentFrame(expectedTimestamp);
+                // If we show the "expected" and we were late, it creates a jump.
+                // It's better to just show the last frame we were on.
+                // This Present is still necessary to switch off the playback request.
+                PresentFrame(currentTimestamp);
             }
         }
 
@@ -4434,7 +4496,7 @@ namespace Kinovea.ScreenManager
             // - InterpolationMode has a sensible effect, but nearest neighbor can look bad.
 
             long frameTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
-            log.DebugFormat("Rendering frame [{0}].", frameTimestamp);
+            //log.DebugFormat("Rendering frame [{0}].", frameTimestamp);
 
             // 1. Image
             // Using PixelOffsetMode.Half aligns the pixels as expected.
@@ -4516,7 +4578,7 @@ namespace Kinovea.ScreenManager
                 FlushDrawingsOnGraphics(g, _transform, _iKeyFrameIndex, _iPosition);
             }
 
-            log.DebugFormat("Finished rendering frame [{0}].", frameTimestamp);
+            //log.DebugFormat("Finished rendering frame [{0}].", frameTimestamp);
         }
         private void FlushDrawingsOnGraphics(Graphics canvas, ImageTransform transformer, int keyFrameIndex, long timestamp)
         {

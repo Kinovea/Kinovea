@@ -52,6 +52,7 @@ namespace Kinovea.Root
       this.lblWorkingZoneMemory = new System.Windows.Forms.Label();
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
+      this.chkEnableFrameSkipping = new System.Windows.Forms.CheckBox();
       this.lblPlaybackKVA = new System.Windows.Forms.Label();
       this.tbPlaybackKVA = new System.Windows.Forms.TextBox();
       this.btnPlaybackKVA = new System.Windows.Forms.Button();
@@ -111,6 +112,7 @@ namespace Kinovea.Root
       // 
       // tabGeneral
       // 
+      this.tabGeneral.Controls.Add(this.chkEnableFrameSkipping);
       this.tabGeneral.Controls.Add(this.lblPlaybackKVA);
       this.tabGeneral.Controls.Add(this.tbPlaybackKVA);
       this.tabGeneral.Controls.Add(this.btnPlaybackKVA);
@@ -125,10 +127,22 @@ namespace Kinovea.Root
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
       // 
+      // chkEnableFrameSkipping
+      // 
+      this.chkEnableFrameSkipping.Checked = true;
+      this.chkEnableFrameSkipping.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.chkEnableFrameSkipping.Location = new System.Drawing.Point(23, 58);
+      this.chkEnableFrameSkipping.Name = "chkEnableFrameSkipping";
+      this.chkEnableFrameSkipping.Size = new System.Drawing.Size(369, 20);
+      this.chkEnableFrameSkipping.TabIndex = 64;
+      this.chkEnableFrameSkipping.Text = "Enable frame skipping";
+      this.chkEnableFrameSkipping.UseVisualStyleBackColor = true;
+      this.chkEnableFrameSkipping.CheckedChanged += new System.EventHandler(this.ChkEnableFrameSkippingCheckedChanged);
+      // 
       // lblPlaybackKVA
       // 
       this.lblPlaybackKVA.AutoSize = true;
-      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 111);
+      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 163);
       this.lblPlaybackKVA.Name = "lblPlaybackKVA";
       this.lblPlaybackKVA.Size = new System.Drawing.Size(121, 13);
       this.lblPlaybackKVA.TabIndex = 61;
@@ -138,7 +152,7 @@ namespace Kinovea.Root
       // 
       this.tbPlaybackKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 109);
+      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 161);
       this.tbPlaybackKVA.Name = "tbPlaybackKVA";
       this.tbPlaybackKVA.Size = new System.Drawing.Size(175, 20);
       this.tbPlaybackKVA.TabIndex = 62;
@@ -153,7 +167,7 @@ namespace Kinovea.Root
       this.btnPlaybackKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnPlaybackKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnPlaybackKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 108);
+      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 160);
       this.btnPlaybackKVA.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnPlaybackKVA.Name = "btnPlaybackKVA";
       this.btnPlaybackKVA.Size = new System.Drawing.Size(20, 20);
@@ -164,7 +178,7 @@ namespace Kinovea.Root
       // 
       // chkSyncByMotion
       // 
-      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 80);
+      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 132);
       this.chkSyncByMotion.Name = "chkSyncByMotion";
       this.chkSyncByMotion.Size = new System.Drawing.Size(369, 20);
       this.chkSyncByMotion.TabIndex = 32;
@@ -184,7 +198,7 @@ namespace Kinovea.Root
       // 
       // chkLockSpeeds
       // 
-      this.chkLockSpeeds.Location = new System.Drawing.Point(23, 53);
+      this.chkLockSpeeds.Location = new System.Drawing.Point(23, 95);
       this.chkLockSpeeds.Name = "chkLockSpeeds";
       this.chkLockSpeeds.Size = new System.Drawing.Size(369, 20);
       this.chkLockSpeeds.TabIndex = 24;
@@ -314,5 +328,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbImageFormats;
         private System.Windows.Forms.Label lblAspectRatio;
         private System.Windows.Forms.CheckBox chkDeinterlace;
+        private System.Windows.Forms.CheckBox chkEnableFrameSkipping;
     }
 }

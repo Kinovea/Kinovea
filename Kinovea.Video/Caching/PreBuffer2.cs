@@ -163,6 +163,10 @@ namespace Kinovea.Video
             }
         }
 
+        /// <summary>
+        /// Set the next frame in the cache as "current".
+        /// Evicts old frames outside of retention window.
+        /// </summary>
         public bool AcquireNext()
         {
             List<VideoFrame> removed = null;
@@ -301,6 +305,27 @@ namespace Kinovea.Video
             return CacheAddResult.Added;
         }
 
+        /// <summary>
+        /// Check if all the frames in the cache form a contiguous sequence.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsContiguous()
+        {
+            lock (sync)
+            {
+                for (int i = 1; i < frames.Count; i++)
+                {
+                    VideoFrame prev = frames.Values[i - 1];
+                    VideoFrame curr = frames.Values[i];
+                    if (curr.PreviousTimestamp != prev.Timestamp)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
 
         /// <summary>
         /// Temporarily close the cache for business.
