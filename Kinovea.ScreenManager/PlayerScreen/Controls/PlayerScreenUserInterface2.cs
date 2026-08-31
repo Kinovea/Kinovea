@@ -1601,16 +1601,16 @@ namespace Kinovea.ScreenManager
                         buttonGotoPrevious_Click(null, EventArgs.Empty);
                     break;
                 case PlayerScreenCommands.BackwardRound10Percent:
-                    SnapToStep(10, false);
+                    TimelineJump(true, false);
                     break;
                 case PlayerScreenCommands.ForwardRound10Percent:
-                    SnapToStep(10, true);
+                    TimelineJump(true, true);
                     break;
                 case PlayerScreenCommands.BackwardRound1Percent:
-                    SnapToStep(1, false);
+                    TimelineJump(false, false);
                     break;
                 case PlayerScreenCommands.ForwardRound1Percent:
-                    SnapToStep(1, true);
+                    TimelineJump(false, true);
                     break;
                 case PlayerScreenCommands.GotoPreviousKeyframe:
                     GotoPreviousKeyframe();
@@ -1965,11 +1965,8 @@ namespace Kinovea.ScreenManager
             BeforeManualMove();
             PresentFrame(workingZone.End);
         }
-        /// <summary>
-        /// Jump to the next stop point on the timeline based on percentage.
-        /// Example: if stepLength is 10 and we are currently at 36%, the next stop point is 40%.
-        /// </summary>
-        public void SnapToStep(int stepPercent, bool forward)
+
+        public void TimelineJump(bool largeJump, bool forward)
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -1977,9 +1974,55 @@ namespace Kinovea.ScreenManager
             bool wasPlaying = isCurrentlyPlaying;
             BeforeManualMove();
 
+            TimelineJumpType jumpType = PreferencesManager.PlayerPreferences.TimelineJumpType;
+            long targetTimestamp = currentTimestamp;
+            if (jumpType == TimelineJumpType.SnapToStep)
+            {
+                int steps = largeJump ? 
+                    PreferencesManager.PlayerPreferences.TimelineJumpLargeSteps : 
+                    PreferencesManager.PlayerPreferences.TimelineJumpSmallSteps;
+
+                targetTimestamp = SnapToStep(steps, forward);
+            }
+            else
+            {
+                float jump = largeJump ?
+                    PreferencesManager.PlayerPreferences.TimelineJumpLargeJump :
+                    PreferencesManager.PlayerPreferences.TimelineJumpSmallJump;
+
+                targetTimestamp = JumpBy(jump, forward);
+            }
+
+            // Clamp to working zone.
+            bool eof = false;
+            targetTimestamp = Math.Max(targetTimestamp, workingZone.Start);
+            if (targetTimestamp > workingZone.End)
+            {
+                eof = true;
+                targetTimestamp = workingZone.End;
+            }
+
+            if (wasPlaying && !eof)
+            {
+                // Make sure we go to the new location before restarting playback.
+                PresentFrame(targetTimestamp, true);
+                EnsurePlaying();
+            }
+            else
+            {
+                PresentFrame(targetTimestamp);
+            }
+        }
+
+
+        /// <summary>
+        /// Jump to the next/previous step point on the timeline.
+        /// </summary>
+        private long SnapToStep(int steps, bool forward)
+        {
             double range = Math.Round(workingZone.End - workingZone.Start + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             double current = (currentTimestamp - workingZone.Start) / range;
-            double step = stepPercent / 100.0;
+            double step = 1.0 / steps;
             double stepIndex = current / step;
             double roundedStep = Math.Round(stepIndex);
             double epsilon = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame / range / step;
@@ -1989,23 +2032,26 @@ namespace Kinovea.ScreenManager
             }
             
             double snapIndex = forward ? Math.Floor(stepIndex) + 1 : Math.Ceiling(stepIndex) - 1;
-            double maxSteps = (int)Math.Floor(1.0 / step);
-            snapIndex = Math.Max(Math.Min(snapIndex, maxSteps), 0);
+            snapIndex = Math.Max(Math.Min(snapIndex, steps), 0);
             long snappedTimestamp = workingZone.Start + (long)Math.Round(snapIndex * step * range);
             
             log.DebugFormat("Snap to step. Current: [{0}]. Snapped: [~{1}].", currentTimestamp, snappedTimestamp);
-
-            if (wasPlaying)
-            {
-                // Make sure we go to the new location before restarting playback.
-                PresentFrame(snappedTimestamp, true);
-                EnsurePlaying();
-            }
-            else
-            {
-                PresentFrame(snappedTimestamp);
-            }
+            
+            return snappedTimestamp;
         }
+
+        private long JumpBy(float jump, bool forward)
+        {
+            double delta = jump * m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            long newTimestamp = forward ? 
+                (long)Math.Round(currentTimestamp + delta) :
+                (long)Math.Round(currentTimestamp - delta);
+
+            log.DebugFormat("Jump by {0} ms. Current: [{1}]. New: [~{2}].", delta, currentTimestamp, newTimestamp);
+
+            return newTimestamp;   
+        }
+
 
         /// <summary>
         /// Signal this screen as the active one, stop playback and raise pause event.

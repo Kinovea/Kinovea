@@ -224,6 +224,7 @@
     <Compile Include="Types\Export\VideoCodec.cs" />
     <Compile Include="Types\Export\EncodingQuality.cs" />
     <Compile Include="Types\Export\ExportProfile.cs" />
+    <Compile Include="Types\TimelineJumpType.cs" />
     <Compile Include="Types\WindowContent.cs" />
     <Compile Include="Types\UserCommand.cs" />
     <Compile Include="Preferences\PreferencesHelper.cs" />

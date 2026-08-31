@@ -52,7 +52,6 @@ namespace Kinovea.Root
       this.lblWorkingZoneMemory = new System.Windows.Forms.Label();
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
-      this.chkEnableFrameSkipping = new System.Windows.Forms.CheckBox();
       this.lblPlaybackKVA = new System.Windows.Forms.Label();
       this.tbPlaybackKVA = new System.Windows.Forms.TextBox();
       this.btnPlaybackKVA = new System.Windows.Forms.Button();
@@ -67,11 +66,30 @@ namespace Kinovea.Root
       this.lblAspectRatio = new System.Windows.Forms.Label();
       this.chkDeinterlace = new System.Windows.Forms.CheckBox();
       this.chkInteractiveTracker = new System.Windows.Forms.CheckBox();
+      this.tabJumping = new System.Windows.Forms.TabPage();
+      this.chkEnableFrameSkipping = new System.Windows.Forms.CheckBox();
+      this.rbJumpByTime = new System.Windows.Forms.RadioButton();
+      this.rbSnapToSteps = new System.Windows.Forms.RadioButton();
+      this.grpJumping = new System.Windows.Forms.GroupBox();
+      this.nudSnapSmall = new System.Windows.Forms.NumericUpDown();
+      this.lblSnapSmall = new System.Windows.Forms.Label();
+      this.nudSnapLarge = new System.Windows.Forms.NumericUpDown();
+      this.lblSnapLarge = new System.Windows.Forms.Label();
+      this.nudJumpLarge = new System.Windows.Forms.NumericUpDown();
+      this.lblJumpLarge = new System.Windows.Forms.Label();
+      this.nudJumpSmall = new System.Windows.Forms.NumericUpDown();
+      this.lblJumpSmall = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
       this.tabImage.SuspendLayout();
+      this.tabJumping.SuspendLayout();
+      this.grpJumping.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSnapSmall)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSnapLarge)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudJumpLarge)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudJumpSmall)).BeginInit();
       this.SuspendLayout();
       // 
       // trkMemoryBuffer
@@ -102,6 +120,7 @@ namespace Kinovea.Root
       // 
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabMemory);
+      this.tabSubPages.Controls.Add(this.tabJumping);
       this.tabSubPages.Controls.Add(this.tabImage);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
@@ -112,7 +131,6 @@ namespace Kinovea.Root
       // 
       // tabGeneral
       // 
-      this.tabGeneral.Controls.Add(this.chkEnableFrameSkipping);
       this.tabGeneral.Controls.Add(this.lblPlaybackKVA);
       this.tabGeneral.Controls.Add(this.tbPlaybackKVA);
       this.tabGeneral.Controls.Add(this.btnPlaybackKVA);
@@ -127,22 +145,10 @@ namespace Kinovea.Root
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
       // 
-      // chkEnableFrameSkipping
-      // 
-      this.chkEnableFrameSkipping.Checked = true;
-      this.chkEnableFrameSkipping.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.chkEnableFrameSkipping.Location = new System.Drawing.Point(23, 58);
-      this.chkEnableFrameSkipping.Name = "chkEnableFrameSkipping";
-      this.chkEnableFrameSkipping.Size = new System.Drawing.Size(369, 20);
-      this.chkEnableFrameSkipping.TabIndex = 64;
-      this.chkEnableFrameSkipping.Text = "Enable frame skipping";
-      this.chkEnableFrameSkipping.UseVisualStyleBackColor = true;
-      this.chkEnableFrameSkipping.CheckedChanged += new System.EventHandler(this.ChkEnableFrameSkippingCheckedChanged);
-      // 
       // lblPlaybackKVA
       // 
       this.lblPlaybackKVA.AutoSize = true;
-      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 163);
+      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 132);
       this.lblPlaybackKVA.Name = "lblPlaybackKVA";
       this.lblPlaybackKVA.Size = new System.Drawing.Size(121, 13);
       this.lblPlaybackKVA.TabIndex = 61;
@@ -152,7 +158,7 @@ namespace Kinovea.Root
       // 
       this.tbPlaybackKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 161);
+      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 130);
       this.tbPlaybackKVA.Name = "tbPlaybackKVA";
       this.tbPlaybackKVA.Size = new System.Drawing.Size(175, 20);
       this.tbPlaybackKVA.TabIndex = 62;
@@ -167,7 +173,7 @@ namespace Kinovea.Root
       this.btnPlaybackKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnPlaybackKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnPlaybackKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 160);
+      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 129);
       this.btnPlaybackKVA.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnPlaybackKVA.Name = "btnPlaybackKVA";
       this.btnPlaybackKVA.Size = new System.Drawing.Size(20, 20);
@@ -178,7 +184,7 @@ namespace Kinovea.Root
       // 
       // chkSyncByMotion
       // 
-      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 132);
+      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 101);
       this.chkSyncByMotion.Name = "chkSyncByMotion";
       this.chkSyncByMotion.Size = new System.Drawing.Size(369, 20);
       this.chkSyncByMotion.TabIndex = 32;
@@ -198,7 +204,7 @@ namespace Kinovea.Root
       // 
       // chkLockSpeeds
       // 
-      this.chkLockSpeeds.Location = new System.Drawing.Point(23, 95);
+      this.chkLockSpeeds.Location = new System.Drawing.Point(23, 64);
       this.chkLockSpeeds.Name = "chkLockSpeeds";
       this.chkLockSpeeds.Size = new System.Drawing.Size(369, 20);
       this.chkLockSpeeds.TabIndex = 24;
@@ -291,6 +297,206 @@ namespace Kinovea.Root
       this.chkInteractiveTracker.UseVisualStyleBackColor = true;
       this.chkInteractiveTracker.CheckedChanged += new System.EventHandler(this.chkInteractiveTracker_CheckedChanged);
       // 
+      // tabJumping
+      // 
+      this.tabJumping.Controls.Add(this.grpJumping);
+      this.tabJumping.Controls.Add(this.chkEnableFrameSkipping);
+      this.tabJumping.Location = new System.Drawing.Point(4, 22);
+      this.tabJumping.Name = "tabJumping";
+      this.tabJumping.Size = new System.Drawing.Size(482, 296);
+      this.tabJumping.TabIndex = 3;
+      this.tabJumping.Text = "Jumping";
+      this.tabJumping.UseVisualStyleBackColor = true;
+      // 
+      // chkEnableFrameSkipping
+      // 
+      this.chkEnableFrameSkipping.Checked = true;
+      this.chkEnableFrameSkipping.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.chkEnableFrameSkipping.Location = new System.Drawing.Point(27, 17);
+      this.chkEnableFrameSkipping.Name = "chkEnableFrameSkipping";
+      this.chkEnableFrameSkipping.Size = new System.Drawing.Size(369, 20);
+      this.chkEnableFrameSkipping.TabIndex = 65;
+      this.chkEnableFrameSkipping.Text = "Enable frame skipping";
+      this.chkEnableFrameSkipping.UseVisualStyleBackColor = true;
+      // 
+      // rbJumpByTime
+      // 
+      this.rbJumpByTime.AutoSize = true;
+      this.rbJumpByTime.Location = new System.Drawing.Point(21, 114);
+      this.rbJumpByTime.Name = "rbJumpByTime";
+      this.rbJumpByTime.Size = new System.Drawing.Size(86, 17);
+      this.rbJumpByTime.TabIndex = 39;
+      this.rbJumpByTime.TabStop = true;
+      this.rbJumpByTime.Text = "Jump by time";
+      this.rbJumpByTime.UseVisualStyleBackColor = true;
+      this.rbJumpByTime.CheckedChanged += new System.EventHandler(this.rbSnapToSteps_CheckedChanged);
+      // 
+      // rbSnapToSteps
+      // 
+      this.rbSnapToSteps.AutoSize = true;
+      this.rbSnapToSteps.Location = new System.Drawing.Point(21, 25);
+      this.rbSnapToSteps.Name = "rbSnapToSteps";
+      this.rbSnapToSteps.Size = new System.Drawing.Size(90, 17);
+      this.rbSnapToSteps.TabIndex = 38;
+      this.rbSnapToSteps.TabStop = true;
+      this.rbSnapToSteps.Text = "Snap to steps";
+      this.rbSnapToSteps.UseVisualStyleBackColor = true;
+      this.rbSnapToSteps.CheckedChanged += new System.EventHandler(this.rbSnapToSteps_CheckedChanged);
+      // 
+      // grpJumping
+      // 
+      this.grpJumping.Controls.Add(this.nudJumpLarge);
+      this.grpJumping.Controls.Add(this.lblJumpLarge);
+      this.grpJumping.Controls.Add(this.nudJumpSmall);
+      this.grpJumping.Controls.Add(this.lblJumpSmall);
+      this.grpJumping.Controls.Add(this.nudSnapLarge);
+      this.grpJumping.Controls.Add(this.lblSnapLarge);
+      this.grpJumping.Controls.Add(this.nudSnapSmall);
+      this.grpJumping.Controls.Add(this.lblSnapSmall);
+      this.grpJumping.Controls.Add(this.rbJumpByTime);
+      this.grpJumping.Controls.Add(this.rbSnapToSteps);
+      this.grpJumping.Location = new System.Drawing.Point(3, 59);
+      this.grpJumping.Name = "grpJumping";
+      this.grpJumping.Size = new System.Drawing.Size(476, 234);
+      this.grpJumping.TabIndex = 66;
+      this.grpJumping.TabStop = false;
+      this.grpJumping.Text = "Timeline jumping";
+      // 
+      // nudSnapSmall
+      // 
+      this.nudSnapSmall.Location = new System.Drawing.Point(355, 52);
+      this.nudSnapSmall.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+      this.nudSnapSmall.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+      this.nudSnapSmall.Name = "nudSnapSmall";
+      this.nudSnapSmall.Size = new System.Drawing.Size(55, 20);
+      this.nudSnapSmall.TabIndex = 56;
+      this.nudSnapSmall.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+      this.nudSnapSmall.ValueChanged += new System.EventHandler(this.nudSnapSmall_ValueChanged);
+      // 
+      // lblSnapSmall
+      // 
+      this.lblSnapSmall.AutoSize = true;
+      this.lblSnapSmall.Location = new System.Drawing.Point(71, 54);
+      this.lblSnapSmall.Name = "lblSnapSmall";
+      this.lblSnapSmall.Size = new System.Drawing.Size(167, 13);
+      this.lblSnapSmall.TabIndex = 55;
+      this.lblSnapSmall.Text = "Small jump (total number of steps):";
+      // 
+      // nudSnapLarge
+      // 
+      this.nudSnapLarge.Location = new System.Drawing.Point(355, 78);
+      this.nudSnapLarge.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+      this.nudSnapLarge.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+      this.nudSnapLarge.Name = "nudSnapLarge";
+      this.nudSnapLarge.Size = new System.Drawing.Size(55, 20);
+      this.nudSnapLarge.TabIndex = 58;
+      this.nudSnapLarge.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+      this.nudSnapLarge.ValueChanged += new System.EventHandler(this.nudSnapLarge_ValueChanged);
+      // 
+      // lblSnapLarge
+      // 
+      this.lblSnapLarge.AutoSize = true;
+      this.lblSnapLarge.Location = new System.Drawing.Point(71, 80);
+      this.lblSnapLarge.Name = "lblSnapLarge";
+      this.lblSnapLarge.Size = new System.Drawing.Size(169, 13);
+      this.lblSnapLarge.TabIndex = 57;
+      this.lblSnapLarge.Text = "Large jump (total number of steps):";
+      // 
+      // nudJumpLarge
+      // 
+      this.nudJumpLarge.DecimalPlaces = 3;
+      this.nudJumpLarge.Location = new System.Drawing.Point(355, 167);
+      this.nudJumpLarge.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+      this.nudJumpLarge.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+      this.nudJumpLarge.Name = "nudJumpLarge";
+      this.nudJumpLarge.Size = new System.Drawing.Size(55, 20);
+      this.nudJumpLarge.TabIndex = 62;
+      this.nudJumpLarge.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+      this.nudJumpLarge.ValueChanged += new System.EventHandler(this.nudJumpLarge_ValueChanged);
+      // 
+      // lblJumpLarge
+      // 
+      this.lblJumpLarge.AutoSize = true;
+      this.lblJumpLarge.Location = new System.Drawing.Point(71, 169);
+      this.lblJumpLarge.Name = "lblJumpLarge";
+      this.lblJumpLarge.Size = new System.Drawing.Size(111, 13);
+      this.lblJumpLarge.TabIndex = 61;
+      this.lblJumpLarge.Text = "Large jump (seconds):";
+      // 
+      // nudJumpSmall
+      // 
+      this.nudJumpSmall.DecimalPlaces = 3;
+      this.nudJumpSmall.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+      this.nudJumpSmall.Location = new System.Drawing.Point(355, 141);
+      this.nudJumpSmall.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+      this.nudJumpSmall.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+      this.nudJumpSmall.Name = "nudJumpSmall";
+      this.nudJumpSmall.Size = new System.Drawing.Size(55, 20);
+      this.nudJumpSmall.TabIndex = 60;
+      this.nudJumpSmall.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+      this.nudJumpSmall.ValueChanged += new System.EventHandler(this.nudJumpSmall_ValueChanged);
+      // 
+      // lblJumpSmall
+      // 
+      this.lblJumpSmall.AutoSize = true;
+      this.lblJumpSmall.Location = new System.Drawing.Point(71, 143);
+      this.lblJumpSmall.Name = "lblJumpSmall";
+      this.lblJumpSmall.Size = new System.Drawing.Size(109, 13);
+      this.lblJumpSmall.TabIndex = 59;
+      this.lblJumpSmall.Text = "Small jump (seconds):";
+      // 
       // PreferencePanelPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -307,6 +513,13 @@ namespace Kinovea.Root
       this.tabMemory.PerformLayout();
       this.tabImage.ResumeLayout(false);
       this.tabImage.PerformLayout();
+      this.tabJumping.ResumeLayout(false);
+      this.grpJumping.ResumeLayout(false);
+      this.grpJumping.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSnapSmall)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSnapLarge)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudJumpLarge)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudJumpSmall)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -328,6 +541,18 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbImageFormats;
         private System.Windows.Forms.Label lblAspectRatio;
         private System.Windows.Forms.CheckBox chkDeinterlace;
+        private System.Windows.Forms.TabPage tabJumping;
         private System.Windows.Forms.CheckBox chkEnableFrameSkipping;
+        private System.Windows.Forms.RadioButton rbJumpByTime;
+        private System.Windows.Forms.RadioButton rbSnapToSteps;
+        private System.Windows.Forms.GroupBox grpJumping;
+        private System.Windows.Forms.NumericUpDown nudJumpLarge;
+        private System.Windows.Forms.Label lblJumpLarge;
+        private System.Windows.Forms.NumericUpDown nudJumpSmall;
+        private System.Windows.Forms.Label lblJumpSmall;
+        private System.Windows.Forms.NumericUpDown nudSnapLarge;
+        private System.Windows.Forms.Label lblSnapLarge;
+        private System.Windows.Forms.NumericUpDown nudSnapSmall;
+        private System.Windows.Forms.Label lblSnapSmall;
     }
 }

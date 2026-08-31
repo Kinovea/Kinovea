@@ -3086,7 +3086,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     plan->DecoderRelocation = DecoderRelocation::Seek;
     plan->ResubmitPending = false;
     
-    log->DebugFormat("Creating relocation plan: Target: [~{0}]. Acquired: {1}.", targetTimestamp, isAcquired);
+    log->DebugFormat("Creating relocation plan to [~{0}]. Acquired: {1}.", targetTimestamp, isAcquired);
     mPreBuffer->Print();
 
     // In the case we couldn't find next/prev, approximate the requested target timestamp.

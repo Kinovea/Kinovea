@@ -256,6 +256,37 @@ namespace Kinovea.Services
             get { BeforeRead(); return enableFrameSkipping; }
             set { enableFrameSkipping = value; Save(); }
         }
+
+        public TimelineJumpType TimelineJumpType
+        {
+            get { BeforeRead(); return timelineJumpType; }
+            set { timelineJumpType = value; Save(); }
+        }
+
+        public int TimelineJumpSmallSteps
+        {
+            get { BeforeRead(); return timelineJumpSmallSteps; }
+            set { timelineJumpSmallSteps = value; Save(); }
+        }
+        
+        public int TimelineJumpLargeSteps
+        {
+            get { BeforeRead(); return timelineJumpLargeSteps; }
+            set { timelineJumpLargeSteps = value; Save(); }
+        }
+
+        public float TimelineJumpSmallJump
+        {
+            get { BeforeRead(); return timelineJumpSmallJump; }
+            set { timelineJumpSmallJump = value; Save(); }
+        }
+
+        public float TimelineJumpLargeJump
+        {
+            get { BeforeRead(); return timelineJumpLargeJump; }
+            set { timelineJumpLargeJump = value; Save(); }
+        }
+
         #endregion
 
         #region Members
@@ -302,6 +333,11 @@ namespace Kinovea.Services
         private bool showCacheInTimeline = false;
         private bool sideBySideHorizontal = true;
         private bool enableFrameSkipping = true;
+        private TimelineJumpType timelineJumpType = TimelineJumpType.Relative;
+        private int timelineJumpSmallSteps = 100;
+        private int timelineJumpLargeSteps = 10;
+        private float timelineJumpSmallJump = 1f;
+        private float timelineJumpLargeJump = 10f;
         #endregion
 
         private void Save()
@@ -406,6 +442,12 @@ namespace Kinovea.Services
             writer.WriteElementString("PandocPath", pandocPath);
             writer.WriteElementString("SideBySideHorizontal", XmlHelper.WriteBoolean(sideBySideHorizontal));
             writer.WriteElementString("EnableFrameSkipping", XmlHelper.WriteBoolean(enableFrameSkipping));
+
+            writer.WriteElementString("TimelineJumpType", timelineJumpType.ToString());
+            writer.WriteElementString("TimelineJumpSmallSteps", timelineJumpSmallSteps.ToString());
+            writer.WriteElementString("TimelineJumpLargeSteps", timelineJumpLargeSteps.ToString());
+            writer.WriteElementString("TimelineJumpSmallJump", XmlHelper.WriteFloat(timelineJumpSmallJump));
+            writer.WriteElementString("TimelineJumpLargeJump", XmlHelper.WriteFloat(timelineJumpLargeJump));
         }
         
         public void ReadXML(XmlReader reader)
@@ -542,6 +584,21 @@ namespace Kinovea.Services
                         break;
                     case "EnableFrameSkipping":
                         enableFrameSkipping = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "TimelineJumpType":
+                        timelineJumpType = (TimelineJumpType)Enum.Parse(typeof(TimelineJumpType), reader.ReadElementContentAsString());
+                        break;
+                    case "TimelineJumpSmallSteps":
+                        timelineJumpSmallSteps = reader.ReadElementContentAsInt();
+                        break;
+                    case "TimelineJumpLargeSteps":
+                        timelineJumpLargeSteps = reader.ReadElementContentAsInt();
+                        break;
+                    case "TimelineJumpSmallJump":
+                        timelineJumpSmallJump = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
+                        break;
+                    case "TimelineJumpLargeJump":
+                        timelineJumpLargeJump = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

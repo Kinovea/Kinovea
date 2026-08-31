@@ -75,6 +75,13 @@ namespace Kinovea.Root
         private bool enablePixelFiltering;
         private ImageAspectRatio imageAspectRatio;
         private bool deinterlaceByDefault;
+
+        // Jumping
+        private TimelineJumpType jumpType;
+        private int smallSteps;
+        private int largeSteps;
+        private float smallJump;
+        private float largeJump;
         #endregion
         
         #region Construction & Initialization
@@ -87,7 +94,7 @@ namespace Kinovea.Root
             icon = Resources.circled_play_button_30;
             
             ImportPreferences();
-            InitPage();
+            InitPages();
         }
 
         public void OpenTab(PreferenceTab tab)
@@ -105,22 +112,37 @@ namespace Kinovea.Root
 
         private void ImportPreferences()
         {
+            // General
             detectImageSequences = PreferencesManager.PlayerPreferences.DetectImageSequences;
-            enableFrameSkipping = PreferencesManager.PlayerPreferences.EnableFrameSkipping;
-            syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
-            syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
             playbackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
+            
+            // Memory
+            memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
             showCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
+            
+            // Player
             interactiveFrameTracker = PreferencesManager.PlayerPreferences.InteractiveFrameTracker;
+            enableFrameSkipping = PreferencesManager.PlayerPreferences.EnableFrameSkipping;
+            syncByMotion = PreferencesManager.PlayerPreferences.SyncByMotion;
+            syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
+            
+            // Jumping
+            jumpType = PreferencesManager.PlayerPreferences.TimelineJumpType;
+            smallSteps = PreferencesManager.PlayerPreferences.TimelineJumpSmallSteps;
+            largeSteps = PreferencesManager.PlayerPreferences.TimelineJumpLargeSteps;
+            smallJump = PreferencesManager.PlayerPreferences.TimelineJumpSmallJump;
+            largeJump = PreferencesManager.PlayerPreferences.TimelineJumpLargeJump;
+            
+            // Image
             enablePixelFiltering = PreferencesManager.PlayerPreferences.EnablePixelFiltering;
             imageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;
             deinterlaceByDefault = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;
-            memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
         }
-        private void InitPage()
+        private void InitPages()
         {
             InitPageGeneral();
             InitPageMemory();
+            InitPageJumping();
             InitPageImage();
         }
 
@@ -139,8 +161,6 @@ namespace Kinovea.Root
             
             lblPlaybackKVA.Text = RootLang.dlgPreferences_Player_DefaultKVA;
             tbPlaybackKVA.Text = playbackKVA;
-
-            
         }
 
         private void InitPageMemory()
@@ -158,6 +178,32 @@ namespace Kinovea.Root
             cbCacheInTimeline.Checked = showCacheInTimeline;
 
             cbCacheInTimeline.Visible = false;
+        }
+
+        private void InitPageJumping()
+        {
+            tabJumping.Text = "Jumping";
+            grpJumping.Text = "Timeline jumping";
+
+            rbSnapToSteps.Text = "Snap to steps";
+            lblSnapSmall.Text = "Small jump (total number of steps):";
+            lblSnapLarge.Text = "Large jump (total number of steps):";
+            rbJumpByTime.Text = "Jump by time";
+            lblJumpSmall.Text = "Small jump (seconds):";
+            lblJumpLarge.Text = "Large jump (seconds):";
+
+            rbSnapToSteps.Checked = jumpType == TimelineJumpType.SnapToStep;
+            rbJumpByTime.Checked = jumpType == TimelineJumpType.Relative;
+               
+            nudSnapSmall.Value = smallSteps;
+            nudSnapLarge.Value = largeSteps;
+            nudJumpSmall.Value = (decimal)smallJump;
+            nudJumpLarge.Value = (decimal)largeJump;
+
+            NudHelper.FixNudScroll(nudSnapSmall);
+            NudHelper.FixNudScroll(nudSnapLarge);
+            NudHelper.FixNudScroll(nudJumpSmall);
+            NudHelper.FixNudScroll(nudJumpLarge);
         }
         
         private void InitPageImage()
@@ -247,6 +293,38 @@ namespace Kinovea.Root
         }
         #endregion
 
+        #region Jumping
+        private void rbSnapToSteps_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbSnapToSteps.Checked)
+            {
+                jumpType = TimelineJumpType.SnapToStep;
+            }
+            else if (rbJumpByTime.Checked)
+            {
+                jumpType = TimelineJumpType.Relative;
+            }
+        }
+        private void nudSnapSmall_ValueChanged(object sender, EventArgs e)
+        {
+            smallSteps = (int)nudSnapSmall.Value;
+        }
+        private void nudSnapLarge_ValueChanged(object sender, EventArgs e)
+        {
+            largeSteps = (int)nudSnapLarge.Value;
+        }
+
+        private void nudJumpSmall_ValueChanged(object sender, EventArgs e)
+        {
+            smallJump = (float)nudJumpSmall.Value;
+        }
+
+        private void nudJumpLarge_ValueChanged(object sender, EventArgs e)
+        {
+            largeJump = (float)nudJumpLarge.Value;
+        }
+        #endregion
+
         #region Image
         private void chkInteractiveTracker_CheckedChanged(object sender, EventArgs e)
         {
@@ -270,16 +348,28 @@ namespace Kinovea.Root
 
         public void CommitChanges()
         {
+            // General
             PreferencesManager.PlayerPreferences.DetectImageSequences = detectImageSequences;
+            PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;
+
+            // Memory
+            PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
+            PreferencesManager.PlayerPreferences.ShowCacheInTimeline = showCacheInTimeline;
+
+            // Player
+            PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
             PreferencesManager.PlayerPreferences.EnableFrameSkipping = enableFrameSkipping;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
             PreferencesManager.PlayerPreferences.SyncByMotion = syncByMotion;
-            PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;
-            PreferencesManager.PlayerPreferences.ShowCacheInTimeline = showCacheInTimeline;
 
-            PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
+            // Jumping
+            PreferencesManager.PlayerPreferences.TimelineJumpType = jumpType;
+            PreferencesManager.PlayerPreferences.TimelineJumpSmallSteps = smallSteps;
+            PreferencesManager.PlayerPreferences.TimelineJumpLargeSteps = largeSteps;
+            PreferencesManager.PlayerPreferences.TimelineJumpSmallJump = smallJump;
+            PreferencesManager.PlayerPreferences.TimelineJumpLargeJump = largeJump;
 
-            PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
+            // Image
             PreferencesManager.PlayerPreferences.EnablePixelFiltering = enablePixelFiltering;
             PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
