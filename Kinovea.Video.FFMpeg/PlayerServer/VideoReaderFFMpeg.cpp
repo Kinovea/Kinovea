@@ -1668,6 +1668,12 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
             mDecodedTimestamp = frame->best_effort_timestamp;
         }
 
+        if (mPreBufferingThreadCanceler->CancellationPending)
+        {
+            av_frame_free(&frame);
+            return ReadResult::ThreadCancelled;
+        }
+
         if (HasJobChanged())
         {
             av_frame_free(&frame);
