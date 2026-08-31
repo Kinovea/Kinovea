@@ -55,9 +55,7 @@ namespace Kinovea.Root
       this.lblPlaybackKVA = new System.Windows.Forms.Label();
       this.tbPlaybackKVA = new System.Windows.Forms.TextBox();
       this.btnPlaybackKVA = new System.Windows.Forms.Button();
-      this.chkSyncByMotion = new System.Windows.Forms.CheckBox();
       this.chkDetectImageSequences = new System.Windows.Forms.CheckBox();
-      this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
       this.tabMemory = new System.Windows.Forms.TabPage();
       this.cbCacheInTimeline = new System.Windows.Forms.CheckBox();
       this.tabImage = new System.Windows.Forms.TabPage();
@@ -65,9 +63,7 @@ namespace Kinovea.Root
       this.cmbImageFormats = new System.Windows.Forms.ComboBox();
       this.lblAspectRatio = new System.Windows.Forms.Label();
       this.chkDeinterlace = new System.Windows.Forms.CheckBox();
-      this.chkInteractiveTracker = new System.Windows.Forms.CheckBox();
       this.tabJumping = new System.Windows.Forms.TabPage();
-      this.chkEnableFrameSkipping = new System.Windows.Forms.CheckBox();
       this.rbJumpByTime = new System.Windows.Forms.RadioButton();
       this.rbSnapToSteps = new System.Windows.Forms.RadioButton();
       this.grpJumping = new System.Windows.Forms.GroupBox();
@@ -79,6 +75,11 @@ namespace Kinovea.Root
       this.lblJumpLarge = new System.Windows.Forms.Label();
       this.nudJumpSmall = new System.Windows.Forms.NumericUpDown();
       this.lblJumpSmall = new System.Windows.Forms.Label();
+      this.tabPlayer = new System.Windows.Forms.TabPage();
+      this.chkSyncByMotion = new System.Windows.Forms.CheckBox();
+      this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
+      this.chkEnableFrameSkipping = new System.Windows.Forms.CheckBox();
+      this.chkInteractiveTracker = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
@@ -90,6 +91,7 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudSnapLarge)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudJumpLarge)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudJumpSmall)).BeginInit();
+      this.tabPlayer.SuspendLayout();
       this.SuspendLayout();
       // 
       // trkMemoryBuffer
@@ -120,6 +122,7 @@ namespace Kinovea.Root
       // 
       this.tabSubPages.Controls.Add(this.tabGeneral);
       this.tabSubPages.Controls.Add(this.tabMemory);
+      this.tabSubPages.Controls.Add(this.tabPlayer);
       this.tabSubPages.Controls.Add(this.tabJumping);
       this.tabSubPages.Controls.Add(this.tabImage);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -134,9 +137,7 @@ namespace Kinovea.Root
       this.tabGeneral.Controls.Add(this.lblPlaybackKVA);
       this.tabGeneral.Controls.Add(this.tbPlaybackKVA);
       this.tabGeneral.Controls.Add(this.btnPlaybackKVA);
-      this.tabGeneral.Controls.Add(this.chkSyncByMotion);
       this.tabGeneral.Controls.Add(this.chkDetectImageSequences);
-      this.tabGeneral.Controls.Add(this.chkLockSpeeds);
       this.tabGeneral.Location = new System.Drawing.Point(4, 22);
       this.tabGeneral.Name = "tabGeneral";
       this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
@@ -148,7 +149,7 @@ namespace Kinovea.Root
       // lblPlaybackKVA
       // 
       this.lblPlaybackKVA.AutoSize = true;
-      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 132);
+      this.lblPlaybackKVA.Location = new System.Drawing.Point(20, 67);
       this.lblPlaybackKVA.Name = "lblPlaybackKVA";
       this.lblPlaybackKVA.Size = new System.Drawing.Size(121, 13);
       this.lblPlaybackKVA.TabIndex = 61;
@@ -158,7 +159,7 @@ namespace Kinovea.Root
       // 
       this.tbPlaybackKVA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 130);
+      this.tbPlaybackKVA.Location = new System.Drawing.Point(263, 65);
       this.tbPlaybackKVA.Name = "tbPlaybackKVA";
       this.tbPlaybackKVA.Size = new System.Drawing.Size(175, 20);
       this.tbPlaybackKVA.TabIndex = 62;
@@ -173,7 +174,7 @@ namespace Kinovea.Root
       this.btnPlaybackKVA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnPlaybackKVA.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnPlaybackKVA.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 129);
+      this.btnPlaybackKVA.Location = new System.Drawing.Point(444, 64);
       this.btnPlaybackKVA.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnPlaybackKVA.Name = "btnPlaybackKVA";
       this.btnPlaybackKVA.Size = new System.Drawing.Size(20, 20);
@@ -181,16 +182,6 @@ namespace Kinovea.Root
       this.btnPlaybackKVA.Tag = "";
       this.btnPlaybackKVA.UseVisualStyleBackColor = true;
       this.btnPlaybackKVA.Click += new System.EventHandler(this.btnPlaybackKVA_Click);
-      // 
-      // chkSyncByMotion
-      // 
-      this.chkSyncByMotion.Location = new System.Drawing.Point(23, 101);
-      this.chkSyncByMotion.Name = "chkSyncByMotion";
-      this.chkSyncByMotion.Size = new System.Drawing.Size(369, 20);
-      this.chkSyncByMotion.TabIndex = 32;
-      this.chkSyncByMotion.Text = "syncByMotion";
-      this.chkSyncByMotion.UseVisualStyleBackColor = true;
-      this.chkSyncByMotion.CheckedChanged += new System.EventHandler(this.chkSyncByMotion_CheckedChanged);
       // 
       // chkDetectImageSequences
       // 
@@ -201,16 +192,6 @@ namespace Kinovea.Root
       this.chkDetectImageSequences.Text = "dlgPreferences_DetectImageSequences";
       this.chkDetectImageSequences.UseVisualStyleBackColor = true;
       this.chkDetectImageSequences.CheckedChanged += new System.EventHandler(this.ChkDetectImageSequencesCheckedChanged);
-      // 
-      // chkLockSpeeds
-      // 
-      this.chkLockSpeeds.Location = new System.Drawing.Point(23, 64);
-      this.chkLockSpeeds.Name = "chkLockSpeeds";
-      this.chkLockSpeeds.Size = new System.Drawing.Size(369, 20);
-      this.chkLockSpeeds.TabIndex = 24;
-      this.chkLockSpeeds.Text = "dlgPreferences_SyncLockSpeeds";
-      this.chkLockSpeeds.UseVisualStyleBackColor = true;
-      this.chkLockSpeeds.CheckedChanged += new System.EventHandler(this.ChkLockSpeedsCheckedChanged);
       // 
       // tabMemory
       // 
@@ -241,7 +222,6 @@ namespace Kinovea.Root
       this.tabImage.Controls.Add(this.cmbImageFormats);
       this.tabImage.Controls.Add(this.lblAspectRatio);
       this.tabImage.Controls.Add(this.chkDeinterlace);
-      this.tabImage.Controls.Add(this.chkInteractiveTracker);
       this.tabImage.Location = new System.Drawing.Point(4, 22);
       this.tabImage.Name = "tabImage";
       this.tabImage.Size = new System.Drawing.Size(482, 296);
@@ -287,37 +267,15 @@ namespace Kinovea.Root
       this.chkDeinterlace.UseVisualStyleBackColor = true;
       this.chkDeinterlace.CheckedChanged += new System.EventHandler(this.chkDeinterlace_CheckedChanged);
       // 
-      // chkInteractiveTracker
-      // 
-      this.chkInteractiveTracker.Location = new System.Drawing.Point(24, 32);
-      this.chkInteractiveTracker.Name = "chkInteractiveTracker";
-      this.chkInteractiveTracker.Size = new System.Drawing.Size(369, 20);
-      this.chkInteractiveTracker.TabIndex = 31;
-      this.chkInteractiveTracker.Text = "dlgPreferences_InteractiveFrameTracker";
-      this.chkInteractiveTracker.UseVisualStyleBackColor = true;
-      this.chkInteractiveTracker.CheckedChanged += new System.EventHandler(this.chkInteractiveTracker_CheckedChanged);
-      // 
       // tabJumping
       // 
       this.tabJumping.Controls.Add(this.grpJumping);
-      this.tabJumping.Controls.Add(this.chkEnableFrameSkipping);
       this.tabJumping.Location = new System.Drawing.Point(4, 22);
       this.tabJumping.Name = "tabJumping";
       this.tabJumping.Size = new System.Drawing.Size(482, 296);
       this.tabJumping.TabIndex = 3;
       this.tabJumping.Text = "Jumping";
       this.tabJumping.UseVisualStyleBackColor = true;
-      // 
-      // chkEnableFrameSkipping
-      // 
-      this.chkEnableFrameSkipping.Checked = true;
-      this.chkEnableFrameSkipping.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.chkEnableFrameSkipping.Location = new System.Drawing.Point(27, 17);
-      this.chkEnableFrameSkipping.Name = "chkEnableFrameSkipping";
-      this.chkEnableFrameSkipping.Size = new System.Drawing.Size(369, 20);
-      this.chkEnableFrameSkipping.TabIndex = 65;
-      this.chkEnableFrameSkipping.Text = "Enable frame skipping";
-      this.chkEnableFrameSkipping.UseVisualStyleBackColor = true;
       // 
       // rbJumpByTime
       // 
@@ -355,9 +313,9 @@ namespace Kinovea.Root
       this.grpJumping.Controls.Add(this.lblSnapSmall);
       this.grpJumping.Controls.Add(this.rbJumpByTime);
       this.grpJumping.Controls.Add(this.rbSnapToSteps);
-      this.grpJumping.Location = new System.Drawing.Point(3, 59);
+      this.grpJumping.Location = new System.Drawing.Point(3, 3);
       this.grpJumping.Name = "grpJumping";
-      this.grpJumping.Size = new System.Drawing.Size(476, 234);
+      this.grpJumping.Size = new System.Drawing.Size(476, 290);
       this.grpJumping.TabIndex = 66;
       this.grpJumping.TabStop = false;
       this.grpJumping.Text = "Timeline jumping";
@@ -497,6 +455,61 @@ namespace Kinovea.Root
       this.lblJumpSmall.TabIndex = 59;
       this.lblJumpSmall.Text = "Small jump (seconds):";
       // 
+      // tabPlayer
+      // 
+      this.tabPlayer.Controls.Add(this.chkInteractiveTracker);
+      this.tabPlayer.Controls.Add(this.chkEnableFrameSkipping);
+      this.tabPlayer.Controls.Add(this.chkSyncByMotion);
+      this.tabPlayer.Controls.Add(this.chkLockSpeeds);
+      this.tabPlayer.Location = new System.Drawing.Point(4, 22);
+      this.tabPlayer.Name = "tabPlayer";
+      this.tabPlayer.Size = new System.Drawing.Size(482, 296);
+      this.tabPlayer.TabIndex = 4;
+      this.tabPlayer.Text = "Player";
+      this.tabPlayer.UseVisualStyleBackColor = true;
+      // 
+      // chkSyncByMotion
+      // 
+      this.chkSyncByMotion.Location = new System.Drawing.Point(20, 135);
+      this.chkSyncByMotion.Name = "chkSyncByMotion";
+      this.chkSyncByMotion.Size = new System.Drawing.Size(369, 20);
+      this.chkSyncByMotion.TabIndex = 34;
+      this.chkSyncByMotion.Text = "syncByMotion";
+      this.chkSyncByMotion.UseVisualStyleBackColor = true;
+      this.chkSyncByMotion.CheckedChanged += new System.EventHandler(this.chkSyncByMotion_CheckedChanged);
+      // 
+      // chkLockSpeeds
+      // 
+      this.chkLockSpeeds.Location = new System.Drawing.Point(20, 98);
+      this.chkLockSpeeds.Name = "chkLockSpeeds";
+      this.chkLockSpeeds.Size = new System.Drawing.Size(369, 20);
+      this.chkLockSpeeds.TabIndex = 33;
+      this.chkLockSpeeds.Text = "dlgPreferences_SyncLockSpeeds";
+      this.chkLockSpeeds.UseVisualStyleBackColor = true;
+      this.chkLockSpeeds.CheckedChanged += new System.EventHandler(this.ChkLockSpeedsCheckedChanged);
+      // 
+      // chkEnableFrameSkipping
+      // 
+      this.chkEnableFrameSkipping.Checked = true;
+      this.chkEnableFrameSkipping.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.chkEnableFrameSkipping.Location = new System.Drawing.Point(20, 23);
+      this.chkEnableFrameSkipping.Name = "chkEnableFrameSkipping";
+      this.chkEnableFrameSkipping.Size = new System.Drawing.Size(369, 20);
+      this.chkEnableFrameSkipping.TabIndex = 66;
+      this.chkEnableFrameSkipping.Text = "Enable frame skipping";
+      this.chkEnableFrameSkipping.UseVisualStyleBackColor = true;
+      this.chkEnableFrameSkipping.CheckedChanged += new System.EventHandler(this.ChkEnableFrameSkippingCheckedChanged);
+      // 
+      // chkInteractiveTracker
+      // 
+      this.chkInteractiveTracker.Location = new System.Drawing.Point(20, 60);
+      this.chkInteractiveTracker.Name = "chkInteractiveTracker";
+      this.chkInteractiveTracker.Size = new System.Drawing.Size(369, 20);
+      this.chkInteractiveTracker.TabIndex = 67;
+      this.chkInteractiveTracker.Text = "dlgPreferences_InteractiveFrameTracker";
+      this.chkInteractiveTracker.UseVisualStyleBackColor = true;
+      this.chkInteractiveTracker.CheckedChanged += new System.EventHandler(this.chkInteractiveTracker_CheckedChanged);
+      // 
       // PreferencePanelPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -520,29 +533,26 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudSnapLarge)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudJumpLarge)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudJumpSmall)).EndInit();
+      this.tabPlayer.ResumeLayout(false);
       this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.CheckBox chkLockSpeeds;
         private System.Windows.Forms.TabPage tabMemory;
         private System.Windows.Forms.TabPage tabGeneral;
         private System.Windows.Forms.TabControl tabSubPages;
         private System.Windows.Forms.Label lblWorkingZoneMemory;
         private System.Windows.Forms.TrackBar trkMemoryBuffer;
         private System.Windows.Forms.CheckBox chkDetectImageSequences;
-        private System.Windows.Forms.CheckBox chkSyncByMotion;
         private System.Windows.Forms.Label lblPlaybackKVA;
         private System.Windows.Forms.TextBox tbPlaybackKVA;
         private System.Windows.Forms.Button btnPlaybackKVA;
         private System.Windows.Forms.CheckBox cbCacheInTimeline;
         private System.Windows.Forms.TabPage tabImage;
-        private System.Windows.Forms.CheckBox chkInteractiveTracker;
         private System.Windows.Forms.CheckBox chkEnablePixelFiltering;
         private System.Windows.Forms.ComboBox cmbImageFormats;
         private System.Windows.Forms.Label lblAspectRatio;
         private System.Windows.Forms.CheckBox chkDeinterlace;
         private System.Windows.Forms.TabPage tabJumping;
-        private System.Windows.Forms.CheckBox chkEnableFrameSkipping;
         private System.Windows.Forms.RadioButton rbJumpByTime;
         private System.Windows.Forms.RadioButton rbSnapToSteps;
         private System.Windows.Forms.GroupBox grpJumping;
@@ -554,5 +564,10 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblSnapLarge;
         private System.Windows.Forms.NumericUpDown nudSnapSmall;
         private System.Windows.Forms.Label lblSnapSmall;
+        private System.Windows.Forms.TabPage tabPlayer;
+        private System.Windows.Forms.CheckBox chkInteractiveTracker;
+        private System.Windows.Forms.CheckBox chkEnableFrameSkipping;
+        private System.Windows.Forms.CheckBox chkSyncByMotion;
+        private System.Windows.Forms.CheckBox chkLockSpeeds;
     }
 }

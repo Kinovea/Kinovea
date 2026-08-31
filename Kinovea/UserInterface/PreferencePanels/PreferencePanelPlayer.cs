@@ -64,17 +64,19 @@ namespace Kinovea.Root
             PreferenceTab.Player_Image
         };
 
+        // General
         private bool detectImageSequences;
+        private string playbackKVA;
+
+        // Memory
+        private int memoryBuffer;
+        private bool showCacheInTimeline;
+
+        // Player
         private bool enableFrameSkipping;
+        private bool interactiveFrameTracker;
         private bool syncLockSpeeds;
         private bool syncByMotion;
-        private int memoryBuffer;
-        private string playbackKVA;
-        private bool showCacheInTimeline;
-        private bool interactiveFrameTracker;
-        private bool enablePixelFiltering;
-        private ImageAspectRatio imageAspectRatio;
-        private bool deinterlaceByDefault;
 
         // Jumping
         private TimelineJumpType jumpType;
@@ -82,6 +84,11 @@ namespace Kinovea.Root
         private int largeSteps;
         private float smallJump;
         private float largeJump;
+
+        // Image
+        private bool enablePixelFiltering;
+        private ImageAspectRatio imageAspectRatio;
+        private bool deinterlaceByDefault;
         #endregion
         
         #region Construction & Initialization
@@ -142,6 +149,7 @@ namespace Kinovea.Root
         {
             InitPageGeneral();
             InitPageMemory();
+            InitPagePlayer();
             InitPageJumping();
             InitPageImage();
         }
@@ -150,14 +158,7 @@ namespace Kinovea.Root
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
-            chkEnableFrameSkipping.Text = "Enable frame skipping when the player is too slow";
-            chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
-            chkSyncByMotion.Text = "Use motion synchronization mode";
-
             chkDetectImageSequences.Checked = detectImageSequences;
-            chkEnableFrameSkipping.Checked = enableFrameSkipping;
-            chkLockSpeeds.Checked = syncLockSpeeds;
-            chkSyncByMotion.Checked = syncByMotion;
             
             lblPlaybackKVA.Text = RootLang.dlgPreferences_Player_DefaultKVA;
             tbPlaybackKVA.Text = playbackKVA;
@@ -178,6 +179,21 @@ namespace Kinovea.Root
             cbCacheInTimeline.Checked = showCacheInTimeline;
 
             cbCacheInTimeline.Visible = false;
+        }
+
+        private void InitPagePlayer()
+        {
+            tabPlayer.Text = "Player";
+
+            chkEnableFrameSkipping.Text = "Enable frame skipping when the player is too slow";
+            chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
+            chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
+            chkSyncByMotion.Text = "Use motion synchronization mode";
+
+            chkEnableFrameSkipping.Checked = enableFrameSkipping;
+            chkInteractiveTracker.Checked = interactiveFrameTracker;
+            chkLockSpeeds.Checked = syncLockSpeeds;
+            chkSyncByMotion.Checked = syncByMotion;
         }
 
         private void InitPageJumping()
@@ -208,12 +224,9 @@ namespace Kinovea.Root
         
         private void InitPageImage()
         {
-            tabImage.Text = Kinovea.Root.Languages.RootLang.prefPanelPlayer_Image;
+            tabImage.Text = RootLang.prefPanelPlayer_Image;
 
-            chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
-            chkInteractiveTracker.Checked = interactiveFrameTracker;
-
-            chkEnablePixelFiltering.Text = Kinovea.Root.Languages.RootLang.prefPanelPlayer_EnablePixelFiltering;
+            chkEnablePixelFiltering.Text = RootLang.prefPanelPlayer_EnablePixelFiltering;
             chkEnablePixelFiltering.Checked = enablePixelFiltering;
 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
@@ -234,18 +247,6 @@ namespace Kinovea.Root
         private void ChkDetectImageSequencesCheckedChanged(object sender, EventArgs e)
         {
             detectImageSequences = chkDetectImageSequences.Checked;
-        }
-        private void ChkEnableFrameSkippingCheckedChanged(object sender, EventArgs e)
-        {
-            enableFrameSkipping = chkEnableFrameSkipping.Checked;
-        }
-        private void ChkLockSpeedsCheckedChanged(object sender, EventArgs e)
-        {
-            syncLockSpeeds = chkLockSpeeds.Checked;
-        }
-        private void chkSyncByMotion_CheckedChanged(object sender, EventArgs e)
-        {
-            syncByMotion = chkSyncByMotion.Checked;
         }
         private void tbPlaybackKVA_TextChanged(object sender, EventArgs e)
         {
@@ -293,6 +294,25 @@ namespace Kinovea.Root
         }
         #endregion
 
+        #region Player
+        private void ChkEnableFrameSkippingCheckedChanged(object sender, EventArgs e)
+        {
+            enableFrameSkipping = chkEnableFrameSkipping.Checked;
+        }
+        private void chkInteractiveTracker_CheckedChanged(object sender, EventArgs e)
+        {
+            interactiveFrameTracker = chkInteractiveTracker.Checked;
+        }
+        private void ChkLockSpeedsCheckedChanged(object sender, EventArgs e)
+        {
+            syncLockSpeeds = chkLockSpeeds.Checked;
+        }
+        private void chkSyncByMotion_CheckedChanged(object sender, EventArgs e)
+        {
+            syncByMotion = chkSyncByMotion.Checked;
+        }
+        #endregion
+
         #region Jumping
         private void rbSnapToSteps_CheckedChanged(object sender, EventArgs e)
         {
@@ -326,10 +346,6 @@ namespace Kinovea.Root
         #endregion
 
         #region Image
-        private void chkInteractiveTracker_CheckedChanged(object sender, EventArgs e)
-        {
-            interactiveFrameTracker = chkInteractiveTracker.Checked;
-        }
         private void chkEnablePixelFiltering_CheckedChanged(object sender, EventArgs e)
         {
             enablePixelFiltering = chkEnablePixelFiltering.Checked;
@@ -357,8 +373,8 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.ShowCacheInTimeline = showCacheInTimeline;
 
             // Player
-            PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
             PreferencesManager.PlayerPreferences.EnableFrameSkipping = enableFrameSkipping;
+            PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
             PreferencesManager.PlayerPreferences.SyncByMotion = syncByMotion;
 

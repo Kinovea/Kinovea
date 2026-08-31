@@ -1600,16 +1600,16 @@ namespace Kinovea.ScreenManager
                     else
                         buttonGotoPrevious_Click(null, EventArgs.Empty);
                     break;
-                case PlayerScreenCommands.BackwardRound10Percent:
+                case PlayerScreenCommands.LargeJumpBackward:
                     TimelineJump(true, false);
                     break;
-                case PlayerScreenCommands.ForwardRound10Percent:
+                case PlayerScreenCommands.LargeJumpForward:
                     TimelineJump(true, true);
                     break;
-                case PlayerScreenCommands.BackwardRound1Percent:
+                case PlayerScreenCommands.SmallJumpBackward:
                     TimelineJump(false, false);
                     break;
-                case PlayerScreenCommands.ForwardRound1Percent:
+                case PlayerScreenCommands.SmallJumpForward:
                     TimelineJump(false, true);
                     break;
                 case PlayerScreenCommands.GotoPreviousKeyframe:

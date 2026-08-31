@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Kinovea.Services
 {
+
     public enum FileExplorerCommands
     {
         LaunchSelected,
@@ -58,6 +59,8 @@ namespace Kinovea.Services
 
         // Playback control
         TogglePlay,
+
+        // Speed control
         IncreaseSpeed1,
         IncreaseSpeedRoundTo10,
         IncreaseSpeedRoundTo25,
@@ -65,16 +68,19 @@ namespace Kinovea.Services
         DecreaseSpeedRoundTo10,
         DecreaseSpeedRoundTo25,
 
-        // Frame by frame navigation
+        // Frame navigation
         GotoPreviousImage,
         GotoNextImage,
         GotoFirstImage,
         GotoLastImage,
         GotoPreviousImageForceLoop,
-        BackwardRound10Percent,
-        ForwardRound10Percent,
-        BackwardRound1Percent,
-        ForwardRound1Percent,
+
+        // Time navigation
+        LargeJumpBackward,
+        LargeJumpForward,
+        SmallJumpBackward,
+        SmallJumpForward,
+
         GotoPreviousKeyframe,
         GotoNextKeyframe,
         GotoSyncPoint,

@@ -299,7 +299,7 @@
     <Compile Include="Filesystem\FilesystemHelper.cs" />
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />
-    <Compile Include="Commands\Commands.cs" />
+    <Compile Include="Commands\CommandEnums.cs" />
     <Compile Include="Window\WindowDescriptor.cs" />
     <Compile Include="Window\WindowManager.cs" />
     <Compile Include="Window\WindowStartupMode.cs" />
