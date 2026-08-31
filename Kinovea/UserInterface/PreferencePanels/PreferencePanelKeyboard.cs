@@ -169,7 +169,7 @@ namespace Kinovea.Root
 
         private void btnDefault_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(selectedCategory) || selectedCommand == null)
+            if (string.IsNullOrEmpty(selectedCategory) || string.IsNullOrEmpty(selectedCommand))
                 return;
 
             HotkeySettingsManager.ResetToDefault(selectedCategory, selectedCommand);

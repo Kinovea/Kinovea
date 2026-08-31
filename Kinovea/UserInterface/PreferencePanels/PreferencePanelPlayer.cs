@@ -84,6 +84,9 @@ namespace Kinovea.Root
         private int largeSteps;
         private float smallJump;
         private float largeJump;
+        private List<HotkeyCommand> hotkeys;
+        private string category = "PlayerScreen";
+        private string selectedCommand;
 
         // Image
         private bool enablePixelFiltering;
@@ -220,6 +223,8 @@ namespace Kinovea.Root
             NudHelper.FixNudScroll(nudSnapLarge);
             NudHelper.FixNudScroll(nudJumpSmall);
             NudHelper.FixNudScroll(nudJumpLarge);
+
+            UpdateCommandView();
         }
         
         private void InitPageImage()
@@ -311,9 +316,11 @@ namespace Kinovea.Root
         {
             syncByMotion = chkSyncByMotion.Checked;
         }
+        
         #endregion
 
         #region Jumping
+
         private void rbSnapToSteps_CheckedChanged(object sender, EventArgs e)
         {
             if (rbSnapToSteps.Checked)
@@ -343,6 +350,88 @@ namespace Kinovea.Root
         {
             largeJump = (float)nudJumpLarge.Value;
         }
+
+        private void UpdateCommandView()
+        {
+            List<string> names = new List<string>() { "LargeJumpForward", "LargeJumpBackward", "SmallJumpForward", "SmallJumpBackward" };
+            
+            lvCommands.Items.Clear();
+            foreach (string name in names)
+            {
+                var command = HotkeySettingsManager.FindByName(category, name);
+                string key = command.KeyData == Keys.None ? "" : command.KeyData.ToText();
+                ListViewItem item = new ListViewItem(new string[] { name, key });
+                item.Tag = command;
+                if (name == selectedCommand)
+                    item.Selected = true;
+
+                lvCommands.Items.Add(item);
+            }
+
+            int secondColumnWidth = lvCommands.ClientSize.Width - lvCommands.Columns[0].Width;
+            lvCommands.Columns[1].Width = secondColumnWidth;
+
+            if (lvCommands.Items.Count > 0 && (lvCommands.SelectedItems == null || lvCommands.SelectedItems.Count == 0))
+                lvCommands.Items[0].Selected = true;
+
+            if (lvCommands.SelectedItems.Count > 0)
+                lvCommands.SelectedItems[0].EnsureVisible();
+
+            lvCommands.Select();
+            lvCommands.HideSelection = false;
+        }
+        private void lvCommands_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvCommands.SelectedItems.Count != 1)
+                return;
+
+            HotkeyCommand command = lvCommands.SelectedItems[0].Tag as HotkeyCommand;
+            if (command == null)
+                return;
+
+            selectedCommand = command.Name;
+            tbHotkey.SetKeydata(category, command.Name, command.KeyData);
+        }
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(selectedCommand))
+            {
+                return;
+            }
+
+            HotkeySettingsManager.Update(category, selectedCommand, Keys.None);
+            tbHotkey.SetKeydata(category, selectedCommand, Keys.None);
+            UpdateCommandView();
+        }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(selectedCommand))
+            {
+                return;
+            }
+
+            HotkeySettingsManager.Update(category, selectedCommand, tbHotkey.KeyData);
+            UpdateCommandView();
+        }
+
+        private void btnDefault_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(selectedCommand))
+                return;
+
+            HotkeySettingsManager.ResetToDefault(category, selectedCommand);
+
+            HotkeyCommand updatedCommand = HotkeySettingsManager.FindByName(category, selectedCommand);
+            if (updatedCommand == null)
+            {
+                return;
+            }
+
+            tbHotkey.SetKeydata(category, updatedCommand.Name, updatedCommand.KeyData);
+            UpdateCommandView();
+        }
+
         #endregion
 
         #region Image

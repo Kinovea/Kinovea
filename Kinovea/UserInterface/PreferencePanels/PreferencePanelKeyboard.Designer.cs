@@ -57,7 +57,7 @@ namespace Kinovea.Root
       // btnApply
       // 
       this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.btnApply.Location = new System.Drawing.Point(193, 289);
+      this.btnApply.Location = new System.Drawing.Point(193, 290);
       this.btnApply.Name = "btnApply";
       this.btnApply.Size = new System.Drawing.Size(75, 23);
       this.btnApply.TabIndex = 5;
@@ -78,7 +78,7 @@ namespace Kinovea.Root
       // btnClear
       // 
       this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.btnClear.Location = new System.Drawing.Point(274, 289);
+      this.btnClear.Location = new System.Drawing.Point(274, 290);
       this.btnClear.Name = "btnClear";
       this.btnClear.Size = new System.Drawing.Size(75, 23);
       this.btnClear.TabIndex = 8;
@@ -136,7 +136,7 @@ namespace Kinovea.Root
       // btnDefault
       // 
       this.btnDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.btnDefault.Location = new System.Drawing.Point(355, 289);
+      this.btnDefault.Location = new System.Drawing.Point(355, 290);
       this.btnDefault.Name = "btnDefault";
       this.btnDefault.Size = new System.Drawing.Size(75, 23);
       this.btnDefault.TabIndex = 13;
