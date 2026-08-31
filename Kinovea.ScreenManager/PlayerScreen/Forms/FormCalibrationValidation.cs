@@ -492,8 +492,7 @@ namespace Kinovea.ScreenManager
 
             // Move the object and refresh the view.
             markers[index].MovePoint(p2);
-            if (invalidator != null)
-                invalidator();
+            invalidator?.Invoke();
 
             // Update our local copy.
             pointsOnGrid[index] = pointOnGrid;

@@ -958,10 +958,11 @@ namespace Kinovea.ScreenManager
             // start the prebuffering thread if possible.
             if (fpb.Cancelled)
             {
-                StretchSqueezeSurface(true);
-                if (m_FrameServer.VideoReader.CanPreBuffer)
+                bool cacheInvalidated = StretchSqueezeSurface(true);
+                if (!cacheInvalidated)
                 {
-                    m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
+                    long startTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
+                    m_FrameServer.VideoReader.RestartPrebuffering(startTimestamp);
                 }
             }
         }
@@ -1454,10 +1455,11 @@ namespace Kinovea.ScreenManager
             // At this point we should be either in full caching mode (only for files 
             // and if it fits in memory), or in on-demand mode.
             // Make sure the reader recalculates the decoding size.
-            StretchSqueezeSurface(true);
-
-            // Start prebuffering if supported and not already in full caching mode.
-            m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
+            bool cacheInvalidated = StretchSqueezeSurface(true);
+            if (!cacheInvalidated)
+            {
+                m_FrameServer.VideoReader.RestartPrebuffering(workingZone.Start);
+            }
 
             // Signal post-load idle event to listeners.
             // This is used to setup synchronization in case of launching a workspace with two videos.
@@ -1480,10 +1482,10 @@ namespace Kinovea.ScreenManager
                 // So it becomes the responsibility of the dual player to start playing when it's sure
                 // that it's a dual recording event and both screens are ready.
                 //
-                // We generally use the "synched" flag for this, assuming that if one is a replay, both are.
+                // We generally use the "isSynchronized" flag for this, assuming that if one is a replay, both are.
                 // The case of a normal video and a replay is not handled and will also ignores auto-play.
                 // 
-                // A further complication, during the very first load of the first screen, the value of "synched"
+                // A further complication, during the very first load of the first screen, the value of "isSynchronized"
                 // is not yet true, but we still don't want to start that video as it will start way before the other. 
                 // For this case we use the flag in the descriptor.
                 bool dualReplay = isSynchronized || screenDescriptor.IsDualReplay;
@@ -1837,7 +1839,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.InitializeEnd(true);
             m_FrameServer.Metadata.StopAllTracking();
             m_FrameServer.Metadata.DeselectAll();
-            UpdateAllowPreScaling(true);
+            UpdateAllowPreScaling();
         }
         private void ValidateDrawing()
         {
@@ -2442,15 +2444,16 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Auto Stretch & Manual Resize
-        private void StretchSqueezeSurface(bool finished)
+
+        /// <summary>
+        /// Recompute the presentation size and replace resizers.
+        /// If the operation is finished, signal the change to the reader and update the decoding size.
+        /// Returns true if the reader has been invalidate and restarted already.
+        /// </summary>
+        private bool StretchSqueezeSurface(bool finished)
         {
-            // Compute the rendering size, and the corresponding optimal decoding size.
-            // We don't ask the VideoReader to update its decoding size here.
-            // (We might want to wait the end of a resizing process for example.).
-            // Similarly, we don't update the rendering zoom factor, so that during resizing process,
-            // the zoom window is still computed based on the current decoding size.
             if (!m_FrameServer.Loaded)
-                return;
+                return false;
 
             double targetStretch = m_FrameServer.ImageTransform.Stretch;
 
@@ -2462,11 +2465,9 @@ namespace Kinovea.ScreenManager
             // Stretch factor, zoom, or container size have been updated.
             // Update the presentation size and signal the change to the reader.
             // During the process, stretch may be forced to a different value.
-            bool rotatedCanvas = false;
-            if (videoFilterIsActive)
-            {
-                rotatedCanvas = m_FrameServer.Metadata.ActiveVideoFilter.RotatedCanvas;
-            }
+            bool rotatedCanvas = videoFilterIsActive ? 
+                m_FrameServer.Metadata.ActiveVideoFilter.RotatedCanvas : 
+                false;
 
             m_viewportManipulator.Manipulate(rotatedCanvas, panelCenter.Size, targetStretch, m_fill);
 
@@ -2475,16 +2476,23 @@ namespace Kinovea.ScreenManager
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
             ReplaceResizers();
 
+            bool cacheInvalidated = false;
             if (finished)
             {
                 // Signal the change to the reader.
                 // This may stop the prebuffering thread.
                 // The full cache mode should never be invalidated by this
                 // since it's always using full reference size.
-                bool changed = m_FrameServer.ChangePresentationSize(m_viewportManipulator.RenderingSize);
-                if (changed && m_FrameServer.VideoReader.CanPreBuffer)
+
+                // Memorize the timestamp and reload it after the decoding size change.
+                long memoTimestamp = m_FrameServer.VideoReader.Current == null ?
+                    workingZone.Start :
+                    m_FrameServer.VideoReader.Current.Timestamp;
+
+                cacheInvalidated = m_FrameServer.ChangePresentationSize(m_viewportManipulator.RenderingSize);
+                if (cacheInvalidated)
                 {
-                    m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
+                    m_FrameServer.VideoReader.RestartPrebuffering(memoTimestamp);
                 }
 
                 // Stretch is between the reference and what we draw.
@@ -2492,6 +2500,8 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.ImageTransform.Stretch = m_viewportManipulator.Stretch;
                 m_FrameServer.ImageTransform.DecodingScale = m_FrameServer.VideoReader.Geometry.Scale;
             }
+
+            return cacheInvalidated;
         }
         private void ReplaceResizers()
         {
@@ -2524,7 +2534,6 @@ namespace Kinovea.ScreenManager
             }
 
             ResetZoom(false);
-            ResizeUpdate(true);
         }
         private void ImageResizerSE_MouseMove(object sender, MouseEventArgs e)
         {
@@ -2609,12 +2618,12 @@ namespace Kinovea.ScreenManager
         /// Stretch or squeeze the video image in the viewport.
         /// May trigger a decoding size change at the reader level.
         /// </summary>
-        private void ResizeUpdate(bool finished)
+        private bool ResizeUpdate(bool finished)
         {
             if (!m_FrameServer.Loaded)
-                return;
+                return false;
 
-            StretchSqueezeSurface(finished);
+            bool changed = StretchSqueezeSurface(finished);
 
             if (finished)
             {
@@ -2625,6 +2634,8 @@ namespace Kinovea.ScreenManager
             {
                 DoInvalidate();
             }
+
+            return changed;
         }
 
         /// <summary>
@@ -2633,34 +2644,36 @@ namespace Kinovea.ScreenManager
         /// The passed value is for one known element but this still tests
         /// any other source of incompatibility.
         /// </summary>
-        private void UpdateAllowPreScaling(bool allow)
+        private void UpdateAllowPreScaling()
         {
             if (!m_FrameServer.Loaded)
                 return;
 
             bool wasAllowed = allowPreScaling;
 
-            allowPreScaling = allow && !m_FrameServer.Metadata.AnyTracking;
+            allowPreScaling = !saveInProgress && !m_FrameServer.Metadata.AnyTracking;
             
             // Note: only do the resize update if the status has changed, 
             // otherwise it will go recursive and stack overflows.
-            if (wasAllowed && !allowPreScaling)
-            {
-                log.DebugFormat("Disabling prescaling");
-                m_FrameServer.ChangeAllowPrescaling(false);
-                ResizeUpdate(true);
 
-                // If this has killed the prebuffering thread, restart it.
-                if (m_FrameServer.VideoReader.CanPreBuffer)
-                {
-                    m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
-                }
-            }
-            else if (!wasAllowed && allowPreScaling)
+            bool hasChanged = wasAllowed != allowPreScaling;
+
+            if (!hasChanged)
+                return;
+            
+            log.DebugFormat("Prescaling is now {0} in the player.", allowPreScaling ? "ALLOWED" : "DISALLOWED");
+
+            long memoTimestamp = m_FrameServer.VideoReader.Current == null ?
+                workingZone.Start :
+                m_FrameServer.VideoReader.Current.Timestamp;
+
+            bool cacheInvalidated = m_FrameServer.ChangeAllowPrescaling(allowPreScaling);
+            if (cacheInvalidated)
             {
-                log.DebugFormat("Enabling prescaling");
-                ResizeUpdate(true);
+                m_FrameServer.VideoReader.RestartPrebuffering(memoTimestamp);
             }
+
+            ResizeUpdate(true);
         }
         #endregion
 
@@ -2676,8 +2689,12 @@ namespace Kinovea.ScreenManager
             loopWatcher.Restart();
 
             Application.Idle += Application_Idle;
-            m_FrameServer.VideoReader.StartPrebufferingIfNotCaching();
             m_FrameServer.Metadata.PauseAutosave();
+            if (m_FrameServer.VideoReader.Current != null && 
+                m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.OnDemand)
+            {
+                m_FrameServer.VideoReader.RestartPrebuffering(m_FrameServer.VideoReader.Current.Timestamp);
+            }
 
             // Time keeping.
             // The timer itself doesn't need to be high frequency.
@@ -2993,8 +3010,7 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
             }
 
-            // Check if we still need to disallow prescaling.
-            UpdateAllowPreScaling(true);
+            UpdateAllowPreScaling();
         }
 
         private void Application_Idle(object sender, EventArgs e)
@@ -3133,7 +3149,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void AfterFrameAcquired(PlayerState state)
         {
-            log.DebugFormat("Received frame acquired for request #{0}. In flight: #{1}. Pending: #{2}.",
+            log.DebugFormat("After frame acquired for request #{0}. In flight: #{1}. Pending: #{2}.",
                 state.Id, 
                 activePlayerState.Id, 
                 pendingPlayerState == null ? "-" : pendingPlayerState.Id.ToString());
@@ -3151,7 +3167,7 @@ namespace Kinovea.ScreenManager
             {
                 // This can happen if we make a first request that requires async decoding,
                 // then make a second one that is acquired synchronously.
-                log.WarnFormat("Received frame acquired for obsolete request #{0}", state.Id);
+                log.WarnFormat("Frame acquired for obsolete request #{0}", state.Id);
                 AfterRequestCompleted(state);
                 return;
             }
@@ -4672,10 +4688,10 @@ namespace Kinovea.ScreenManager
         public void DoInvalidate()
         {
             // This function should be the single point where we call for rendering.
-            // Here we can decide to render directly on the surface, go through the Windows message pump, force the refresh, etc.
-            //log.DebugFormat("DoInvalidate main viewport.");
-
-            // Invalidate is asynchronous and several Invalidate calls will be grouped together. (Only one repaint will be done).
+            // Here we can decide to render directly on the surface,
+            // go through the Windows message pump, force the refresh, etc.
+            // Invalidate is asynchronous and several Invalidate calls will be grouped together.
+            // Only one repaint will be done.
             pbSurfaceScreen.Invalidate();
         }
         public void InvalidateFromMenu()
@@ -5469,11 +5485,12 @@ namespace Kinovea.ScreenManager
         {
             // Track the point.
             // m_DescaledMouse would have been set during the MouseDown event.
-            UpdateAllowPreScaling(false);
 
             DrawingTrack track = new DrawingTrack(m_DescaledMouse, currentTimestamp, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             track.Status = TrackStatus.Edit;
             DrawingAdding?.Invoke(this, new DrawingEventArgs(track, m_FrameServer.Metadata.TrackManager.Id));
+            
+            UpdateAllowPreScaling();
         }
 
         private void mnuBackground_Click(object sender, EventArgs e)
@@ -5662,10 +5679,9 @@ namespace Kinovea.ScreenManager
         private void mnuDrawingTrackingToggle_Click(object sender, EventArgs e)
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-
-            UpdateAllowPreScaling(false);
-            PresentFrame(currentTimestamp);
             ToggleTrackingCommand.Execute(drawing);
+            
+            UpdateAllowPreScaling();
             RefreshImage();
         }
 
@@ -5818,7 +5834,7 @@ namespace Kinovea.ScreenManager
 
             // This track no longer disallows pre-scaling.
             // This will still test if any other track is open.
-            UpdateAllowPreScaling(true);
+            UpdateAllowPreScaling();
         }
         private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
         {
@@ -5827,9 +5843,20 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Note that we use SerializationFilter.KVA to backup all data as the dialog allows to modify not only style option but also tracker parameters.
-            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.Name, SerializationFilter.KVA);
+            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(
+                m_FrameServer.Metadata, 
+                m_FrameServer.Metadata.TrackManager.Id, 
+                track.Id, 
+                track.Name, 
+                SerializationFilter.KVA);
 
-            formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(track, m_FrameServer.Metadata, m_FrameServer.CurrentImage, currentTimestamp, DoInvalidate);
+            formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(
+                track, 
+                m_FrameServer.Metadata, 
+                m_FrameServer.CurrentImage, 
+                currentTimestamp, 
+                DoInvalidate);
+
             fctd.StartPosition = FormStartPosition.CenterScreen;
             fctd.ShowDialog();
 
@@ -5927,10 +5954,10 @@ namespace Kinovea.ScreenManager
         private void mnuMagnifierTrack_Click(object sender, EventArgs e)
         {
             ITrackable drawing = m_FrameServer.Metadata.Magnifier as ITrackable;
-
-            UpdateAllowPreScaling(false);
-            PresentFrame(currentTimestamp);
             ToggleTrackingCommand.Execute(drawing);
+
+            UpdateAllowPreScaling();
+            RefreshImage();
         }
 
         private void DisableMagnifier()
@@ -6230,9 +6257,9 @@ namespace Kinovea.ScreenManager
             OnPauseAsked();
 
             // Force disable pre-scaling as we want to export at the original size.
-            UpdateAllowPreScaling(false);
             memoTimestamp = currentTimestamp;
             saveInProgress = true;
+            UpdateAllowPreScaling();
         }
 
         /// <summary>
@@ -6243,9 +6270,7 @@ namespace Kinovea.ScreenManager
             saveInProgress = false;
             dualSaveInProgress = false;
 
-            // Restore prescaling if possible.
-            UpdateAllowPreScaling(true);
-
+            UpdateAllowPreScaling();
             PresentFrame(memoTimestamp);
         }
 

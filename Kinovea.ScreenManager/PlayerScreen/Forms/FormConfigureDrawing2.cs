@@ -161,8 +161,7 @@ namespace Kinovea.ScreenManager
         }
         private void element_ValueChanged(object sender, EventArgs e)
         {
-            if(invalidator != null) 
-                invalidator();
+            invalidator?.Invoke();
         }
         
         #region Closing
@@ -188,10 +187,9 @@ namespace Kinovea.ScreenManager
 
             // Revert to memo and re-update data.
             styleElements.Restore();
-            
+
             // Update main UI.
-            if(invalidator != null) 
-                invalidator();
+            invalidator?.Invoke();
         }
         private void BtnCancel_Click(object sender, EventArgs e)
         {	

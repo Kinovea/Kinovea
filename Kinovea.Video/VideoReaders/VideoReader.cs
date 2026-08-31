@@ -278,12 +278,10 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Start prebuffering if supported and not already in full caching mode.
-        /// This is normally called during first opening of the video or after 
-        /// changing the presentation size.
-        /// The first call to UpdateWorkingZone inhibits prebuffering as we don't 
-        /// have a valid presentation size yet. Once the UI is loaded we can try again.
+        /// This is normally called after we do an action that requires switching
+        /// back to on-demand temporarily or during init.
         /// </summary>
-        public virtual void StartPrebufferingIfNotCaching()
+        public virtual void RestartPrebuffering(long startTimestamp)
         {
         }
 

@@ -55,7 +55,12 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Construction
-        public formConfigureTrajectoryDisplay(DrawingTrack track, Metadata metadata, Bitmap image, long timestamp, Action invalidate)
+        public formConfigureTrajectoryDisplay(
+            DrawingTrack track, 
+            Metadata metadata, 
+            Bitmap image, 
+            long timestamp, 
+            Action invalidate)
         {
             InitializeComponent();
          
@@ -199,8 +204,7 @@ namespace Kinovea.ScreenManager
         private void tbLabel_TextChanged(object sender, EventArgs e)
         {
             track.Name = tbLabel.Text;
-            if(invalidate != null) 
-                invalidate();
+            invalidate?.Invoke();
         }
         private void CmbMarker_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -208,8 +212,7 @@ namespace Kinovea.ScreenManager
 
         private void element_ValueChanged(object sender, EventArgs e)
         {
-            if(invalidate != null) 
-                invalidate();
+            invalidate?.Invoke();
 
             // Signal the style change to handle label size.
             track.UpdateKeyframeLabels();
@@ -298,8 +301,7 @@ namespace Kinovea.ScreenManager
             // Revert to memo and re-update data.
             track.StyleElements.Restore();
             track.RecallState();
-            if(invalidate != null) 
-                invalidate();
+            invalidate?.Invoke();
         }
         private void btnOK_Click(object sender, EventArgs e)
         {

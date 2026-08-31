@@ -184,7 +184,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual void WorkingZoneUpdateRequest(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn) override;
 
         /// If we are not caching yet, try to switch to prebuffering.
-        virtual void StartPrebufferingIfNotCaching() override;
+        virtual void RestartPrebuffering(int64_t startTimestamp) override;
 
         //-------------------
         // Frame enumeration

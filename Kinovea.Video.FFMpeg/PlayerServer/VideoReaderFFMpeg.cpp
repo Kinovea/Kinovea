@@ -579,55 +579,24 @@ void VideoReaderFFMpeg::GuessFrameRate(AVFormatContext* formatCtx, AVCodecContex
 }
 
 
-void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
+void VideoReaderFFMpeg::RestartPrebuffering(int64_t startTimestamp)
 {
     // (runs in UI thread).
     
-    // In various places we have to turn off prebuffering and switch to on-demand mode.
+    // In various places we have to turn off prebuffering and switch to on-demand.
     // After this the player should re-enable prebuffering by calling this method.
-    // 
-    // During loading we have called UpdateWorkingZone already, 
-    // but only allowing it to either go full caching or stay in 
-    // on-demand mode, because we didn't have a reliable presentation size.
-    // 
-    // Once we do we come back here, see if we can go from on-demand to prebuffering.
-    // If we aren't in full caching mode by now it means either 
-    // the wz doesn't fit in memory or this was disallowed, we don't 
-    // change this here.
-    //
-    // Special case: in the case where the initial updating the working zone 
-    // triggered a full cache load, but the user cancelled it, 
-    // we call this first when the progress bar dialog returns, 
-    // and again in the PostLoad_Idle handler.
-    // In that case it's normal that we are already prebuffering.
-    if (mCachingMode == VideoDecodingMode::PreBuffering)
-    {
-        if (mPreBufferingThread != nullptr && mPreBufferingThread->IsAlive)
-        {
-            log->WarnFormat("StartPrebufferingIfNotCaching called while already pre-buffering");
-            return;
-        }
-        else
-        {
-            // Something went very wrong.
-            log->ErrorFormat("Prebuffering thread stopped.");
-            mPreBuffer->Shutdown();
-            DisposePending();
-            mCachingMode = VideoDecodingMode::OnDemand;
-        }
-    }
-
-    if (mCachingMode == VideoDecodingMode::Caching)
+    if (mCachingMode == VideoDecodingMode::PreBuffering || 
+        mCachingMode == VideoDecodingMode::Caching)
     {
         return;
     }
-    
+
     if (CanPreBuffer)
     {
         ChangeCachingMode(VideoDecodingMode::PreBuffering);
 
-        StartPreBufferingThread(mWorkingZone.Start);
-        mPreBuffer->AcquireClosest(mWorkingZone.Start);
+        StartPreBufferingThread(startTimestamp);
+        mPreBuffer->AcquireClosest(startTimestamp);
     }
 }
 #pragma endregion
@@ -2603,6 +2572,9 @@ void VideoReaderFFMpeg::DisposeFrame(VideoFrame^ videoFrame)
 
 #pragma region PreBuffering thread
 
+
+
+
 void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
 {
     //--------------------------
@@ -3148,7 +3120,6 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
             return plan;
         }
 
-
         log->DebugFormat("DecodingJobPlan: Decoder is nowhere: seeking.");
         mPreBuffer->Purge();
         plan->DecoderRelocation = DecoderRelocation::Seek;
@@ -3170,29 +3141,18 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
         hasPending = false;
     }
 
-
-    // TODO: maybe handle the special cases where the target was decoded during 
-    // preparation differently.
-    // 2 cases: 
-    // - we could add to the cache. mCachedTimestamp == target.
-    // - we couldn't add to the cache. mPendingFrame == target.
-    // In these two cases we can 
-    // - (force add if needed)
-    // - acquire.
-    // - do not move the decoder.
-
-    // Check the "happy surprise" cases: the target was decoded while the job was in preparation.
+    // The "happy surprise" cases: the target was decoded while the job was in preparation.
     if (!isAcquired)
     {
         if (hasPending)
         {
+            // Case 1: the target was decoded but was blocked in add().
             TimestampRelation relPendingTarget = RelateTimestamps(mPendingFrame->Timestamp, targetTimestamp);
             if (relPendingTarget == TimestampRelation::Match)
             {
                 log->DebugFormat("DecodingJobPlan: Pending frame matches target.");
             
-                // Target was decoded during preparation but couldn't be added to the cache at the time.
-                // Force add now.
+                // Force add.
                 int64_t resolvedTarget = mPendingFrame->Timestamp;
                 bool addedMatch = ResubmitPending(targetTimestamp, true);
                 if (addedMatch)
@@ -3210,11 +3170,20 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
             // Keep it around for now, we'll see in the other scenarios if we need
             // to resubmit it or not.
         }
+        else if (mCachedTimestamp > 0)
+        {
+            // Case 2: the target was decoded and added to the cache.
+            TimestampRelation relTarget = RelateTimestamps(mCachedTimestamp, plan->TargetTimestamp);
+            if (relTarget == TimestampRelation::Match)
+            {
+                log->DebugFormat("DecodingJobPlan: Last cached frame matches target.");
 
-
-        // TODO: check if mCachedTimestamp matches the target. 
-        // If so we can also just acquire it and continue decoding from there.
-
+                OnRequestFulfilled(state, true, mCachedTimestamp);
+                plan->RequestFulfilledInPlanning = true;
+                plan->DecoderRelocation = DecoderRelocation::None;
+                return plan;
+            }
+        }
     }
 
     // Sanity check.
@@ -3274,11 +3243,11 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
         return plan;
     }
 
-    // By here we know the target is within the bounds of the cache.
+
+    // By now we know the target is within the bounds of the cache.
     // Whether the target was acquired or not, for now we use the same rules.
     // Compare where the decoder is with respect to the target.
     // TODO: watch out for sparse -> dense job transition.
-
     TimestampRelation relTarget = RelateTimestamps(mDecodedTimestamp, targetTimestamp);
 
     if (relTarget == TimestampRelation::Match)
@@ -3383,16 +3352,7 @@ void VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
     // Case 1: we managed to add it to the cache.
     // Case 2: it was the pending frame.
     // TODO: move this back with the other case in GetDecodingJobPlan().
-    if (mCachedTimestamp > 0 && mPendingFrame == nullptr)
-    {
-        TimestampRelation relTarget = RelateTimestamps(mCachedTimestamp, plan->TargetTimestamp);
-        if (relTarget == TimestampRelation::Match)
-        {
-            OnRequestFulfilled(state, true, mCachedTimestamp);
-            plan->RequestFulfilledInPlanning = true;
-            return;
-        }
-    }
+    
 
     if (plan->DecoderRelocation == DecoderRelocation::Seek)
     {

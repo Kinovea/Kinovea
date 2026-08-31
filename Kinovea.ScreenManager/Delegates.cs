@@ -37,7 +37,6 @@ namespace Kinovea.ScreenManager
     
     public delegate string TimeCodeBuilder(long timestamp, TimeType type, TimecodeFormat timeCodeFormat, bool symbol);
     public delegate void DisplayClosestFrame(Point p, List<TimedPoint> trackPoints, float timeScale, bool use2D);
-    public delegate void UpdateAllowPreScaling(bool force);
     public delegate object BindReader(string sourceProperty, Type targetType);
     public delegate void BindWriter(string targetProperty, object value);
     public delegate void ImageProcessor(Bitmap src);
