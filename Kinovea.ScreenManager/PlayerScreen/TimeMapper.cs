@@ -5,9 +5,6 @@ using System.Text;
 
 namespace Kinovea.ScreenManager
 {
-    // TODO: implement logarithmic mapping.
-
-
     /// <summary>
     /// The time mapper links the speed slider, the playback frame rate and the capture frame rate.
     /// </summary>
@@ -45,16 +42,18 @@ namespace Kinovea.ScreenManager
         #region Members
         private const double epsilon = 1e-3;
 
-        // Slow motion slider input values.
+        // Slider input values.
         // This is an arbitrary range.
         private double minInput = 0; 
         private double maxInput = 1000;
+        private double midInput = 500;
         private double safeMinInput = 1;
 
-        // Slow motion factor values. 1 = file baseline.
-        private double minSlowMotion = 0;
-        private double maxSlowMotion = 2;
-        private double safeMinSlowMotion = 0.002;
+        // Speed factor values. 1 = file baseline.
+        private double minFactor = 0;
+        private double maxFactor = 10;
+        private double midFactor = 1;
+        private double safeMinFactor = 0.002;
 
         private double fileInterval = 40; 
         private double userInterval = 40;
@@ -62,31 +61,27 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public methods
+
         /// <summary>
-        /// Set the range of slider input values.
+        /// Initialize all values.
         /// </summary>
-        public void SetInputRange(double minInput, double maxInput)
+        public void Initialize(double minInput, double maxInput, double midInput, double minFactor, double maxFactor, double midFactor)
         {
             this.minInput = minInput;
             this.maxInput = maxInput;
+            this.midInput = midInput;
             this.safeMinInput = minInput + (epsilon * (maxInput - minInput));
+
+            this.minFactor = minFactor;
+            this.maxFactor = maxFactor;
+            this.midFactor = midFactor;
+            this.safeMinFactor = minFactor + (epsilon * (maxFactor - minFactor));
         }
 
         /// <summary>
-        /// Set the range of "slow motion" factor.
-        /// Values above 1x are "fast motion" rather than slow motion.
+        /// Returns the speed factor corresponding to the input.
         /// </summary>
-        public void SetSlowMotionRange(double minSlowMotion, double maxSlowMotion)
-        {
-            this.minSlowMotion = minSlowMotion;
-            this.maxSlowMotion = maxSlowMotion;
-            this.safeMinSlowMotion = minSlowMotion + (epsilon * (maxSlowMotion - minSlowMotion));
-        }
-
-        /// <summary>
-        /// Returns the factor of slow motion corresponding to the input.
-        /// </summary>
-        public double GetSlowMotion(double input)
+        public double GetSpeedFactor(double input)
         {
             return MapInput(input);
         }
@@ -96,8 +91,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public double GetInterval(double input)
         {
-            double slowMotion = MapInput(input);
-            return userInterval / slowMotion;
+            double factor = MapInput(input);
+            return userInterval / factor;
         }
 
         /// <summary>
@@ -106,56 +101,102 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public double GetRealtimeMultiplier(double input)
         {
-            double slowdownFactor = userInterval / captureInterval;
-            double slowMotion = MapInput(input);
-            return slowMotion / slowdownFactor;
+            double realtimeFactor = userInterval / captureInterval;
+            double speedFactor = MapInput(input);
+            return speedFactor / realtimeFactor;
         }
 
         /// <summary>
         /// Returns the slider input corresponding to a specific slow motion factor.
         /// Used to draw tick marks.
         /// </summary>
-        public double GetInputFromSlowMotion(double slowMotion)
+        public double GetInputFromSpeedFactor(double speedFactor)
         {
-            return MapSlowMotion(slowMotion);
+            return MapSpeedFactor(speedFactor);
         }
         #endregion
 
         #region Private methods
         /// <summary>
-        /// Maps from slider input value to slow motion factor.
+        /// Maps from slider input value to speed factor.
         /// </summary>
         private double MapInput(double input)
         {
             input = Math.Min(Math.Max(input, minInput), maxInput);
-            return MapInputLinear(input);
+            return MapInputPiecewise(input);
         }
 
         /// <summary>
-        /// Maps from slider input value to slow motion factor linearly.
+        /// Maps from speed factor to slider input value.
+        /// </summary>
+        private double MapSpeedFactor(double speedFactor)
+        {
+            speedFactor = Math.Min(Math.Max(speedFactor, minFactor), maxFactor);
+            return MapSpeedFactorPiecewise(speedFactor);
+        }
+        #endregion
+
+        #region Core mapping functions
+        /// <summary>
+        /// Slider input -> speed factor.
         /// </summary>
         private double MapInputLinear(double input)
         {
             double inputNormalized = (input - minInput) / (maxInput - minInput);
-            double result = minSlowMotion + (inputNormalized * (maxSlowMotion - minSlowMotion));
-            return Math.Max(result, safeMinSlowMotion);
+            double result = minFactor + (inputNormalized * (maxFactor - minFactor));
+            return Math.Max(result, safeMinFactor);
         }
 
         /// <summary>
-        /// Maps from slow motion factor to slider input value.
+        /// Slider input -> speed factor.
         /// </summary>
-        private double MapSlowMotion(double slowMotion)
+        private double MapInputPiecewise(double input)
         {
-            slowMotion = Math.Min(Math.Max(slowMotion, minSlowMotion), maxSlowMotion);
-            return MapSlowMotionLinear(slowMotion);
+            if (input < midInput)
+            {
+                double inputNormalized = (input - minInput) / (midInput - minInput);
+                double result = minFactor + (inputNormalized * (midFactor - minFactor));
+                return Math.Max(result, safeMinFactor);
+            }
+            else
+            {
+                double inputNormalized = (input - midInput) / (maxInput - midInput);
+                double result = midFactor + (inputNormalized * (maxFactor - midFactor));
+                return Math.Max(result, safeMinFactor);
+            }
         }
 
-        private double MapSlowMotionLinear(double slowMotion)
+        /// <summary>
+        /// Speed factor -> slider input.
+        /// </summary>
+        private double MapSpeedFactorLinear(double speedFactor)
         {
-            double slowMotionNormalized = (slowMotion - minSlowMotion) / (maxSlowMotion - minSlowMotion);
-            double result = minInput + (slowMotionNormalized * (maxInput - minInput));
+            double speedFactorNormalized = (speedFactor - minFactor) / (maxFactor - minFactor);
+            double result = minInput + (speedFactorNormalized * (maxInput - minInput));
             return Math.Max(result, safeMinInput);
         }
+
+
+        /// <summary>
+        /// Speed factor -> slider input.
+        /// </summary>
+        private double MapSpeedFactorPiecewise(double speedFactor)
+        {
+            if (speedFactor < midFactor)
+            {
+                double speedFactorNormalized = (speedFactor - minFactor) / (midFactor - minFactor);
+                double result = minInput + (speedFactorNormalized * (midInput - minInput));
+                return Math.Max(result, safeMinInput);
+            }
+            else
+            {
+                double speedFactorNormalized = (speedFactor - midFactor) / (maxFactor - midFactor);
+                double result = midInput + (speedFactorNormalized * (maxInput - midInput));
+                return Math.Max(result, safeMinInput);
+            }
+        }
+
+
         #endregion
 
     }

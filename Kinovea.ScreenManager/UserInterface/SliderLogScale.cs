@@ -26,6 +26,9 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Maps an arbitrary value range (say 0-1000) to the pixel coordinates of the slider.
+    /// </summary>
     public class SliderLogScale : Control
     {
         #region Events
@@ -39,7 +42,7 @@ namespace Kinovea.ScreenManager
             set 
             { 
                 min = value;
-                Remap();
+                UpdatePixelLocation();
             }
         }
         
@@ -51,7 +54,7 @@ namespace Kinovea.ScreenManager
                 max = value <= min ? max = min + 1 : value;
                 if(val > max)
                     val = max;
-                Remap();
+                UpdatePixelLocation();
             }
         }
         
@@ -62,11 +65,23 @@ namespace Kinovea.ScreenManager
             {
                 val = Math.Min(Math.Max(value, min), max);
 
-                Remap();
+                UpdatePixelLocation();
             }
         }
+
+        public bool IsSticky
+        {
+            get { return isSticky; }
+            set { isSticky = value; }
+        }
+
+        public double StickyValue
+        {
+            get { return stickyValue; }
+            set { stickyValue = value; }
+        }
         #endregion
-    
+
         #region Members
         private double minPix;
         private double maxPix;
@@ -75,7 +90,11 @@ namespace Kinovea.ScreenManager
         private double min;
         private double max;
         private double val;
-        
+
+        private bool isSticky;
+        private double stickyValue;
+        private double stickyRadius;
+
         private Bitmap cursor;
         private Bitmap gutterLeft;
         private Bitmap gutterRight;
@@ -102,11 +121,32 @@ namespace Kinovea.ScreenManager
             max = 100;
             val = 0;
             
-            Remap();
+            UpdatePixelLocation();
             
             this.Height = gutterCenter.Height;
         }
-        
+
+        public void Initialize(double min, double max, double val)
+        {
+            this.min = min;
+            this.max = max;
+            this.val = val;
+
+            //stickyValue = val;
+            //isSticky = true;
+            //stickyRadius = 0.05 * (max - min);
+
+            UpdatePixelLocation();
+        }
+
+        public void StepJump(double relativeTarget)
+        {
+        }
+
+        public void Force(double value)
+        {
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -115,13 +155,13 @@ namespace Kinovea.ScreenManager
             
             e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
-            
-            e.Graphics.DrawImageUnscaled(gutterLeft, Point.Empty);
-            e.Graphics.DrawImageUnscaled(gutterRight, this.Width - gutterRight.Width, 0);
-            e.Graphics.DrawImage(gutterCenter, gutterLeft.Width, 0, this.Width - gutterRight.Width - gutterLeft.Width, gutterCenter.Height);
-            e.Graphics.DrawImageUnscaled(cursor, (int)(valPix - (cursor.Width/2)), 0);
-            
-            //e.Graphics.DrawString(val.ToString("0.00"), SystemFonts.DefaultFont, Brushes.Red, 0, 0);
+
+            int top = -3;
+
+            e.Graphics.DrawImageUnscaled(gutterLeft, 0, top);
+            e.Graphics.DrawImageUnscaled(gutterRight, this.Width - gutterRight.Width, top);
+            e.Graphics.DrawImage(gutterCenter, gutterLeft.Width, top, this.Width - gutterRight.Width - gutterLeft.Width, gutterCenter.Height);
+            e.Graphics.DrawImageUnscaled(cursor, (int)(valPix - (cursor.Width/2)), top);
         }
         
         protected override void OnResize(EventArgs e)
@@ -132,7 +172,7 @@ namespace Kinovea.ScreenManager
             if(maxPix <= minPix)
                 maxPix = minPix;
 
-            Remap();
+            UpdatePixelLocation();
         }
         
         protected override void OnMouseMove(MouseEventArgs e)
@@ -145,9 +185,8 @@ namespace Kinovea.ScreenManager
             valPix = Math.Max(Math.Min(e.X, maxPix), minPix);
             val = PixelToValue(valPix);
             Invalidate();
-            
-            if(ValueChanged!=null)
-                ValueChanged(this, EventArgs.Empty);
+
+            ValueChanged?.Invoke(this, EventArgs.Empty);
         }
         
         protected override void OnMouseClick(MouseEventArgs e)
@@ -157,20 +196,19 @@ namespace Kinovea.ScreenManager
             valPix = Math.Max(Math.Min(e.X, maxPix), minPix);
             val = PixelToValue(valPix);
             Invalidate();
-            
-            if(ValueChanged!=null)
-                ValueChanged(this, EventArgs.Empty);
+
+            ValueChanged?.Invoke(this, EventArgs.Empty);
         }
         
-        private void Remap()
+        private void UpdatePixelLocation()
         {
             valPix = ValueToPixel(val);
         }
         
-        private double ValueToPixel(double a)
+        private double ValueToPixel(double v)
         {
             double safeMin = min+1;
-            double safeVal = a+1;
+            double safeVal = v+1;
             double safeMax = max+1;
             
             double rangePix = maxPix - minPix;
