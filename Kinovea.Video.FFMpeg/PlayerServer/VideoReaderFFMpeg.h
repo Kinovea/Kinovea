@@ -237,28 +237,42 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         VideoSection mWorkingZone;
         bool mIsFirstWZUpdate = true;
 
-        // Caching modes.
-        VideoDecodingMode mCachingMode;
-        VideoSection mSectionToPrepend;
-        VideoSection mSectionToAppend;
-
-        // Frame containers
-        // mFrameContainer references one of the three below.
+        // Caching mode and frame containers.
+        // mFrameContainer points to one of the three below.
         // Only one is active at a time based on the caching mode.
+        VideoDecodingMode mCachingMode;
         IVideoFramesContainer^ mFrameContainer; 
         SingleFrame^ mSingleFrameContainer;
         PreBuffer2^ mPreBuffer;
         Cache^ mCache;
-        VideoFrame^ mPendingFrame;
+
+        // Full caching mode.
+        VideoSection mSectionToPrepend;
+        VideoSection mSectionToAppend;
         
-        // FFmpeg context.
-        int mVideoStreamIndex;
+        
+        //----------------------------------
+        // FFmpeg context and decoder state.
+        //----------------------------------
         AVFormatContext* mFormatCtx;
+        int mVideoStreamIndex;
         AVCodecContext* mVideoCodecCtx;
 
+        // The frame-domain timestamp of the frame we last added to the cache.
+        // This is not necessarily the frame that the player is currently showing.
+        int64_t mCachedTimestamp = AV_NOPTS_VALUE;
+
+        // The frame-domain timestamp of the last decoded frame.
+        int64_t mDecodedTimestamp = AV_NOPTS_VALUE;
+
+        // The timestamp of the previous decoded decoded frame.
+        int64_t mPreviousDecodedTimestamp = AV_NOPTS_VALUE;
+
+        // The seek-domain timestamp of the last keyframe. (packet->pts or packet->dts).
+        int64_t mCurrentGopTimestamp = AV_NOPTS_VALUE;
 
         //------------------------
-        // Player state and prebuffering
+        // Player state requests and decoding jobs
         //------------------------
         
         // The player state / job being worked on by the prebuffer thread.
@@ -278,39 +292,38 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // Sync object to schedule the arrival and preparation of new player requests.
         Object^ mLockNewJobReady = gcnew Object();
 
-
-        TryAcquireResult^ mTryAcquireResult = nullptr;
+        //----------------------------
+        // Prebuffering
+        //----------------------------
 
         Thread^ mPreBufferingThread;
         ThreadCanceler^ mPreBufferingThreadCanceler;
 
-        // The frame-domain timestamp of the frame we last added to the cache.
-        // This is not necessarily the frame that the player is currently showing.
-        int64_t mCachedTimestamp = AV_NOPTS_VALUE;
-        
-        // The frame-domain timestamp of the last decoded frame.
-        int64_t mDecodedTimestamp = AV_NOPTS_VALUE;
+        // A frame that was waiting for space in the cache when the request 
+        // for a new job arrived. 
+        // We keep it around and may re-submit it when the new job starts.
+        VideoFrame^ mPendingFrame;
 
-        // The timestamp of the previous decoded decoded frame.
-        int64_t mPreviousDecodedTimestamp = AV_NOPTS_VALUE;
-        
-        // The seek-domain timestamp of the last keyframe. (packet->pts or packet->dts).
-        int64_t mCurrentGopTimestamp = AV_NOPTS_VALUE;
+        // When a request for a new job arrives this holds the result of the 
+        // initial attempt to acquire the frame.
+        // This is then used to figure out the relocation plan.
+        TryAcquireResult^ mTryAcquireResult = nullptr;
 
         // When relocating the decoder if we get close to the target by this amount
-        // start storing frames.
+        // we start storing frames. This way the target frame always has some frames
+        // already available behind it for stepping back.
         int64_t mPreRollTimestamps = AV_NOPTS_VALUE;
 
+        // The active frame-skipping policy (only for pre-buffering and during playback). 
+        // Determines if we should skip scaling/converting/storing some frames or even 
+        // skip decoding them altogether, in case we fall behind the player demands.
+        FrameSkippingPolicy mFrameSkippingPolicy = FrameSkippingPolicy::Normal;
 
         // If the lag in seconds between the frame we are supposed to be presenting in the player 
         // and the last frame we decoded goes above this value, we declare decoding bankrupcy
         // and try to seek ahead to the next keyframe.
         static const double mSeekAheadLagThreshold = 1;
 
-        // The active frame-skipping policy (only for pre-buffering during playback). 
-        // Determines if we should skip scaling/converting/storing some frames or even 
-        // skip decoding them altogether, in case we fall behind the player demands.
-        FrameSkippingPolicy mFrameSkippingPolicy = FrameSkippingPolicy::Normal;
 
         bool mWasPrebufferingBeforeEnumeration;
         
@@ -369,8 +382,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool MoveCaching(int64_t target);
         bool MovePrebuffer(int64_t target);
 
-
-
         //-------------------
         // Seeking/decoding
         //-------------------
@@ -385,8 +396,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Store the reached frame to the container.
         ReadResult ReadFrameSeek(int64_t targetTimestamp, bool doSeek, bool preRoll);
         
-        /// Seek to or before the target. 
-        /// Does not decode any frames.
+        /// Seek to or before the target. Does not decode any frames.
         int SeekTo(int64_t targetTimestamp);
 
         /// Decode the next available frame from libav. 
@@ -508,8 +518,35 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         ReadResult ProcessJob(ThreadCanceler^ canceller);
 
-        /// Update the playback frame skipping policy based on how behind we 
-        /// are falling back compared to the player.
+        //------------------
+        // Prebuffering > Job initialization.
+        //------------------
+
+        /// Prepare the decoder for the next job.
+        void InitDecodingJob(PlayerState^ state);
+
+        /// Get a relocation plan for the decoder, to seek, advance or stay in place,
+        /// and what to do with the pending frame if any.
+        /// This may also acquire the target if found to be available.
+        DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, TryAcquireResult^ tryAcquireResult);
+
+        /// Perform the decoder relocation according to the plan.
+        bool ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
+
+        /// Dispose the pending frame and set it to null.
+        void DisposePending();
+
+        /// Resubmit the pending frame. 
+        /// If the add succeeds and it matches the target, acquires it.
+        /// Returns true if the target was acquired.
+        bool ResubmitPending(int64_t target, bool forced);
+
+        //------------------
+        // Prebuffering > Frame skipping policy.
+        //------------------
+
+        /// Update the playback frame skipping policy based on how far behind 
+        /// we are compared to the player.
         /// Only used during playback.
         void UpdateFrameSkippingPolicy();
 
@@ -518,28 +555,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Only used during playback.
         void ApplyFrameSkippingPolicy(FrameSkippingPolicy policy);
 
+        /// Whether the scale/convert/store step should be skipped 
+        /// as part of the frame skipping policy.
         bool ShouldStoreFrame();
-
-        //------------------
-        // Prebuffering > Job initialization.
-        //------------------
-
-        /// Prepare the decoder for the next job.
-        void InitDecodingJob(PlayerState^ state);
-        
-        /// Get a plan for whether the decoder should seek, advance or stay in place,
-        /// store frames along the way and resubmit a pending frame.
-        DecodingJobPlan^ GetDecodingJobPlan(PlayerState^ state, TryAcquireResult^ tryAcquireResult);
-        
-        bool ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
-        
-        void DisposePending();
-
-        /// Resubmits the pending frame. 
-        /// If the add succeeds and it matches the target, acquires it.
-        /// Returns true if the target was acquired.
-        bool ResubmitPending(int64_t target, bool forced);
-
 
         //-------------------
         // Logging helpers

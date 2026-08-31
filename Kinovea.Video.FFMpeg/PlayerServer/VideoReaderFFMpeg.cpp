@@ -1736,6 +1736,17 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
 
             if (inPreRollWindow)
             {
+                //-------------------------------------------------------
+                // Store the preroll frame.
+                // This serves two purposes:
+                // 
+                // 1. When we are done relocating the user can immediately step backwards
+                // without taking another seek hit.
+                // 
+                // 2. We get bracketing of the target for free. 
+                // When the caller of this function calls cache.AcquireClosest(target) it will 
+                // find the appropriate frame, which may be the penultimate one rather than the last one.
+                //-------------------------------------------------------
                 result = ConvertAndStoreFrame(frame, false, true);
 
                 if (mDecodedTimestamp >= targetTimestamp)
@@ -1745,10 +1756,6 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
 
                     av_frame_free(&frame);
                     break;
-                }
-                else
-                {
-                    log->DebugFormat("Stored preroll frame at [{0}].", mDecodedTimestamp);
                 }
             }
         }
@@ -2653,9 +2660,12 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
         ReadResult res = ReadFrameSeek(startTimestamp, true, true);
         if (res == ReadResult::Success)
         {
-            log->DebugFormat("Read first frame synchronously. [{0}].", mCachedTimestamp);
-            mPreBuffer->AcquireClosest(mCachedTimestamp);
-            mWorkingZone = VideoSection(mCachedTimestamp, mWorkingZone.End);
+            // Note that the frame actually closest to the target timestamp may be the 
+            // one before the last one. Since we use a preroll window it sould be there.
+            // If the file has only I-frames there is a possibility to land after though.
+            log->DebugFormat("Read first frame synchronously until [{0}].", mCachedTimestamp);
+            mPreBuffer->AcquireClosest(startTimestamp);
+            mWorkingZone = VideoSection(startTimestamp, mWorkingZone.End);
         }
     }
 
