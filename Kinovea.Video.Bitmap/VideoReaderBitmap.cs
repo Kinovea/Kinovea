@@ -134,9 +134,17 @@ namespace Kinovea.Video.Bitmap
 
         public override bool PlayerRequest(PlayerState newState)
         {
-            // TODO: handle next/prev.
+            long target = newState.ReferenceTimestamp;
+            if (newState.Mode == PlayerStateMode.StepForward)
+            {
+                target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            }
+            else if (newState.Mode == PlayerStateMode.StepBackward)
+            {
+                target = (long)Math.Round(Current.Timestamp - videoInfo.AverageTimeStampsPerFrame);
+            }
 
-            return UpdateCurrent(newState.ReferenceTimestamp);
+            return UpdateCurrent(target);
         }
 
         public override bool MoveTo(long target)

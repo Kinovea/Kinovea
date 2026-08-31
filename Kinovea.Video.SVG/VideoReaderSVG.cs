@@ -122,8 +122,17 @@ namespace Kinovea.Video.SVG
         #region Navigation and player state
         public override bool PlayerRequest(PlayerState newState)
         {
-            // TODO: handle next/previous here as well.
-            return UpdateCurrent(newState.ReferenceTimestamp);
+            long target = newState.ReferenceTimestamp;
+            if (newState.Mode == PlayerStateMode.StepForward)
+            {
+                target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            }
+            else if (newState.Mode == PlayerStateMode.StepBackward)
+            {
+                target = (long)Math.Round(Current.Timestamp - videoInfo.AverageTimeStampsPerFrame);
+            }
+
+            return UpdateCurrent(target);
         }
 
         public override bool MoveTo(long target)

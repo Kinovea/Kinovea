@@ -127,8 +127,17 @@ namespace Kinovea.Video.GIF
         #region Navigation
         public override bool PlayerRequest(PlayerState newState)
         {
-            // TODO: handle next/prev.
-            cache.AcquireClosest(newState.ReferenceTimestamp);
+            long target = newState.ReferenceTimestamp;
+            if (newState.Mode == PlayerStateMode.StepForward)
+            {
+                target = (long)Math.Round(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            }
+            else if (newState.Mode == PlayerStateMode.StepBackward)
+            {
+                target = (long)Math.Round(Current.Timestamp - videoInfo.AverageTimeStampsPerFrame);
+            }
+
+            cache.AcquireClosest(target);
             return true;
         }
 
