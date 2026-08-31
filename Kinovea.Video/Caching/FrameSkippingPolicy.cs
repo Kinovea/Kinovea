@@ -7,21 +7,22 @@ using System.Threading.Tasks;
 namespace Kinovea.Video
 {
     /// <summary>
-    /// Different levels of decoding for the pre-buffer / async decoding.
+    /// Different levels of frame-skipping for the pre-buffer / async decoding.
+    /// Only checked and applied during playback.
     /// </summary>
-    public enum DecodingPolicy
+    public enum FrameSkippingPolicy
     {
-        // Decode and scale/convert/store all frames.
+        // Policy: decode and scale/convert/store all frames.
         // The decoding thread is decoding frames fast enough to keep up with the player demands.
         // Typically the cache will be full and the decoding thread will be waiting in Add().
         // Lag should be negative.
         Normal,
 
-        // Decode all frames but skip the scaling/conversion step
-        // and do not store anything in the cache.
+        // Policy: decode all frames but only do the scaling/conversion/store step
+        // for one frame per refresh period.
         Behind,
 
-        // Decode only reference frames (I-frames).
+        // Policy: decode only reference frames (I-frames).
         // The decoding thread is too slow to keep up with the player.
         FarBehind,
 

@@ -182,7 +182,7 @@
     <Compile Include="Caching\CacheTimestampRelation.cs" />
     <Compile Include="Caching\DecoderRelocation.cs" />
     <Compile Include="Caching\DecodingJobPlan.cs" />
-    <Compile Include="Caching\DecodingPolicy.cs" />
+    <Compile Include="Caching\FrameSkippingPolicy.cs" />
     <Compile Include="Caching\Cache.cs" />
     <Compile Include="Caching\IVideoFramesContainer.cs" />
     <Compile Include="Caching\IWorkingZoneContainer.cs" />

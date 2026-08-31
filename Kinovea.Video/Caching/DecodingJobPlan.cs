@@ -52,12 +52,6 @@ namespace Kinovea.Video
         /// </summary>
         public bool ResubmitPending { get; set; }
 
-        /// <summary>
-        /// Start storing frames as it approaches the target.
-        /// </summary>
-        public bool PreRoll { get; set; }
-
-
         public DecodingJobPlan()
         {
             RequestedTimestamp = -1;
@@ -66,13 +60,12 @@ namespace Kinovea.Video
             TargetAcquiredInPlanning = false;
             DecoderRelocation = DecoderRelocation.None;
             ResubmitPending = false;
-            PreRoll = true;
         }
 
         public override string ToString()
         {
-            return string.Format("DecodingJobPlan: Request: [~{0}]. Target: [{1}]. Acquired: {2}. AcquiredInPlanning: {3}. DecoderInitAction: {4}. Resubmit pending: {5}. PreRoll: {6}.",
-                RequestedTimestamp, TargetTimestamp, TargetAcquired, TargetAcquiredInPlanning, DecoderRelocation, ResubmitPending, PreRoll);
+            return string.Format("DecodingJobPlan: Request: [~{0}]. Target: [{1}]. Acquired: {2}. AcquiredInPlanning: {3}. DecoderInitAction: {4}. Resubmit pending: {5}.",
+                RequestedTimestamp, TargetTimestamp, TargetAcquired, TargetAcquiredInPlanning, DecoderRelocation, ResubmitPending);
         }
     }
 }

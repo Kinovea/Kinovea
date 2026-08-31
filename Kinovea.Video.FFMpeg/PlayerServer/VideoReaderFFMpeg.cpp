@@ -1779,7 +1779,8 @@ bool VideoReaderFFMpeg::ShouldStoreFrame()
     if (mWorkingPlayerState->Mode != PlayerStateMode::Playback)
         return true;
 
-    if (mDecodingPolicy != DecodingPolicy::Behind && mDecodingPolicy != DecodingPolicy::FarBehind)
+    if (mFrameSkippingPolicy != FrameSkippingPolicy::Behind && 
+        mFrameSkippingPolicy != FrameSkippingPolicy::FarBehind)
         return true;
 
     // If we are behind the player we skip the scale/convert/store step as much as possible.
@@ -2709,7 +2710,7 @@ void VideoReaderFFMpeg::PreBufferingWorker(Object^ objCanceller)
     //-------------------------------
 
     mDecodedFrames = 0;
-    ExecuteDecodingPolicy(DecodingPolicy::Normal);
+    ApplyFrameSkippingPolicy(FrameSkippingPolicy::Normal);
 
     mWorkingPlayerState = WaitForNewJobReady(canceller, -1);
 
@@ -2795,7 +2796,7 @@ ReadResult VideoReaderFFMpeg::ProcessJob(ThreadCanceler^ canceller)
 
         if (mWorkingPlayerState->Mode == PlayerStateMode::Playback)
         {
-            UpdateDecodePolicy();
+            UpdateFrameSkippingPolicy();
         }
 
         res = ReadFrameNext();
@@ -2861,7 +2862,7 @@ PlayerState^ VideoReaderFFMpeg::WaitForNewJobReady(ThreadCanceler^ canceller, in
     return nullptr;
 }
 
-void VideoReaderFFMpeg::UpdateDecodePolicy()
+void VideoReaderFFMpeg::UpdateFrameSkippingPolicy()
 {
 
     if (mWorkingPlayerState->Mode != PlayerStateMode::Playback)
@@ -2872,8 +2873,8 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
     long expectedTimestamp = this->GetPlaybackTimestamp(mWorkingPlayerState);
     double lag = (expectedTimestamp - mCachedTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-    String^ logLine = String::Format("UpdateDecodePolicy: estimated player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}. Frame: {5}.",
-        expectedTimestamp, mCachedTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
+    String^ logLine = String::Format("UpdateFrameSkippingPolicy: estimated player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}.",
+        expectedTimestamp, mCachedTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity);
 
     log->DebugFormat(logLine);
             
@@ -2885,15 +2886,17 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
             
         // We are hopelessly behind, try to seek ahead.
         // Note: calling seek directly with min, target, max, doesn't always work.
+        // 
         // First, some decoders just fallback to AVSEEK_FLAG_BACKWARD which moves us 
         // back in time and is worse than doing nothing.
+        // 
         // Secondly, seek is done in a different "domain" than the timestamps we get from decoding frames.
         // The values of packet->pts don't always match the values of frame->best_effort_timestamp. 
         // 
-        // As decoding progresses we keep track of the timestamps of key frame packets and use that 
-        // to check if seek ahead is actually possible.
-        //
-        // Poll the index for the closest keyframe before the target timestamp.
+        // Solution: during decoding we keep track of the timestamps of the start of the GOP and only do the 
+        // seek if we are going to a new GOP.
+        // Here we poll the index for the keyframe of the GOP containing the target.
+        // Only works on files with an index.
         AVStream* stream = mFormatCtx->streams[mVideoStreamIndex];
         const AVIndexEntry* entry = avformat_index_get_entry_from_timestamp(stream, expectedTimestamp, AVSEEK_FLAG_BACKWARD);
         if (entry != nullptr)
@@ -2901,7 +2904,7 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
             //log->DebugFormat("Found index entry for timestamp [{0}]. Key at [{1}].", expectedTimestamp, entry->timestamp);
                 
             // Only seek if the keyframe is ahead of the current GOP start. 
-            // Otherwise we would just seeking back in time.
+            // Otherwise we would just be seeking backwards.
             int64_t seekTimestamp = entry->timestamp;
             if (seekTimestamp > mCurrentGopTimestamp)
             {
@@ -2921,11 +2924,13 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
                     mCurrentGopTimestamp = AV_NOPTS_VALUE;
                 }
             }
+
+            // TODO: Should we further catch up by advance here if we are still behind?
         }
     }
     else
     {
-        // Figure out the decoding policy we should apply.
+        // Figure out the frame skipping policy we should apply.
         // Different thresholds for entering and leaving the levels to avoid oscillations.
 
         // Behind mode: drop the scale/convert work for frames that aren't presented.
@@ -2938,58 +2943,58 @@ void VideoReaderFFMpeg::UpdateDecodePolicy()
         double thresholdEnterFarBehind = 0.400;
         double thresholdLeaveFarBehind = 0.200;
                 
-        DecodingPolicy oldPolicy = mDecodingPolicy;
-        switch (mDecodingPolicy)
+        FrameSkippingPolicy oldPolicy = mFrameSkippingPolicy;
+        switch (mFrameSkippingPolicy)
         {
-        case DecodingPolicy::Normal:
+        case FrameSkippingPolicy::Normal:
             if (lag > thresholdEnterFarBehind)
             {
-                ExecuteDecodingPolicy(DecodingPolicy::FarBehind);
+                ApplyFrameSkippingPolicy(FrameSkippingPolicy::FarBehind);
             }
             else if (lag > thresholdEnterBehind)
             {
-                ExecuteDecodingPolicy(DecodingPolicy::Behind);
+                ApplyFrameSkippingPolicy(FrameSkippingPolicy::Behind);
             }
             break;
-        case DecodingPolicy::Behind:
+        case FrameSkippingPolicy::Behind:
             if (lag > thresholdEnterFarBehind)
             {
-                ExecuteDecodingPolicy(DecodingPolicy::FarBehind);
+                ApplyFrameSkippingPolicy(FrameSkippingPolicy::FarBehind);
             }
             else if (lag < thresholdLeaveBehind)
             {
-                ExecuteDecodingPolicy(DecodingPolicy::Normal);
+                ApplyFrameSkippingPolicy(FrameSkippingPolicy::Normal);
             }
             break;
-        case DecodingPolicy::FarBehind:
+        case FrameSkippingPolicy::FarBehind:
             if (lag < thresholdLeaveFarBehind)
             {
-                ExecuteDecodingPolicy(DecodingPolicy::Behind);
+                ApplyFrameSkippingPolicy(FrameSkippingPolicy::Behind);
             }
             break;
         }
     }
 }
 
-void VideoReaderFFMpeg::ExecuteDecodingPolicy(DecodingPolicy policy)
+void VideoReaderFFMpeg::ApplyFrameSkippingPolicy(FrameSkippingPolicy policy)
 {
-    if (policy == mDecodingPolicy)
+    if (policy == mFrameSkippingPolicy)
         return;
 
-    log->DebugFormat("Updating decoding policy: {0} -> {1}.", mDecodingPolicy, policy);
-    mDecodingPolicy = policy;
+    log->DebugFormat("Updating decoding policy: {0} -> {1}.", mFrameSkippingPolicy, policy);
+    mFrameSkippingPolicy = policy;
 
     // Note: we can change mVideoCodecCtx->skip_frame at any time 
     // no need to close and re-open the codec.
 
     switch (policy)
     {
-    case DecodingPolicy::Normal:
-    case DecodingPolicy::Behind:
+    case FrameSkippingPolicy::Normal:
+    case FrameSkippingPolicy::Behind:
         mVideoCodecCtx->skip_frame = AVDISCARD_DEFAULT;
         break;
 
-    case DecodingPolicy::FarBehind:
+    case FrameSkippingPolicy::FarBehind:
         mVideoCodecCtx->skip_frame = AVDISCARD_NONREF;
 
         if (mVideoCodecCtx->has_b_frames == 0)
@@ -3018,7 +3023,7 @@ void VideoReaderFFMpeg::InitDecodingJob(PlayerState^ state)
     mPreBuffer->ResetInterruptAdd();
 
     // Reset playback decoding policy.
-    ExecuteDecodingPolicy(DecodingPolicy::Normal);
+    ApplyFrameSkippingPolicy(FrameSkippingPolicy::Normal);
 
     if (state->SynchronousFulfill)
     {
@@ -3114,7 +3119,6 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     plan->TargetAcquiredInPlanning = false;
     plan->DecoderRelocation = DecoderRelocation::Seek;
     plan->ResubmitPending = false;
-    plan->PreRoll = true;
     
     log->DebugFormat("DecodingJobPlan: Target:[~{0}]. Acquired:{1}.", targetTimestamp, isAcquired);
     mPreBuffer->Print();

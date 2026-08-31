@@ -307,10 +307,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // and try to seek ahead to the next keyframe.
         static const double mSeekAheadLagThreshold = 1;
 
-        // The active decoding policy (for pre-buffering). 
-        // Determines if we should skip decoding or skip scaling/converting/storing 
-        // some frames in case we fall behind the player demands.
-        DecodingPolicy mDecodingPolicy = DecodingPolicy::Normal;
+        // The active frame-skipping policy (only for pre-buffering during playback). 
+        // Determines if we should skip scaling/converting/storing some frames or even 
+        // skip decoding them altogether, in case we fall behind the player demands.
+        FrameSkippingPolicy mFrameSkippingPolicy = FrameSkippingPolicy::Normal;
 
         bool mWasPrebufferingBeforeEnumeration;
         
@@ -508,15 +508,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         ReadResult ProcessJob(ThreadCanceler^ canceller);
 
-        /// Update the playback decode policy based on how behind we 
+        /// Update the playback frame skipping policy based on how behind we 
         /// are falling back compared to the player.
         /// Only used during playback.
-        void UpdateDecodePolicy();
+        void UpdateFrameSkippingPolicy();
 
         /// Change the ffmpeg codec context based on the passed policy. 
         /// This determines whether we will decode everything or skip certain frames.
         /// Only used during playback.
-        void ExecuteDecodingPolicy(DecodingPolicy policy);
+        void ApplyFrameSkippingPolicy(FrameSkippingPolicy policy);
 
         bool ShouldStoreFrame();
 
