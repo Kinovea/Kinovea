@@ -2976,7 +2976,11 @@ void VideoReaderFFMpeg::UpdateFrameSkippingPolicy()
             }
             break;
         case FrameSkippingPolicy::FarBehind:
-            if (lag < thresholdLeaveFarBehind)
+            if (lag < thresholdLeaveBehind)
+            {
+                ApplyFrameSkippingPolicy(FrameSkippingPolicy::Normal);
+            }
+            else if (lag < thresholdLeaveFarBehind)
             {
                 ApplyFrameSkippingPolicy(FrameSkippingPolicy::Behind);
             }
