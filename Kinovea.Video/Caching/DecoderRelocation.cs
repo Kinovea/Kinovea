@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Kinovea.Video
 {
     /// <summary>
-    /// How we re-initialize the decoder for the next job.
+    /// How we relocate the decoder for the next job.
     /// </summary>
-    public enum DecoderInitAction
+    public enum DecoderRelocation
     {
         /// <summary>
         /// The decoder is already at the best spot to work on the new job.

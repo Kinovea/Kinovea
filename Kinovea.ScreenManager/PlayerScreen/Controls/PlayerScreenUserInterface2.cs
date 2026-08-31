@@ -3148,22 +3148,27 @@ namespace Kinovea.ScreenManager
             // corresponding to the relative jump required.
             // TODO: caller should detect if the target is past the end point and wrap around.
             // Caller should publish a player state so the reader can react to the request.
-            
+
             // For now pretend everything is an arbitrary frame move.
+
 
             // Temporary code to translate between old and new API.
             if (targetTimestamp < 0)
             {
-                playerState = new PlayerState(
-                    playerState.Id + 1,
-                    PlayerStateMode.Timestamp,
-                    (long)Math.Round(currentTimestamp + framesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
-            }
-            else
-            {
-                playerState = new PlayerState(playerState.Id + 1, PlayerStateMode.Timestamp, targetTimestamp);
+                targetTimestamp = (long)Math.Round(currentTimestamp + framesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
 
+            //if (targetTimestamp == playerState.ReferenceTimestamp && playerState.Id > 0)
+            //{
+            //    return;
+            //}
+
+            playerState = new PlayerState(
+                playerState.Id + 1,
+                PlayerStateMode.Timestamp,
+                targetTimestamp
+                );
+            
             bool refreshInPlace = targetTimestamp == currentTimestamp;
 
 
@@ -3219,6 +3224,12 @@ namespace Kinovea.ScreenManager
 
         private void AfterFrameAcquired(PlayerState state)
         {
+            // Bail out if we have sent another request in the meantime.
+            if (state.Id < playerState.Id)
+            {
+                return;
+            }
+
             // Bail out if there is no frame.
             if (m_FrameServer.VideoReader.Current == null)
             {
@@ -3227,12 +3238,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            // This event may not be for the last request we posted.
-            if (state.Id < playerState.Id)
-            {
-                // TODO: should we return here?
-            }
-
+            
             // Get the resolved timestamp from the file.
             // It may differ from the one in the request.
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;

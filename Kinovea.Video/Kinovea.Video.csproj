@@ -180,7 +180,7 @@
     <Compile Include="Caching\CacheLoadMode.cs" />
     <Compile Include="Caching\CachePreparationResult.cs" />
     <Compile Include="Caching\CacheTimestampRelation.cs" />
-    <Compile Include="Caching\DecoderInitAction.cs" />
+    <Compile Include="Caching\DecoderRelocation.cs" />
     <Compile Include="Caching\DecodingJobPlan.cs" />
     <Compile Include="Caching\DecodingPolicy.cs" />
     <Compile Include="Caching\Cache.cs" />

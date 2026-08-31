@@ -201,8 +201,8 @@ namespace Kinovea.Video
                 }
 
                 frames.Add(frame.Timestamp, frame);
-                log.DebugFormat("Added frame [{0}] (prev: [{1}]). Cached: {2}.", 
-                    frame.Timestamp, frame.PreviousTimestamp, frames.Count);
+                log.DebugFormat("Added frame [{0}]. Cached: {1}.", 
+                    frame.Timestamp, frames.Count);
 
                 Monitor.PulseAll(sync);
             }
@@ -286,6 +286,7 @@ namespace Kinovea.Video
                     bool targetAcquired = false;
                     long acquiredTimestamp = -1;
                     VideoFrame closest = FindClosest(frames, target);
+                    int index = frames.IndexOfKey(closest.Timestamp);
                     if (Math.Abs(closest.Timestamp - target) <= tolerance)
                     {
                         current = closest;
@@ -293,6 +294,10 @@ namespace Kinovea.Video
                         acquiredTimestamp = closest.Timestamp;
                         log.DebugFormat("PrepareForNewJob: target acquired [~{0}] -> [{1}]", target, acquiredTimestamp);
                     }
+
+                    // Do the normal eviction of old frames outside the retention window.
+                    // (Whether the target was acquired or not).
+                    removed = EvictBehind(index, framesToKeepBehind);
 
                     result = new CachePreparationResult(targetAcquired, acquiredTimestamp);
                 }
@@ -391,55 +396,28 @@ namespace Kinovea.Video
             }
         }
 
-        
-        /// <summary>
-        /// Purge everything except one retention window worth of frames 
-        /// at the end plus the current frame.
-        /// </summary>
-        public void Purge2()
-        {
-            List<VideoFrame> removed = new List<VideoFrame>();
-            lock (sync)
-            {
-                if (frames.Count < 2)
-                    return;
-
-                int keepFrom = Math.Max(0, frames.Count - framesToKeepBehind);
-                for (int i = keepFrom - 1; i >= 0; i--)
-                {
-                    VideoFrame frame = frames.Values[i];
-                    if (ReferenceEquals(frame, current))
-                        continue;
-
-                    frames.RemoveAt(i);
-                    removed.Add(frame);
-                }
-
-                log.DebugFormat("Evicted {0} frames. Cached: {1}.", removed.Count, frames.Count);
-            }
-
-            foreach (VideoFrame frame in removed)
-            {
-                DisposeFrame(frame);
-            }
-        }
-
-
-
         public void Print()
         {
             // Print the entire cache.
             lock (sync)
             {
-                StringBuilder sb= new StringBuilder();
-                sb.AppendFormat("Cache ({0}) @[{1}]: ", 
-                    frames.Count,
-                    current == null ? "null" : current.Timestamp.ToString());
+                log.DebugFormat("Cache. Current at index [{0}] = [{1}]. Total: {2}.",
+                    current == null ? "-" : frames.IndexOfValue(current).ToString(),
+                    current == null ? "-" : current.Timestamp.ToString(),
+                    frames.Count);
 
+                StringBuilder sb= new StringBuilder();
                 for (int i = 0; i < frames.Count; i++)
                 {
                     VideoFrame frame = frames.Values[i];
-                    sb.AppendFormat("[{0}] ", frame.Timestamp);
+                    if (ReferenceEquals(frame, current))
+                    {
+                        sb.AppendFormat("[>>> {0} <<<] ", frame.Timestamp);
+                    }
+                    else
+                    {
+                        sb.AppendFormat("[{0}] ", frame.Timestamp);
+                    }
                 }
 
                 log.Debug(sb.ToString());

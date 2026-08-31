@@ -375,7 +375,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         /// Seek and decode until the target is reached.
         /// Store the reached frame to the container.
-        ReadResult ReadFrameSeek(int64_t targetTimestamp);
+        ReadResult ReadFrameSeek(int64_t targetTimestamp, bool doSeek);
         
         /// Seek to or before the target. 
         /// Does not decode any frames.
