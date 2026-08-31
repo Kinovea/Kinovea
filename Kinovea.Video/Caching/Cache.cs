@@ -142,6 +142,11 @@ namespace Kinovea.Video
             return CacheAddResult.Added;
         }
 
+        public CacheAddResult ForceAdd(VideoFrame frame)
+        {
+            return Add(frame);
+        }
+
         public void Clear()
         {
             foreach(VideoFrame frame in frames.Values)

@@ -28,6 +28,9 @@ namespace Kinovea.Video
         
         CacheAddResult Add(VideoFrame frame);
 
+        CacheAddResult ForceAdd(VideoFrame frame);
+
+
         /// <summary>
         /// Clear all frames even the one pointed by current.
         /// </summary>

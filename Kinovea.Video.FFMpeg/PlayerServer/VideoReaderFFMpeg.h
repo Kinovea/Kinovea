@@ -406,7 +406,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Stores the VideoFrame in the active frame container.
         /// 
         /// Does not release the passed AVFrame.
-        ReadResult ConvertAndStoreFrame(AVFrame* decodedFrame, bool forSummary);
+        ReadResult ConvertAndStoreFrame(AVFrame* decodedFrame, bool forSummary, bool force);
 
         /// Apply the rotation to the .NET bitmap.
         void ApplyRotation(Bitmap^ bmp, ImageRotation rotation);

@@ -71,6 +71,13 @@ namespace Kinovea.Video
             current = frame;
             return CacheAddResult.Added;
         }
+
+        public CacheAddResult ForceAdd(VideoFrame frame)
+        {
+            return Add(frame);
+        }
+
+
         public void Clear()
         {
             if (current == null)

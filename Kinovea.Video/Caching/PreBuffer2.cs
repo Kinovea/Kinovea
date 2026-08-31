@@ -68,6 +68,12 @@ namespace Kinovea.Video
             set { farAheadThreshold = value; }
         }
 
+        public int RetentionWindow
+        {
+            get { return framesToKeepBehind; }
+            set { framesToKeepBehind = value; }
+        }
+
         #endregion
 
         #region Members
@@ -212,11 +218,12 @@ namespace Kinovea.Video
 
 
         /// <summary>
-        /// Special add that does not block and evicts the oldest frame if full.
+        /// Special add that does not block. 
+        /// Evicts the oldest frame if full.
         /// May still return Duplicate if the frame is already cached.
         /// Never returns Interrupted.
         /// </summary>
-        public CacheAddResult ForcedAdd(VideoFrame frame)
+        public CacheAddResult ForceAdd(VideoFrame frame)
         {
             lock (sync)
             {
