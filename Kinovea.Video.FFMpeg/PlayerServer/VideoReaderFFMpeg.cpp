@@ -635,14 +635,9 @@ void VideoReaderFFMpeg::StartPrebufferingIfNotCaching()
 
 bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
 {
-    //-------------------------
-    // Refactoring in progress.
-    //-------------------------
-
     //--------------------------------------------------------------
     // There is no queue or "pending" requests here, the caller is responsible
     // for scheduling and not submitting obsolete requests.
-    // 
     // Any request received here is considered high priority and will interrupt any ongoing work.
     //
     // A decoding job lifecycle has two big phases:
@@ -666,7 +661,6 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     log->DebugFormat("Received and comitted player request {0}", mRequestedPlayerState);
 
     bool acquired = false;
-    bool fulfilled = false;
 
     if (mCachingMode == VideoDecodingMode::NotInitialized)
     {
@@ -729,45 +723,58 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     // Prebuffering mode.
     //-------------------
 
+    // Whether the caller requires synchronous fulfillment or not, we always close 
+    // the cache for business and try to acquire the target frame.
+
+    mPreBuffer->InterruptAdd();
+
+    TryAcquireResult^ result = mPreBuffer->TryAcquire(mRequestedPlayerState);
+    Volatile::Write(mTryAcquireResult, result);
+    
+    acquired = result->TargetAcquired;
+    bool fulfilled = false;
+
+    // For async fulfillment our job is done.
+    // We leave it to the decoder thread to work on the request in its own time.
+    // When the job is marked ready it will come up with its own plan to relocate the decoder,
+    // purge the cache and acquire the target frame.
+    // Note: if `acquired` is false at this point, then we MUST raise either OnFrameAcquired() or 
+    // OnRequestFailed() at the end of InitDecodingJob to finish the fulfillment part 
+    // of the request lifecycle and signal the player that it can send new requests.
+
     if (mRequestedPlayerState->SynchronousFulfill)
     {
         // The relocation of the decoder must happen here before returning.
-
-        // Close the cache for business.
-        mPreBuffer->InterruptAdd();
-
-        TryAcquireResult^ result = mPreBuffer->TryAcquire(mRequestedPlayerState);
-        Volatile::Write(mTryAcquireResult, result);
-        acquired = result->TargetAcquired;
-
         log->DebugFormat("Cache contiguity: {0}.", mPreBuffer->IsContiguous());
 
-        if (acquired)
-        {
-            // No need to stop/restart the prebuffering thread, 
-            // but we will still need to handle a possible pending frame.
-        }
-        else
+        // If already aquired we don't need to stop/restart the buffering thread,
+        // but we will still need to handle a possible pending frame.
+
+        if (!acquired)
         {
             // Relocate synchronously.
-            // Note that we don't try to optimize for the "near ahead" case.
-            // We just stop the thread and do a seek.
+            // Note that we don't try to optimize for the "near ahead" case,
+            // we always stop the thread and do a seek.
+            // 
+            // An example of this request subtype is when we are about to start playback,
+            // we need to be sure the decoder is relocated before the actual playback starts.
+            
             StopPreBufferingThread();
             mPreBuffer->Shutdown();
             DisposePending();
 
-            // Make sure the relocation (performed before the thread starts) already knows 
-            // about the new request.
-            // When the thread itself starts it initializes itself with job id -1 so it will find it again.
+            // Make sure the relocation, which is performed on the UI thread before the decoding thread 
+            // restarts, already knows about the new request.
+            // When the decoding thread itself starts it initializes itself with job id -1 
+            // so it will find it again in the first call to "HasJobChanged" and will wait until
+            // we mark it as ready below.
             mWorkingPlayerState = mRequestedPlayerState;
 
-            // Handling of next/prev modes.
+            // Handling of next/prev request subtype.
             // We may not have the neighbor frame so we don't know the exact timestamps.
-            // The only use case for this currently is for tracking while playback where 
-            // we need guaranteed next frames with no skips.
-            // (enumeration during export goes through MoveNext() directly since it can't be in 
-            // prebuffering mode in the first place).
-            // For now estimate the target to be one frame ahead.
+            // There are no use-cases for this right now.
+            // Playback + tracking and enumeration during export both use MoveNext().
+            // For now we estimate the target to be one frame away for simplicity.
             // ReadFrameSeek decodes until it is past that and then calls AcquireClosest().
             int64_t target = mRequestedPlayerState->ReferenceTimestamp;
             if (mRequestedPlayerState->Mode == PlayerStateMode::StepForward)
@@ -787,33 +794,6 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
 
         acquired = true;
         fulfilled = true;
-    }
-    else
-    {
-        // Asynchronous mode.
-        // Try to acquire the target from the cache but don't block if not found.
-        // Leave it to the decoder thread to fulfill the request in its own time.
-
-        log->DebugFormat("Preparing prebuffer for player request {0} Tolerance: [{1:0.000}]",
-            mRequestedPlayerState, mPreBuffer->Tolerance);
-        mPreBuffer->Print();
-
-        // Close the cache for business.
-        // If the decoding thread was blocked in Add() it will keep the frame as pending and
-        // wait for the wake up to try to add it again if it's still relevant.
-        mPreBuffer->InterruptAdd();
-
-        // Try to find the target and evict old frames.
-        TryAcquireResult^ result = mPreBuffer->TryAcquire(mRequestedPlayerState);
-        Volatile::Write(mTryAcquireResult, result);
-        acquired = result->TargetAcquired;
-
-        // The request is not fulfilled yet, the decoder may need to relocate.
-        // This will happen in the "init" phase of the new job.
-
-        // Note: if `acquired` is false here, then we MUST raise either OnFrameAcquired() or 
-        // OnRequestFailed() at the end of InitDecodingJob to finish the fulfillment part 
-        // of the request lifecycle and signal the player that it can send new requests.
     }
 
     // The new job is now ready to be worked on.
