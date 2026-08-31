@@ -191,9 +191,26 @@ namespace Kinovea.Video
                     // moving backwards at full capacity.
                     if (frames.Count >= capacity)
                     {
-                        log.DebugFormat("Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
-                        Monitor.Wait(sync);
-                        continue;
+                        // Check for zombie frames.
+                        // This happens because when we purge the cache as part of a seek relocation
+                        // we keep the current frame pinned.
+                        // If we are doing a large backwards jump this frame ends up ahead of the rest
+                        // and never gets evicted by the normal EvictBehind in AcquireClosest.
+                        // Remove it now to make room for the add.
+                        VideoFrame last = frames.Values[frames.Count - 1];
+                        long delta = last.Timestamp - frame.Timestamp;
+                        if (delta > farAheadThreshold && !ReferenceEquals(last, current))
+                        {
+                            log.DebugFormat("Removing zombie frame at [{0}].", last.Timestamp);
+                            frames.RemoveAt(frames.Count - 1);
+                            DisposeFrame(last);
+                        }
+                        else
+                        {
+                            log.DebugFormat("Waiting to add [{0}]. Cached: {1}.", frame.Timestamp, frames.Count);
+                            Monitor.Wait(sync);
+                            continue;
+                        }
                     }
 
                     // Test duplicate.
