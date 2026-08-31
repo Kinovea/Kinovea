@@ -297,6 +297,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         // The seek-domain timestamp of the last keyframe. (packet->pts or packet->dts).
         int64_t mCurrentGopTimestamp = AV_NOPTS_VALUE;
 
+        // When relocating the decoder if we get close to the target by this amount
+        // start storing frames.
+        int64_t mPreRollTimestamps = AV_NOPTS_VALUE;
+
+
         // If the lag in seconds between the frame we are supposed to be presenting in the player 
         // and the last frame we decoded goes above this value, we declare decoding bankrupcy
         // and try to seek ahead to the next keyframe.
@@ -378,7 +383,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         /// Seek and decode until the target is reached.
         /// Store the reached frame to the container.
-        ReadResult ReadFrameSeek(int64_t targetTimestamp, bool doSeek);
+        ReadResult ReadFrameSeek(int64_t targetTimestamp, bool doSeek, bool preRoll);
         
         /// Seek to or before the target. 
         /// Does not decode any frames.

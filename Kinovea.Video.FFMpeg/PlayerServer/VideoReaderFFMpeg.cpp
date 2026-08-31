@@ -424,11 +424,12 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mVideoInfo.FrameIntervalMilliseconds = 1000.0 / mVideoInfo.FramesPerSeconds;
     mVideoInfo.AverageTimeStampsPerFrame = mVideoInfo.AverageTimeStampsPerSeconds / mVideoInfo.FramesPerSeconds;
 
-    // Initialize tolerance for caches.
+    // Initialize tolerance and thresholds.
     double tolerance = 0.5 * mVideoInfo.AverageTimeStampsPerFrame;
     mCache->Tolerance = tolerance;
     mPreBuffer->Tolerance = tolerance;
     mPreBuffer->FarAheadThreshold = 50.0 * mVideoInfo.AverageTimeStampsPerFrame;
+    mPreRollTimestamps = (mPreBuffer->RetentionWindow + 2) * mVideoInfo.AverageTimeStampsPerFrame;
 
 
     // Initial working zone representing the whole video.
@@ -854,7 +855,7 @@ bool VideoReaderFFMpeg::MoveOnDemand(int64_t target)
         // Synchronous read of the requested frame.
         // The ReadFrameSeek will call `store` on the single-frame frame container
         // which will set the `Current` property to the requested frame.
-        ReadResult res = ReadFrameSeek(target, true);
+        ReadResult res = ReadFrameSeek(target, true, false);
         return (res == ReadResult::Success);
     }
 }
@@ -1470,7 +1471,7 @@ bool VideoReaderFFMpeg::ReadManyToCache(BackgroundWorker^ bgWorker, VideoSection
     // Seek to first frame.
     int read = 0;
     bool success = true;
-    ReadResult res = ReadFrameSeek(section.Start, true);
+    ReadResult res = ReadFrameSeek(section.Start, true, false);
     success = (res == ReadResult::Success);
     read++;
 
@@ -1644,7 +1645,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameNext()
 }
 
 
-ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek)
+ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek, bool preRoll)
 {
     //-----------------------------------
     // This runs in either the main thread or the prebuffering thread.
@@ -1689,6 +1690,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
 
     // Decode frames until we get to the target or EOF.
     AVFrame* frame = av_frame_alloc();
+    bool inPreRollWindow = false;
     while (true)
     {
         result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
@@ -1723,15 +1725,44 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
                 targetTimestamp, mDecodedTimestamp, framesDecoded);
         }
 
-        // TODO: Bracketing.
-        if (mDecodedTimestamp >= targetTimestamp)
+        
+        if (preRoll)
         {
-            log->DebugFormat("Found seek target. [~{0}] -> [{1}]. Decoded {2} frames.", 
-                targetTimestamp, mDecodedTimestamp, framesDecoded);
+            // Check if we are arriving near the target.
+            if (!inPreRollWindow && targetTimestamp - mDecodedTimestamp <= mPreRollTimestamps)
+            {
+                inPreRollWindow = true;
+            }
 
-            result = ConvertAndStoreFrame(frame, false, false);
-            av_frame_free(&frame);
-            break;
+            if (inPreRollWindow)
+            {
+                result = ConvertAndStoreFrame(frame, false, true);
+
+                if (mDecodedTimestamp >= targetTimestamp)
+                {
+                    log->DebugFormat("Found seek target. [~{0}] -> [{1}]. Decoded {2} frames.",
+                        targetTimestamp, mDecodedTimestamp, framesDecoded);
+
+                    av_frame_free(&frame);
+                    break;
+                }
+                else
+                {
+                    log->DebugFormat("Stored preroll frame at [{0}].", mDecodedTimestamp);
+                }
+            }
+        }
+        else
+        {
+            if (mDecodedTimestamp >= targetTimestamp)
+            {
+                log->DebugFormat("Found seek target. [~{0}] -> [{1}]. Decoded {2} frames.", 
+                    targetTimestamp, mDecodedTimestamp, framesDecoded);
+
+                result = ConvertAndStoreFrame(frame, false, false);
+                av_frame_free(&frame);
+                break;
+            }
         }
 
         // Keep decoding.
@@ -2618,7 +2649,7 @@ void VideoReaderFFMpeg::StartPreBufferingThread(int64_t startTimestamp)
     // Read the first frame outside the decoding thread so the UI may request it immediately.
     if (startTimestamp >= 0)
     {
-        ReadResult res = ReadFrameSeek(startTimestamp, true);
+        ReadResult res = ReadFrameSeek(startTimestamp, true, true);
         if (res == ReadResult::Success)
         {
             log->DebugFormat("Read first frame synchronously. [{0}].", mCachedTimestamp);
@@ -3343,8 +3374,7 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
         DisposePending();
 
         // Seek and decode until the target.
-        // TODO: tell the decoder to start filling the cache as it approaches the target.
-        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, true);
+        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, true, true);
         if (res == ReadResult::Success)
         {
             mPreBuffer->AcquireClosest(plan->TargetTimestamp);
@@ -3373,7 +3403,7 @@ bool VideoReaderFFMpeg::ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPl
             DisposePending();
         }
 
-        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, false);
+        ReadResult res = ReadFrameSeek(plan->TargetTimestamp, false, true);
         if (res == ReadResult::Success)
         {
             mPreBuffer->AcquireClosest(plan->TargetTimestamp);
