@@ -107,8 +107,7 @@ namespace Kinovea.ScreenManager
 
         public void ToastMessage(string message, int duration)
         {
-            toaster.SetDuration(duration);
-            toaster.Show(message);
+            toaster.Show(message, duration);
         }
 
         public void UpdateRecordingIndicator(RecordingStatus status, float progress)

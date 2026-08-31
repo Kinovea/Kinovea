@@ -64,6 +64,14 @@ namespace Kinovea.Root
       this.chkSyncByMotion = new System.Windows.Forms.CheckBox();
       this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
       this.tabJumping = new System.Windows.Forms.TabPage();
+      this.grpShortcut = new System.Windows.Forms.GroupBox();
+      this.btnDefault = new System.Windows.Forms.Button();
+      this.lvCommands = new System.Windows.Forms.ListView();
+      this.colCommand = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.colKey = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.tbHotkey = new Kinovea.Services.TextboxHotkey();
+      this.btnClear = new System.Windows.Forms.Button();
+      this.btnApply = new System.Windows.Forms.Button();
       this.grpJumping = new System.Windows.Forms.GroupBox();
       this.nudJumpLarge = new System.Windows.Forms.NumericUpDown();
       this.lblJumpLarge = new System.Windows.Forms.Label();
@@ -80,27 +88,19 @@ namespace Kinovea.Root
       this.cmbImageFormats = new System.Windows.Forms.ComboBox();
       this.lblAspectRatio = new System.Windows.Forms.Label();
       this.chkDeinterlace = new System.Windows.Forms.CheckBox();
-      this.lvCommands = new System.Windows.Forms.ListView();
-      this.colCommand = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-      this.colKey = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-      this.btnDefault = new System.Windows.Forms.Button();
-      this.tbHotkey = new Kinovea.Services.TextboxHotkey();
-      this.btnClear = new System.Windows.Forms.Button();
-      this.btnApply = new System.Windows.Forms.Button();
-      this.grpShortcut = new System.Windows.Forms.GroupBox();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
       this.tabPlayer.SuspendLayout();
       this.tabJumping.SuspendLayout();
+      this.grpShortcut.SuspendLayout();
       this.grpJumping.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudJumpLarge)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudJumpSmall)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudSnapLarge)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudSnapSmall)).BeginInit();
       this.tabImage.SuspendLayout();
-      this.grpShortcut.SuspendLayout();
       this.SuspendLayout();
       // 
       // trkMemoryBuffer
@@ -291,6 +291,85 @@ namespace Kinovea.Root
       this.tabJumping.Text = "Jumping";
       this.tabJumping.UseVisualStyleBackColor = true;
       // 
+      // grpShortcut
+      // 
+      this.grpShortcut.Controls.Add(this.btnDefault);
+      this.grpShortcut.Controls.Add(this.lvCommands);
+      this.grpShortcut.Controls.Add(this.tbHotkey);
+      this.grpShortcut.Controls.Add(this.btnClear);
+      this.grpShortcut.Controls.Add(this.btnApply);
+      this.grpShortcut.Location = new System.Drawing.Point(3, 169);
+      this.grpShortcut.Name = "grpShortcut";
+      this.grpShortcut.Size = new System.Drawing.Size(476, 124);
+      this.grpShortcut.TabIndex = 67;
+      this.grpShortcut.TabStop = false;
+      this.grpShortcut.Text = "Keyboard shortcuts";
+      // 
+      // btnDefault
+      // 
+      this.btnDefault.Location = new System.Drawing.Point(393, 95);
+      this.btnDefault.Name = "btnDefault";
+      this.btnDefault.Size = new System.Drawing.Size(75, 23);
+      this.btnDefault.TabIndex = 71;
+      this.btnDefault.Text = "Default";
+      this.btnDefault.UseVisualStyleBackColor = true;
+      this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
+      // 
+      // lvCommands
+      // 
+      this.lvCommands.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colCommand,
+            this.colKey});
+      this.lvCommands.FullRowSelect = true;
+      this.lvCommands.GridLines = true;
+      this.lvCommands.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.lvCommands.HideSelection = false;
+      this.lvCommands.Location = new System.Drawing.Point(6, 16);
+      this.lvCommands.Name = "lvCommands";
+      this.lvCommands.Size = new System.Drawing.Size(461, 75);
+      this.lvCommands.TabIndex = 67;
+      this.lvCommands.UseCompatibleStateImageBehavior = false;
+      this.lvCommands.View = System.Windows.Forms.View.Details;
+      this.lvCommands.SelectedIndexChanged += new System.EventHandler(this.lvCommands_SelectedIndexChanged);
+      // 
+      // colCommand
+      // 
+      this.colCommand.Text = "";
+      this.colCommand.Width = 160;
+      // 
+      // colKey
+      // 
+      this.colKey.Text = "";
+      this.colKey.Width = 129;
+      // 
+      // tbHotkey
+      // 
+      this.tbHotkey.Location = new System.Drawing.Point(5, 97);
+      this.tbHotkey.Name = "tbHotkey";
+      this.tbHotkey.Size = new System.Drawing.Size(220, 20);
+      this.tbHotkey.TabIndex = 70;
+      this.tbHotkey.Text = "None";
+      // 
+      // btnClear
+      // 
+      this.btnClear.Location = new System.Drawing.Point(312, 95);
+      this.btnClear.Name = "btnClear";
+      this.btnClear.Size = new System.Drawing.Size(75, 23);
+      this.btnClear.TabIndex = 69;
+      this.btnClear.Text = "Clear";
+      this.btnClear.UseVisualStyleBackColor = true;
+      this.btnClear.Click += new System.EventHandler(this.btnRemove_Click);
+      // 
+      // btnApply
+      // 
+      this.btnApply.Location = new System.Drawing.Point(231, 95);
+      this.btnApply.Name = "btnApply";
+      this.btnApply.Size = new System.Drawing.Size(75, 23);
+      this.btnApply.TabIndex = 68;
+      this.btnApply.Text = "Apply";
+      this.btnApply.UseVisualStyleBackColor = true;
+      this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
+      // 
       // grpJumping
       // 
       this.grpJumping.Controls.Add(this.nudJumpLarge);
@@ -312,7 +391,12 @@ namespace Kinovea.Root
       // 
       // nudJumpLarge
       // 
-      this.nudJumpLarge.DecimalPlaces = 3;
+      this.nudJumpLarge.DecimalPlaces = 1;
+      this.nudJumpLarge.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
       this.nudJumpLarge.Location = new System.Drawing.Point(338, 132);
       this.nudJumpLarge.Maximum = new decimal(new int[] {
             60,
@@ -323,7 +407,7 @@ namespace Kinovea.Root
             1,
             0,
             0,
-            196608});
+            65536});
       this.nudJumpLarge.Name = "nudJumpLarge";
       this.nudJumpLarge.Size = new System.Drawing.Size(55, 20);
       this.nudJumpLarge.TabIndex = 62;
@@ -345,7 +429,7 @@ namespace Kinovea.Root
       // 
       // nudJumpSmall
       // 
-      this.nudJumpSmall.DecimalPlaces = 3;
+      this.nudJumpSmall.DecimalPlaces = 1;
       this.nudJumpSmall.Increment = new decimal(new int[] {
             1,
             0,
@@ -361,7 +445,7 @@ namespace Kinovea.Root
             1,
             0,
             0,
-            196608});
+            65536});
       this.nudJumpSmall.Name = "nudJumpSmall";
       this.nudJumpSmall.Size = new System.Drawing.Size(55, 20);
       this.nudJumpSmall.TabIndex = 60;
@@ -520,85 +604,6 @@ namespace Kinovea.Root
       this.chkDeinterlace.UseVisualStyleBackColor = true;
       this.chkDeinterlace.CheckedChanged += new System.EventHandler(this.chkDeinterlace_CheckedChanged);
       // 
-      // lvCommands
-      // 
-      this.lvCommands.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colCommand,
-            this.colKey});
-      this.lvCommands.FullRowSelect = true;
-      this.lvCommands.GridLines = true;
-      this.lvCommands.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-      this.lvCommands.HideSelection = false;
-      this.lvCommands.Location = new System.Drawing.Point(6, 16);
-      this.lvCommands.Name = "lvCommands";
-      this.lvCommands.Size = new System.Drawing.Size(461, 75);
-      this.lvCommands.TabIndex = 67;
-      this.lvCommands.UseCompatibleStateImageBehavior = false;
-      this.lvCommands.View = System.Windows.Forms.View.Details;
-      this.lvCommands.SelectedIndexChanged += new System.EventHandler(this.lvCommands_SelectedIndexChanged);
-      // 
-      // colCommand
-      // 
-      this.colCommand.Text = "";
-      this.colCommand.Width = 160;
-      // 
-      // colKey
-      // 
-      this.colKey.Text = "";
-      this.colKey.Width = 129;
-      // 
-      // btnDefault
-      // 
-      this.btnDefault.Location = new System.Drawing.Point(393, 95);
-      this.btnDefault.Name = "btnDefault";
-      this.btnDefault.Size = new System.Drawing.Size(75, 23);
-      this.btnDefault.TabIndex = 71;
-      this.btnDefault.Text = "Default";
-      this.btnDefault.UseVisualStyleBackColor = true;
-      this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
-      // 
-      // tbHotkey
-      // 
-      this.tbHotkey.Location = new System.Drawing.Point(5, 97);
-      this.tbHotkey.Name = "tbHotkey";
-      this.tbHotkey.Size = new System.Drawing.Size(220, 20);
-      this.tbHotkey.TabIndex = 70;
-      this.tbHotkey.Text = "None";
-      // 
-      // btnClear
-      // 
-      this.btnClear.Location = new System.Drawing.Point(312, 95);
-      this.btnClear.Name = "btnClear";
-      this.btnClear.Size = new System.Drawing.Size(75, 23);
-      this.btnClear.TabIndex = 69;
-      this.btnClear.Text = "Clear";
-      this.btnClear.UseVisualStyleBackColor = true;
-      this.btnClear.Click += new System.EventHandler(this.btnRemove_Click);
-      // 
-      // btnApply
-      // 
-      this.btnApply.Location = new System.Drawing.Point(231, 95);
-      this.btnApply.Name = "btnApply";
-      this.btnApply.Size = new System.Drawing.Size(75, 23);
-      this.btnApply.TabIndex = 68;
-      this.btnApply.Text = "Apply";
-      this.btnApply.UseVisualStyleBackColor = true;
-      this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
-      // 
-      // grpShortcut
-      // 
-      this.grpShortcut.Controls.Add(this.btnDefault);
-      this.grpShortcut.Controls.Add(this.lvCommands);
-      this.grpShortcut.Controls.Add(this.tbHotkey);
-      this.grpShortcut.Controls.Add(this.btnClear);
-      this.grpShortcut.Controls.Add(this.btnApply);
-      this.grpShortcut.Location = new System.Drawing.Point(3, 169);
-      this.grpShortcut.Name = "grpShortcut";
-      this.grpShortcut.Size = new System.Drawing.Size(476, 124);
-      this.grpShortcut.TabIndex = 67;
-      this.grpShortcut.TabStop = false;
-      this.grpShortcut.Text = "Keyboard shortcuts";
-      // 
       // PreferencePanelPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -615,6 +620,8 @@ namespace Kinovea.Root
       this.tabMemory.PerformLayout();
       this.tabPlayer.ResumeLayout(false);
       this.tabJumping.ResumeLayout(false);
+      this.grpShortcut.ResumeLayout(false);
+      this.grpShortcut.PerformLayout();
       this.grpJumping.ResumeLayout(false);
       this.grpJumping.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudJumpLarge)).EndInit();
@@ -623,8 +630,6 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudSnapSmall)).EndInit();
       this.tabImage.ResumeLayout(false);
       this.tabImage.PerformLayout();
-      this.grpShortcut.ResumeLayout(false);
-      this.grpShortcut.PerformLayout();
       this.ResumeLayout(false);
 
         }

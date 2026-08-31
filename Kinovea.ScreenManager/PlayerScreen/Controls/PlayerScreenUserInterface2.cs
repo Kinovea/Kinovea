@@ -1055,8 +1055,7 @@ namespace Kinovea.ScreenManager
             btnExitFilter.Visible = true;
 
             string name = VideoFilterFactory.GetFriendlyName(m_FrameServer.Metadata.ActiveVideoFilter.Type);
-            m_MessageToaster.SetDuration(750);
-            m_MessageToaster.Show(name);
+            m_MessageToaster.Show(name, 750);
         }
         public void DeactivateVideoFilter()
         {
@@ -1070,8 +1069,7 @@ namespace Kinovea.ScreenManager
             btnExitFilter.Visible = false;
             
             string name = VideoFilterFactory.GetFriendlyName(VideoFilterType.None);
-            m_MessageToaster.SetDuration(750);
-            m_MessageToaster.Show(name);
+            m_MessageToaster.Show(name, 750);
         }
 
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
@@ -2036,7 +2034,25 @@ namespace Kinovea.ScreenManager
             long snappedTimestamp = workingZone.Start + (long)Math.Round(snapIndex * step * range);
             
             log.DebugFormat("Snap to step. Current: [{0}]. Snapped: [~{1}].", currentTimestamp, snappedTimestamp);
-            
+
+            if (snapIndex < steps)
+            {
+                string message = "";
+                HorizontalAlignment alignment = HorizontalAlignment.Center;
+                if (forward)
+                {
+                    message = string.Format("{0:0}/{1}", snapIndex + 1, steps);
+                    alignment = HorizontalAlignment.Right;
+                }
+                else
+                {
+                    message = string.Format("{0:0}/{1}", snapIndex + 1, steps);
+                    alignment = HorizontalAlignment.Left;
+                }
+
+                m_MessageToaster.Show(message, 750, alignment);
+            }
+
             return snappedTimestamp;
         }
 
@@ -2049,9 +2065,23 @@ namespace Kinovea.ScreenManager
 
             log.DebugFormat("Jump by {0} ms. Current: [{1}]. New: [~{2}].", delta, currentTimestamp, newTimestamp);
 
+            string message = "";
+            HorizontalAlignment alignment = HorizontalAlignment.Center;
+            if (forward)
+            {
+                message = string.Format("+{0:0.###}", jump);
+                alignment = HorizontalAlignment.Right;
+            }
+            else
+            {
+                message = string.Format("-{0:0.###}", jump);
+                alignment = HorizontalAlignment.Left;
+            }
+
+            m_MessageToaster.Show(message, 750, alignment);
+
             return newTimestamp;   
         }
-
 
         /// <summary>
         /// Signal this screen as the active one, stop playback and raise pause event.
@@ -6068,13 +6098,11 @@ namespace Kinovea.ScreenManager
         private void ToastZoom()
         {
             string message = string.Format("Zoom:{0}", zoomHelper.GetLabel());
-            m_MessageToaster.SetDuration(750);
-            m_MessageToaster.Show(message);
+            m_MessageToaster.Show(message, 750);
         }
         public void ToastMessage(string message, int duration)
         {
-            m_MessageToaster.SetDuration(duration);
-            m_MessageToaster.Show(message);
+            m_MessageToaster.Show(message, duration);
         }
         #endregion
 

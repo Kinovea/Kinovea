@@ -53,6 +53,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private string message;
         private Timer timer = new Timer();
+        private HorizontalAlignment alignment = HorizontalAlignment.Center;
         private Font font;
         private bool enabled;
         private Control canvasHolder;
@@ -74,13 +75,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
-        public void SetDuration(int duration)
+        public void Show(string message, int duration, HorizontalAlignment alignment = HorizontalAlignment.Center)
         {
             timer.Interval = duration;
-        }
-        public void Show(string message)
-        {
             this.message = message;
+            this.alignment = alignment;
             enabled = true;
             StartStopTimer();
         }
@@ -91,7 +90,21 @@ namespace Kinovea.ScreenManager
             
             SizeF bgSize = canvas.MeasureString(message, font);
             bgSize = new SizeF(bgSize.Width, bgSize.Height + 3);
-            PointF location = new PointF((canvasHolder.Width - bgSize.Width)/2, (canvasHolder.Height - bgSize.Height)/2);
+
+            PointF location = PointF.Empty; 
+            if (alignment == HorizontalAlignment.Center)
+            {
+                location = new PointF((canvasHolder.Width - bgSize.Width) / 2, (canvasHolder.Height - bgSize.Height) / 2);
+            }
+            else if (alignment == HorizontalAlignment.Left)
+            {
+                location = new PointF(10, (canvasHolder.Height - bgSize.Height) / 2);
+            }
+            else if (alignment == HorizontalAlignment.Right)
+            {
+                location = new PointF(canvasHolder.Width - bgSize.Width - 10, (canvasHolder.Height - bgSize.Height) / 2);
+            }
+
             RectangleF bg = new RectangleF(location.X - 5, location.Y - 5, bgSize.Width + 10, bgSize.Height + 5);
             int radius = (int)(font.Size / 2);
             RoundedRectangle.Draw(canvas, bg, (SolidBrush)backBrush, radius, false, false, null);
