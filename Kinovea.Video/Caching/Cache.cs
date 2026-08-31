@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Kinovea.Services;
 
 namespace Kinovea.Video
@@ -196,7 +197,7 @@ namespace Kinovea.Video
         {
             get 
             { 
-                return (IReadOnlyList<VideoFrame>)frames.Values;
+                return frames.Values.ToList().AsReadOnly();
             }
         }
         
