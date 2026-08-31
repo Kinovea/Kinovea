@@ -296,7 +296,6 @@ namespace Kinovea.ScreenManager
         private FrameServerPlayer m_FrameServer;
 
         // Player state
-        private int framesToDecode = 1;
         private bool isBusyRendering;
         private object lockBusyRendering = new object(); // Guard isBusyRendering between the playback thread and UI thread.
         private bool interactiveFrameTracker = true;
@@ -783,7 +782,6 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Metadata.Count > 0 && !m_bKeyframePanelCollapsedManual)
                 CollapseKeyframePanel(false);
 
-            framesToDecode = 1;
             PresentFrame(workingZone.Start);
 
             double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
@@ -975,11 +973,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void ForcePosition(long timestamp, bool synchronous)
         {
-            framesToDecode = 1;
             StopPlaying(false);
 
             timestamp = Math.Min(timestamp, workingZone.End);
-
             PresentFrame(timestamp, synchronous);
         }
 
@@ -1223,7 +1219,6 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void ResetInternalData()
         {
-            framesToDecode = 1;
             workingZoneInitializedFromKVA = false;
 
             isCurrentlyPlaying = false;
@@ -1991,7 +1986,6 @@ namespace Kinovea.ScreenManager
 
             bool wasPlaying = isCurrentlyPlaying;
             BeforeManualMove();
-            framesToDecode = 1;
 
             double range = Math.Round(workingZone.End - workingZone.Start + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             double current = (currentTimestamp - workingZone.Start) / range;
@@ -2180,9 +2174,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            BeforeManualMove();
-         
-            framesToDecode = 1;
+            BeforeManualMove();         
             PresentFrame(trkSelection.SelPos);
         }
         private void btn_HandlersLock_Click(object sender, EventArgs e)
@@ -2254,31 +2246,6 @@ namespace Kinovea.ScreenManager
             trkFrame.SetBounds(workingZone, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             AfterWorkingZoneChanged();
-        }
-
-        private void UpdateFramePrimarySelection()
-        {
-            //--------------------------------------------------------------
-            // Update the visible image to reflect the new selection.
-            // Checks that the previous current frame is still within selection,
-            // jumps to closest end otherwise.
-            //--------------------------------------------------------------
-
-            //if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-            //{
-            //    if (m_FrameServer.VideoReader.Current == null)
-            //        PresentFrame(workingZone.Start);
-            //    else
-            //        PresentFrame(m_FrameServer.VideoReader.Current.Timestamp);
-            //}
-            //else if (currentTimestamp < workingZone.Start || currentTimestamp > workingZone.End)
-            //{
-            //    framesToDecode = 1;
-            //    if (currentTimestamp < workingZone.Start)
-            //        PresentFrame(workingZone.Start);
-            //    else
-            //        PresentFrame(workingZone.End);
-            //}
         }
 
         private void UpdateSelectionLabels()
@@ -2897,9 +2864,7 @@ namespace Kinovea.ScreenManager
             if (m_bSynched && currentTimestamp < oldTimestamp)
             {
                 StopPlaying();
-
                 PresentFrame(workingZone.Start);
-                framesToDecode = 1;
             }
         }
 
@@ -3174,7 +3139,6 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                //bool contiguous = state.ReferenceTimestamp < 0 && framesToDecode <= 1;
                 bool contiguous = state.Mode == PlayerStateMode.StepForward;
                 ComputeOrStopTracking(contiguous);
             }
@@ -4227,7 +4191,8 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            // User is not moving anything: time-grab, filter interaction, pan.
+            // User is not moving any object.
+            // May be: time-grab, filter interaction, pan.
             bool isAlt = (ModifierKeys & Keys.Alt) == Keys.Alt;
             bool isCtrl = (ModifierKeys & Keys.Control) == Keys.Control;
             if (isAlt)
@@ -4239,7 +4204,6 @@ namespace Kinovea.ScreenManager
                 long target = m_PointerTool.OriginTime - (long)(dt * m_FrameServer.Metadata.AverageTimeStampsPerFrame);
                 target = Math.Min(Math.Max(workingZone.Start, target), workingZone.End);
 
-                framesToDecode = 1;
                 PresentFrame(target);
             }
             else if (videoFilterIsActive && !isCtrl)
@@ -5001,7 +4965,6 @@ namespace Kinovea.ScreenManager
         {
             if (currentTimestamp != keyframe.Timestamp)
             {
-                framesToDecode = 1;
                 PresentFrame(keyframe.Timestamp);
             }
 
@@ -5169,7 +5132,6 @@ namespace Kinovea.ScreenManager
             long targetPosition = e.Time;
             trkSelection.SelPos = targetPosition;
             
-            framesToDecode = 1;
             PresentFrame(targetPosition);
         }
 
@@ -5641,7 +5603,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             long target = drawing.InfosFading.ReferenceTimestamp;
-            framesToDecode = 1;
             PresentFrame(target);
         }
         private void mnuDrawingTrackingToggle_Click(object sender, EventArgs e)
@@ -5877,7 +5838,6 @@ namespace Kinovea.ScreenManager
             }
 
             // move to corresponding timestamp.
-            framesToDecode = 1;
             PresentFrame(trackPoints[closestPointIndex].T);
         }
         #endregion
@@ -6183,7 +6143,6 @@ namespace Kinovea.ScreenManager
 
         private void AfterAnnotationsFileOp()
         {
-            framesToDecode = 1;
             PresentFrame(workingZone.Start);
         }
         #endregion
@@ -6233,7 +6192,6 @@ namespace Kinovea.ScreenManager
             // Restore prescaling if possible.
             UpdateAllowPreScaling(true);
 
-            framesToDecode = 1;
             PresentFrame(memoTimestamp);
         }
 
