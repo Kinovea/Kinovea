@@ -656,6 +656,9 @@
     <value>Schläge pro Minute ({0})</value>
   </data>
   <data name="prefPanelCapture_Armed" xml:space="preserve">
-    <value>Armiert</value>
+    <value>Aktiv</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Inaktiv</value>
   </data>
 </root>

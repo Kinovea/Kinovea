@@ -149,7 +149,7 @@
     <value>透视网格</value>
   </data>
   <data name="Error_SaveMovie_FileError" xml:space="preserve">
-    <value>写入文件出错.\n请确认目标目录有足够的权限及文件是否被打开.</value>
+    <value>无法写入文件。\n请确保您有权写入目标文件夹，且该文件当前未被使用。</value>
   </data>
   <data name="Error_SaveMovie_Title" xml:space="preserve">
     <value>保存视频文件出错. </value>
@@ -827,7 +827,7 @@
     <value>恢复默认</value>
   </data>
   <data name="Generic_Import" xml:space="preserve">
-    <value>导入</value>
+    <value>导入…</value>
   </data>
   <data name="Generic_File" xml:space="preserve">
     <value>文件</value>
@@ -1184,7 +1184,7 @@
     <value>日期</value>
   </data>
   <data name="filterName_Kinogram" xml:space="preserve">
-    <value />
+    <value>Kinogram</value>
   </data>
   <data name="mnuExport_Images_Keys" xml:space="preserve">
     <value>关键图像…</value>
@@ -1289,7 +1289,7 @@
     <value>完成</value>
   </data>
   <data name="mnuLensCalibration" xml:space="preserve">
-    <value>镜头校准…</value>
+    <value>镜头标定</value>
   </data>
   <data name="mnuOptions_Kinogram_ShowBorder" xml:space="preserve">
     <value>显示边框</value>
@@ -1331,7 +1331,7 @@
     <value>Post-recording（录制后）执行…</value>
   </data>
   <data name="mnuAction_Kinogram_Interpolate" xml:space="preserve">
-    <value>插补图块</value>
+    <value>插值图块</value>
   </data>
   <data name="mnuAction_Kinogram_ResetTile" xml:space="preserve">
     <value>重置这个文件</value>
@@ -1352,10 +1352,10 @@
     <value>标记节拍</value>
   </data>
   <data name="DrawingCounter_Half" xml:space="preserve">
-    <value>半拍</value>
+    <value>一半</value>
   </data>
   <data name="DrawingCounter_Double" xml:space="preserve">
-    <value>双拍</value>
+    <value>双倍</value>
   </data>
   <data name="DrawingCoordinateSystem_AlignToCalibrationObject" xml:space="preserve">
     <value>向标记点对齐</value>
@@ -1371,5 +1371,380 @@
   </data>
   <data name="DrawingText_Background" xml:space="preserve">
     <value>背景</value>
+  </data>
+  <data name="mnuOptions_Chrono_Locked" xml:space="preserve">
+    <value>已锁定</value>
+  </data>
+  <data name="DrawingCounter_DeleteBeat" xml:space="preserve">
+    <value>删除节拍</value>
+  </data>
+  <data name="DrawingCounter_DeleteAllBeats" xml:space="preserve">
+    <value>删除所有节拍</value>
+  </data>
+  <data name="DrawingCounter_ZeroBasedNumbering" xml:space="preserve">
+    <value>从零开始编号</value>
+  </data>
+  <data name="DrawingCircle_Filled" xml:space="preserve">
+    <value>填充</value>
+  </data>
+  <data name="PlayerScreenUserInterface_Background" xml:space="preserve">
+    <value>背景…</value>
+  </data>
+  <data name="FormCalibratePlane_FlipXAxis" xml:space="preserve">
+    <value>翻转 X 轴</value>
+  </data>
+  <data name="FormCalibratePlane_FlipYAxis" xml:space="preserve">
+    <value>翻转 Y 轴</value>
+  </data>
+  <data name="FormCalibratePlane_Rotate90" xml:space="preserve">
+    <value>旋转 90°</value>
+  </data>
+  <data name="FormCalibratePlane_DecimalPlaces" xml:space="preserve">
+    <value>小数位数</value>
+  </data>
+  <data name="FormCalibrationValidation_CalibrationValidation" xml:space="preserve">
+    <value>标定验证</value>
+  </data>
+  <data name="FormCalibrationValidation_Camera" xml:space="preserve">
+    <value>相机</value>
+  </data>
+  <data name="FormCalibrationValidation_Found" xml:space="preserve">
+    <value>已找到</value>
+  </data>
+  <data name="FormCalibrationValidation_Missing" xml:space="preserve">
+    <value>缺失</value>
+  </data>
+  <data name="FormCalibrationValidation_LensCalibration" xml:space="preserve">
+    <value>镜头标定：{0}</value>
+  </data>
+  <data name="FormCalibrationValidation_PlaneCalibration" xml:space="preserve">
+    <value>平面标定：{0}</value>
+  </data>
+  <data name="FormCalibrationValidation_ControlPoints" xml:space="preserve">
+    <value>控制点</value>
+  </data>
+  <data name="FormCalibrationValidation_ValidationMode" xml:space="preserve">
+    <value>验证模式</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix3D" xml:space="preserve">
+    <value>更改所有轴并验证标记在图像中的位置</value>
+  </data>
+  <data name="FormCalibrationValidation_Fix1D" xml:space="preserve">
+    <value>更改一个轴并验证另外两个轴</value>
+  </data>
+  <data name="FormCalibrationValidation_Compute3D" xml:space="preserve">
+    <value>根据两个视图计算的三维位置</value>
+  </data>
+  <data name="FormCalibrationValidation_CameraPositionXYZ" xml:space="preserve">
+    <value>相机位置（{0}）：X：{1}，Y：{2}，Z：{3}</value>
+  </data>
+  <data name="FormCalibrationValidation_DistanceToOrigin" xml:space="preserve">
+    <value>到原点的距离（{0}）：{1}</value>
+  </data>
+  <data name="FormTimeSections_Start" xml:space="preserve">
+    <value>开始</value>
+  </data>
+  <data name="FormTimeSections_End" xml:space="preserve">
+    <value>结束</value>
+  </data>
+  <data name="FormTimeSections_Duration" xml:space="preserve">
+    <value>时长</value>
+  </data>
+  <data name="FormTimeSections_Cumulative" xml:space="preserve">
+    <value>累计</value>
+  </data>
+  <data name="FormTimeSections_Tag" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_LensCalibrationMode" xml:space="preserve">
+    <value>镜头标定模式</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_ManualEstimation" xml:space="preserve">
+    <value>手动估算…</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_None" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="ScreenManagerKernel_LensCalibration_CalibrationValidation" xml:space="preserve">
+    <value>标定验证…</value>
+  </data>
+  <data name="FormBackgroundColor_BackgroundProperties" xml:space="preserve">
+    <value>背景属性</value>
+  </data>
+  <data name="Generic_Color" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+  <data name="FormConfigureCameraMotion_ConfigureCameraMotionEstimation" xml:space="preserve">
+    <value>配置相机运动估计</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeatureType" xml:space="preserve">
+    <value>特征类型：</value>
+  </data>
+  <data name="FormConfigureCameraMotion_FeaturesPerFrame" xml:space="preserve">
+    <value>每帧特征数：</value>
+  </data>
+  <data name="VideoFilterCameraMotion_RunCameraMotionEstimation" xml:space="preserve">
+    <value>运行相机运动估计</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindFeatures" xml:space="preserve">
+    <value>查找特征</value>
+  </data>
+  <data name="VideoFilterCameraMotion_MatchFeatures" xml:space="preserve">
+    <value>匹配特征</value>
+  </data>
+  <data name="VideoFilterCameraMotion_FindHomographies" xml:space="preserve">
+    <value>查找单应矩阵</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BundleAdjustment" xml:space="preserve">
+    <value>光束法平差</value>
+  </data>
+  <data name="VideoFilterCameraMotion_BuildTracks" xml:space="preserve">
+    <value>构建轨迹</value>
+  </data>
+  <data name="VideoFilterCameraMotion_DeleteTrackingData" xml:space="preserve">
+    <value>删除跟踪数据</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowPoints" xml:space="preserve">
+    <value>显示点</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowInliers" xml:space="preserve">
+    <value>显示内点</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowOutliers" xml:space="preserve">
+    <value>显示外点</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowMotionField" xml:space="preserve">
+    <value>显示运动场</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowFrameTransforms" xml:space="preserve">
+    <value>显示帧变换</value>
+  </data>
+  <data name="VideoFilterCameraMotion_ShowTracks" xml:space="preserve">
+    <value>显示轨迹</value>
+  </data>
+  <data name="FormConfigureLensCalibration_ConfigureLensCalibration" xml:space="preserve">
+    <value>配置镜头标定</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxImages" xml:space="preserve">
+    <value>最大图像数：</value>
+  </data>
+  <data name="FormConfigureLensCalibration_PatternSize" xml:space="preserve">
+    <value>图案尺寸：</value>
+  </data>
+  <data name="FormConfigureLensCalibration_MaxIterations" xml:space="preserve">
+    <value>最大迭代次数：</value>
+  </data>
+  <data name="VideoFilterLensCalibration_RunLensCalibration" xml:space="preserve">
+    <value>运行镜头标定</value>
+  </data>
+  <data name="VideoFilterLensCalibration_DeleteCalibrationData" xml:space="preserve">
+    <value>删除标定数据</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowDetectedCorners" xml:space="preserve">
+    <value>显示检测到的角点</value>
+  </data>
+  <data name="VideoFilterLensCalibration_ShowReprojectedCorners" xml:space="preserve">
+    <value>显示重投影角点</value>
+  </data>
+  <data name="VideoFilterLensCalibration_CopyCalibrationData" xml:space="preserve">
+    <value>复制标定数据</value>
+  </data>
+  <data name="VideoFilterLensCalibration_SaveCalibrationData" xml:space="preserve">
+    <value>保存标定数据…</value>
+  </data>
+  <data name="FormCalibratePlane_OffsetAppliedToCoordinates" xml:space="preserve">
+    <value>应用于坐标的偏移量（{0}）</value>
+  </data>
+  <data name="StyleElement_FontSize_LabelSize" xml:space="preserve">
+    <value>标签大小</value>
+  </data>
+  <data name="StyleElement_Color_BorderColor" xml:space="preserve">
+    <value>边框颜色</value>
+  </data>
+  <data name="StyleElement_Color_LabelColor" xml:space="preserve">
+    <value>标签颜色</value>
+  </data>
+  <data name="FormCalibratePlane_Coordinates" xml:space="preserve">
+    <value>坐标</value>
+  </data>
+  <data name="FormConfigureExportVideo_UseCurrentPlaybackSpeed" xml:space="preserve">
+    <value>使用当前播放速度：{0:0.00}</value>
+  </data>
+  <data name="filterName_CameraMotion" xml:space="preserve">
+    <value>相机运动估计</value>
+  </data>
+  <data name="filterName_LensCalibration" xml:space="preserve">
+    <value>镜头标定</value>
+  </data>
+  <data name="mnuConfigureCamera" xml:space="preserve">
+    <value>配置相机…</value>
+  </data>
+  <data name="mnuSaveAsDefaultPlayerAnnotations" xml:space="preserve">
+    <value>另存为默认播放器标注</value>
+  </data>
+  <data name="mnuSaveAsDefaultCaptureAnnotations" xml:space="preserve">
+    <value>另存为默认采集标注</value>
+  </data>
+  <data name="mnuUnloadAnnotations" xml:space="preserve">
+    <value>卸载标注</value>
+  </data>
+  <data name="mnuReloadDefaultCaptureAnnotations" xml:space="preserve">
+    <value>重新加载默认采集标注</value>
+  </data>
+  <data name="mnuReloadLinkedAnnotations" xml:space="preserve">
+    <value>重新加载关联标注</value>
+  </data>
+  <data name="formPostRecordingCommand_Title" xml:space="preserve">
+    <value>录制后命令</value>
+  </data>
+  <data name="formPostRecordingCommand_EnablePostRecordingCommand" xml:space="preserve">
+    <value>启用录制后命令</value>
+  </data>
+  <data name="formPostRecordingCommand_InsertAVariable" xml:space="preserve">
+    <value>插入变量…</value>
+  </data>
+  <data name="formPostRecordingCommand_SaveAndContinue" xml:space="preserve">
+    <value>保存并继续</value>
+  </data>
+  <data name="mnuShowCircle" xml:space="preserve">
+    <value>显示圆</value>
+  </data>
+  <data name="mnuOpenFolder" xml:space="preserve">
+    <value>打开文件夹…</value>
+  </data>
+  <data name="mnuReloadDefaultPlayerAnnotations" xml:space="preserve">
+    <value>重新加载默认播放器标注</value>
+  </data>
+  <data name="tracking_DeleteEndOfTracks" xml:space="preserve">
+    <value>删除轨迹末端</value>
+  </data>
+  <data name="tracking_DeleteTracks" xml:space="preserve">
+    <value>删除轨迹</value>
+  </data>
+  <data name="mnuStabilization" xml:space="preserve">
+    <value>稳定</value>
+  </data>
+  <data name="mnuContext" xml:space="preserve">
+    <value>上下文</value>
+  </data>
+  <data name="formInsertContextVariable_Title" xml:space="preserve">
+    <value>插入上下文变量</value>
+  </data>
+  <data name="btnInsert" xml:space="preserve">
+    <value>插入</value>
+  </data>
+  <data name="formInsertVariable_Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="formInsertVariable_Example" xml:space="preserve">
+    <value>示例</value>
+  </data>
+  <data name="formInsertVariable_Keyword" xml:space="preserve">
+    <value>关键字</value>
+  </data>
+  <data name="variable_CameraFrameRate" xml:space="preserve">
+    <value>相机帧率</value>
+  </data>
+  <data name="variable_PathToVideoFile" xml:space="preserve">
+    <value>视频文件路径</value>
+  </data>
+  <data name="variable_PathToCaptureFolder" xml:space="preserve">
+    <value>采集文件夹路径</value>
+  </data>
+  <data name="variable_FileNameWithExtension" xml:space="preserve">
+    <value>含扩展名的文件名</value>
+  </data>
+  <data name="variable_FileNameWithoutExtension" xml:space="preserve">
+    <value>不含扩展名的文件名</value>
+  </data>
+  <data name="variable_FileExtension" xml:space="preserve">
+    <value>文件扩展名</value>
+  </data>
+  <data name="variable_AnnotationFileName" xml:space="preserve">
+    <value>标注文件名</value>
+  </data>
+  <data name="variable_DateISO8601" xml:space="preserve">
+    <value>日期（ISO 8601）</value>
+  </data>
+  <data name="variable_TimeISO8601" xml:space="preserve">
+    <value>时间（ISO 8601）</value>
+  </data>
+  <data name="variable_Hours" xml:space="preserve">
+    <value>小时</value>
+  </data>
+  <data name="variable_Milliseconds" xml:space="preserve">
+    <value>毫秒</value>
+  </data>
+  <data name="mnuNext" xml:space="preserve">
+    <value>下一个</value>
+  </data>
+  <data name="mnuPrevious" xml:space="preserve">
+    <value>上一个</value>
+  </data>
+  <data name="mnuVerticalLayout" xml:space="preserve">
+    <value>垂直布局</value>
+  </data>
+  <data name="tracking_TrackingAlgorithm" xml:space="preserve">
+    <value>跟踪算法：</value>
+  </data>
+  <data name="tracking_MatchThreshold" xml:space="preserve">
+    <value>匹配阈值：</value>
+  </data>
+  <data name="track_UpdateThreshold" xml:space="preserve">
+    <value>更新阈值：</value>
+  </data>
+  <data name="tracking_DeleteEndOfTrack" xml:space="preserve">
+    <value>删除轨迹末端</value>
+  </data>
+  <data name="tooltip_PreviousKeyImage" xml:space="preserve">
+    <value>上一个关键图像</value>
+  </data>
+  <data name="tooltip_NextKeyImage" xml:space="preserve">
+    <value>下一个关键图像</value>
+  </data>
+  <data name="tooltip_ShowAllKeyImages" xml:space="preserve">
+    <value>显示所有关键图像</value>
+  </data>
+  <data name="tooltip_ViewIsDelayed" xml:space="preserve">
+    <value>视图已延迟</value>
+  </data>
+  <data name="tooltip_ViewIsLive" xml:space="preserve">
+    <value>视图为实时</value>
+  </data>
+  <data name="tooltip_CaptureContext" xml:space="preserve">
+    <value>采集上下文</value>
+  </data>
+  <data name="tooltip_DisableCaptureContext" xml:space="preserve">
+    <value>禁用采集上下文</value>
+  </data>
+  <data name="tooltip_EnableCaptureContext" xml:space="preserve">
+    <value>启用采集上下文</value>
+  </data>
+  <data name="tooltip_DelayInSeconds" xml:space="preserve">
+    <value>延迟（秒）</value>
+  </data>
+  <data name="tooltip_TotalLengthOfTheRecordingInSeconds" xml:space="preserve">
+    <value>录制总时长（秒）</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsArmed" xml:space="preserve">
+    <value>采集触发器已启用</value>
+  </data>
+  <data name="tooltip_TheCaptureTriggerIsDisarmed" xml:space="preserve">
+    <value>采集触发器已禁用</value>
+  </data>
+  <data name="cbSelectCaptureFolder" xml:space="preserve">
+    <value>选择采集文件夹</value>
+  </data>
+  <data name="infobar_Signal0" xml:space="preserve">
+    <value>信号：{0}</value>
+  </data>
+  <data name="infobar_Throughput0" xml:space="preserve">
+    <value>吞吐量：{0}</value>
+  </data>
+  <data name="infobar_Load0" xml:space="preserve">
+    <value>负载：{0}</value>
+  </data>
+  <data name="infobar_Drops0" xml:space="preserve">
+    <value>丢帧：{0}</value>
   </data>
 </root>

@@ -134,7 +134,7 @@
     <value>Bộ nhớ</value>
   </data>
   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
     <value>Bỏ qua cảnh báo ghi đè tệp</value>
@@ -203,7 +203,7 @@
     <value>Ngôn ngữ:</value>
   </data>
   <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
     <value>Đơn vị</value>
@@ -215,7 +215,7 @@
     <value>Ki-lô-mét trên giờ ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
-    <value>Bào trên giây ({0})</value>
+    <value>Feet trên giây ({0})</value>
   </data>
   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
     <value>Dặm trên giờ ({0})</value>
