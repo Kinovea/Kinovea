@@ -503,12 +503,19 @@ namespace Kinovea.ScreenManager
         #endregion
 
         /// <summary>
-        /// Lazily enumerates the images from the video, for export purposes.
+        /// Enumerates the images from the video, for export purposes.
         /// This includes skipping and duplicating frames as needed.
         /// This returns an internal bitmap and the caller should do its own copy.
+        /// Prebuffering must be deactivated prior to enumerating.
         /// </summary>
         public IEnumerable<Bitmap> EnumerateImages(VideoExportSettings settings)
         {
+            if (videoReader.DecodingMode == VideoDecodingMode.PreBuffering)
+            {
+                log.ErrorFormat("Frame enumeration called while prebuffering.");
+                yield break;
+            }
+
             // Use one reusable staging bitmap.
             Bitmap staging = null;
 
@@ -564,9 +571,16 @@ namespace Kinovea.ScreenManager
         /// Lazily enumerates the keyframe images from the video, for export purposes.
         /// Same as above but jumps from key frame to key frame.
         /// Returns an internal bitmap and the caller should do its own copy.
+        /// Prebuffering must be deactivated prior to enumerating.
         /// </summary>
         public IEnumerable<Bitmap> EnumerateKeyImages(VideoExportSettings settings)
         {
+            if (videoReader.DecodingMode == VideoDecodingMode.PreBuffering)
+            {
+                log.ErrorFormat("Frame enumeration called while prebuffering.");
+                yield break;
+            }
+
             // Use one reusable staging bitmap.
             Bitmap staging = null;
 

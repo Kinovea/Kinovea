@@ -139,6 +139,7 @@ namespace Kinovea.Video
         // Player state from the latest player request.
         // Used by the reader to schedule decoding.
         protected PlayerState mRequestedPlayerState = PlayerState.Empty;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Open/Close/Summary
@@ -169,7 +170,14 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Request the frame closest to the target timestamp.
-        /// This sould be lightweight and never block.
+        /// 
+        /// In pre-buffering mode this will always return immediately without blocking
+        /// and provide a best-effort frame rather than an exact frame.
+        /// 
+        /// This is called in two contexts:
+        /// - during playback to get a close-enough frame immediately.
+        /// - during frame enumeration when we know we are in on-demand or cached mode, as a 
+        /// simpler alternative to passing a full PlayerState object.
         /// </summary>
         public abstract bool MoveTo(long target);
 
@@ -177,10 +185,9 @@ namespace Kinovea.Video
         /// The player changed state and publishes it.
         /// This is for timeline navigation and start/pause playback.
         /// 
-        /// Ultimately this will replace MoveNext and MoveTo for all 
-        /// asynchronous scenarios.
         /// MoveTo can still be used for a lightweight acquire during 
-        /// playback as state doesn't change during playback.
+        /// playback as state doesn't change during playback and for 
+        /// background frame enumeration.
         /// </summary>
         public abstract bool PlayerRequest(PlayerState newState);
         
@@ -214,9 +221,14 @@ namespace Kinovea.Video
         {
         }
 
+        /// <summary>
+        /// Describes where the request timestamp is with regards to the reference timestamps.
+        /// i.e: if the result is "Ahead" it means the request is ahead of the reference.
+        /// Uses fuzzy matching based on average timestamps per frame.
+        /// </summary>
         public TimestampRelation RelateTimestamps(long request, long reference)
         {
-            double tolerance = Info.AverageTimeStampsPerFrame / 2.0;
+            double tolerance = Info.AverageTimeStampsPerFrame * 0.5;
             double farAheadThreshold = Info.AverageTimeStampsPerFrame * 50.0;
 
             if (request < 0 || reference < 0)
@@ -301,23 +313,39 @@ namespace Kinovea.Video
         }
 
         /// <summary>
-        /// Provide a lazy enumerator on each frame of the Working Zone.
-        /// interval is the time in timestamps between each frame.
+        /// Provide an enumerator on each frame of the Working Zone.
+        /// interval is the time in timestamps between each frame, 
+        /// or zero for every frame.
         /// </summary>
         public IEnumerable<VideoFrame> EnumerateFrames(double interval)
         {
-            if (DecodingMode == VideoDecodingMode.PreBuffering)
-                throw new ThreadStateException("Frame enumerator called while prebuffering");
+            // Prebuffering must have been deactivated prior to enumerating
+            // to make sure all calls are synchronous.
 
-            bool hasMore = MoveTo(WorkingZone.Start);
+            bool acquired = MoveTo(WorkingZone.Start);
+            if (!acquired)
+            {
+                yield break;
+            }
+
             yield return Current;
 
-            while (hasMore)
+            while (acquired)
             {
                 if (interval == 0)
-                    hasMore = MoveNext(true);
+                {
+                    acquired = MoveNext(true);
+                }
                 else
-                    hasMore = MoveTo((long)Math.Round(Current.Timestamp + interval));
+                {
+                    long timestamp = (long)Math.Round(Current.Timestamp + interval);
+                    acquired = MoveTo(timestamp);
+                }
+
+                if (!acquired)
+                {
+                    yield break;
+                }
 
                 yield return Current;
             }
@@ -325,6 +353,7 @@ namespace Kinovea.Video
 
         /// <summary>
         /// Returns true if the enumerator may still move to the next frame in the working zone.
+        /// DEPRECATED: the caller of MoveNext should do the check.
         /// </summary>
         public bool HasMoreFrames()
         {

@@ -3055,7 +3055,7 @@ namespace Kinovea.ScreenManager
 
 
             // TODO: Refactoring in progress.
-            // This should all just go through PlayerRequest(playerState) eventually.
+            // Eventually this should all just go through SubmitTimestampRequest(state).
             bool acquired = false;
             if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
             {
@@ -3100,8 +3100,16 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    activePlayerState = state;
-                    acquired = m_FrameServer.VideoReader.MoveTo(targetTimestamp);
+                    if (isTimestampRequestInFlight)
+                    {
+                        log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
+                        pendingPlayerState = state;
+                        acquired = false;
+                    }
+                    else
+                    {
+                        acquired = SubmitTimestampRequest(state);
+                    }
                 }
             }
 
@@ -3548,7 +3556,9 @@ namespace Kinovea.ScreenManager
                 {
                     AddKeyframe();
                     if (m_iActiveKeyFrameIndex >= 0)
+                    {
                         CreateNewDrawing(m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex));
+                    }
                 }
             }
         }

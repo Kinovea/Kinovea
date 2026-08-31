@@ -674,6 +674,8 @@ bool VideoReaderFFMpeg::MoveNext(bool decodeIfNecessary)
         //}
     }
 
+    // TODO: has more frame test should be done by the caller.
+
     return moved && HasMoreFrames();
 }
 
@@ -748,8 +750,8 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     if (mCachingMode == VideoDecodingMode::OnDemand)
     {
         // Fulfill synchronously and return.
-        acquired = MoveOnDemand(mRequestedPlayerState->ReferenceTimestamp);
         mWorkingPlayerState = mRequestedPlayerState;
+        acquired = MoveOnDemand(mRequestedPlayerState->ReferenceTimestamp);
         mRequestFulfilled = true;
         return acquired;
     }
@@ -757,8 +759,8 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
     if (mCachingMode == VideoDecodingMode::Caching)
     {
         // Fulfill synchronously and return.
-        acquired = MoveCaching(mRequestedPlayerState->ReferenceTimestamp);
         mWorkingPlayerState = mRequestedPlayerState;
+        acquired = MoveCaching(mRequestedPlayerState->ReferenceTimestamp);
         mRequestFulfilled = true;
         return acquired;
     }

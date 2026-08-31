@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace Kinovea.Video
 {
-    /// <summary>
-    /// Relates a request timestamp with a reference timestamp.
-    /// </summary>
     public enum TimestampRelation
     {
         Unknown,
