@@ -793,10 +793,10 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Function called by the dual player or dual video exporter.
         /// </summary>
-        public void GotoTime(long microseconds, bool synchronous)
+        public void DualMoveRequest(long microseconds, bool synchronous)
         {
             long timestamp = RelativeRealTimeToAbsoluteTimestamp(microseconds);
-            view.ForcePosition(timestamp, synchronous);
+            view.DualPlayerRequest(timestamp, synchronous);
         }
         
         public void GotoPrevKeyframe()

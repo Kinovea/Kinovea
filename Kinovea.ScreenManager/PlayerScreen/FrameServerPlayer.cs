@@ -286,6 +286,24 @@ namespace Kinovea.ScreenManager
             return TimeHelper.GetTimestring(framerate, fractionalFrames, milliseconds, actualTimestamps, durationTimestamps, totalFrames, tcf, symbol);
         }
 
+        /// <summary>
+        /// Returns the physical time in microseconds for this timestamp.
+        /// Used in the context of synchronization.
+        /// Input in timestamps relative to sel start.
+        /// convert it into video time then to real time using high speed factor.
+        public long TimestampToRealtime(long timestamp)
+        {
+            double correctedTPS = videoReader.Info.FrameIntervalMilliseconds * videoReader.Info.AverageTimeStampsPerSeconds / metadata.BaselineFrameInterval;
+
+            if (correctedTPS == 0 || metadata.HighSpeedFactor == 0)
+                return 0;
+
+            double videoSeconds = (double)timestamp / correctedTPS;
+            double realSeconds = videoSeconds / metadata.HighSpeedFactor;
+            double realMicroseconds = realSeconds * 1000000;
+            return (long)realMicroseconds;
+        }
+
         public void ActivateVideoFilter(VideoFilterType type)
         {
             metadata.ActivateVideoFilter(type);

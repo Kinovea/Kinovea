@@ -189,14 +189,16 @@ namespace Kinovea.ScreenManager
             get { return m_FrameServer?.CurrentImage; }
         }
 
+
+        #region Synchronization support
         public bool Synched
         {
             //get { return m_bSynched; }
             set
             {
-                m_bSynched = value;
+                isSynchronized = value;
 
-                if (!m_bSynched)
+                if (!isSynchronized)
                 {
                     // We do not reset the time origin.
                     trkFrame.UpdateMarkers(m_FrameServer.Metadata);
@@ -212,7 +214,7 @@ namespace Kinovea.ScreenManager
                 // If we are no longer synched, disable this to start honoring the auto-play flag again.
                 if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
                 {
-                    screenDescriptor.IsDualReplay = m_bSynched;
+                    screenDescriptor.IsDualReplay = isSynchronized;
                 }
             }
         }
@@ -225,19 +227,19 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                return TimestampToRealtime(currentTimestamp - workingZone.Start);
+                return m_FrameServer.TimestampToRealtime(currentTimestamp - workingZone.Start);
             }
         }
 
         /// <summary>
-        /// Returns the total duration of the selection in microseconds.
+        /// Returns the timestamp of the last frame in microseconds.
         /// Takes high speed factor into account.
         /// </summary>
         public long LocalLastTime
         {
             get
             {
-                return TimestampToRealtime(workingZone.End - workingZone.Start);
+                return m_FrameServer.TimestampToRealtime(workingZone.End - workingZone.Start);
             }
         }
 
@@ -249,7 +251,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                return TimestampToRealtime((long)Math.Round(m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
+                return m_FrameServer.TimestampToRealtime((long)Math.Round(m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
             }
 
         }
@@ -262,7 +264,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                return TimestampToRealtime(m_FrameServer.Metadata.TimeOrigin - workingZone.Start);
+                return m_FrameServer.TimestampToRealtime(m_FrameServer.Metadata.TimeOrigin - workingZone.Start);
             }
         }
 
@@ -286,10 +288,13 @@ namespace Kinovea.ScreenManager
                 DoInvalidate();
             }
         }
+        
         public bool DualSaveInProgress
         {
             set { dualSaveInProgress = value; }
         }
+        #endregion
+
         #endregion
 
         #region Members
@@ -300,6 +305,7 @@ namespace Kinovea.ScreenManager
         private object lockBusyRendering = new object(); // Guard isBusyRendering between the playback thread and UI thread.
         private bool interactiveFrameTracker = true;
         private bool showCacheInTimeline = false;
+        private bool saveInProgress;
 
         // Player state requests sent to the reader.
         private PlayerState activePlayerState = PlayerState.MakeInvalid(); // Player state sent to the reader.
@@ -327,17 +333,17 @@ namespace Kinovea.ScreenManager
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
 
         // Synchronisation
-        private bool m_bSynched;
+        private bool isSynchronized;
         private bool m_bSyncMerge;
         private Bitmap m_SyncMergeImage;
         private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
         private ImageAttributes m_SyncMergeImgAttr = new ImageAttributes();
         private float m_SyncAlpha = 0.5f;
         private bool dualSaveInProgress;
-        private bool saveInProgress;
-
+        
         // Image
         private ViewportManipulator m_viewportManipulator = new ViewportManipulator();
+        private ZoomHelper zoomHelper = new ZoomHelper();
         private bool m_fill;
         private double m_lastUserStretch = 1.0f;
         private bool m_bShowImageBorder;
@@ -372,7 +378,6 @@ namespace Kinovea.ScreenManager
         // Others
         private ScreenDescriptorPlayback screenDescriptor;
         private bool videoFilterIsActive;
-        private ZoomHelper zoomHelper = new ZoomHelper();
         private System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
         private MessageToaster m_MessageToaster;
         private bool m_Constructed;
@@ -972,7 +977,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Function called by the dual player or dual video exporter.
         /// </summary>
-        public void ForcePosition(long timestamp, bool synchronous)
+        public void DualPlayerRequest(long timestamp, bool synchronous)
         {
             StopPlaying(false);
             
@@ -1227,7 +1232,7 @@ namespace Kinovea.ScreenManager
             m_lastUserStretch = 1.0f;
 
             // Sync
-            m_bSynched = false;
+            isSynchronized = false;
             m_bSyncMerge = false;
             if (m_SyncMergeImage != null)
                 m_SyncMergeImage.Dispose();
@@ -1480,7 +1485,7 @@ namespace Kinovea.ScreenManager
                 // A further complication, during the very first load of the first screen, the value of "synched"
                 // is not yet true, but we still don't want to start that video as it will start way before the other. 
                 // For this case we use the flag in the descriptor.
-                bool dualReplay = m_bSynched || screenDescriptor.IsDualReplay;
+                bool dualReplay = isSynchronized || screenDescriptor.IsDualReplay;
                 if (!dualReplay)
                 {
                     // A new video just loaded in a single replay watcher, start it.
@@ -1508,7 +1513,7 @@ namespace Kinovea.ScreenManager
                 return false;
 
             // If we are not in a dual screen context just run the command for this screen.
-            if (!m_bSynched || DualCommandReceived == null)
+            if (!isSynchronized || DualCommandReceived == null)
                 return ExecuteScreenCommand(commandCode);
 
             // Try to see if that command is handled by the dual capture controller.
@@ -1894,24 +1899,6 @@ namespace Kinovea.ScreenManager
             
             m_FrameServer.Metadata.StartAllTracking();
             DoInvalidate();
-        }
-
-        /// <summary>
-        /// Returns the physical time in microseconds for this timestamp.
-        /// Used in the context of synchronization.
-        /// Input in timestamps relative to sel start.
-        /// convert it into video time then to real time using high speed factor.
-        private long TimestampToRealtime(long timestamp)
-        {
-            double correctedTPS = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds * m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds / m_FrameServer.Metadata.BaselineFrameInterval;
-
-            if (correctedTPS == 0 || m_FrameServer.Metadata.HighSpeedFactor == 0)
-                return 0;
-
-            double videoSeconds = (double)timestamp / correctedTPS;
-            double realSeconds = videoSeconds / m_FrameServer.Metadata.HighSpeedFactor;
-            double realMicroseconds = realSeconds * 1000000;
-            return (long)realMicroseconds;
         }
         #endregion
 
@@ -2916,7 +2903,7 @@ namespace Kinovea.ScreenManager
             ReportForSyncMerge();
 
             // In dual playback, double check if we have looped back.
-            if (m_bSynched && currentTimestamp < oldTimestamp)
+            if (isSynchronized && currentTimestamp < oldTimestamp)
             {
                 StopPlaying();
                 PresentFrame(workingZone.Start);
@@ -2931,7 +2918,7 @@ namespace Kinovea.ScreenManager
         {
             m_FrameServer.Metadata.StopAllTracking();
 
-            if (m_bSynched)
+            if (isSynchronized)
             {
                 StopPlaying(false);
                 PresentFrame(workingZone.Start, true);
@@ -4548,7 +4535,7 @@ namespace Kinovea.ScreenManager
             timeWatcher.LogTime("After DrawImage");
 
             // .Sync superposition.
-            if (m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
+            if (isSynchronized && m_bSyncMerge && m_SyncMergeImage != null)
             {
                 // The mirroring, if any, will have been done already and applied to the sync image.
                 // (because to draw the other image, we take into account its own mirroring option,
@@ -6040,7 +6027,7 @@ namespace Kinovea.ScreenManager
         }
         private void ReportForSyncMerge()
         {
-            if(!m_bSynched)
+            if(!isSynchronized)
                 return;
 
             // If we are not actually merging, we don't need to clone and send the image.

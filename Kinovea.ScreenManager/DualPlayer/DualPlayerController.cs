@@ -639,7 +639,7 @@ namespace Kinovea.ScreenManager
 
             if (player.LocalTime != localTime)
             {
-                player.GotoTime(localTime, false);
+                player.DualMoveRequest(localTime, false);
             }
         }
 
