@@ -203,7 +203,6 @@ namespace Kinovea.Video
             long start = frames.Values[0].Timestamp;
             long end = frames.Values[frames.Count - 1].Timestamp;
 
-
             workingZone = new VideoSection(start, end);
         }
         #endregion

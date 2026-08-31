@@ -481,18 +481,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
         /// Clears the old frame container and points it to the one of the new mode.
         /// This should be called after validating that the mode is available.
-        /// This function stops and starts the prebuffer thread if needed.
-        /// It doesn't start the full cache loading.
-        void ChangeCachingMode(VideoDecodingMode wantedMode);
+        /// This function stops the prebuffer thread if needed.
+        /// It doesn't start the full cache loading nor the prebuffering thread.
+        void ChangeCachingMode(VideoDecodingMode newMode);
 
-        void ChangeToBestAfterCaching();
-
-
+        
         //--------------------
         // Static cache
         //--------------------
 
-        void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
+        void ImportWorkingZoneToCache(System::Object^ sender, DoWorkEventArgs^ e);
         
         bool ReadManyToCache(BackgroundWorker^ _bgWorker, VideoSection _section);
         
