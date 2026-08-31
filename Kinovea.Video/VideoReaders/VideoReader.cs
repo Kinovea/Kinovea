@@ -92,6 +92,13 @@ namespace Kinovea.Video
             get { return Info.DurationTimeStamps == 1;}
         }
 
+        /// <summary>
+        /// Global computer time when playback started.
+        /// Used to compute the current frame timestamp during playback.
+        /// This is based on Stopwatch.GetTimestamp().
+        /// </summary>
+        public long StartPlaybackEpoch { get; set; }
+
         # region Shorcuts for capabilities.
         public bool CanChangeWorkingZone
         {
@@ -189,10 +196,10 @@ namespace Kinovea.Video
                 return 0;
 
             long now = Stopwatch.GetTimestamp();
-            double realElapsedSeconds = (double)(now - mRequestedPlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
-            double elapsedFrames = realElapsedSeconds * 1000.0 / mRequestedPlayerState.PlaybackFrameInterval;
+            double realElapsedSeconds = (double)(now - StartPlaybackEpoch) / Stopwatch.Frequency;
+            double elapsedFrames = realElapsedSeconds * 1000.0 / state.PlaybackFrameInterval;
             double elapsedTimestamps = elapsedFrames * Info.AverageTimeStampsPerFrame;
-            long expectedTimestamp = (long)Math.Round(mRequestedPlayerState.ReferenceTimestamp + elapsedTimestamps);
+            long expectedTimestamp = (long)Math.Round(state.ReferenceTimestamp + elapsedTimestamps);
             return expectedTimestamp;
         }
 

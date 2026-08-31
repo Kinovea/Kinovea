@@ -2776,17 +2776,20 @@ namespace Kinovea.ScreenManager
                 currentTimestamp, playbackFrameInterval, refreshInterval);
 
             // Snapshot the playback state and publish it to the reader.
+            // This is a synchronous request, it can only come back after the decoder is relocated.
             PlayerState state = new PlayerState(
                 GetNextPlayerStateId(),
                 PlayerStateMode.Playback,
                 true,
                 currentTimestamp,
-                Stopwatch.GetTimestamp(),
                 playbackFrameInterval,
                 refreshInterval);
 
             SubmitPlaybackRequest(state);
 
+            // Publish the sync mark for both player and decoder to independently compute elapsed time.
+            m_FrameServer.VideoReader.StartPlaybackEpoch = Stopwatch.GetTimestamp();
+            
             uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
             multimediaTimerID = NativeMethods.timeSetEvent(refreshInterval, refreshInterval, timerCallback, UIntPtr.Zero, eventType);
             isCurrentlyPlaying = true;
@@ -2820,7 +2823,7 @@ namespace Kinovea.ScreenManager
             // Compute expected timestamp for the next frame to be presented.
             double avgtspf = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
             long now = Stopwatch.GetTimestamp();
-            double realElapsedSeconds = (double)(now - activePlayerState.StartPlaybackEpoch) / Stopwatch.Frequency;
+            double realElapsedSeconds = (double)(now - m_FrameServer.VideoReader.StartPlaybackEpoch) / Stopwatch.Frequency;
             double elapsedFrames = realElapsedSeconds * 1000.0 / activePlayerState.PlaybackFrameInterval;
             double elapsedTimestamps = elapsedFrames * avgtspf;
 

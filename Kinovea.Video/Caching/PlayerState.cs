@@ -49,13 +49,6 @@ namespace Kinovea.Video
         public long ReferenceTimestamp { get; }
 
         /// <summary>
-        /// Global computer time when playback started.
-        /// Used to compute the current frame timestamp during playback.
-        /// This is based on Stopwatch.GetTimestamp().
-        /// </summary>
-        public long StartPlaybackEpoch { get; }
-
-        /// <summary>
         /// The interval between frames during playback, in milliseconds.
         /// Takes speed slider into account.
         /// </summary>
@@ -73,7 +66,6 @@ namespace Kinovea.Video
             PlayerStateMode mode,
             bool synchronous,
             long referenceTimestamp,
-            long startPlaybackEpoch = 0, 
             double playbackFrameInterval = 0, 
             double refreshInterval = 0) 
         {
@@ -81,14 +73,13 @@ namespace Kinovea.Video
             Mode = mode;
             SynchronousFulfill = synchronous;
             ReferenceTimestamp = referenceTimestamp;
-            StartPlaybackEpoch = startPlaybackEpoch;
             PlaybackFrameInterval = playbackFrameInterval;
             RefreshInterval = refreshInterval;
         }
 
         public PlayerState Clone()
         {
-            return new PlayerState(Id, Mode, SynchronousFulfill, ReferenceTimestamp, StartPlaybackEpoch, PlaybackFrameInterval, RefreshInterval);
+            return new PlayerState(Id, Mode, SynchronousFulfill, ReferenceTimestamp, PlaybackFrameInterval, RefreshInterval);
         }
 
 
