@@ -168,9 +168,8 @@ namespace Kinovea.Video
         public abstract bool MoveNext(bool _decodeIfNecessary);
 
         /// <summary>
-        /// Synchronous decode of the frame at the requested timestamp.
-        /// TODO: REMOVE.
-        /// Use PlayerDemand(timestamp) or PlayerDemand(PlayerState) instead.
+        /// Request the frame closest to the target timestamp.
+        /// This sould be lightweight and never block.
         /// </summary>
         public abstract bool MoveTo(long target);
 

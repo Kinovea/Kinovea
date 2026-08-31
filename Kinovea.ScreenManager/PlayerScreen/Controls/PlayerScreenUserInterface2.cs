@@ -148,7 +148,7 @@ namespace Kinovea.ScreenManager
                 if (isCurrentlyPlaying)
                 {
                     StopMultimediaTimer();
-                    StartMultimediaTimer();
+                    StartMultimediaTimer(currentTimestamp);
                 }
 
                 UpdateSpeedLabel();
@@ -968,44 +968,28 @@ namespace Kinovea.ScreenManager
             ShowBorder(_bActive);
         }
         
-        public void ForcePosition(long timestamp)
+        /// <summary>
+        /// Function called by the dual player or dual video exporter.
+        /// </summary>
+        public void ForcePosition(long timestamp, bool synchronous)
         {
             framesToDecode = 1;
             StopPlaying(false);
 
-            currentTimestamp = Math.Min(timestamp, workingZone.End);
+            timestamp = Math.Min(timestamp, workingZone.End);
 
-            PresentFrame(currentTimestamp);
+            PresentFrame(timestamp, synchronous);
         }
 
-        public void ForceCurrentFrame(long frameSinceSelStart)
+        public void GotoTimeOrigin()
         {
-            // Called during static sync.
-            // Common position changed, we get a new frame to jump to.
-            // target frame may be over the total.
-
             if (!m_FrameServer.Loaded)
                 return;
 
-            framesToDecode = 1;
-            StopPlaying(false);
-
-            if (frameSinceSelStart == -1)
-            {
-                // Special case for +1 frame.
-                if (currentTimestamp < workingZone.End)
-                {
-                    PresentFrame(-1);
-                }
-            }
-            else
-            {
-                double offset = frameSinceSelStart * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-                long timestamp = (long)Math.Round(workingZone.Start + offset);
-                currentTimestamp = Math.Min(timestamp, workingZone.End);
-                PresentFrame(currentTimestamp);
-            }
+            BeforeManualMove();
+            PresentFrame(m_FrameServer.Metadata.TimeOrigin);
         }
+
         public void RefreshImage()
         {
             // For cases where surfaceScreen.Invalidate() is not enough.
@@ -1503,7 +1487,7 @@ namespace Kinovea.ScreenManager
                 {
                     // A new video just loaded in a single replay watcher, start it.
                     buttonPlay.Image = Resources.flatpause3b;
-                    StartMultimediaTimer();
+                    StartMultimediaTimer(currentTimestamp);
                     PlayStarted?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -1611,16 +1595,16 @@ namespace Kinovea.ScreenManager
                         buttonGotoPrevious_Click(null, EventArgs.Empty);
                     break;
                 case PlayerScreenCommands.BackwardRound10Percent:
-                    JumpToPercent(10, false);
+                    SnapToStep(10, false);
                     break;
                 case PlayerScreenCommands.ForwardRound10Percent:
-                    JumpToPercent(10, true);
+                    SnapToStep(10, true);
                     break;
                 case PlayerScreenCommands.BackwardRound1Percent:
-                    JumpToPercent(1, false);
+                    SnapToStep(1, false);
                     break;
                 case PlayerScreenCommands.ForwardRound1Percent:
-                    JumpToPercent(1, true);
+                    SnapToStep(1, true);
                     break;
                 case PlayerScreenCommands.GotoPreviousKeyframe:
                     GotoPreviousKeyframe();
@@ -1629,7 +1613,7 @@ namespace Kinovea.ScreenManager
                     GotoNextKeyframe();
                     break;
                 case PlayerScreenCommands.GotoSyncPoint:
-                    ForceCurrentFrame(m_FrameServer.Metadata.TimeOrigin);
+                    GotoTimeOrigin();
                     break;
 
                 // Synchronization
@@ -1756,8 +1740,7 @@ namespace Kinovea.ScreenManager
         private void btnClose_Click(object sender, EventArgs e)
         {
             // Propagate to PlayerScreen which will report to ScreenManager.
-            if (CloseAsked != null)
-                CloseAsked(this, EventArgs.Empty);
+            CloseAsked?.Invoke(this, EventArgs.Empty);
         }
         private void btnSidePanel_Click(object sender, EventArgs e)
         {
@@ -2000,11 +1983,9 @@ namespace Kinovea.ScreenManager
         }
         /// <summary>
         /// Jump to the next stop point on the timeline based on percentage.
-        /// Example: if round is 10 and we are currently at 36%, the next stop point forward will be 40%, and backward 30%.
+        /// Example: if stepLength is 10 and we are currently at 36%, the next stop point is 40%.
         /// </summary>
-        /// <param name="round">Stop point width in percentage</param>
-        /// <param name="forward">Whether we should jump forward or backward on the timeline</param>
-        public void JumpToPercent(int round, bool forward)
+        public void SnapToStep(int stepPercent, bool forward)
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -2013,26 +1994,33 @@ namespace Kinovea.ScreenManager
             BeforeManualMove();
             framesToDecode = 1;
 
-            double selDuration = Math.Round(workingZone.End - workingZone.Start + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-
-            double normalized = (currentTimestamp - workingZone.Start) / selDuration;
-            int currentPercentage = (int)Math.Round(normalized * 100);
-            int maxSteps = 100 / round;
-            int currentStep = currentPercentage / round;
-            int nextStep = forward ? currentStep + 1 : currentStep - 1;
-            nextStep = Math.Max(Math.Min(nextStep, maxSteps), 0);
-            int newPercentage = nextStep * round;
-            long newPosition = workingZone.Start + (long)((newPercentage / 100) * selDuration);
+            double range = Math.Round(workingZone.End - workingZone.Start + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+            double current = (currentTimestamp - workingZone.Start) / range;
+            double step = stepPercent / 100.0;
+            double stepIndex = current / step;
+            double roundedStep = Math.Round(stepIndex);
+            double epsilon = m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame / range / step;
+            if (Math.Abs(stepIndex - roundedStep) < epsilon)
+            {
+                stepIndex = roundedStep;
+            }
+            
+            double snapIndex = forward ? Math.Floor(stepIndex) + 1 : Math.Ceiling(stepIndex) - 1;
+            double maxSteps = (int)Math.Floor(1.0 / step);
+            snapIndex = Math.Max(Math.Min(snapIndex, maxSteps), 0);
+            long snappedTimestamp = workingZone.Start + (long)Math.Round(snapIndex * step * range);
+            
+            log.DebugFormat("Snap to step. Current: [{0}]. Snapped: [~{1}].", currentTimestamp, snappedTimestamp);
 
             if (wasPlaying)
             {
                 // Make sure we go to the new location before restarting playback.
-                PresentFrame(newPosition, true);
+                PresentFrame(snappedTimestamp, true);
                 EnsurePlaying();
             }
             else
             {
-                PresentFrame(newPosition);
+                PresentFrame(snappedTimestamp);
             }
         }
 
@@ -2066,7 +2054,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 buttonPlay.Image = Resources.flatpause3b;
-                StartMultimediaTimer();
+                StartMultimediaTimer(currentTimestamp);
                 PlayStarted?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -2082,7 +2070,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             buttonPlay.Image = Resources.flatpause3b;
-            StartMultimediaTimer();
+            StartMultimediaTimer(currentTimestamp);
         }
 
         public void Common_MouseWheel(object sender, MouseEventArgs e)
@@ -2156,8 +2144,7 @@ namespace Kinovea.ScreenManager
             // This will update the timecode on any clock object still using the overall time origin.
             DoInvalidate();
 
-            if (TimeOriginChanged != null)
-                TimeOriginChanged(this, EventArgs.Empty);
+            TimeOriginChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void trkSelection_SelectionChanging(object sender, EventArgs e)
@@ -2383,7 +2370,7 @@ namespace Kinovea.ScreenManager
             BeforeManualMove();
 
             // Temporary set the "resolved" timestamp to our position.
-            currentTimestamp = trkFrame.Position;
+            //currentTimestamp = trkFrame.Position;
 
             // Final update to timestamps.
             if (trkFrame.Position != activePlayerState.ReferenceTimestamp)
@@ -2461,11 +2448,10 @@ namespace Kinovea.ScreenManager
                 if (isCurrentlyPlaying)
                 {
                     StopMultimediaTimer();
-                    StartMultimediaTimer();
+                    StartMultimediaTimer(currentTimestamp);
                 }
 
-                if (SpeedChanged != null)
-                    SpeedChanged(this, EventArgs.Empty);
+                SpeedChanged?.Invoke(this, EventArgs.Empty);
             }
 
             UpdateSpeedLabel();
@@ -2707,9 +2693,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Timers & Playloop
-        private void StartMultimediaTimer()
+
+        /// <summary>
+        /// Start playback.
+        /// </summary>
+        private void StartMultimediaTimer(long startTimestamp)
         {
-            //log.DebugFormat("starting playback timer at {0} ms interval.", _interval);
             ActivateKeyframe(-1);
             dropWatcher.Restart();
             loopWatcher.Restart();
@@ -2726,7 +2715,7 @@ namespace Kinovea.ScreenManager
             uint refreshInterval = (uint)Math.Round(Math.Max(playbackFrameInterval, (1000.0 / monitorRefreshRate)));
             
             log.DebugFormat("Starting playback on [{0}]. Frame interval:{1:0.000} ms, refresh interval:{2} ms.",
-                currentTimestamp, playbackFrameInterval, refreshInterval);
+                startTimestamp, playbackFrameInterval, refreshInterval);
 
             // Snapshot the playback state and publish it to the reader.
             // This is a synchronous request, it can only come back after the decoder is relocated.
@@ -2735,7 +2724,7 @@ namespace Kinovea.ScreenManager
                 GetNextPlayerStateId(),
                 PlayerStateMode.Playback,
                 synchronous,
-                currentTimestamp,
+                startTimestamp,
                 playbackFrameInterval,
                 refreshInterval);
 
@@ -2882,9 +2871,10 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            // Update to the resolved timestamp.
             currentTimestamp = m_FrameServer.VideoReader.Current.Timestamp;
             
-            double lag = (expectedTimestamp - currentTimestamp) / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            //double lag = (expectedTimestamp - currentTimestamp) / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
             //log.DebugFormat("Player lag: {0:0.00} s", lag);
 
             if (videoFilterIsActive)
@@ -2929,8 +2919,7 @@ namespace Kinovea.ScreenManager
             else 
             {
                 StopMultimediaTimer();
-                currentTimestamp = workingZone.Start;
-                StartMultimediaTimer();
+                StartMultimediaTimer(workingZone.Start);
             }
         }
         
@@ -3055,7 +3044,7 @@ namespace Kinovea.ScreenManager
                 GetNextPlayerStateId(),
                 PlayerStateMode.Timestamp,
                 forceSynchronous,
-                targetTimestamp
+                Math.Min(targetTimestamp, workingZone.End)
                 );
             
             bool refreshInPlace = targetTimestamp == currentTimestamp;
@@ -3292,6 +3281,12 @@ namespace Kinovea.ScreenManager
             return ++nextPlayerStateId;
         }
 
+        /// <summary>
+        /// Stop the playback if running.
+        /// If playback was indeed running, optionally present the frame at the expected timestamp.
+        /// This should normally be true unless the caller knows it's going to 
+        /// present another frame immediately after.
+        /// </summary>
         public void StopPlaying(bool present = true)
         {
             if (!m_FrameServer.Loaded)
@@ -4686,8 +4681,7 @@ namespace Kinovea.ScreenManager
         }
         public void InvalidateFromMenu()
         {
-            if (SetAsActiveScreen != null)
-                SetAsActiveScreen(this, EventArgs.Empty);
+            SetAsActiveScreen?.Invoke(this, EventArgs.Empty);
 
             DoInvalidate();
         }

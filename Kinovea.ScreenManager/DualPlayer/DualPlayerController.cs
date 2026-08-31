@@ -348,7 +348,7 @@ namespace Kinovea.ScreenManager
             if (synching)
             {
                 currentTime = 0;
-                GotoTime(currentTime, true);
+                GotoTime(currentTime);
                 UpdateTrkFrame(currentTime);
             }
             else
@@ -367,7 +367,7 @@ namespace Kinovea.ScreenManager
                 {
                     currentTime -= commonTimeline.FrameTime;
 
-                    GotoTime(currentTime, true);
+                    GotoTime(currentTime);
                     UpdateTrkFrame(currentTime);
                 }
             }
@@ -387,7 +387,7 @@ namespace Kinovea.ScreenManager
                 {
                     currentTime += commonTimeline.FrameTime;
                     
-                    GotoTime(currentTime, true);
+                    GotoTime(currentTime);
                     UpdateTrkFrame(currentTime);
                 }
             }
@@ -404,7 +404,7 @@ namespace Kinovea.ScreenManager
             if (synching)
             {
                 currentTime = commonTimeline.LastTime;
-                GotoTime(currentTime, true);
+                GotoTime(currentTime);
                 UpdateTrkFrame(currentTime);
             }
             else
@@ -419,7 +419,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             SetSyncPoint(false);
-            GotoTime(currentTime, true);
+            GotoTime(currentTime);
         }
         private void CCtrl_MergeAsked(object sender, EventArgs e)
         {
@@ -440,7 +440,7 @@ namespace Kinovea.ScreenManager
             Pause();
             
             currentTime = e.Time;
-            GotoTime(currentTime, true);
+            GotoTime(currentTime);
         }
         
         private void CCtrl_GotoPrevKeyframe(object sender, EventArgs e)
@@ -481,7 +481,7 @@ namespace Kinovea.ScreenManager
                 return;
             
             currentTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTimeOriginPhysical);
-            GotoTime(currentTime, true);
+            GotoTime(currentTime);
             UpdateTrkFrame(currentTime);
         }
         
@@ -597,7 +597,7 @@ namespace Kinovea.ScreenManager
             players[1].SyncMerge = false;
             StopMerge();
 
-            GotoTime(currentTime, true);
+            GotoTime(currentTime);
         }
 
         private void InitializeSync()
@@ -624,21 +624,23 @@ namespace Kinovea.ScreenManager
             view.UpdateSyncPosition(currentTime); 
         }
 
-        private void GotoTime(long commonTime, bool allowUIUpdate)
+        private void GotoTime(long commonTime)
         {
-            GotoTime(players[0], commonTime, allowUIUpdate);
-            GotoTime(players[1], commonTime, allowUIUpdate);
+            GotoTime(players[0], commonTime);
+            GotoTime(players[1], commonTime);
 
             UpdateHairLines();
         }
         
-        private void GotoTime(PlayerScreen player, long commonTime, bool allowUIUpdate)
+        private void GotoTime(PlayerScreen player, long commonTime)
         {
             long localTime = commonTimeline.GetLocalTime(player, commonTime);
             localTime = Math.Max(0, localTime);
 
             if (player.LocalTime != localTime)
-                player.GotoTime(localTime, allowUIUpdate);
+            {
+                player.GotoTime(localTime, false);
+            }
         }
 
         private void UpdateHairLines()
@@ -666,7 +668,7 @@ namespace Kinovea.ScreenManager
                 currentTime = Math.Min(leftTime, rightTime);
 
             log.DebugFormat("Aligning players to {0}.", currentTime / 1000);
-            GotoTime(currentTime, true);
+            GotoTime(currentTime);
         }
 
         private void EnsureBothPlaying()

@@ -790,15 +790,13 @@ namespace Kinovea.ScreenManager
             view.StopPlaying();
         }
         
-        public void GotoNextFrame(bool allowUIUpdate)
-        {
-            view.ForceCurrentFrame(-1, allowUIUpdate);
-        }
-        
-        public void GotoTime(long microseconds, bool allowUIUpdate)
+        /// <summary>
+        /// Function called by the dual player or dual video exporter.
+        /// </summary>
+        public void GotoTime(long microseconds, bool synchronous)
         {
             long timestamp = RelativeRealTimeToAbsoluteTimestamp(microseconds);
-            view.ForcePosition(timestamp, allowUIUpdate);
+            view.ForcePosition(timestamp, synchronous);
         }
         
         public void GotoPrevKeyframe()

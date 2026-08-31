@@ -156,7 +156,7 @@ namespace Kinovea.ScreenManager
         {
             long localTime = commonTimeline.GetLocalTime(player, commonTime);
             localTime = Math.Max(0, localTime);
-            player.GotoTime(localTime, false);
+            player.GotoTime(localTime, true);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
