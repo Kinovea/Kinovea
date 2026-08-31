@@ -525,8 +525,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         
         bool ExecuteDecodingJobPlan(PlayerState^ state, DecodingJobPlan^ plan);
         
-        /// Returns true if the pending frame is a continuation of the prebuffer.
-        bool IsPendingNext(int64_t cacheEnd);
+        void DisposePending();
+
+        /// Resubmits the pending frame. 
+        /// If the add succeeds and it matches the target, acquires it.
+        /// Returns true if the target was acquired.
+        bool ResubmitPending(int64_t target, bool forced);
+
 
         //-------------------
         // Logging helpers

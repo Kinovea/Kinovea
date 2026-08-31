@@ -26,53 +26,17 @@ namespace Kinovea.Video
         /// </summary>
         public long AcquiredTimestamp { get; }
 
-        /// <summary>
-        /// True if there is a dense range starting at the target.
-        /// </summary>
-        public bool DenseForward { get; }
-
-        /// <summary>
-        /// End timestamp of the dense range.
-        /// </summary>
-        public long DenseEndTimestamp { get; }
-
-        /// <summary>
-        /// Timestamp of the first frame stored in the cache.
-        /// </summary>
-        public long CacheStartTimestamp { get; }
-
-        /// <summary>
-        /// Timestamp of the last frame stored in the cache.
-        /// Useful to test if a pending frame is a continuation of the cache.
-        /// </summary>
-        public long CacheEndTimestamp { get; }
-
-        /// <summary>
-        /// True if the cache is full and cannot accept more frames.
-        /// </summary>
-        public bool Full { get; }
-
         public CachePreparationResult(
             bool targetAcquired, 
-            long acquiredTimestamp, 
-            bool denseForward, 
-            long denseEndTimestamp,
-            long cacheStartTimestamp,
-            long cacheEndTimestamp,
-            bool full)
+            long acquiredTimestamp)
         {
             TargetAcquired = targetAcquired;
             AcquiredTimestamp = acquiredTimestamp;
-            DenseForward = denseForward;
-            DenseEndTimestamp = denseEndTimestamp;
-            CacheStartTimestamp = cacheStartTimestamp;
-            CacheEndTimestamp = cacheEndTimestamp;
-            Full = full;
         }
 
         public static CachePreparationResult Empty()
         {
-            return new CachePreparationResult(false, -1, false, -1, -1, -1, false);
+            return new CachePreparationResult(false, -1);
         }
     }
 }
