@@ -156,9 +156,9 @@ namespace Kinovea.Video.Bitmap
         #endregion
 
         #region Working zone and decoding mode
-        public override void UpdateWorkingZone(VideoSection newZone, CacheLoadMode loadMode, int maxMemory, Action<DoWorkEventHandler> workerFn)
+        public override void UpdateWorkingZone(WorkingZoneRequest request, Action<DoWorkEventHandler> workerFn)
         {
-            workingZone = newZone;
+            workingZone = request.WorkingZone;
         }
         #endregion 
 

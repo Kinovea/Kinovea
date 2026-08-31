@@ -891,9 +891,9 @@ namespace Kinovea.ScreenManager
             bool timeOriginWasAligned = m_FrameServer.Metadata.TimeOrigin == m_iSelStart;
 
             VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-            log.DebugFormat("Working zone update. {0} -> {1}.", m_FrameServer.VideoReader.WorkingZone, newZone);
-
             VideoDecodingMode oldCachingMode = m_FrameServer.VideoReader.DecodingMode;
+
+            log.DebugFormat("Working zone update. {0} -> {1}.", m_FrameServer.VideoReader.WorkingZone, newZone);
 
             StopPlaying();
             OnPauseAsked();
@@ -901,23 +901,22 @@ namespace Kinovea.ScreenManager
             // Threading: for full caching the loading happens in a background thread but somewhat synchronously.
             // The control is returned to the UI thread in the modal dialog that shows the progress bar.
             // When the loading is done or cancelled the call below returns and we continue.
-
-            m_FrameServer.VideoReader.UpdateWorkingZone(
-                newZone,
-                loadMode,
-                PreferencesManager.PlayerPreferences.WorkingZoneMemory, 
-                WorkingZoneCacheLoadWorker);
-
-            // By now the first frame of the new working zone is in the cache and its timestamp is resolved.
-            currentTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
             
-            VideoDecodingMode newCachingMode = m_FrameServer.VideoReader.DecodingMode;
+            int maxMemory = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
+            WorkingZoneRequest request = new WorkingZoneRequest(newZone, loadMode, maxMemory);
+            
+            m_FrameServer.VideoReader.UpdateWorkingZone(request, WorkingZoneCacheLoadWorker);
 
+            // By this point the first frame of the new working zone is in the cache and its timestamp is resolved.
+            currentTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
+
+            // If we changed mode the decoding size may have changed.
+            VideoDecodingMode newCachingMode = m_FrameServer.VideoReader.DecodingMode;
             if (oldCachingMode != newCachingMode)
             {
-                log.DebugFormat("Working zone update changed caching mode: {0} -> {1}.", oldCachingMode, newCachingMode);
-
-                // If we changed mode the decoding size may have changed.
+                log.DebugFormat("Working zone update changed caching mode: {0} -> {1}.", 
+                    oldCachingMode, newCachingMode);
+                
                 // This will trigger a PresentFrame.
                 ResizeUpdate(true);
             }
@@ -926,21 +925,21 @@ namespace Kinovea.ScreenManager
                 PresentFrame(currentTimestamp, true);
             }
 
-            // Update our local zone values to the resolved one.
-            // Note: the end may still be in "request" space if we are in prebuffering mode.
+            // Update our local zone values with the resolved one.
+            // Note: the end may still be in "request" space if we are not in caching mode.
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
             m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
+            // Update metadata.
             if (timeOriginWasAligned)
             {
                 m_FrameServer.Metadata.TimeOrigin = m_iSelStart;
             }
 
-            // Update the metadata internal values.
             m_FrameServer.Metadata.InitTime(m_iSelStart, m_iSelEnd, m_FrameServer.Metadata.TimeOrigin);
             
-            // Update UI with resolved values.
+            // Update Timeline and selection UI with resolved values.
             if (trkSelection.SelStart != m_iSelStart)
             {
                 trkSelection.SelStart = m_iSelStart;

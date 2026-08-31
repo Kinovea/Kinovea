@@ -181,7 +181,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         //-------------------
         // Working zone and decoding mode
         //-------------------
-        virtual void UpdateWorkingZone(VideoSection newZone, CacheLoadMode loadMode, int maxMemory, Action<DoWorkEventHandler^>^ workerFn) override;
+        virtual void UpdateWorkingZone(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn) override;
 
         /// If we are not caching yet, try to switch to prebuffering.
         virtual void StartPrebufferingIfNotCaching() override;
@@ -472,12 +472,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         /// Returns how many megabytes the working zone requires to be fully loaded in memory.
         /// This is for full size frames, not decoding size.
         double WorkingZoneMemoryRequirement(VideoSection _newZone);
-
-        void FirstUpdateWorkingZone(
-            VideoSection newZone, 
-            CacheLoadMode loadMode,
-            bool fitsInMemory,
-            Action<DoWorkEventHandler^>^ workerFn) override;
 
         /// Clears the old frame container and points it to the one of the new mode.
         /// This should be called after validating that the mode is available.

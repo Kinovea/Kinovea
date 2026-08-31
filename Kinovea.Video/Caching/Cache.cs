@@ -44,9 +44,17 @@ namespace Kinovea.Video
         {
             get 
             {
-                return workingZone;
+                if (frames.Count == 0)
+                {
+                    return VideoSection.MakeEmpty();
+                }
+
+                return new VideoSection(
+                    frames.Values[0].Timestamp,
+                    frames.Values[frames.Count - 1].Timestamp);
             }
         }
+
         public bool Empty
         {
             get 
@@ -68,7 +76,6 @@ namespace Kinovea.Video
 
         #region Members
         private SortedList<long, VideoFrame> frames = new SortedList<long, VideoFrame>();
-        private VideoSection workingZone = VideoSection.MakeEmpty();
         private VideoFrame current;
         private double tolerance = 0.0;
         private VideoFrameDisposer frameDisposer;
@@ -138,13 +145,31 @@ namespace Kinovea.Video
             }
 
             frames.Add(frame.Timestamp, frame);
-            UpdateWorkingZone();
             return CacheAddResult.Added;
         }
 
         public CacheAddResult ForceAdd(VideoFrame frame)
         {
             return Add(frame);
+        }
+
+        /// <summary>
+        /// Evict all frames outside the passed bounds.
+        /// </summary>
+        public void Trim(long start, long end)
+        {
+            VideoSection section = new VideoSection(start, end);
+            for (int i = frames.Count - 1; i >= 0; i--)
+            {
+                VideoFrame frame = frames.Values[i];
+                if (!section.Contains(frame.Timestamp))
+                {
+                    frames.RemoveAt(i);
+                    DisposeFrame(frame);
+                }
+            }
+
+            current = frames.Count > 0 ? frames.Values[0] : null;
         }
 
         public void Clear()
@@ -156,7 +181,6 @@ namespace Kinovea.Video
                 
             frames.Clear();
             current = null;
-            workingZone = VideoSection.MakeEmpty();
             
             log.Debug("Cache cleared.");
         }
@@ -164,46 +188,6 @@ namespace Kinovea.Video
         public void Shutdown()
         {
             throw new NotImplementedException();
-        }
-
-
-        /// <summary>
-        /// Evict all frames outside the new working zone.
-        /// </summary>
-        public void ReduceWorkingZone(VideoSection zone)
-        {
-            for (int i = frames.Count - 1; i >= 0; i--)
-            {
-                VideoFrame frame = frames.Values[i];
-
-                if (!zone.Contains(frame.Timestamp))
-                {
-                    DisposeFrame(frame);
-                    frames.RemoveAt(i);
-                }
-            }
-
-            UpdateWorkingZone();
-
-            current = frames.Count > 0 ? frames.Values[0] : null;
-        }
-        #endregion
-
-        #region Private Methods
-        /// <summary>
-        /// Update the internal working zone with the actual timestamps of the first and last frame.
-        /// </summary>
-        private void UpdateWorkingZone()
-        {
-            if(frames.Count == 0)
-            {
-                workingZone = VideoSection.MakeEmpty();
-            }
-
-            long start = frames.Values[0].Timestamp;
-            long end = frames.Values[frames.Count - 1].Timestamp;
-
-            workingZone = new VideoSection(start, end);
         }
         #endregion
 

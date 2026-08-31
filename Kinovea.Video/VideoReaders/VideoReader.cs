@@ -247,14 +247,16 @@ namespace Kinovea.Video
 
         /// <summary>
         /// The player is asking the reader to update the working zone.
-        /// This will update the bounds and try to switch to full caching mode.
+        /// This will try to switch to full caching mode.
         /// If it fits in memory it will use the provided background worker to load it.
         /// If it doesn't fit and the reader supports async decoding, it will switch to
         /// prebuffering mode and start the decoding thread.
         /// Otherwise it will stay in "on-demand" synchrounous mode.
+        /// The internal working zone held by the reader should be updated. 
+        /// The start frame is resolved to an actual media timestamp.
+        /// In the case of full caching the end frame is also resolved.
         /// </summary>
-        /// <param name="_workerFn">A function that will start a background thread for the actual import</param>
-        public virtual void UpdateWorkingZone(VideoSection _newZone, CacheLoadMode loadMode, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
+        public virtual void UpdateWorkingZone(WorkingZoneRequest request, Action<DoWorkEventHandler> workerFunction)
         {
         }
 
@@ -269,6 +271,9 @@ namespace Kinovea.Video
         {
         }
 
+        /// <summary>
+        /// Concrete function checking if the reader can switch to a decoding mode.
+        /// </summary>
         public bool CanSwitchDecodingMode(VideoDecodingMode mode)
         {
             switch (mode)

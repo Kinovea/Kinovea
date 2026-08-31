@@ -918,11 +918,7 @@ void VideoReaderFFMpeg::BeforePlayloop()
     }
 }
 
-void VideoReaderFFMpeg::UpdateWorkingZone(
-    VideoSection newZone, 
-    CacheLoadMode loadMode,
-    int maxMemory, 
-    Action<DoWorkEventHandler^>^ workerFn)
+void VideoReaderFFMpeg::UpdateWorkingZone(WorkingZoneRequest^ request, Action<DoWorkEventHandler^>^ workerFn)
 {
     if (!CanChangeWorkingZone)
     {
@@ -934,209 +930,152 @@ void VideoReaderFFMpeg::UpdateWorkingZone(
         return;
     }
 
-    if (newZone.IsEmpty)
+    if (request->WorkingZone.IsEmpty)
     {
         return;
     }
 
     log->DebugFormat("Update working zone request. {0} -> {1}. Cache load mode: {2}, First time: {3}", 
-        mWorkingZone, newZone, loadMode, mIsFirstWZUpdate);
+        mWorkingZone, request->WorkingZone, request->CacheLoadMode, mIsFirstWZUpdate);
     
     // Important: the new zone is coming from pixel values and there is no guarantee that
     // actual frames exists in the video at these values.
     // We must update our internal values according to real timestamps as soon as possible.
     VideoSection oldZone = mWorkingZone;
-    mWorkingZone = newZone;
-    bool fitsInMemory = WorkingZoneMemoryRequirement(newZone) <= maxMemory;
+    double requiresMB = WorkingZoneMemoryRequirement(request->WorkingZone);
+    bool fitsInMemory = requiresMB <= request->MaxMemoryMB;
 
-    log->DebugFormat("New working zone fits: {0}.", fitsInMemory);
+    log->DebugFormat("New working zone: {0:0.000} GB. Allowed: {1:0.000} GB.", 
+        requiresMB/1024.0, request->MaxMemoryMB/1024.0);
 
-    if (mIsFirstWZUpdate)
+    bool allowPrebuffering = !mIsFirstWZUpdate;
+    mIsFirstWZUpdate = false;
+
+    if (fitsInMemory && request->CacheLoadMode != CacheLoadMode::DoNotLoad)
     {
-        FirstUpdateWorkingZone(newZone, loadMode, fitsInMemory, workerFn);
-        mIsFirstWZUpdate = false;
-        return;
-    }
-
-    if (fitsInMemory)
-    {
-        
-        // FIXME:
-        // We should read the first frame of the wz synchronously before returning.
-        // This way the UI can present it immediately, like for prebuffering.
-        // If we switch mode we are invalidating the old container, the UI
-        // won't have anything to show until we have read a frame again, even if 
-        // it's the same we already had.
-
         if (mCachingMode != VideoDecodingMode::Caching)
         {
             // Change mode (including clearing of the existing container) and load the cache.
             // Force reload is irrelevant here, we always need to reload.
             ChangeCachingMode(VideoDecodingMode::Caching);
-            mSectionToPrepend = newZone;
+            mSectionToPrepend = request->WorkingZone;
+            mSectionToAppend = VideoSection::MakeEmpty();
+            DoWorkEventHandler^ workHandler = gcnew DoWorkEventHandler(this, &VideoReaderFFMpeg::ImportWorkingZoneToCache);
+            workerFn(workHandler);
+        }
+        else if (request->CacheLoadMode == CacheLoadMode::Reload)
+        {
+            // Force reload everything.
+            mCache->Clear();
+            mSectionToPrepend = request->WorkingZone;
             mSectionToAppend = VideoSection::MakeEmpty();
             DoWorkEventHandler^ workHandler = gcnew DoWorkEventHandler(this, &VideoReaderFFMpeg::ImportWorkingZoneToCache);
             workerFn(workHandler);
         }
         else
         {
-            // We are already in Caching mode.
+            // Adjust existing cache to the new working zone.
             mSectionToPrepend = VideoSection::MakeEmpty();
             mSectionToAppend = VideoSection::MakeEmpty();
             
-            if (loadMode == CacheLoadMode::Reload)
+            VideoSection reqZone = request->WorkingZone;
+
+            // Trim left.
+            if (reqZone.Start > mWorkingZone.Start)
             {
-                mCache->Clear();
-                mSectionToPrepend = newZone;
+                // Only do it if the new start is at least one frame beyond the old one.
+                if (reqZone.Start - mWorkingZone.Start > mVideoInfo.AverageTimeStampsPerFrame)
+                {
+                    mCache->Trim(reqZone.Start, mWorkingZone.End);
+                    mWorkingZone = mCache->WorkingZone;
+                    log->DebugFormat("Trimmed working zone cache from the left: {0}.", mWorkingZone);
+                }
+
+                // Realign the request to avoid unnecessary loads due to timestamp mismatch.
+                reqZone = VideoSection(mWorkingZone.Start, reqZone.End);
+            }
+
+            // Trim right.
+            if (reqZone.End < mWorkingZone.End)
+            {
+                // Only do it if the new end is at least one frame before the old one.
+                if (mWorkingZone.End - reqZone.End > mVideoInfo.AverageTimeStampsPerFrame)
+                {
+                    mCache->Trim(mWorkingZone.Start, reqZone.End);
+                    mWorkingZone = mCache->WorkingZone;
+                    log->DebugFormat("Trimmed working zone cache from the right: {0}.", mWorkingZone);
+                }
+
+                // Realign the request to avoid unnecessary loads due to timestamp mismatch.
+                reqZone = VideoSection(reqZone.Start, mWorkingZone.End);
+            }
+
+            // Bail out if this was purely a trimming job.
+            if (mWorkingZone == reqZone)
+            {
+                return;
+            }
+
+            // Expand left.
+            if (mWorkingZone.Start - reqZone.Start > mVideoInfo.AverageTimeStampsPerFrame)
+            {
+                mSectionToPrepend = VideoSection(reqZone.Start, mWorkingZone.Start);
+            }
+
+            // Expand right.
+            if (reqZone.End - mWorkingZone.End > mVideoInfo.AverageTimeStampsPerFrame)
+            {
+                mSectionToAppend = VideoSection(mWorkingZone.End, reqZone.End);
+            }
+
+            if (!mSectionToPrepend.IsEmpty || !mSectionToAppend.IsEmpty)
+            {
                 DoWorkEventHandler^ workHandler = gcnew DoWorkEventHandler(this, &VideoReaderFFMpeg::ImportWorkingZoneToCache);
                 workerFn(workHandler);
             }
-            else
-            {
-                // Reset to the old zone and update it on the fly.
-                mWorkingZone = oldZone;
-
-                // Trim left.
-                if (newZone.Start > mWorkingZone.Start)
-                {
-                    // Only do it if the new start is at least one frame beyond the old one.
-                    if (newZone.Start - mWorkingZone.Start > mVideoInfo.AverageTimeStampsPerFrame)
-                    {
-                        mCache->ReduceWorkingZone(VideoSection(newZone.Start, mWorkingZone.End));
-                        mWorkingZone = mCache->WorkingZone;
-                        log->DebugFormat("Reduced cache from the front: {0}.", mWorkingZone);
-                    }
-
-                    // Realign the request to avoid unnecessary loads due to timestamp mismatch.
-                    newZone = VideoSection(mWorkingZone.Start, newZone.End);
-                }
-
-                // Trim right.
-                if (newZone.End < mWorkingZone.End)
-                {
-                    // Only do it if the new end is at least one frame before the old one.
-                    if (mWorkingZone.End - newZone.End > mVideoInfo.AverageTimeStampsPerFrame)
-                    {
-                        mCache->ReduceWorkingZone(VideoSection(mWorkingZone.Start, newZone.End));
-                        mWorkingZone = mCache->WorkingZone;
-                        log->DebugFormat("Reduced cache from the back: {0}.", mWorkingZone);
-                    }
-
-                    // Realign the request to avoid unnecessary loads due to timestamp mismatch.
-                    newZone = VideoSection(newZone.Start, mWorkingZone.End);
-                }
-
-                // Bail out if this was purely a trimming job.
-                if (mWorkingZone == newZone)
-                {
-                    return;
-                }
-
-                // Expand left.
-                if (mWorkingZone.Start - newZone.Start > mVideoInfo.AverageTimeStampsPerFrame)
-                {
-                    mSectionToPrepend = VideoSection(newZone.Start, mWorkingZone.Start);
-                }
-
-                // Expand right.
-                if (newZone.End - mWorkingZone.End > mVideoInfo.AverageTimeStampsPerFrame)
-                {
-                    mSectionToAppend = VideoSection(mWorkingZone.End, newZone.End);
-                }
-
-                if (!mSectionToPrepend.IsEmpty || !mSectionToAppend.IsEmpty)
-                {
-                    DoWorkEventHandler^ workHandler = gcnew DoWorkEventHandler(this, &VideoReaderFFMpeg::ImportWorkingZoneToCache);
-                    workerFn(workHandler);
-                }
-            }
         }
     }
-    else
+    else if (allowPrebuffering && CanPreBuffer)
     {
-        // The working zone doesn't fit in memory.
-        if (mCachingMode == VideoDecodingMode::Caching)
-        {
-            // Exit caching mode, this clears the cache.
-            if (CanPreBuffer)
-            {
-                ChangeCachingMode(VideoDecodingMode::PreBuffering);
-                // TODO: acquire / resolve and reassign to working zone.
-            }
-            else
-            {
-                ChangeCachingMode(VideoDecodingMode::OnDemand);
-            }
-        }
-        else if (mCachingMode == VideoDecodingMode::PreBuffering)
+        if (mCachingMode == VideoDecodingMode::PreBuffering)
         {
             // Technically if the new zone is only trimmed/expanded by the right side
             // we don't really need to move the decoder to the start.
             // But then we have to handle corner cases like the current frame being 
             // outside the new zone, the decoder waiting in add(), or 
-            // the decoder having reached EOF of the old zone and waiting for a new job. 
+            // the decoder waiting for a new job after reaching EOF.
             // It's simpler to just restart from scratch.
             StopPreBufferingThread();
             mPreBuffer->Shutdown();
             DisposePending();
         }
-
-        // At this point we have either switched to prebuffering or we were already in it.
-        // And the old buffer has been discarded.
-        if (mCachingMode == VideoDecodingMode::PreBuffering)
+        else
         {
-            int64_t target = newZone.Start;
-            StartPreBufferingThread(target);
-
-            // Acquire the target and set the resolved value as the new start of the working zone.
-            // Only the first frame is resolved, the end is still in "request" space.
-            mPreBuffer->AcquireClosest(target);
-            int64_t resolvedTarget = mPreBuffer->CurrentFrame->Timestamp;
-            mWorkingZone = VideoSection(resolvedTarget, newZone.End);
+            ChangeCachingMode(VideoDecodingMode::PreBuffering);
         }
-    }
-}
 
-void VideoReaderFFMpeg::FirstUpdateWorkingZone(
-    VideoSection newZone, 
-    CacheLoadMode loadMode,
-    bool fitsInMemory, 
-    Action<DoWorkEventHandler^>^ workerFn)
-{
-    if (mCachingMode != VideoDecodingMode::OnDemand)
+        // At this point we are in prebuffering mode.
+        // Relocate to the first frame and start the sequential decoding thread.
+        int64_t target = request->WorkingZone.Start;
+        StartPreBufferingThread(target);
+
+        // Acquire the target and get the resolved value.
+        // The end frame stays in "request" space.
+        mPreBuffer->AcquireClosest(target);
+        int64_t resolvedTarget = mPreBuffer->CurrentFrame->Timestamp;
+        mWorkingZone = VideoSection(resolvedTarget, request->WorkingZone.End);
+    }
+    else
     {
-        throw gcnew InvalidProgramException();
+        if (mCachingMode != VideoDecodingMode::OnDemand)
+        {
+            ChangeCachingMode(VideoDecodingMode::OnDemand);
+        }
+
+        mWorkingZone = request->WorkingZone;
+
+        // TODO: move to the first frame if needed.
     }
-
-    // This is the very first call to update the working zone.
-    // This may be coming from a KVA during loading of the video, 
-    // or as an explicit call after the UI is ready.
-    
-    // We do not start the prebuffering thread here because the 
-    // preferred decoding size may not be known reliably.
-    // The UI will later make an explicit call to set the preferred size
-    // and start the thread.
-
-    if (loadMode == CacheLoadMode::DoNotLoad)
-    {
-        // This happens when the player wants to prevent the wait of loading 
-        // the frames into the cache, for example for replay observers.
-        // We stay in on-demand mode.
-        return;
-    }
-
-    if (!fitsInMemory)
-    {
-        // Stay in on-demand mode.
-        return;
-    }
-
-    // Change mode and load the cache.
-    ChangeCachingMode(VideoDecodingMode::Caching);
-    mSectionToPrepend = newZone;
-    mSectionToAppend = VideoSection::MakeEmpty();
-    DoWorkEventHandler^ workHandler = gcnew DoWorkEventHandler(this, &VideoReaderFFMpeg::ImportWorkingZoneToCache);
-    workerFn(workHandler);
 }
 
 void VideoReaderFFMpeg::BeforeFrameEnumeration()
@@ -1673,8 +1612,6 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
     //-----------------------------------
     // This runs in either the main thread or the prebuffering thread.
     //-----------------------------------
-    mStopwatch->Restart();
-
     if (!mIsLoaded || 
         mCachingMode == VideoDecodingMode::NotInitialized || 
         mFrameContainer == nullptr ||
@@ -1693,6 +1630,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
     // For example when we change the output size (? this should invalidate everything).
     // We have to seek back to the start of the GOP and decode many frames again.
 
+    Stopwatch^ stopwatchRelocate = Stopwatch::StartNew();
 
     if (doSeek)
     {
@@ -1767,15 +1705,13 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
                 // 
                 // 2. We get bracketing of the target for free. 
                 // When the caller of this function calls cache.AcquireClosest(target) it will 
-                // find the appropriate frame, which may be the penultimate one rather than the last one.
+                // find the appropriate frame, which may be the penultimate one rather than the ultimate one.
                 //-------------------------------------------------------
                 result = ConvertAndStoreFrame(frame, false, true);
-                log->DebugFormat("Pre-roll frame [{0}] stored. Decoded {1} frames.", mDecodedTimestamp, framesDecoded);
+                log->DebugFormat("Stored preroll frame [{0}]. Decoded {1} frames.", mDecodedTimestamp, framesDecoded);
+                
                 if (mDecodedTimestamp >= targetTimestamp)
                 {
-                    log->DebugFormat("Reached seek target. [~{0}] -> [{1}]. Decoded {2} frames.",
-                        targetTimestamp, mDecodedTimestamp, framesDecoded);
-
                     av_frame_free(&frame);
                     break;
                 }
@@ -1785,9 +1721,6 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
         {
             if (mDecodedTimestamp >= targetTimestamp)
             {
-                log->DebugFormat("Reached seek target. [~{0}] -> [{1}]. Decoded {2} frames.", 
-                    targetTimestamp, mDecodedTimestamp, framesDecoded);
-
                 result = ConvertAndStoreFrame(frame, false, false);
                 av_frame_free(&frame);
                 break;
@@ -1796,6 +1729,10 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
 
         // Keep decoding.
     }
+
+    int64_t elapsed = stopwatchRelocate->ElapsedMilliseconds;
+    log->DebugFormat("Reached seek target. [~{0}] -> [{1}]. Decoded {2} frames in {3} ms (avg: {4:0.000} ms).",
+        targetTimestamp, mDecodedTimestamp, framesDecoded, elapsed, (float)elapsed / framesDecoded);
 
     return result;
 }
