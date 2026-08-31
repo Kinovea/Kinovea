@@ -228,6 +228,9 @@ namespace Kinovea.Video
             if (Math.Abs(delta) <= tolerance)
                 return TimestampRelation.Match;
 
+            if (delta < -farAheadThreshold)
+                return TimestampRelation.FarBehind;
+
             if (delta < 0)
                 return TimestampRelation.Behind;
 

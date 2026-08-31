@@ -1663,9 +1663,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
 
     ReadResult result = ReadResult::UnknownError;
 
-    // This is used for both seeking and relative jump.
-    int	framesToDecode = 1;
-    int framesDecoded = 0;
+    
     int res = 0;
 
     // It's possible to get here with a target equal to that of the current decoder location.
@@ -1691,6 +1689,7 @@ ReadResult VideoReaderFFMpeg::ReadFrameSeek(int64_t targetTimestamp, bool doSeek
     // Decode frames until we get to the target or EOF.
     AVFrame* frame = av_frame_alloc();
     bool inPreRollWindow = false;
+    int framesDecoded = 0;
     while (true)
     {
         result = DecodeOneFrame(mFormatCtx, mVideoStreamIndex, mVideoCodecCtx, frame);
@@ -2883,16 +2882,16 @@ void VideoReaderFFMpeg::UpdateFrameSkippingPolicy()
     long expectedTimestamp = this->GetPlaybackTimestamp(mWorkingPlayerState);
     double lag = (expectedTimestamp - mCachedTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
-    String^ logLine = String::Format("UpdateFrameSkippingPolicy: estimated player timestamp: [{0}], latest stored: [{1}], Lag: {2:0.000}s, Cache: {3}/{4}.",
-        expectedTimestamp, mCachedTimestamp, lag, mPreBuffer->Count, mPreBuffer->Capacity);
+    String^ logLine = String::Format("UpdateFrameSkippingPolicy. Lag: {0:0.000} s, Cache: {1}/{2}. Frame: {3}.",
+        lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
 
     log->DebugFormat(logLine);
             
     // Check worst case scenario first.
     if (lag > mSeekAheadLagThreshold)
     {
-        log->ErrorFormat("Lag of {0:0.000}s is over seek-ahead threshold. Decoded frames: {1}. Cache: {2}/{3}.", 
-            lag, mDecodedFrames, mPreBuffer->Count, mPreBuffer->Capacity);
+        log->ErrorFormat("Lag of {0:0.000} s is over seek-ahead threshold. Cache: {1}/{2}. Frame: {3}", 
+            lag, mPreBuffer->Count, mPreBuffer->Capacity, mDecodedFrames);
             
         // We are hopelessly behind, try to seek ahead.
         // Note: calling seek directly with min, target, max, doesn't always work.
@@ -3205,27 +3204,16 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
         // TODO: check if mCachedTimestamp matches the target. 
         // If so we can also just acquire it and continue decoding from there.
 
-        
     }
 
-
-    // Some sanity checks.
-    // These may happen when moving wildly on the timeline because the cache
-    // always tries to keep the "current" pointer alive when purging.
-    TimestampRelation relTarget = RelateTimestamps(targetTimestamp, mDecodedTimestamp);
-    if (relTarget == TimestampRelation::FarAhead)
-    {
-        log->WarnFormat("DecodingJobPlan: Decoder is far behind player: seeking.");
-        DisposePending();
-        mPreBuffer->Purge();
-        plan->DecoderRelocation = DecoderRelocation::Seek;
-        return plan;
-    }
-
+    // Sanity check.
     CacheTimestampRelation relCache = mPreBuffer->RelateTimestamp(mDecodedTimestamp);
     if (relCache == CacheTimestampRelation::FarAhead)
     {
-        log->WarnFormat("DecodingJobPlan: Rogue decoder far ahead of the cache: seeking.");
+        log->ErrorFormat("DecodingJobPlan: Rogue decoder far ahead of the cache: seeking.");
+
+        // This may happen when moving wildly on the timeline because the cache
+        // always tries to keep the "current" pointer alive when purging.
         DisposePending();
         mPreBuffer->Purge();
         plan->DecoderRelocation = DecoderRelocation::Seek;
@@ -3280,9 +3268,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     // Compare where the decoder is with respect to the target.
     // TODO: watch out for sparse -> dense job transition.
 
-    relTarget = isAcquired ?
-        RelateTimestamps(mDecodedTimestamp, acquiredTimestamp) :
-        RelateTimestamps(mDecodedTimestamp, targetTimestamp);
+    TimestampRelation relTarget = RelateTimestamps(mDecodedTimestamp, targetTimestamp);
 
     if (relTarget == TimestampRelation::Match)
     {
@@ -3334,16 +3320,24 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     }
     else if (relTarget == TimestampRelation::FarAhead)
     {
-        log->WarnFormat("DecodingJobPlan: Decoder is far ahead of player.");
+        log->WarnFormat("DecodingJobPlan: Decoder is far ahead of player: seeking.");
         
-        // Decoder is far ahead?
-        // Normally this is impossible, the "far ahead" threshold should
-        // be larger than the cache capacity.
-        // Generally an error case.
-        // One way to get this is to move the timeline quickly back and forth between far away locations.
+        // Decoder is far ahead but still within the cache.
+        // One way to get this is to move the timeline quickly back and forth between far away locations,
+        // so that spurious frames may linger at either end due to being pinned as current.
         DisposePending();
         mPreBuffer->Purge();
-        plan->ResubmitPending = false;
+        plan->DecoderRelocation = DecoderRelocation::Seek;
+        return plan;
+    }
+    else if (relTarget == TimestampRelation::FarBehind)
+    {
+        log->WarnFormat("DecodingJobPlan: Decoder is far behind player: seeking.");
+        
+        // Decoder far behind but still within the cache.
+        // Same as above, may happen when moving widldy back and forth between remote locations.
+        DisposePending();
+        mPreBuffer->Purge();
         plan->DecoderRelocation = DecoderRelocation::Seek;
         return plan;
     }

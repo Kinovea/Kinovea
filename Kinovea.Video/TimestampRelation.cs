@@ -8,13 +8,13 @@ namespace Kinovea.Video
 {
     /// <summary>
     /// Relates a request timestamp with a reference timestamp.
-    /// Fuzzy matching.
     /// </summary>
     public enum TimestampRelation
     {
         Unknown,
-        Behind,
         Match,
+        FarBehind,
+        Behind,
         Ahead,
         FarAhead,
     }

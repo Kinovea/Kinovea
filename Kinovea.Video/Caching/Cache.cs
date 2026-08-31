@@ -55,7 +55,7 @@ namespace Kinovea.Video
             }
         }
         /// <summary>
-        /// Get or set the tolerance for matching request-space timestamps built
+        /// Get or set the tolerance for matching request timestamps built
         /// from pixel location and clock, to media-space timestamps.
         /// This should be set to half average timestamps per frame.
         /// </summary>
