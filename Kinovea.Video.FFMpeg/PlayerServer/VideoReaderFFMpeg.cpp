@@ -513,7 +513,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     mScaledSize = mOriginalSize;
     mOutputSize = mReferenceSize;
     bool isPrescaled = false;           // Set this to false because we don't have an actual presentation size yet.
-    float scale = mOutputSize.Width / (float)mReferenceSize.Width;
+    float scale = 1.0f;
     mVideoGeometry = gcnew VideoGeometry(
         mReferenceSize, 
         mOutputSize,
@@ -1237,7 +1237,8 @@ void VideoReaderFFMpeg::ResolveGeometry(VideoGeometryRequest^ request)
     
     if (bothAllowPrescaling)
     {
-        mOutputSize = FitHelper::Fit(mReferenceSize, request->PresentationSize, false);
+        // Allow upscaling.
+        mOutputSize = FitHelper::Fit(mReferenceSize, request->PresentationSize, true);
     }
 
     mScaledSize = mOutputSize;
