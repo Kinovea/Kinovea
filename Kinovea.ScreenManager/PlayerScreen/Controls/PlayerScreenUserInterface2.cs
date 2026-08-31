@@ -446,6 +446,7 @@ namespace Kinovea.ScreenManager
         private SidePanelTracking sidePanelTracking;
 
         // Instrumentation
+        private Stopwatch stopwatchLoad = new Stopwatch();
         private DropWatcher dropWatcher = new DropWatcher(); // Monitors the times we get in the timer tick and we are still busy rendering.
         private TimeWatcher timeWatcher = new TimeWatcher(); // Monitors some milestones during rendering.
         private LoopWatcher loopWatcher = new LoopWatcher(); // Monitors the rendering loop duration.
@@ -456,6 +457,8 @@ namespace Kinovea.ScreenManager
         public PlayerScreenUserInterface(FrameServerPlayer frameServer, DrawingToolbarPresenter drawingToolbarPresenter)
         {
             log.Debug("Constructing the PlayerScreen user interface.");
+
+            stopwatchLoad.Restart();
 
             m_FrameServer = frameServer;
 
@@ -600,8 +603,7 @@ namespace Kinovea.ScreenManager
             // Read the first frame and configure the UI.
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
-            log.DebugFormat("Post load process.");
-
+            log.DebugFormat("Video file loaded: {0} ms --------------------", stopwatchLoad.ElapsedMilliseconds);
             m_FrameServer.VideoReader.FrameAcquired += VideoReader_FrameAcquired;
             m_FrameServer.VideoReader.RequestFailed += VideoReader_RequestFailed;
 
@@ -636,7 +638,7 @@ namespace Kinovea.ScreenManager
             // from the analysis mode switch if successful.
             //---------------------------------------------------------------------------------------
             //DoInvalidate();
-            log.DebugFormat("First frame loaded: [{0}].", currentTimestamp);
+            log.DebugFormat("First frame loaded: [{0}]. {1} ms.", currentTimestamp, stopwatchLoad.ElapsedMilliseconds);
             UpdatePositionUI();
 
             firstTimestamp = currentTimestamp;
@@ -743,7 +745,7 @@ namespace Kinovea.ScreenManager
             // Some of the UI calls take some time and we'll wait until everything 
             // is set up and the UI thread is idle again to continue.
             // Next step is to try to load the working zone to memory.
-            log.DebugFormat("End of post load process, waiting for idle.");
+            log.DebugFormat("End of post load process: {0} ms. -----------------", stopwatchLoad.ElapsedMilliseconds);
             IsWaitingForIdle = true;
             Application.Idle += PostLoad_Idle;
 
@@ -1426,7 +1428,7 @@ namespace Kinovea.ScreenManager
             m_Constructed = true;
             IsWaitingForIdle = false;
 
-            log.DebugFormat("Post load idle event.");
+            log.DebugFormat("Video file fully ready: {0} ms. -----------------", stopwatchLoad.ElapsedMilliseconds);
 
             if (!m_FrameServer.Loaded)
                 return;
@@ -3053,11 +3055,15 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("PresentFrame called. Target: [~{0}]. Current: [{1}]. Frames to decode: {2}. Refresh in place: {3}.", 
                 targetTimestamp, currentTimestamp, framesToDecode, refreshInPlace);
 
-
-            // TODO: Refactoring in progress.
-            // Eventually this should all just go through SubmitTimestampRequest(state).
             bool acquired = false;
-            if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering)
+
+            // TODO: unify MoveNext into SubmitTimestampRequest.
+            if (targetTimestamp < 0)
+            {
+                activePlayerState = state;
+                acquired = m_FrameServer.VideoReader.MoveNext(true);
+            }
+            else
             {
                 if (isTimestampRequestInFlight)
                 {
@@ -3068,48 +3074,6 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     acquired = SubmitTimestampRequest(state);
-                }
-            }
-            else if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-            {
-                if (targetTimestamp < 0)
-                {
-                    activePlayerState = state;
-                    acquired = m_FrameServer.VideoReader.MoveNext(true);
-                }
-                else
-                {
-                    if (isTimestampRequestInFlight)
-                    {
-                        log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
-                        pendingPlayerState = state;
-                        acquired = false;
-                    }
-                    else
-                    {
-                        acquired = SubmitTimestampRequest(state);
-                    }
-                }
-            }
-            else
-            {
-                if (targetTimestamp < 0)
-                {
-                    activePlayerState = state;
-                    acquired = m_FrameServer.VideoReader.MoveNext(true);
-                }
-                else
-                {
-                    if (isTimestampRequestInFlight)
-                    {
-                        log.DebugFormat("Queuing player request #{0} (inFlight=#{1}).", state.Id, activePlayerState.Id);
-                        pendingPlayerState = state;
-                        acquired = false;
-                    }
-                    else
-                    {
-                        acquired = SubmitTimestampRequest(state);
-                    }
                 }
             }
 
