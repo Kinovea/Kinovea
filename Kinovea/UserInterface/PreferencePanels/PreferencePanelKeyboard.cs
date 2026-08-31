@@ -35,7 +35,7 @@ namespace Kinovea.Root
         private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Keyboard_General };
         private Dictionary<string, HotkeyCommand[]> hotkeys;
         private string selectedCategory;
-        private HotkeyCommand selectedCommand;
+        private string selectedCommand;
         #endregion
 
         public PreferencePanelKeyboard()
@@ -96,6 +96,9 @@ namespace Kinovea.Root
             UpdateCommandView(selectedCategory);
         }
 
+        /// <summary>
+        /// Load all commands for this category.
+        /// </summary>
         private void UpdateCommandView(string category)
         {
             lvCommands.Items.Clear();
@@ -107,8 +110,9 @@ namespace Kinovea.Root
                 string key = command.KeyData == Keys.None ? "" : command.KeyData.ToText();
                 ListViewItem item = new ListViewItem(new string[] { name, key });
                 item.Tag = command;
-                if (command == selectedCommand)
+                if (name == selectedCommand)
                     item.Selected = true;
+
                 lvCommands.Items.Add(item);
             }
 
@@ -134,45 +138,33 @@ namespace Kinovea.Root
             if (command == null)
                 return;
 
-            selectedCommand = command;
-
-            lblHotkey.Text = string.Format(RootLang.dlgPreferences_Keyboard_lblHotkey, selectedCategory, selectedCommand.Name);
-            tbHotkey.SetKeydata(selectedCategory, selectedCommand);
-
-            // save
-            // revert/cancel.
+            selectedCommand = command.Name;
+            
+            lblHotkey.Text = string.Format(RootLang.dlgPreferences_Keyboard_lblHotkey, selectedCategory, command.Name);
+            tbHotkey.SetKeydata(selectedCategory, command.Name, command.KeyData);
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(selectedCategory) || selectedCommand == null || selectedCommand.KeyData == Keys.None)
+            if (string.IsNullOrEmpty(selectedCategory) || string.IsNullOrEmpty(selectedCommand))
+            { 
                 return;
+            }
 
-            selectedCommand.KeyData = Keys.None;
-            HotkeySettingsManager.Update(selectedCategory, selectedCommand);
-            tbHotkey.SetKeydata(selectedCategory, selectedCommand);
+            HotkeySettingsManager.Update(selectedCategory, selectedCommand, Keys.None);
+            tbHotkey.SetKeydata(selectedCategory, selectedCommand, Keys.None);
             UpdateCommandView(selectedCategory);
         }
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(selectedCategory) || selectedCommand == null || selectedCommand.KeyData == tbHotkey.KeyData)
+            if (string.IsNullOrEmpty(selectedCategory) || string.IsNullOrEmpty(selectedCommand))
+            {
                 return;
+            }
 
-            selectedCommand.KeyData = tbHotkey.KeyData;
-            HotkeySettingsManager.Update(selectedCategory, selectedCommand);
+            HotkeySettingsManager.Update(selectedCategory, selectedCommand, tbHotkey.KeyData);
             UpdateCommandView(selectedCategory);
-        }
-
-        private HotkeyCommand GetSelectedCommand()
-        {
-            string category = lbCategories.SelectedItem as string;
-
-            if (category == null || lvCommands.SelectedItems.Count != 1)
-                return null;
-
-            HotkeyCommand command = lvCommands.SelectedItems[0].Tag as HotkeyCommand;
-            return command;
         }
 
         private void btnDefault_Click(object sender, EventArgs e)
@@ -180,13 +172,15 @@ namespace Kinovea.Root
             if (string.IsNullOrEmpty(selectedCategory) || selectedCommand == null)
                 return;
 
-            Keys old = selectedCommand.KeyData;
             HotkeySettingsManager.ResetToDefault(selectedCategory, selectedCommand);
 
-            if (old == selectedCommand.KeyData)
+            HotkeyCommand updatedCommand = HotkeySettingsManager.FindByName(selectedCategory, selectedCommand);
+            if (updatedCommand == null)
+            {
                 return;
+            }
 
-            tbHotkey.SetKeydata(selectedCategory, selectedCommand);
+            tbHotkey.SetKeydata(selectedCategory, updatedCommand.Name, updatedCommand.KeyData);
             UpdateCommandView(selectedCategory);
         }
 

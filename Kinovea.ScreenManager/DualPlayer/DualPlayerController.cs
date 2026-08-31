@@ -81,7 +81,7 @@ namespace Kinovea.ScreenManager
             view.ExportImageAsked += (s, e) => ExportImageAsked?.Invoke(s, e);
             view.ExportvideoAsked += (s, e) => ExportVideoAsked?.Invoke(s, e);
 
-            hotkeys = HotkeySettingsManager.LoadHotkeys("DualPlayer");
+            hotkeys = HotkeySettingsManager.GetCommandBindings("DualPlayer");
         }
         #endregion
 

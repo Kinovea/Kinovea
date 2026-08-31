@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             BackColor = Color.White;
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("DualCapture");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("DualCapture");
         }
 
         public void RefreshUICulture()

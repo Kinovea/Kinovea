@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
             this.BackColor = Color.FromArgb(250, 250, 250);
             this.pnlThumbs.BackColor = Color.FromArgb(250, 250, 250);
 
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerCamera");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("ThumbnailViewerCamera");
             thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
             refreshThumbnailsOfKnownCameras = true;
         }

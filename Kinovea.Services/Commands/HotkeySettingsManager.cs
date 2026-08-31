@@ -8,43 +8,76 @@ namespace Kinovea.Services
 {
     public static class HotkeySettingsManager
     {
-        private static ToolStripMenuItem dummy;
-
+        #region Properties
+        /// <summary>
+        /// Current command bindings.
+        /// </summary>
         public static Dictionary<string, HotkeyCommand[]> Hotkeys
         {
             get { return hotkeys; }
         }
+        #endregion
 
+        #region Members
+        private static ToolStripMenuItem dummy;
         private static Dictionary<string, HotkeyCommand[]> hotkeys;
+        #endregion
 
-        public static HotkeyCommand[] LoadHotkeys(string name)
+        /// <summary>
+        /// Get all commands in the passed category.
+        /// </summary>
+        public static HotkeyCommand[] GetCommandBindings(string category)
         {
             if (hotkeys == null)
                 hotkeys = GetDefaultBindings();
 
-            HotkeyCommand[] result = null;
-            hotkeys.TryGetValue(name, out result);
-            return result;
+            return hotkeys.ContainsKey(category) ? hotkeys[category] : null;
         }
 
         /// <summary>
-        /// Returns the command corresponding to the passed keyboard shortcut for a specific context.
-        /// Returns null if this context doesn't handle the shortcut.
+        /// Get the command object for a specific category and name.
         /// </summary>
-        public static HotkeyCommand FindCommand(string category, Keys keys)
+        public static HotkeyCommand FindByName(string category, string name)
         {
-            HotkeyCommand[] handledHotkeys = HotkeySettingsManager.LoadHotkeys(category);
-            return handledHotkeys.FirstOrDefault(hk => hk != null && hk.KeyData == keys);
+            if (!hotkeys.ContainsKey(category))
+                return null;
+
+            return hotkeys[category].FirstOrDefault(c => c.Name == name);
         }
 
+        /// <summary>
+        /// Get the command object for a specific key data.
+        /// </summary>
+        public static HotkeyCommand FindByKeyData(string category, Keys keys)
+        {
+            if (!hotkeys.ContainsKey(category))
+                return null;
+
+            return hotkeys[category].FirstOrDefault(c => c.KeyData == keys);
+        }
+
+        /// <summary>
+        /// Import the passed bindings into the local collection.
+        /// Only import known categories and command names.
+        /// This is used to load the values from the preferences.
+        /// </summary>
         public static void Import(Dictionary<string, HotkeyCommand[]> imported)
         {
             if (hotkeys == null)
+            { 
                 hotkeys = GetDefaultBindings();
+            }
 
             foreach (string category in imported.Keys)
+            {
+                if (!hotkeys.ContainsKey(category))
+                    continue;
+
                 foreach (HotkeyCommand command in imported[category])
-                    Update(category, command);
+                {
+                    Update(category, command.Name, command.KeyData);
+                }
+            }
         }
 
         public static Keys GetMenuShortcut(string category, int commandCode)
@@ -84,60 +117,58 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Returns false if there is a conflict on the hotkey for this category.
+        /// Returns false if there is a conflict on the binding in this category.
         /// </summary>
-        public static bool IsUnique(string category, HotkeyCommand command)
+        public static bool IsUnique(string category, string name, Keys keyData)
         {
-            if (!hotkeys.ContainsKey(category) || command.KeyData == Keys.None)
+            if (!hotkeys.ContainsKey(category))
+                return true;
+
+            if (keyData == Keys.None)
                 return true;
 
             foreach (HotkeyCommand c in hotkeys[category])
             {
-                if (c.CommandCode == command.CommandCode || c.KeyData != command.KeyData)
+                if (c.Name == name || c.KeyData != keyData)
                     continue;
 
+                // Same binding on different command in the same category.
                 return false;
             }
 
             return true;
         }
 
-        public static void Update(string category, HotkeyCommand command)
+        /// <summary>
+        /// Update a command to a new key binding.
+        /// </summary>
+        public static void Update(string category, string name, Keys keyData)
         {
-            // By convention only one hotkey is supported for each command.
             if (!hotkeys.ContainsKey(category))
                 return;
 
-            foreach (HotkeyCommand c in hotkeys[category])
-            {
-                // We test by the command name because the command code is subject to change
-                // when we add commands between existing ones.
-                if (c.Name == command.Name)
-                {
-                    c.KeyData = command.KeyData;
-                    break;
-                }
-            }
+            var command = hotkeys[category].FirstOrDefault(c => c.Name == name);
+            if (command == null)
+                return;
+
+            command.KeyData = keyData;
         }
 
         /// <summary>
-        /// Reset a specific command to its default shortcut.
+        /// Reset a specific command to its default binding.
         /// </summary>
-        public static void ResetToDefault(string category, HotkeyCommand command)
+        public static void ResetToDefault(string category, string name)
         {
             Dictionary<string, HotkeyCommand[]> defaultHotkeys = GetDefaultBindings();
-
-            if (!defaultHotkeys.ContainsKey(category))
+            if (!defaultHotkeys.ContainsKey(category) || !hotkeys.ContainsKey(category))
                 return;
 
-            foreach (HotkeyCommand c in defaultHotkeys[category])
-            {
-                if (c.CommandCode == command.CommandCode)
-                {
-                    command.KeyData = c.KeyData;
-                    break;
-                }
-            }
+            var defaultCommand = defaultHotkeys[category].FirstOrDefault(c => c.Name == name);
+            var command = hotkeys[category].FirstOrDefault(c => c.Name == name);
+            if (defaultCommand == null || command == null)
+                return;
+
+            command.KeyData = defaultCommand.KeyData;
         }
 
         /// <summary>
@@ -152,157 +183,166 @@ namespace Kinovea.Services
             // keyboard shortcut preferences and allow them to be bound by the user.
             // The list in the preferences also documents the existing commands.
 
-            Dictionary<string, HotkeyCommand[]> result = new Dictionary<string, HotkeyCommand[]>
+            Dictionary<string, HotkeyCommand[]> commands = new Dictionary<string, HotkeyCommand[]>();
+
+            commands["FileExplorer"] = new HotkeyCommand[]
             {
-                { "FileExplorer", new HotkeyCommand[]{
-                    make(FileExplorerCommands.LaunchSelected, Keys.Enter),
-                    make(FileExplorerCommands.RenameSelected, Keys.None),
-                    make(FileExplorerCommands.DeleteSelected, Keys.Delete),
-                    }
-                },
-                { "ThumbnailViewerContainer", new HotkeyCommand[]{
-                    make(ThumbnailViewerContainerCommands.IncreaseSize, Keys.Control | Keys.Add),
-                    make(ThumbnailViewerContainerCommands.DecreaseSize, Keys.Control | Keys.Subtract),
-                    }
-                },
-                { "ThumbnailViewerFiles", new HotkeyCommand[]{
-                    make(ThumbnailViewerFilesCommands.LaunchSelected, Keys.Enter),
-                    make(ThumbnailViewerFilesCommands.RenameSelected, Keys.F2),
-                    make(ThumbnailViewerFilesCommands.DeleteSelected, Keys.Delete),
-                    make(ThumbnailViewerFilesCommands.Refresh, Keys.F5)
-                    }
-                },
-                { "ThumbnailViewerCamera", new HotkeyCommand[]{
-                    make(ThumbnailViewerCameraCommands.LaunchSelected, Keys.Enter),
-                    make(ThumbnailViewerCameraCommands.RenameSelected, Keys.F2),
-                    make(ThumbnailViewerCameraCommands.Refresh, Keys.F5)
-                    }
-                },
-                { "DualPlayer", new HotkeyCommand[]{
-                    make(DualPlayerCommands.TogglePlay, Keys.Space),
-                    make(DualPlayerCommands.GotoPreviousImage, Keys.Left),
-                    make(DualPlayerCommands.GotoNextImage, Keys.Right),
-                    make(DualPlayerCommands.GotoFirstImage, Keys.Home),
-                    make(DualPlayerCommands.GotoLastImage, Keys.End),
-                    make(DualPlayerCommands.GotoPreviousKeyframe, Keys.Control | Keys.Left),
-                    make(DualPlayerCommands.GotoNextKeyframe, Keys.Control | Keys.Right),
-                    make(DualPlayerCommands.GotoSyncPoint, Keys.F8),
-                    make(DualPlayerCommands.ToggleSyncMerge, Keys.F9),
-                    make(DualPlayerCommands.AddKeyframe, Keys.Insert)
-                    }
-                },
-                { "PlayerScreen", new HotkeyCommand[]{
-
-                    // General
-                    make(PlayerScreenCommands.ResetViewport, Keys.Escape),
-                    make(PlayerScreenCommands.Close, Keys.Control | Keys.F4),
-
-                    // Playback control
-                    make(PlayerScreenCommands.TogglePlay, Keys.Space),
-                    make(PlayerScreenCommands.IncreaseSpeed1, Keys.Control | Keys.Up),
-                    make(PlayerScreenCommands.IncreaseSpeedRoundTo10, Keys.Shift | Keys.Up),
-                    make(PlayerScreenCommands.IncreaseSpeedRoundTo25, Keys.Up),
-                    make(PlayerScreenCommands.DecreaseSpeed1, Keys.Control | Keys.Down),
-                    make(PlayerScreenCommands.DecreaseSpeedRoundTo10, Keys.Shift | Keys.Down),
-                    make(PlayerScreenCommands.DecreaseSpeedRoundTo25, Keys.Down),
-                    
-                    // Frame by frame navigation
-                    make(PlayerScreenCommands.GotoPreviousImage, Keys.Left),
-                    make(PlayerScreenCommands.GotoNextImage, Keys.Right),
-                    make(PlayerScreenCommands.GotoFirstImage, Keys.Home),
-                    make(PlayerScreenCommands.GotoLastImage, Keys.End),
-                    make(PlayerScreenCommands.GotoPreviousImageForceLoop, Keys.Shift | Keys.Left),
-                    make(PlayerScreenCommands.LargeJumpBackward, Keys.PageUp),
-                    make(PlayerScreenCommands.LargeJumpForward, Keys.PageDown),
-                    make(PlayerScreenCommands.SmallJumpBackward, Keys.Shift | Keys.PageUp),
-                    make(PlayerScreenCommands.SmallJumpForward, Keys.Shift | Keys.PageDown),
-                    make(PlayerScreenCommands.GotoPreviousKeyframe, Keys.Control | Keys.Left),
-                    make(PlayerScreenCommands.GotoNextKeyframe, Keys.Control | Keys.Right),
-                    make(PlayerScreenCommands.GotoSyncPoint, Keys.F8),
-                    
-                    // Synchronization
-                    make(PlayerScreenCommands.IncreaseSyncAlpha, Keys.Alt | Keys.Add),
-                    make(PlayerScreenCommands.DecreaseSyncAlpha, Keys.Alt | Keys.Subtract),
-                    make(PlayerScreenCommands.ToggleSyncMerge, Keys.F9),
-
-                    // Zoom
-                    make(PlayerScreenCommands.IncreaseZoom, Keys.Control | Keys.Add),
-                    make(PlayerScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract),
-                    make(PlayerScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0),
-
-                    // Keyframes
-                    make(PlayerScreenCommands.AddKeyframe, Keys.Insert),
-                    make(PlayerScreenCommands.DeleteKeyframe, Keys.Control | Keys.Delete),
-                    make(PlayerScreenCommands.Preset1, Keys.Control | Keys.NumPad1),
-                    make(PlayerScreenCommands.Preset2, Keys.Control | Keys.NumPad2),
-                    make(PlayerScreenCommands.Preset3, Keys.Control | Keys.NumPad3),
-                    make(PlayerScreenCommands.Preset4, Keys.Control | Keys.NumPad4),
-                    make(PlayerScreenCommands.Preset5, Keys.Control | Keys.NumPad5),
-                    make(PlayerScreenCommands.Preset6, Keys.Control | Keys.NumPad6),
-                    make(PlayerScreenCommands.Preset7, Keys.Control | Keys.NumPad7),
-                    make(PlayerScreenCommands.Preset8, Keys.Control | Keys.NumPad8),
-                    make(PlayerScreenCommands.Preset9, Keys.Control | Keys.NumPad9),
-                    make(PlayerScreenCommands.Preset10, Keys.None),
-
-                    // Annotations
-                    make(PlayerScreenCommands.CutDrawing, Keys.Control | Keys.X),
-                    make(PlayerScreenCommands.CopyDrawing, Keys.Control | Keys.C),
-                    make(PlayerScreenCommands.PasteDrawing, Keys.Control | Keys.V),
-                    make(PlayerScreenCommands.PasteInPlaceDrawing, Keys.None),
-                    make(PlayerScreenCommands.DeleteDrawing, Keys.Delete),
-                    make(PlayerScreenCommands.ValidateDrawing, Keys.Enter),
-                    make(PlayerScreenCommands.CopyImage, Keys.Control | Keys.Shift | Keys.C),
-                    make(PlayerScreenCommands.ToggleDrawingsVisibility, Keys.None),
-                    make(PlayerScreenCommands.ChronometerStartStop, Keys.F5),
-                    make(PlayerScreenCommands.ChronometerSplit, Keys.F6),
-                    make(PlayerScreenCommands.CadenceBeat, Keys.F7),
-                    make(PlayerScreenCommands.StartAllTracking, Keys.None),
-                    }
-                },
-                { "DualCapture", new HotkeyCommand[]{
-                    make(DualCaptureCommands.ToggleGrabbing, Keys.Space),
-                    make(DualCaptureCommands.ToggleRecording, Keys.Control | Keys.Return),
-                    make(DualCaptureCommands.TakeSnapshot, Keys.Shift | Keys.Return),
-                    }
-                },
-                { "CaptureScreen", new HotkeyCommand[]{
-
-                    // General
-                    make(CaptureScreenCommands.ResetViewport, Keys.Escape),
-                    make(CaptureScreenCommands.OpenConfiguration, Keys.F12), 
-                    make(CaptureScreenCommands.Close, Keys.Control | Keys.F4),
-
-                    // Grabbing & recording
-                    make(CaptureScreenCommands.ToggleGrabbing, Keys.Space),
-                    make(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return),
-                    make(CaptureScreenCommands.TakeSnapshot, Keys.Shift | Keys.Return),
-                    make(CaptureScreenCommands.ToggleArmCaptureTrigger, Keys.None),
-
-                    // Zoom
-        
-                    // Frame by frame navigation
-                    make(CaptureScreenCommands.GotoPreviousImage, Keys.Left),
-                    make(CaptureScreenCommands.GotoNextImage, Keys.Right),
-                    make(CaptureScreenCommands.GotoFirstImage, Keys.Home),
-                    make(CaptureScreenCommands.GotoLastImage, Keys.End),
-                    make(CaptureScreenCommands.BackwardRound10Percent, Keys.PageUp),
-                    make(CaptureScreenCommands.ForwardRound10Percent, Keys.PageDown),
-                    make(CaptureScreenCommands.BackwardRound1Percent, Keys.Shift | Keys.PageUp),
-                    make(CaptureScreenCommands.ForwardRound1Percent, Keys.Shift | Keys.PageDown),
-
-                    // Delay
-                    make(CaptureScreenCommands.ToggleDelayedDisplay, Keys.Alt | Keys.Home),
-                    make(CaptureScreenCommands.IncreaseDelayOneSecond, Keys.Up),
-                    make(CaptureScreenCommands.DecreaseDelayOneSecond, Keys.Down), 
-                    make(CaptureScreenCommands.IncreaseDelayOneFrame, Keys.Control | Keys.Up),
-                    make(CaptureScreenCommands.DecreaseDelayOneFrame, Keys.Control | Keys.Down), 
-                    make(CaptureScreenCommands.IncreaseDelayHalfSecond, Keys.Shift | Keys.Up),
-                    make(CaptureScreenCommands.DecreaseDelayHalfSecond, Keys.Shift | Keys.Down), 
-                    }
-                }
+                make(FileExplorerCommands.LaunchSelected, Keys.Enter),
+                make(FileExplorerCommands.RenameSelected, Keys.None),
+                make(FileExplorerCommands.DeleteSelected, Keys.Delete),
             };
 
-            return result;
+            commands["ThumbnailViewerContainer"] = new HotkeyCommand[]
+            {
+                make(ThumbnailViewerContainerCommands.IncreaseSize, Keys.Control | Keys.Add),
+                make(ThumbnailViewerContainerCommands.DecreaseSize, Keys.Control | Keys.Subtract),
+            };
+
+            commands["ThumbnailViewerFiles"] = new HotkeyCommand[]
+            {
+                make(ThumbnailViewerFilesCommands.LaunchSelected, Keys.Enter),
+                make(ThumbnailViewerFilesCommands.RenameSelected, Keys.F2),
+                make(ThumbnailViewerFilesCommands.DeleteSelected, Keys.Delete),
+                make(ThumbnailViewerFilesCommands.Refresh, Keys.F5)
+            };
+
+            commands["ThumbnailViewerCamera"] = new HotkeyCommand[]
+            {
+                make(ThumbnailViewerCameraCommands.LaunchSelected, Keys.Enter),
+                make(ThumbnailViewerCameraCommands.RenameSelected, Keys.F2),
+                make(ThumbnailViewerCameraCommands.Refresh, Keys.F5)
+            };
+
+            commands["DualPlayer"] = new HotkeyCommand[]
+            {
+                make(DualPlayerCommands.TogglePlay, Keys.Space),
+                make(DualPlayerCommands.GotoPreviousImage, Keys.Left),
+                make(DualPlayerCommands.GotoNextImage, Keys.Right),
+                make(DualPlayerCommands.GotoFirstImage, Keys.Home),
+                make(DualPlayerCommands.GotoLastImage, Keys.End),
+                make(DualPlayerCommands.GotoPreviousKeyframe, Keys.Control | Keys.Left),
+                make(DualPlayerCommands.GotoNextKeyframe, Keys.Control | Keys.Right),
+                make(DualPlayerCommands.GotoSyncPoint, Keys.F8),
+                make(DualPlayerCommands.ToggleSyncMerge, Keys.F9),
+                make(DualPlayerCommands.AddKeyframe, Keys.Insert)
+            };
+
+            commands["PlayerScreen"] = new HotkeyCommand[]
+            {
+                // General
+                make(PlayerScreenCommands.ResetViewport, Keys.Escape),
+                make(PlayerScreenCommands.Close, Keys.Control | Keys.F4),
+
+                // Playback control
+                make(PlayerScreenCommands.TogglePlay, Keys.Space),
+
+                // Speed control
+                make(PlayerScreenCommands.IncreaseSpeed1, Keys.Control | Keys.Up),
+                make(PlayerScreenCommands.IncreaseSpeedRoundTo10, Keys.Shift | Keys.Up),
+                make(PlayerScreenCommands.IncreaseSpeedRoundTo25, Keys.Up),
+                make(PlayerScreenCommands.DecreaseSpeed1, Keys.Control | Keys.Down),
+                make(PlayerScreenCommands.DecreaseSpeedRoundTo10, Keys.Shift | Keys.Down),
+                make(PlayerScreenCommands.DecreaseSpeedRoundTo25, Keys.Down),
+
+                // Frame navigation
+                make(PlayerScreenCommands.GotoPreviousImage, Keys.Left),
+                make(PlayerScreenCommands.GotoNextImage, Keys.Right),
+                make(PlayerScreenCommands.GotoFirstImage, Keys.Home),
+                make(PlayerScreenCommands.GotoLastImage, Keys.End),
+                make(PlayerScreenCommands.GotoPreviousImageForceLoop, Keys.Shift | Keys.Left),
+
+                // Jumping
+                make(PlayerScreenCommands.LargeJumpBackward, Keys.PageUp),
+                make(PlayerScreenCommands.LargeJumpForward, Keys.PageDown),
+                make(PlayerScreenCommands.SmallJumpBackward, Keys.Shift | Keys.PageUp),
+                make(PlayerScreenCommands.SmallJumpForward, Keys.Shift | Keys.PageDown),
+
+                make(PlayerScreenCommands.GotoPreviousKeyframe, Keys.Control | Keys.Left),
+                make(PlayerScreenCommands.GotoNextKeyframe, Keys.Control | Keys.Right),
+                make(PlayerScreenCommands.GotoSyncPoint, Keys.F8),
+
+                // Synchronization
+                make(PlayerScreenCommands.IncreaseSyncAlpha, Keys.Alt | Keys.Add),
+                make(PlayerScreenCommands.DecreaseSyncAlpha, Keys.Alt | Keys.Subtract),
+                make(PlayerScreenCommands.ToggleSyncMerge, Keys.F9),
+
+                // Zoom
+                make(PlayerScreenCommands.IncreaseZoom, Keys.Control | Keys.Add),
+                make(PlayerScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract),
+                make(PlayerScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0),
+
+                // Keyframes
+                make(PlayerScreenCommands.AddKeyframe, Keys.Insert),
+                make(PlayerScreenCommands.DeleteKeyframe, Keys.Control | Keys.Delete),
+                make(PlayerScreenCommands.Preset1, Keys.Control | Keys.NumPad1),
+                make(PlayerScreenCommands.Preset2, Keys.Control | Keys.NumPad2),
+                make(PlayerScreenCommands.Preset3, Keys.Control | Keys.NumPad3),
+                make(PlayerScreenCommands.Preset4, Keys.Control | Keys.NumPad4),
+                make(PlayerScreenCommands.Preset5, Keys.Control | Keys.NumPad5),
+                make(PlayerScreenCommands.Preset6, Keys.Control | Keys.NumPad6),
+                make(PlayerScreenCommands.Preset7, Keys.Control | Keys.NumPad7),
+                make(PlayerScreenCommands.Preset8, Keys.Control | Keys.NumPad8),
+                make(PlayerScreenCommands.Preset9, Keys.Control | Keys.NumPad9),
+                make(PlayerScreenCommands.Preset10, Keys.None),
+
+                // Annotations
+                make(PlayerScreenCommands.CutDrawing, Keys.Control | Keys.X),
+                make(PlayerScreenCommands.CopyDrawing, Keys.Control | Keys.C),
+                make(PlayerScreenCommands.PasteDrawing, Keys.Control | Keys.V),
+                make(PlayerScreenCommands.PasteInPlaceDrawing, Keys.None),
+                make(PlayerScreenCommands.DeleteDrawing, Keys.Delete),
+                make(PlayerScreenCommands.ValidateDrawing, Keys.Enter),
+                make(PlayerScreenCommands.CopyImage, Keys.Control | Keys.Shift | Keys.C),
+                make(PlayerScreenCommands.ToggleDrawingsVisibility, Keys.None),
+                make(PlayerScreenCommands.ChronometerStartStop, Keys.F5),
+                make(PlayerScreenCommands.ChronometerSplit, Keys.F6),
+                make(PlayerScreenCommands.CadenceBeat, Keys.F7),
+                make(PlayerScreenCommands.StartAllTracking, Keys.None),
+            };
+
+            commands["DualCapture"] = new HotkeyCommand[]
+            {
+                make(DualCaptureCommands.ToggleGrabbing, Keys.Space),
+                make(DualCaptureCommands.ToggleRecording, Keys.Control | Keys.Return),
+                make(DualCaptureCommands.TakeSnapshot, Keys.Shift | Keys.Return),
+            };
+
+            commands["CaptureScreen"] = new HotkeyCommand[]
+            {
+                // General
+                make(CaptureScreenCommands.ResetViewport, Keys.Escape),
+                make(CaptureScreenCommands.OpenConfiguration, Keys.F12),
+                make(CaptureScreenCommands.Close, Keys.Control | Keys.F4),
+
+                // Grabbing & recording
+                make(CaptureScreenCommands.ToggleGrabbing, Keys.Space),
+                make(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return),
+                make(CaptureScreenCommands.TakeSnapshot, Keys.Shift | Keys.Return),
+                make(CaptureScreenCommands.ToggleArmCaptureTrigger, Keys.None),
+
+                // Zoom
+
+                // Frame by frame navigation
+                make(CaptureScreenCommands.GotoPreviousImage, Keys.Left),
+                make(CaptureScreenCommands.GotoNextImage, Keys.Right),
+                make(CaptureScreenCommands.GotoFirstImage, Keys.Home),
+                make(CaptureScreenCommands.GotoLastImage, Keys.End),
+                make(CaptureScreenCommands.BackwardRound10Percent, Keys.PageUp),
+                make(CaptureScreenCommands.ForwardRound10Percent, Keys.PageDown),
+                make(CaptureScreenCommands.BackwardRound1Percent, Keys.Shift | Keys.PageUp),
+                make(CaptureScreenCommands.ForwardRound1Percent, Keys.Shift | Keys.PageDown),
+
+                // Delay
+                make(CaptureScreenCommands.ToggleDelayedDisplay, Keys.Alt | Keys.Home),
+                make(CaptureScreenCommands.IncreaseDelayOneSecond, Keys.Up),
+                make(CaptureScreenCommands.DecreaseDelayOneSecond, Keys.Down),
+                make(CaptureScreenCommands.IncreaseDelayOneFrame, Keys.Control | Keys.Up),
+                make(CaptureScreenCommands.DecreaseDelayOneFrame, Keys.Control | Keys.Down),
+                make(CaptureScreenCommands.IncreaseDelayHalfSecond, Keys.Shift | Keys.Up),
+                make(CaptureScreenCommands.DecreaseDelayHalfSecond, Keys.Shift | Keys.Down),
+            };
+
+            return commands;
         }
     }
 }

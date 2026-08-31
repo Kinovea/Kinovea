@@ -306,7 +306,6 @@
     <Compile Include="Window\WorkspaceDescriptor.cs" />
     <Compile Include="WinForms\FormsHelper.cs" />
     <Compile Include="Commands\HotkeyCommand.cs" />
-    <Compile Include="Commands\HotkeySettings.cs" />
     <Compile Include="Commands\HotkeySettingsManager.cs" />
     <Compile Include="WinForms\KeysExtensions.cs" />
     <Compile Include="WinForms\KinoveaControl.cs">

@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
             ShowHideAddressBar(false);
             UpdateThumbnailsSize();
 
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("ThumbnailViewerContainer");
         }
 
         private void Populate()

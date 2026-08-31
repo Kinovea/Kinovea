@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             PostInit();
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("DualPlayer");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("DualPlayer");
         }
 
         private void PostInit()

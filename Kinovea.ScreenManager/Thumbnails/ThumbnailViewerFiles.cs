@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
 
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
 
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerFiles");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("ThumbnailViewerFiles");
             thumbSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
             this.pnlThumbs.ContextMenuStrip = popMenu;
             BuildContextMenus();

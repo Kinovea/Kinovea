@@ -524,7 +524,7 @@ namespace Kinovea.ScreenManager
 
             EnableDisableActions(false);
 
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("PlayerScreen");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("PlayerScreen");
         }
         #endregion
 
@@ -1527,7 +1527,7 @@ namespace Kinovea.ScreenManager
                 return false;
 
             // Look for a matching handler in the dual player context.
-            HotkeyCommand command2 = HotkeySettingsManager.FindCommand("DualPlayer", command.KeyData);
+            HotkeyCommand command2 = HotkeySettingsManager.FindByKeyData("DualPlayer", command.KeyData);
             if (command2 == null)
             {
                 // The shortcut isn't handled at the dual screen level, run it normally.

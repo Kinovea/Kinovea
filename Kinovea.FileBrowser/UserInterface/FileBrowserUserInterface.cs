@@ -137,7 +137,7 @@ namespace Kinovea.FileBrowser
             activeTab = WindowManager.ActiveWindow.ActiveTab;
             
             Application.Idle += new EventHandler(this.IdleDetector);
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("FileExplorer");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("FileExplorer");
         }
 
         private void BuildContextMenu()

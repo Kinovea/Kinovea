@@ -11,15 +11,15 @@ namespace Kinovea.Services
             get { return keyData; }
         }
 
-        private Keys keyData;
         private string category;
-        private HotkeyCommand command;
-
-        public void SetKeydata(string category, HotkeyCommand command)
+        private string name;
+        private Keys keyData;
+        
+        public void SetKeydata(string category, string name, Keys keyData)
         {
             this.category = category;
-            this.command = command;
-            keyData = command.KeyData;
+            this.name = name;
+            this.keyData = keyData;
             UpdateText();
         }
 
@@ -37,7 +37,7 @@ namespace Kinovea.Services
         private void UpdateText()
         {
             this.Text = keyData.ToText();
-            bool unique = HotkeySettingsManager.IsUnique(category, new HotkeyCommand(command.CommandCode, command.Name, keyData));
+            bool unique = HotkeySettingsManager.IsUnique(category, name, keyData);
             this.ForeColor = unique ? Color.Black : Color.DarkRed;
         }
 

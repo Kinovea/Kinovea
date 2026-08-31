@@ -48,9 +48,13 @@ namespace Kinovea.Services
             while (reader.NodeType == XmlNodeType.Element)
             {
                 if (reader.Name == "Hotkeys")
+                {
                     ParseHotkeys(reader, hotkeys);
+                }
                 else
+                {
                     reader.ReadOuterXml();
+                }
             }
 
             reader.ReadEndElement();
@@ -99,7 +103,9 @@ namespace Kinovea.Services
                         hotkeysCommands.Add(hotkey);
                 }
                 else
+                {
                     reader.ReadOuterXml();
+                }
             }
 
             hotkeys.Add(name, hotkeysCommands.ToArray());

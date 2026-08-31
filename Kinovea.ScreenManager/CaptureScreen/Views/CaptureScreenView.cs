@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
 
             tbFilename.Text = PreferencesManager.CapturePreferences.CapturePathConfiguration.DefaultFileName;
 
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("CaptureScreen");
+            this.Hotkeys = HotkeySettingsManager.GetCommandBindings("CaptureScreen");
         }
 
         #region Public methods
@@ -701,7 +701,7 @@ namespace Kinovea.ScreenManager
                 return false;
 
             // Look for a matching handler in the dual capture context.
-            HotkeyCommand command2 = HotkeySettingsManager.FindCommand("DualCapture", command.KeyData);
+            HotkeyCommand command2 = HotkeySettingsManager.FindByKeyData("DualCapture", command.KeyData);
             if (command2 == null)
             {
                 // The shortcut isn't handled at the dual screen level, run it normally.
