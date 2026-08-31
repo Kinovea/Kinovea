@@ -2329,6 +2329,7 @@ namespace Kinovea.ScreenManager
             ResetTime();
             ResetDrawings();
             ResetVideoFilters();
+            highSpeedFactor = 1.0f;
 
             if (isCaptureKVA)
             {

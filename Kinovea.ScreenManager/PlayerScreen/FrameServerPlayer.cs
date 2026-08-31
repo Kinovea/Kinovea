@@ -211,8 +211,9 @@ namespace Kinovea.ScreenManager
             if(videoReader != null && videoReader.Loaded)
                 videoReader.Close();
             
-            if(metadata != null)
-                metadata.HardReset();
+            metadata?.HardReset();
+
+            ImageTransform.Reset();
         }
 
         /// <summary>

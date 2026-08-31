@@ -30,21 +30,31 @@ namespace Kinovea.Services
     /// </summary>
     public struct VideoSection : IComparable, IEquatable<VideoSection>
     {
-        public bool IsEmpty {
+        public bool IsEmpty 
+        {
             get { return (End < 0); }
         }
-        public bool Wrapped {
+        public bool Wrapped 
+        {
             get { return !IsEmpty && End < Start;}
         }
 
-        
-        public readonly long Start;
-        public readonly long End;
+        public long Length
+        {
+            get
+            {
+                return IsEmpty ? 0 : End - Start;
+            }
+        }
+
+
+        public long Start { get; }
+        public long End { get; }
         
         public VideoSection(long start, long end)
         {
-            this.Start = start;
-            this.End = end;
+            Start = start;
+            End = end;
         }
 
         public static VideoSection MakeEmpty()
@@ -66,9 +76,9 @@ namespace Kinovea.Services
         /// <summary>
         /// Returns true if the passed section is entirely contained in this section.
         /// </summary>
-        public bool Contains(VideoSection _other)
+        public bool Contains(VideoSection other)
         {
-            return !IsEmpty && (_other < this || _other == this);
+            return !IsEmpty && (other < this || other == this);
         }
         public override string ToString()
         {

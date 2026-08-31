@@ -348,12 +348,10 @@ namespace Kinovea.ScreenManager
 
         // Selection and current timestamp.
         // trkSelection.minimum and maximum are also in absolute timestamps.
-        private long m_iTotalDuration = 100;
         private long m_iSelStart;
         private long m_iSelEnd = 99;
-        private long m_iSelDuration = 100;
         private long currentTimestamp;      // timestamp of the active frame or timestamp of the target frame we want to display.
-        private long firstTimestamp;        // timestamp of the first decoded frame of video. Updated after we actually decode it.
+        private long firstTimestamp;        // Resolved timestamp of the first frame. Might not be 0 and might not equal Info.FirstTimestamp.
         private bool selectionIsLocked;
         private long memoTimestamp;          // Used during export to backup/restore the active frame timestamp.
 
@@ -537,11 +535,13 @@ namespace Kinovea.ScreenManager
             m_FrameServer.VideoReader.FrameAcquired -= VideoReader_FrameAcquired;
             m_FrameServer.VideoReader.RequestFailed -= VideoReader_RequestFailed;
             m_FrameServer.Unload();
-            ResetData();
+
+            ResetInternalData();
             videoFilterIsActive = false;
             btnExitFilter.Visible = false;
 
-            // 2. Reset all interface.
+            // 2. Reset interface.
+            UpdateTimeLabels();
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
             ClearKeyframeBoxes();
@@ -560,8 +560,7 @@ namespace Kinovea.ScreenManager
             infobar.ScreenDescriptor = null;
             
             infobar.Visible = false;
-            if (ResetAsked != null)
-                ResetAsked(this, EventArgs.Empty);
+            ResetAsked?.Invoke(this, EventArgs.Empty);
         }
         private void ClearKeyframeBoxes()
         {
@@ -641,10 +640,8 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
 
             firstTimestamp = currentTimestamp;
-            m_iTotalDuration = m_FrameServer.VideoReader.Info.DurationTimeStamps;
-            m_iSelStart = firstTimestamp;
+            m_iSelStart = currentTimestamp;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
-            m_iSelDuration = m_iTotalDuration;
 
             if (!m_FrameServer.VideoReader.CanChangeWorkingZone)
             {
@@ -765,7 +762,6 @@ namespace Kinovea.ScreenManager
             // Force a reload of the cache to account for possible changes in aspect ratio, image rotation, etc.
             m_iSelStart = m_FrameServer.Metadata.SelectionStart;
             m_iSelEnd = m_FrameServer.Metadata.SelectionEnd;
-            m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             // For replay watchers we disallow full caching mode
             // to avoid disrupting the instant-replay feedback loop.
@@ -929,7 +925,6 @@ namespace Kinovea.ScreenManager
             // Note: the end may still be in "request" space if we are not in caching mode.
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
-            m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
             // Update metadata.
             if (timeOriginWasAligned)
@@ -1255,14 +1250,17 @@ namespace Kinovea.ScreenManager
             btn.AutoToolTip = false;
             return btn;
         }
-        private void ResetData()
+
+        /// <summary>
+        /// Reset internal data after the video is unloaded.
+        /// </summary>
+        private void ResetInternalData()
         {
             framesToDecode = 1;
             workingZoneInitializedFromKVA = false;
 
             isCurrentlyPlaying = false;
             m_fill = false;
-            m_FrameServer.ImageTransform.Reset();
             m_lastUserStretch = 1.0f;
 
             // Sync
@@ -1273,9 +1271,12 @@ namespace Kinovea.ScreenManager
 
             m_bShowImageBorder = false;
 
-            SetupPrimarySelectionData();    // Should not be necessary when every data is coming from m_FrameServer.
-
+            m_iSelStart = 0;
+            m_iSelEnd = 99;
             selectionIsLocked = false;
+            
+            currentTimestamp = 0;
+            firstTimestamp = 0;
 
             m_iActiveKeyFrameIndex = -1;
             m_ActiveTool = m_PointerTool;
@@ -1283,25 +1284,22 @@ namespace Kinovea.ScreenManager
             m_bKeyframePanelCollapsed = true;
             m_bTextEdit = false;
 
-            m_FrameServer.Metadata.HighSpeedFactor = 1.0f;
+            
             UpdateTimebase();
-            UpdateTimeLabels();
+            
         }
-        private void SetupPrimarySelectionData()
+        private void InitWorkingZone()
         {
             // Setup data
             if (m_FrameServer.Loaded)
             {
                 m_iSelStart = firstTimestamp;
-                m_iSelEnd = (long)Math.Round(firstTimestamp + m_iTotalDuration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-                m_iSelDuration = m_iTotalDuration;
+                m_iSelEnd = (long)Math.Round(firstTimestamp + m_FrameServer.VideoReader.Info.DurationTimeStamps - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
             else
             {
                 m_iSelStart = 0;
                 m_iSelEnd = 99;
-                m_iSelDuration = 100;
-                m_iTotalDuration = 100;
 
                 currentTimestamp = 0;
                 firstTimestamp = 0;
@@ -2035,13 +2033,13 @@ namespace Kinovea.ScreenManager
             OnPoke();
             StopPlaying();
             OnPauseAsked();
-            
+
             // If we are outside the primary zone or going to get out, seek to start.
             // We also only do the seek if we are after the m_iStartingPosition,
             // Sometimes, the second frame will have a time stamp inferior to the first,
             // which sort of breaks our sentinels.
-            if (((currentTimestamp < m_iSelStart) || (currentTimestamp >= m_iSelEnd)) &&
-                (currentTimestamp >= firstTimestamp))
+            bool isGoingOutside = (currentTimestamp < m_iSelStart) || (currentTimestamp >= m_iSelEnd);
+            if (isGoingOutside && (currentTimestamp >= firstTimestamp))
             {
                 PresentFrame(m_iSelStart, true);
             }
@@ -2069,14 +2067,16 @@ namespace Kinovea.ScreenManager
             OnPauseAsked();
             framesToDecode = 1;
 
-            float normalized = ((float)currentTimestamp - m_iSelStart) / m_iSelDuration;
+            long selDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+
+            float normalized = ((float)currentTimestamp - m_iSelStart) / selDuration;
             int currentPercentage = (int)Math.Round(normalized * 100);
             int maxSteps = 100 / round;
             int currentStep = currentPercentage / round;
             int nextStep = forward ? currentStep + 1 : currentStep - 1;
             nextStep = Math.Max(Math.Min(nextStep, maxSteps), 0);
             int newPercentage = nextStep * round;
-            long newPosition = m_iSelStart + (long)(((float)newPercentage / 100) * m_iSelDuration);
+            long newPosition = m_iSelStart + (long)(((float)newPercentage / 100) * selDuration);
 
             // This should be a forced-sync operation to make sure we restart the playback
             // right after.
@@ -2350,7 +2350,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Loaded)
             {
                 start = m_iSelStart - firstTimestamp;
-                duration = m_iSelDuration;
+                duration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
 
             string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, timecodeFormat, true);
@@ -2365,7 +2365,6 @@ namespace Kinovea.ScreenManager
             int right = lblSelDuration.Right;
             lblSelDuration.Text = "[" + durationTimecode + "]";
             lblSelDuration.Left = right - lblSelDuration.Width;
-
         }
         private void UpdateSelectionDataFromControl()
         {
@@ -2379,7 +2378,6 @@ namespace Kinovea.ScreenManager
 
                 m_iSelStart = trkSelection.SelStart;
                 m_iSelEnd = trkSelection.SelEnd;
-                m_iSelDuration = (long)Math.Round(m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
         }
         private void AfterSelectionChanged()
