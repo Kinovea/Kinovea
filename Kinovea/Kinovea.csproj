@@ -310,6 +310,7 @@
       <LastGenOutput>RootLang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\RootLang.ru.resx" />
+    <EmbeddedResource Include="Languages\RootLang.sk.resx" />
     <EmbeddedResource Include="Languages\RootLang.sl.resx" />
     <EmbeddedResource Include="Languages\RootLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\RootLang.sr-Latn-RS.resx" />

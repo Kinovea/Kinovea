@@ -1117,6 +1117,7 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.ms.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ru.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.sk.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.sl.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Cyrl-RS.resx">
       <SubType>Designer</SubType>

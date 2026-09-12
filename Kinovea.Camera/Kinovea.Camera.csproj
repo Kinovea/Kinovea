@@ -225,6 +225,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\CameraLang.ro.resx" />
     <EmbeddedResource Include="Languages\CameraLang.ru.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.sk.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sl.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sr-Cyrl-RS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sr-Latn-RS.resx" />

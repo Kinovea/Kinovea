@@ -80,6 +80,7 @@ namespace Kinovea.Services
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
             languages.Add("ru", "Русский");
+            languages.Add("sk", "Slovenčina");
             languages.Add("sl", "Slovenščina");
             languages.Add("sr-Cyrl-RS", "Српски");
             languages.Add("sr-Latn-RS", "Srpski");
@@ -96,23 +97,26 @@ namespace Kinovea.Services
             // the whole project, the Root component or the ScreenManager component.
             // Reference: https://hosted.weblate.org/projects/kinovea/#languages
             //
-            // Last check: 2026-03-14.
+            // Last check: 2026-09-12.
             //------------------------------------------
-            lowCoverage.Add("az");         // Azerbaijani.
-            lowCoverage.Add("bg");         // Bulgarian.
-            lowCoverage.Add("da");         // Danish.
-            lowCoverage.Add("el");         // Greek.
+
+            // < 50% whole project
+            lowCoverage.Add("sk");         // Slovak.
             lowCoverage.Add("et");         // Estonian.
-            lowCoverage.Add("fa");         // Persian.
-            lowCoverage.Add("lv");         // Latvian.
-            lowCoverage.Add("ms");         // Malay.
-            lowCoverage.Add("no");         // Norwegian.
-            lowCoverage.Add("sr-Latn-RS"); // Serbian (latin)
-            lowCoverage.Add("sr-Cyrl-RS"); // Serbian (cyrillic).
-            lowCoverage.Add("sl");         // Slovenian.
-            lowCoverage.Add("sv");         // Swedish.
             lowCoverage.Add("ta");         // Tamil.
-            lowCoverage.Add("th");         // Thai.
+            lowCoverage.Add("az");         // Azerbaijani.
+            lowCoverage.Add("lv");         // Latvian.
+            lowCoverage.Add("da");         // Danish.
+            lowCoverage.Add("sr-Latn-RS"); // Serbian (latin)
+            lowCoverage.Add("no");         // Norwegian.
+            lowCoverage.Add("ms");         // Malay.
+            lowCoverage.Add("el");         // Greek.
+            lowCoverage.Add("sr-Cyrl-RS"); // Serbian (cyrillic).
+
+
+            // < 50% Root component
+            lowCoverage.Add("fa");         // Persian.
+            lowCoverage.Add("bg");         // Bulgarian.
         }
 
         /// <summary>
