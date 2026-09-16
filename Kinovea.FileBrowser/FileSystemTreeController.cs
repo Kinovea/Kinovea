@@ -23,6 +23,8 @@ namespace Kinovea.FileBrowser
         {
             this.treeView = tv;
 
+            ShellSystemImageList.Attach(tv);
+
             tv.BeforeExpand += TreeView_BeforeExpand;
             tv.AfterSelect += TreeView_AfterSelect;
 

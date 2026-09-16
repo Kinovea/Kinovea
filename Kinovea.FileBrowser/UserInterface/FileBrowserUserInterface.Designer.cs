@@ -33,20 +33,19 @@ namespace Kinovea.FileBrowser
       this.tabControl = new System.Windows.Forms.TabControl();
       this.tabPageClassic = new System.Windows.Forms.TabPage();
       this.splitExplorerFiles = new System.Windows.Forms.SplitContainer();
-      this.etExplorer = new ExpTreeLib.ExpTree();
       this.lblFolders = new System.Windows.Forms.Label();
       this.lvExplorer = new System.Windows.Forms.ListView();
       this.imgListFiles = new System.Windows.Forms.ImageList(this.components);
       this.lblVideoFiles = new System.Windows.Forms.Label();
       this.tabPageShortcuts = new System.Windows.Forms.TabPage();
       this.splitShortcutsFiles = new System.Windows.Forms.SplitContainer();
-      this.etShortcuts = new ExpTreeLib.ExpTree();
       this.btnDeleteShortcut = new System.Windows.Forms.Button();
       this.btnAddShortcut = new System.Windows.Forms.Button();
       this.lblFavFolders = new System.Windows.Forms.Label();
       this.lblFavFiles = new System.Windows.Forms.Label();
       this.lvShortcuts = new System.Windows.Forms.ListView();
       this.tabPageCameras = new System.Windows.Forms.TabPage();
+      this.btnCameraRefresh = new System.Windows.Forms.Button();
       this.olvCameras = new BrightIdeasSoftware.ObjectListView();
       this.lvCaptured = new System.Windows.Forms.ListView();
       this.lblCaptureHistory = new System.Windows.Forms.Label();
@@ -54,7 +53,8 @@ namespace Kinovea.FileBrowser
       this.label1 = new System.Windows.Forms.Label();
       this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
       this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
-      this.btnCameraRefresh = new System.Windows.Forms.Button();
+      this.tvExplorer = new System.Windows.Forms.TreeView();
+      this.tvShortcuts = new System.Windows.Forms.TreeView();
       this.tabControl.SuspendLayout();
       this.tabPageClassic.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitExplorerFiles)).BeginInit();
@@ -104,7 +104,7 @@ namespace Kinovea.FileBrowser
       // 
       // splitExplorerFiles.Panel1
       // 
-      this.splitExplorerFiles.Panel1.Controls.Add(this.etExplorer);
+      this.splitExplorerFiles.Panel1.Controls.Add(this.tvExplorer);
       this.splitExplorerFiles.Panel1.Controls.Add(this.lblFolders);
       // 
       // splitExplorerFiles.Panel2
@@ -115,20 +115,6 @@ namespace Kinovea.FileBrowser
       this.splitExplorerFiles.Size = new System.Drawing.Size(305, 527);
       this.splitExplorerFiles.SplitterDistance = 301;
       this.splitExplorerFiles.TabIndex = 0;
-      // 
-      // etExplorer
-      // 
-      this.etExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.etExplorer.BackColor = System.Drawing.Color.White;
-      this.etExplorer.Cursor = System.Windows.Forms.Cursors.Default;
-      this.etExplorer.Location = new System.Drawing.Point(3, 31);
-      this.etExplorer.Name = "etExplorer";
-      this.etExplorer.ShowHiddenFolders = false;
-      this.etExplorer.ShowRootLines = false;
-      this.etExplorer.Size = new System.Drawing.Size(299, 267);
-      this.etExplorer.TabIndex = 0;
       // 
       // lblFolders
       // 
@@ -212,7 +198,7 @@ namespace Kinovea.FileBrowser
       // 
       // splitShortcutsFiles.Panel1
       // 
-      this.splitShortcutsFiles.Panel1.Controls.Add(this.etShortcuts);
+      this.splitShortcutsFiles.Panel1.Controls.Add(this.tvShortcuts);
       this.splitShortcutsFiles.Panel1.Controls.Add(this.btnDeleteShortcut);
       this.splitShortcutsFiles.Panel1.Controls.Add(this.btnAddShortcut);
       this.splitShortcutsFiles.Panel1.Controls.Add(this.lblFavFolders);
@@ -224,20 +210,6 @@ namespace Kinovea.FileBrowser
       this.splitShortcutsFiles.Size = new System.Drawing.Size(305, 527);
       this.splitShortcutsFiles.SplitterDistance = 307;
       this.splitShortcutsFiles.TabIndex = 6;
-      // 
-      // etShortcuts
-      // 
-      this.etShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.etShortcuts.Cursor = System.Windows.Forms.Cursors.Default;
-      this.etShortcuts.Location = new System.Drawing.Point(0, 34);
-      this.etShortcuts.Name = "etShortcuts";
-      this.etShortcuts.ShortcutsMode = true;
-      this.etShortcuts.ShowHiddenFolders = false;
-      this.etShortcuts.ShowRootLines = false;
-      this.etShortcuts.Size = new System.Drawing.Size(305, 272);
-      this.etShortcuts.TabIndex = 13;
       // 
       // btnDeleteShortcut
       // 
@@ -342,6 +314,24 @@ namespace Kinovea.FileBrowser
       this.tabPageCameras.TabIndex = 2;
       this.tabPageCameras.UseVisualStyleBackColor = true;
       // 
+      // btnCameraRefresh
+      // 
+      this.btnCameraRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnCameraRefresh.BackColor = System.Drawing.Color.Transparent;
+      this.btnCameraRefresh.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.arrow_refresh;
+      this.btnCameraRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnCameraRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnCameraRefresh.FlatAppearance.BorderSize = 0;
+      this.btnCameraRefresh.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnCameraRefresh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnCameraRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnCameraRefresh.Location = new System.Drawing.Point(285, 8);
+      this.btnCameraRefresh.Name = "btnCameraRefresh";
+      this.btnCameraRefresh.Size = new System.Drawing.Size(20, 20);
+      this.btnCameraRefresh.TabIndex = 12;
+      this.btnCameraRefresh.UseVisualStyleBackColor = false;
+      this.btnCameraRefresh.Click += new System.EventHandler(this.btnCameraRefresh_Click);
+      // 
       // olvCameras
       // 
       this.olvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -435,23 +425,25 @@ namespace Kinovea.FileBrowser
       this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
       this.imgListTabs.Images.SetKeyName(3, "camera");
       // 
-      // btnCameraRefresh
+      // tvDrives
       // 
-      this.btnCameraRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnCameraRefresh.BackColor = System.Drawing.Color.Transparent;
-      this.btnCameraRefresh.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.arrow_refresh;
-      this.btnCameraRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnCameraRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnCameraRefresh.FlatAppearance.BorderSize = 0;
-      this.btnCameraRefresh.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnCameraRefresh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnCameraRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnCameraRefresh.Location = new System.Drawing.Point(285, 8);
-      this.btnCameraRefresh.Name = "btnCameraRefresh";
-      this.btnCameraRefresh.Size = new System.Drawing.Size(20, 20);
-      this.btnCameraRefresh.TabIndex = 12;
-      this.btnCameraRefresh.UseVisualStyleBackColor = false;
-      this.btnCameraRefresh.Click += new System.EventHandler(this.btnCameraRefresh_Click);
+      this.tvExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tvExplorer.Location = new System.Drawing.Point(3, 31);
+      this.tvExplorer.Name = "tvDrives";
+      this.tvExplorer.Size = new System.Drawing.Size(299, 267);
+      this.tvExplorer.TabIndex = 3;
+      // 
+      // tvShortcuts
+      // 
+      this.tvShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tvShortcuts.Location = new System.Drawing.Point(3, 31);
+      this.tvShortcuts.Name = "tvShortcuts";
+      this.tvShortcuts.Size = new System.Drawing.Size(299, 273);
+      this.tvShortcuts.TabIndex = 14;
       // 
       // FileBrowserUserInterface
       // 
@@ -484,12 +476,10 @@ namespace Kinovea.FileBrowser
         private System.Windows.Forms.ImageList imgListFiles;
         private System.Windows.Forms.SplitContainer splitShortcutsFiles;
         private System.Windows.Forms.SplitContainer splitExplorerFiles;
-        private ExpTreeLib.ExpTree etShortcuts;
         private System.Windows.Forms.ToolTip ttTabs;
         private System.Windows.Forms.ImageList imgListTabs;
         private System.Windows.Forms.Button btnDeleteShortcut;
         private System.Windows.Forms.Button btnAddShortcut;
-        private ExpTreeLib.ExpTree etExplorer;
         public System.Windows.Forms.TabPage tabPageShortcuts;
         public System.Windows.Forms.Label lblFavFiles;
         public System.Windows.Forms.Label lblFavFolders;
@@ -505,5 +495,7 @@ namespace Kinovea.FileBrowser
         private System.Windows.Forms.ListView lvCaptured;
         private BrightIdeasSoftware.ObjectListView olvCameras;
         private System.Windows.Forms.Button btnCameraRefresh;
+        private System.Windows.Forms.TreeView tvExplorer;
+        private System.Windows.Forms.TreeView tvShortcuts;
     }
 }

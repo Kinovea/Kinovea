@@ -104,11 +104,11 @@ namespace Kinovea.FileBrowser
             splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * WindowManager.ActiveWindow.ExplorerFilesSplitterRatio);
             splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio);
             
-            explorerTree = new FileSystemTreeController(etExplorer.tv1);
+            explorerTree = new FileSystemTreeController(tvExplorer);
             explorerTree.SelectedPathChanged += ExplorerTree_SelectedPathChanged;
             explorerTree.BuildComputer();
 
-            shortcutsTree = new FileSystemTreeController(etShortcuts.tv1);
+            shortcutsTree = new FileSystemTreeController(tvShortcuts);
             shortcutsTree.SelectedPathChanged += ShortcutsTree_SelectedPathChanged;
             ReloadShortcuts();
 
@@ -165,10 +165,10 @@ namespace Kinovea.FileBrowser
             });
             
             // The context menus will be configured on a per event basis.
-            etShortcuts.tv1.ContextMenuStrip = popMenuFolders;
-            etExplorer.tv1.ContextMenuStrip = popMenuFolders;
-            etExplorer.tv1.MouseDown += ExplorerTree_MouseDown;
-            etShortcuts.tv1.MouseDown += ShortcutsTree_MouseDown;
+            tvExplorer.ContextMenuStrip = popMenuFolders;
+            tvShortcuts.ContextMenuStrip = popMenuFolders;
+            tvExplorer.MouseDown += ExplorerTree_MouseDown;
+            tvShortcuts.MouseDown += ShortcutsTree_MouseDown;
 
             // Sort menus
             mnuSortBy.Image = Properties.Resources.sort;
@@ -425,8 +425,6 @@ namespace Kinovea.FileBrowser
             tabPageShortcuts.Text = "";
             lblFavFolders.Text = lblFolders.Text;
             lblFavFiles.Text = lblVideoFiles.Text;
-            etShortcuts.RootDisplayName = FileBrowserLang.tabShortcuts;
-            etShortcuts.tv1.Refresh();
 
             tabPageCameras.Text = "";
             label1.Text = FileBrowserLang.lblCameras;

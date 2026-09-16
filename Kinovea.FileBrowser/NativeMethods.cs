@@ -10,10 +10,17 @@ namespace Kinovea.FileBrowser
     public static class NativeMethods
     {
         
-        public static uint SHGFI_OPENICON = 0x000000002;
-        public static uint SHGFI_SYSICONINDEX = 0x000004000;
-        public static uint SHGFI_USEFILEATTRIBUTES = 0x000000010;
+        public static uint SHGFI_SMALLICON          = 0x000000001;
+        public static uint SHGFI_OPENICON           = 0x000000002;
+        public static uint SHGFI_SYSICONINDEX       = 0x000004000;
+        public static uint SHGFI_USEFILEATTRIBUTES  = 0x000000010;
+
         public static uint FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
+        public static uint FILE_ATTRIBUTE_NORMAL    = 0x00000080;
+
+        public static int TV_FIRST = 0x1100;
+        public static int TVM_SETIMAGELIST = TV_FIRST + 9;
+        public static int TVSIL_NORMAL = 0;
 
         /// <summary>
         /// information about a file object.
@@ -37,5 +44,8 @@ namespace Kinovea.FileBrowser
         /// </summary>
         [DllImport("shell32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, uint flags);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int message, IntPtr wParam, IntPtr lParam);
     }
 }
