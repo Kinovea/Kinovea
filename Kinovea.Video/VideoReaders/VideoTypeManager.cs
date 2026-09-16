@@ -156,6 +156,9 @@ namespace Kinovea.Video
         /// </summary>
         public static bool IsSupported(string extension)
         {
+            if (string.IsNullOrWhiteSpace(extension))
+                return false;
+
             return m_VideoReaders.ContainsKey(extension);
         }
 

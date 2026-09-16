@@ -200,7 +200,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileBrowser.cs" />
+    <Compile Include="FileSystemTreeController.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="SessionHistory.cs" />
+    <Compile Include="ShellIconIndex.cs" />
     <Compile Include="UserInterface\FormCameraWizard.cs">
       <SubType>Form</SubType>
     </Compile>

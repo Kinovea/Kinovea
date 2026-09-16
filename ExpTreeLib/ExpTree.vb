@@ -300,8 +300,6 @@ Public Class ExpTree
             Me.tv1.EndUpdate()
         End Try
         EnableEventPost = True
-        'We suppressed EventPosting during refresh, so give it one now
-        tv1_AfterSelect(Me, New TreeViewEventArgs(tv1.SelectedNode))
     End Sub
 #End Region
 
@@ -536,89 +534,6 @@ XIT:    tv1.EndUpdate()
     End Sub
 #End Region
 
-#End Region
-
-#Region "   TreeView BeforeExpand Event"
-
-    Private Sub tv1_BeforeExpand(ByVal sender As Object, ByVal e As System.Windows.Forms.TreeViewCancelEventArgs) Handles tv1.BeforeExpand
-        Dim oldCursor As Cursor = Cursor
-        Cursor = Cursors.WaitCursor
-        If e.Node.Nodes.Count = 1 AndAlso e.Node.Nodes(0).Text.Equals(" : ") Then
-            'Debug.WriteLine("Expanding -- " & e.Node.Text)
-            e.Node.Nodes.Clear()
-            Dim CSI As CShItem = e.Node.Tag
-            Dim D As ArrayList = CSI.GetDirectories()
-
-            If D.Count > 0 Then
-                D.Sort()    'uses the class comparer
-                Dim item As CShItem
-                For Each item In D
-                    ' Kinovea: remove anything that isn't a folder.
-                    ' This avoids showing zip files.
-                    'If Not (item.IsHidden And Not m_showHiddenFolders) Then
-                    If item.IsFolder And Not (item.IsHidden And Not m_showHiddenFolders) Then
-                        e.Node.Nodes.Add(MakeNode(item))
-                    End If
-                Next
-            End If
-
-            m_bManualCollapse = False
-            tv1.SelectedNode = e.Node
-
-        Else    'Ensure content is accurate
-            RefreshNode(e.Node)
-        End If
-
-        Cursor = oldCursor
-
-        ' Kinovea: raise an event to allow filtering.
-        ' Convert the TreeViewCancelEventArgs to TreeViewEventArgs
-        'Dim args As New TreeViewEventArgs(e.Node, TreeViewAction.Expand)
-        'RaiseEvent TreeViewBeforeExpand(sender, args)
-
-    End Sub
-#End Region
-
-#Region "   TreeView AfterSelect Event"
-    Private Sub tv1_AfterSelect(ByVal sender As System.Object, ByVal e As System.Windows.Forms.TreeViewEventArgs) Handles tv1.AfterSelect
-        Dim node As TreeNode = e.Node
-        Dim CSI As CShItem = e.Node.Tag
-        If CSI Is Root.Tag AndAlso Not tv1.ShowRootLines Then
-            With tv1
-                Try
-                    .BeginUpdate()
-                    .ShowRootLines = True
-                    RefreshNode(node)
-                    .ShowRootLines = False
-                Finally
-                    .EndUpdate()
-                End Try
-            End With
-        Else
-            RefreshNode(node)
-        End If
-
-        ' Kinovea: raise an event to allow filtering.
-        ' (Even if the node is already expanded).
-        Dim args As New TreeViewEventArgs(tv1.SelectedNode, TreeViewAction.Expand)
-        RaiseEvent TreeViewBeforeExpand(Me, args)
-
-        'Always expand and scroll
-        If Not m_bManualCollapse And Not tv1.SelectedNode.IsExpanded Then
-            tv1.SelectedNode.Expand()
-        End If
-        tv1.SelectedNode.EnsureVisible()
-        m_bManualCollapse = False
-
-
-        If EnableEventPost Then 'turned off during RefreshTree
-            If CSI.Path.StartsWith(":") Then
-                RaiseEvent ExpTreeNodeSelected(CSI.DisplayName, CSI)
-            Else
-                RaiseEvent ExpTreeNodeSelected(CSI.Path, CSI)
-            End If
-        End If
-    End Sub
 #End Region
 
 #Region "   RefreshNode Sub"

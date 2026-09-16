@@ -49,9 +49,13 @@ namespace Kinovea.FileBrowser
     public partial class FileBrowserUserInterface : KinoveaControl
     {
         #region Members
-        private CShItem currentExptreeItem; // Current item in exptree tab.
-        private CShItem currentShortcutItem; // Current item in shortcuts tab.
-        private SessionHistory sessionHistory = new SessionHistory();
+
+        private FileSystemTreeController explorerTree;
+        private FileSystemTreeController shortcutsTree;
+
+        private string currentExplorerPath; // Current path in exptree tab.
+        private string currentShortcutPath; // Current path in shortcuts tab.
+
         private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
         private bool isClosing = false;
@@ -89,9 +93,6 @@ namespace Kinovea.FileBrowser
         private ToolStripMenuItem mnuCameraForget = new ToolStripMenuItem();
         #endregion
 
-        private static string pathDesktop = "::{00021400-0000-0000-c000-000000000046}";
-        private static string pathComputer = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
-        private static readonly bool filtering = true;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -104,11 +105,13 @@ namespace Kinovea.FileBrowser
             splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * WindowManager.ActiveWindow.ExplorerFilesSplitterRatio);
             splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio);
             
-            InitializeTreeView(etExplorer);
-            InitializeTreeView(etShortcuts);
-            etExplorer.TreeViewBeforeExpand += etExplorer_TreeViewBeforeExpand;
-            etExplorer.RebuildFromRoot();
-            FilterOutDesktopChildren(etExplorer);
+            explorerTree = new FileSystemTreeController(etExplorer.tv1);
+            explorerTree.SelectedPathChanged += ExplorerTree_SelectedPathChanged;
+            explorerTree.BuildComputer();
+
+            shortcutsTree = new FileSystemTreeController(etShortcuts.tv1);
+            shortcutsTree.SelectedPathChanged += ShortcutsTree_SelectedPathChanged;
+            ReloadShortcuts();
 
             PrepareCameraListView();
             BuildContextMenu();
@@ -129,7 +132,6 @@ namespace Kinovea.FileBrowser
             NotificationCenter.FolderNavigationAsked += NotificationCenter_FolderNavigationAsked;
 
             // Reload stored persistent information.
-            ReloadShortcuts();
             InitializeFileWatcher();
             
             // Reload last tab from prefs.
@@ -144,16 +146,16 @@ namespace Kinovea.FileBrowser
         {
             // Add an item to shortcuts
             mnuAddToShortcuts.Image = Properties.Resources.star;
-            mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
+            mnuAddToShortcuts.Click += mnuAddToShortcuts_Click;
             mnuAddToShortcuts.Visible = false;
 
             mnuLocateFolder.Image = Properties.Resources.folder_explore;
-            mnuLocateFolder.Click += new EventHandler(mnuLocateFolder_Click);
+            mnuLocateFolder.Click += mnuLocateFolder_Click;
             mnuLocateFolder.Visible = true;
 
             // Delete selected shortcut
             mnuDeleteShortcut.Image = Properties.Resources.folder_delete;
-            mnuDeleteShortcut.Click += new EventHandler(mnuDeleteShortcut_Click);
+            mnuDeleteShortcut.Click += mnuDeleteShortcut_Click;
             mnuDeleteShortcut.Visible = false;
             
             popMenuFolders.Items.AddRange(new ToolStripItem[] 
@@ -319,8 +321,7 @@ namespace Kinovea.FileBrowser
             // Create a virtual shortcut for the folder of the opened video and select it.
             string pathFolder = Path.GetDirectoryName(e.Value);
             AddVirtualShortcut(pathFolder);
-            UpdateSessionHistory(pathFolder);
-            SelectVirtualShortcut();
+            shortcutsTree.SelectRootChild(pathFolder);
         }
         private void NotificationCenter_FolderChangeAsked(object sender, EventArgs<string> e)
         {
@@ -328,8 +329,7 @@ namespace Kinovea.FileBrowser
             // Note: the path to the new folder is stored in the File property of the event arg.
             string pathFolder = e.Value;
             AddVirtualShortcut(pathFolder);
-            UpdateSessionHistory(pathFolder);
-            SelectVirtualShortcut();
+            shortcutsTree.SelectRootChild(pathFolder);
         }
 
         /// <summary>
@@ -337,85 +337,39 @@ namespace Kinovea.FileBrowser
         /// </summary>
         private void NotificationCenter_FolderNavigationAsked(object sender, EventArgs<FolderNavigationType> e)
         {
-            // Move in the session history.
-            if (e.Value == FolderNavigationType.Backward)
-            {
-                sessionHistory.Back();
-            }
-            else if (e.Value == FolderNavigationType.Forward)
-            {
-                sessionHistory.Forward();
-            }
-
-            AddVirtualShortcut(sessionHistory.Current.Path);
-            SelectVirtualShortcut();
-
-            // End the navigating operation.
-            sessionHistory.Navigating = false;
         }
 
         /// <summary>
         /// Add the passed folder as a virtual shortcut.
         /// </summary>
-        private void AddVirtualShortcut(string pathFolder)
+        private void AddVirtualShortcut(string folderPath)
         {
-            if (pathFolder == lastOpenedDirectory)
+            if (folderPath == lastOpenedDirectory)
                 return;
 
             string oldLastOpenedDirectory = lastOpenedDirectory;
-            lastOpenedDirectory = pathFolder;
+            lastOpenedDirectory = folderPath;
 
             // If the shortcuts list is already on the right folder don't do anything.
-            if (activeTab == BrowserContentType.Shortcuts && currentShortcutItem != null && currentShortcutItem.Path == pathFolder)
+            if (activeTab == BrowserContentType.Shortcuts && currentShortcutPath == folderPath)
                 return;
 
-            if (pathFolder.StartsWith("."))
+            if (folderPath.StartsWith("."))
                 return;
 
             // Check if the previous opened directory was a true shortcut or a virtual one.
-            if (!string.IsNullOrEmpty(oldLastOpenedDirectory))
+
+            bool oldWasKnown = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(oldLastOpenedDirectory);
+            if (!oldWasKnown)
             {
-                if (!PreferencesManager.FileExplorerPreferences.ShortcutFolders.Any(sf => sf.Location == oldLastOpenedDirectory))
-                {
-                    // The previous opened directory was a virtual shortcut, remove it.
-                    etShortcuts.RemoveVirtualShortcut(oldLastOpenedDirectory);
-                }
+                // The previous opened directory was a virtual shortcut, remove it.
+                shortcutsTree.RemoveRootChild(oldLastOpenedDirectory);
             }
-
-            // Add the new virtual shortcut and reload.
-            etShortcuts.AddVirtualShortcut(pathFolder);
-            etShortcuts.RebuildFromRoot();
-        }
-
-        private void UpdateSessionHistory(string pathFolder)
-        {
-            if (!Directory.Exists(pathFolder))
-                return;
-
-            CShItem item = new CShItem(pathFolder);
-            sessionHistory.Add(item);
-        }
-
-        /// <summary>
-        /// Select the folder in the shortcuts tab and synchronize explorer tab.
-        /// </summary>
-        private void SelectVirtualShortcut()
-        {
-            // Whether the active tab is the explorer or the shortcuts, we always 
-            // go through the shortcuts tree to select the folder, as we just added it to the shortcuts hierarchy.
-            // this will trigger the synchro with the explorer tab so both will be ready.
-            //
-            // The only issue here is that we can't currently add special directories to the the shortcuts, except the desktop.
-            // If the user adds special folders to the history stack the navigation is broken.
-            if (sessionHistory.Current != null && !sessionHistory.Current.IsFileSystem)
+            
+            bool newIsKnown = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(folderPath);
+            if (!newIsKnown)
             {
-                etExplorer.ExpandANode(sessionHistory.Current);
-            }
-            else
-            {
-                // Normal case where the selected folder is a proper folder.
-                // This will trigger the synchronization with the explorer tab.
-                etShortcuts.SelectNode(lastOpenedDirectory);
+                shortcutsTree.AddRootChild(folderPath);
             }
         }
 
@@ -435,26 +389,23 @@ namespace Kinovea.FileBrowser
             // Figure out which tab we are on to update the right listview.
             if(activeTab == BrowserContentType.Files)
             {
-                if(currentExptreeItem != null)
-                    UpdateFileList(currentExptreeItem, lvExplorer, refreshThumbnails, false);
-
+                UpdateFileList(currentExplorerPath, lvExplorer, refreshThumbnails);
                 // TODO: synchronize shortcuts tab.
-
             }
             else if(activeTab == BrowserContentType.Shortcuts)
             {
-                if (currentShortcutItem != null)
+                if (!string.IsNullOrWhiteSpace(currentShortcutPath))
                 {
-                    UpdateFileList(currentShortcutItem, lvShortcuts, refreshThumbnails, true);
+                    UpdateFileList(currentShortcutPath, lvShortcuts, refreshThumbnails);
                 }
-                else if (currentExptreeItem != null)
+                else if (!string.IsNullOrWhiteSpace(currentExplorerPath))
                 {
-                    // This is the special case where we select a folder on the exptree tab
+                    // Case where we select a folder on the explorer tab
                     // and then move to the shortcuts tab.
                     // -> reload the hidden list of the exptree tab.
                     // We also force the thumbnail refresh, because in this case it is the only way to update the
-                    // filename list held in ScreenManager...
-                    UpdateFileList(currentExptreeItem, lvExplorer, true, false);
+                    // filename list held in ScreenManager.
+                    UpdateFileList(currentExplorerPath, lvExplorer, true);
                 }
             }
             else if(activeTab == BrowserContentType.Cameras)
@@ -507,20 +458,11 @@ namespace Kinovea.FileBrowser
         }
         
         /// <summary>
-        /// Reload the saved shortcuts plus the current folder as a transient shortcut into the shortcut tree.
+        /// Reload the shortcut tree view (users shortcuts + current folder).
         /// </summary>
         public void ReloadShortcuts()
         {
-            // Get the list as paths.
-            List<string> shortcuts = GetShortcuts();
-
-            // Create items out of the paths and populate the tree.
-            // FIXME: This call can be quite long if we have more than a handful of shortcuts.
-            etShortcuts.SetShortcuts(new ArrayList(shortcuts));
-
-            // This causes the tree view to be rebuilt at the root and expanded.
-            // See OnStartUpDirectoryChanged() in ExpTree.
-            etShortcuts.RebuildFromRoot();
+            shortcutsTree.BuildFavorites(GetShortcuts());
         }
 
         /// <summary>
@@ -532,12 +474,7 @@ namespace Kinovea.FileBrowser
             List<string> shortcuts = new List<string>();
             List<ShortcutFolder> savedShortcuts = PreferencesManager.FileExplorerPreferences.ShortcutFolders;
 
-            // Since we are loading the list from filenames, we can't currently
-            // add the current directory if it's not from the filesystem (e.g: library folder).
-            string dir = lastOpenedDirectory;
-            if (!Directory.Exists(lastOpenedDirectory))
-                dir = null;
-
+            bool found = false;
             foreach (ShortcutFolder shortcut in savedShortcuts)
             {
                 if (Directory.Exists(shortcut.Location))
@@ -546,15 +483,14 @@ namespace Kinovea.FileBrowser
 
                     if (shortcut.Location == lastOpenedDirectory)
                     {
-                        dir = null;
+                        found = true;
                     }
                 }
             }
 
-            // Inject the last opened directory if it's not already in the list of saved shortcuts.
-            if (!string.IsNullOrEmpty(dir))
+            if (!found)
             {
-                shortcuts.Insert(0, dir);
+                shortcuts.Insert(0, lastOpenedDirectory);
             }
 
             return shortcuts;
@@ -579,8 +515,10 @@ namespace Kinovea.FileBrowser
         public void Closing()
         {
             isClosing = true;
-            if(currentExptreeItem != null)
-                PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentExptreeItem.Path;
+            if(!string.IsNullOrEmpty(currentExplorerPath))
+            {
+                PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentExplorerPath;
+            }
         }
 
         private void Splitters_SplitterMoved(object sender, SplitterEventArgs e)
@@ -597,128 +535,15 @@ namespace Kinovea.FileBrowser
         #region File system tab
 
         #region TreeView
-        private void InitializeTreeView(ExpTree tv)
+        private void ExplorerTree_SelectedPathChanged(string folderPath)
         {
-            tv.AllowDrop = false;
-            tv.tv1.BorderStyle = BorderStyle.None;
-            tv.tv1.ItemHeight = 20;
-            tv.tv1.ShowLines = false;
-            tv.tv1.ShowPlusMinus = true; // Can't get the chevron.
-            tv.tv1.FullRowSelect = true;
-            tv.tv1.HotTracking = false; // underline on hover.
-            tv.tv1.Indent = 20;
+            currentExplorerPath = folderPath;
 
-            tv.tv1.KeyDown += (s, e) =>
+            if (!expanding && !initializing && !isClosing)
             {
-                // Disable the * key to expand all nodes.
-                if (e.KeyCode == Keys.Multiply)
-                    e.Handled = true;
-            };
-        }
-        private void FilterOutDesktopChildren(ExpTree etv)
-        {
-            if (!filtering)
-                return;
-
-            TreeView tv = etv.tv1;
-
-            // Filter list for children of Desktop.
-            List<string> toFilter = new List<string>
-            {
-                "::{21EC2020-3AEA-1069-A2DD-08002B30309D}", // Control panel
-                "::{26EE0668-A00A-44D7-9371-BEB064C98683}", // Control panel.
-                "::{2227A280-3AEA-1069-A2DE-08002B30309D}", // Printers
-                "::{645FF040-5081-101B-9F08-00AA002F954E}", // Recycle bin
-                "::{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", // Network places
-                "::{031E4825-7B94-4DC3-B131-E946B44C8DD5}", // Libraries
-            };
-
-            TreeNode computerNode = null;
-            TreeNode rootNode = tv.Nodes[0];
-            for (int i = rootNode.Nodes.Count - 1; i >= 0; i--)
-            {
-                CShItem item = (CShItem)rootNode.Nodes[i].Tag;
-                if (item.Path == pathComputer)
-                {
-                    computerNode = rootNode.Nodes[i];
-                    continue;
-                }
-
-                if (toFilter.Contains(item.Path))
-                {
-                    rootNode.Nodes.RemoveAt(i);
-                    continue;
-                }
-
-                // Filter out the drives as they show up under computer again.
-                // This list under Desktop doesn't have all of them anyway.
-                if (item.IsDisk)
-                {
-                    rootNode.Nodes.RemoveAt(i);
-                    continue;
-                }
-            }
-
-            // Expand Computer.
-            if (computerNode != null)
-            {
-                computerNode.Expand();
-            }
-
-            // Note: the drives have already been renamed from "System (C:)" to "C: (System)",
-            // to align all the drive letters nicely. Done inside ExpTree.
-
-            // Reselect the desktop node
-            tv.SelectedNode = rootNode;
-        }
-        private void etExplorer_TreeViewBeforeExpand(object sender, TreeViewEventArgs e)
-        {
-            // This is raised after the node children have been added but before it is visually expanded.
-            // Use this to filter out unwanted folders.
-            // Zip files have already been purged (Done inside ExpTree).
-            if (!filtering)
-                return;
-
-            var item = e.Node.Tag as CShItem;
-            if (item == null)
-                return;
-
-            if (item.Parent == null || item.Parent.Path != pathDesktop)
-                return;
-
-            bool isComputer = item.Path == "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
-
-            // Immediate children of desktop.
-            // Remove any dot folder in children, especially for the Home folder.
-            // Remove any non-drive folder under Computer.
-            for (int i = e.Node.Nodes.Count - 1; i >= 0; i--)
-            {
-                var childItem = e.Node.Nodes[i].Tag as CShItem;
-                if (childItem == null)
-                    continue;
-
-                if (childItem.DisplayName.StartsWith("."))
-                {
-                    e.Node.Nodes.RemoveAt(i);
-                    continue;
-                }
-
-                if (isComputer && !childItem.IsDisk)
-                {
-                    e.Node.Nodes.RemoveAt(i);
-                    continue;
-                }
-            }
-        }
-        private void etExplorer_ExpTreeNodeSelected(string selectedPath, CShItem item)
-        {
-            currentExptreeItem = item;
-            
-            if(!expanding && !initializing && !isClosing)
-            {
-                // We don't maintain synchronization with the Shortcuts tab. 
+                // We don't maintain synchronization in the direction file system -> shortcuts.
                 ResetShortcutList();
-                UpdateFileList(currentExptreeItem, lvExplorer, true, false);
+                UpdateFileList(folderPath, lvExplorer, true);
             }
         }
         private void etExplorer_MouseEnter(object sender, EventArgs e)
@@ -730,11 +555,11 @@ namespace Kinovea.FileBrowser
         {
             if (e.Button != MouseButtons.Right)
                 return;
-            
+
+            bool isOnSelected = explorerTree.IsOnSelected(e.Location);
+            mnuAddToShortcuts.Visible = isOnSelected;
+            mnuLocateFolder.Visible = isOnSelected;
             mnuDeleteShortcut.Visible = false;
-            bool valid = etExplorer.IsOnSelectedItem(e.Location) && !currentExptreeItem.Path.StartsWith("::");
-            mnuAddToShortcuts.Visible = valid;
-            mnuLocateFolder.Visible = valid;
         }
         #endregion
         
@@ -756,7 +581,7 @@ namespace Kinovea.FileBrowser
         }
         private void btnDeleteShortcut_Click(object sender, EventArgs e)
         {
-            DeleteSelectedShortcut();
+            RemoveSelectedShortcut();
         }
         private void AddShortcut()
         {
@@ -768,57 +593,59 @@ namespace Kinovea.FileBrowser
                 ReloadShortcuts();
             }
         }
-        private void DeleteSelectedShortcut()
+        private void RemoveSelectedShortcut()
         {
-            if(currentShortcutItem == null)
+            if(string.IsNullOrWhiteSpace(currentShortcutPath))
                 return;
             
             foreach(ShortcutFolder sf in PreferencesManager.FileExplorerPreferences.ShortcutFolders)
             {
-                if(sf.Location != currentShortcutItem.Path)
+                if(sf.Location != currentShortcutPath)
                     continue;
 
                 PreferencesManager.FileExplorerPreferences.RemoveShortcut(sf);
-                ReloadShortcuts();
+                shortcutsTree.RemoveRootChild(currentShortcutPath);
                 break;
             }
         }
         #endregion
         
         #region TreeView
-        private void etShortcuts_ExpTreeNodeSelected(string selectedPath, CShItem item)
+        private void ShortcutsTree_SelectedPathChanged(string folderPath)
         {
-            currentShortcutItem = item;
-            if (initializing || isClosing)
+            currentShortcutPath = folderPath;
+            //if (initializing || isClosing)
+            if (isClosing)
                 return;
 
-            // The operation that will trigger the thumbnail refresh MUST only be called at the end. 
-            // Otherwise the other threads take precedence and the thumbnails are not 
-            // shown progressively but all at once, when other operations are over.
-                
-            if (currentExptreeItem == null || currentExptreeItem.Path != currentShortcutItem.Path)
+            // This is also called in the context of adding the virtual shortcut
+            // when a file is opened, so we could be on any tab right now.
+
+            if (activeTab == BrowserContentType.Shortcuts)
             {
-                // Maintain synchronization with the explorer tree but don't refresh.
-                log.DebugFormat("Shortcut selection: Before updating file list of filesystem tab");
-                UpdateFileList(currentShortcutItem, lvExplorer, false, false);
-                log.DebugFormat("Shortcut selection: After updating file list of filesystem tab");
-
-                stopwatch.Restart();
-                expanding = true;
-                etExplorer.ExpandANode(currentShortcutItem);
-                log.DebugFormat("Shortcut selection: Time to expand explorer tree: {0} ms", stopwatch.ElapsedMilliseconds);
-                etExplorer.tv1.SelectedNode?.EnsureVisible();
-                log.DebugFormat("Shortcut selection: Time to ensure visible: {0} ms", stopwatch.ElapsedMilliseconds);
-                expanding = false;
-
-                currentExptreeItem = etExplorer.SelectedItem;
+                // Load the thumbnails in the back.
+                UpdateFileList(currentShortcutPath, lvShortcuts, true);
+                
+                // Sync the explorer tab tree.
+                explorerTree.ExpandToPath(currentShortcutPath);
+                UpdateFileList(currentShortcutPath, lvExplorer, false);
             }
+            else if (activeTab == BrowserContentType.Files)
+            {
+                // Sync the explorer tab tree view and update its file list and thumbnails in the back.
+                explorerTree.ExpandToPath(currentShortcutPath);
+                UpdateFileList(currentShortcutPath, lvExplorer, true);
+            }
+            else if (activeTab == BrowserContentType.Cameras)
+            {
+                // Keep the file lists in sync, don't refresh the thumbnails.
+                UpdateFileList(currentShortcutPath, lvShortcuts, false);
 
-            // Finally update the shortcuts tab, and refresh thumbs.
-            log.DebugFormat("Shortcut selection: Before updating file list of shortcuts tab");
-            UpdateFileList(currentShortcutItem, lvShortcuts, true, true);
-            log.DebugFormat("Shortcut selection: After updating file list of shortcuts tab");
+                explorerTree.ExpandToPath(currentShortcutPath);
+                UpdateFileList(currentShortcutPath, lvExplorer, false);
+            }
         }
+
         private void etShortcuts_MouseEnter(object sender, EventArgs e)
         {
             // Give focus to enable mouse scroll.
@@ -828,27 +655,23 @@ namespace Kinovea.FileBrowser
         {
             if(e.Button != MouseButtons.Right)
                 return;
-            
-            try
+
+            if (string.IsNullOrWhiteSpace(currentShortcutPath))
+                return;
+
+            bool isOnSelected = shortcutsTree.IsOnSelected(e.Location);
+            if (!isOnSelected)
             {
-                if(currentExptreeItem == null || !etShortcuts.IsOnSelectedItem(e.Location) || currentExptreeItem.Path.StartsWith("::"))
-                {
-                    mnuDeleteShortcut.Visible = false;	
-                    mnuAddToShortcuts.Visible = false;
-                    mnuLocateFolder.Visible = false;
-                    return;
-                }
-    
+                mnuAddToShortcuts.Visible = false;
+                mnuLocateFolder.Visible = false;
+                mnuDeleteShortcut.Visible = false;
+                return;
             }
-            catch (Exception exp)
-            {
-                log.ErrorFormat(exp.Message);
-            }
-            
-            bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(currentShortcutItem.Path);
+
+            bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(currentShortcutPath);
             mnuAddToShortcuts.Visible = !known;
-            mnuDeleteShortcut.Visible = known;
             mnuLocateFolder.Visible = true;
+            mnuDeleteShortcut.Visible = known;
         }
         #endregion
         
@@ -1132,10 +955,12 @@ namespace Kinovea.FileBrowser
         /// Update a list view with the files from the passed folder.
         /// Optionally triggers an update of the thumbnails pane.
         /// </summary>
-        private void UpdateFileList(CShItem folder, ListView listView, bool doRefresh, bool isShortcuts)
+        private void UpdateFileList(string folderPath, ListView listView, bool doRefresh)
         {
-            if (folder == null)
+            if (string.IsNullOrEmpty(folderPath))
                 return;
+
+            bool isShortcuts = listView == lvShortcuts;
 
             string logPrefix = isShortcuts ? "Shortcuts" : "Filesystem";
             log.DebugFormat("[{0}] - Updating the file list.", logPrefix);
@@ -1153,39 +978,17 @@ namespace Kinovea.FileBrowser
             listView.HeaderStyle = ColumnHeaderStyle.None;
 
 
-            // Collect the list of supported file.
-            ArrayList fileList = folder.GetFiles();
-            List<string> filenames = new List<string>();
-            foreach(object item in fileList)
-            {
-                CShItem shellItem = item as CShItem; 
-                if(shellItem == null)
-                    continue;
-                
-                try
-                {
-                    string path = shellItem.Path;
-                    string extension = Path.GetExtension(path);
-                    if (string.IsNullOrEmpty(extension) || !VideoTypeManager.IsSupported(extension))
-                        continue;
-                        
-                    filenames.Add(path);
-                }
-                catch(Exception)
-                {
-                    // Known case : when we are in OS/X parallels context, the path of existing files are invalid.
-                    log.ErrorFormat("An error happened while trying to add a file to the file list : {0}", shellItem.Path);
-                }
-            }
+            IEnumerable<string> filePaths = Directory.EnumerateFiles(folderPath);
 
-            log.DebugFormat("[{0}] - Collected list of supported files: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
+            // Filter out unsupported files.
+            List<string> supportedFiles = filePaths.Where(f => VideoTypeManager.IsSupported(Path.GetExtension(f))).ToList();
 
-            // Sort the files.
+            // Sort.
             try
             {
                 FileSortAxis axis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
                 bool ascending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
-                filenames.Sort(new FileComparator(axis, ascending));
+                supportedFiles.Sort(new FileComparator(axis, ascending));
             }
             catch(Exception e)
             {
@@ -1196,10 +999,10 @@ namespace Kinovea.FileBrowser
             log.DebugFormat("[{0}] - Sorted files: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
             // Push them to the list view.
-            foreach (string filename in filenames)
+            foreach (string path in supportedFiles)
             {
-                ListViewItem lvi = new ListViewItem(Path.GetFileName(filename));
-                lvi.Tag = filename;
+                ListViewItem lvi = new ListViewItem(Path.GetFileName(path));
+                lvi.Tag = path;
                 lvi.ImageIndex = 0;
                 listView.Items.Add(lvi);
             }
@@ -1208,22 +1011,15 @@ namespace Kinovea.FileBrowser
 
             log.DebugFormat("[{0}] - Updated list view: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
-            UpdateFileWatcher(folder);
-
-            if (doRefresh)
-                sessionHistory.Add(folder);
+            UpdateFileWatcher(folderPath);
 
             // Even if we don't want to reload the thumbnails, we must ensure that 
             // the screen manager backup list is in sync with the actual file list.
             // desync can happen in case of renaming and deleting files.
             // the screenmanager backup list is used at Unhide(), when we close a screen.
-            string folderPath = folder.Path;
-            if (!folder.IsFileSystem)
-                folderPath = folder.DisplayName;
-
             log.DebugFormat("[{0}] - Before sending event to thumbnail viewer: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
-            NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, filenames, isShortcuts, doRefresh);
+            NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, supportedFiles, isShortcuts, doRefresh);
             NotificationCenter.RaiseUpdateStatus();
             this.Cursor = Cursors.Default;
 
@@ -1340,25 +1136,25 @@ namespace Kinovea.FileBrowser
         #region Menu Event Handlers
         private void mnuAddToShortcuts_Click(object sender, EventArgs e)
         {
-            CShItem itemToAdd = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem; 
-            if(itemToAdd == null || itemToAdd.Path.StartsWith("::"))
+            string selectedPath = activeTab == BrowserContentType.Files ? currentExplorerPath : currentShortcutPath;
+            if(string.IsNullOrWhiteSpace(selectedPath))
                 return;
-            
-            ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(itemToAdd.Path), itemToAdd.Path);
+
+            ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(selectedPath), selectedPath);
             PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
             ReloadShortcuts();
         }
         private void mnuLocateFolder_Click(object sender, EventArgs e)
         {
-            CShItem item = activeTab == BrowserContentType.Files ? currentExptreeItem : currentShortcutItem;
-            if (item == null || string.IsNullOrEmpty(item.Path) || item.Path.StartsWith("::"))
+            string selectedPath = activeTab == BrowserContentType.Files ? currentExplorerPath : currentShortcutPath;
+            if (string.IsNullOrWhiteSpace(selectedPath))
                 return;
 
-            FilesystemHelper.LocateDirectory(item.Path);
+            FilesystemHelper.LocateDirectory(selectedPath);
         }
         private void mnuDeleteShortcut_Click(object sender, EventArgs e)
         {
-            DeleteSelectedShortcut();
+            RemoveSelectedShortcut();
         }
 
         private void UpdateSortAxis(FileSortAxis axis)
@@ -1387,22 +1183,22 @@ namespace Kinovea.FileBrowser
             fileWatcher.Renamed += fileWatcher_Renamed;
         }
 
-        private void UpdateFileWatcher(CShItem folder)
+        private void UpdateFileWatcher(string folderPath)
         {
             fileWatcher.EnableRaisingEvents = false;
 
-            if (folder == null || folder.Path.StartsWith("::"))
+            if (string.IsNullOrEmpty(folderPath))
                 return;
 
             try
             {
-                fileWatcher.Path = folder.Path;
+                fileWatcher.Path = folderPath;
                 fileWatcher.EnableRaisingEvents = true;
             }
             catch
             {
                 // This happens with archive files, considered directories by Windows.
-                log.ErrorFormat("Error while adding path to file watcher. {0}", folder.Path);
+                log.ErrorFormat("Error while adding path to file watcher. {0}", folderPath);
             }
         }
         
