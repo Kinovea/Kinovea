@@ -1509,7 +1509,7 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkers();
             ShowHideRenderingSurface(true);
             ResizeUpdate(true);
-
+            PresentFrame(currentTimestamp);
             
             // Handle auto-playback for replay watchers.
             if (screenDescriptor != null && screenDescriptor.Autoplay)
@@ -4527,6 +4527,9 @@ namespace Kinovea.ScreenManager
             // Depending on the active tool we have various things to do.
 
             if (!m_FrameServer.Loaded)
+                return;
+
+            if (m_FrameServer.VideoReader.Current == null)
                 return;
 
             if (videoFilterIsActive && (e.Button == MouseButtons.Left || e.Button == MouseButtons.Middle))
