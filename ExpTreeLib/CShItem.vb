@@ -74,9 +74,6 @@ Public Class CShItem
     'Indicates whether IsReadOnly has been set up
     Private m_IsReadOnlySetup As Boolean '= False
 
-    'Holds a byte() representation of m_PIDL -- filled when needed
-    Private m_cPidl As cPidl
-
     'Flags for Dispose state
     Private m_IsDisposing As Boolean
     Private m_Disposed As Boolean
@@ -506,17 +503,6 @@ Public Class CShItem
     End Function
 #End Region
 
-#Region "       Public Shared Function FindCShItem(ByVal b() As Byte) As CShItem"
-    Public Shared Function FindCShItem(ByVal b() As Byte) As CShItem
-        If Not IsValidPidl(b) Then Return Nothing
-        Dim thisPidl As IntPtr = Marshal.AllocCoTaskMem(b.Length)
-        If thisPidl.Equals(IntPtr.Zero) Then Return Nothing
-        Marshal.Copy(b, 0, thisPidl, b.Length)
-        FindCShItem = FindCShItem(thisPidl)
-        Marshal.FreeCoTaskMem(thisPidl)
-    End Function
-#End Region
-
 #Region "       Public Shared Function FindCShItem(ByVal ptr As IntPtr) As CShItem"
     Public Shared Function FindCShItem(ByVal ptr As IntPtr) As CShItem
         FindCShItem = Nothing     'avoid VB2005 Warning
@@ -860,17 +846,6 @@ Public Class CShItem
                 FillDemandInfo()
             End If
             Return m_IsNetWorkDrive
-        End Get
-    End Property
-#End Region
-
-#Region "           cPidl information"
-    Public ReadOnly Property clsPidl() As cPidl
-        Get
-            If IsNothing(m_cPidl) Then
-                m_cPidl = New cPidl(m_Pidl)
-            End If
-            Return m_cPidl
         End Get
     End Property
 #End Region
@@ -1628,224 +1603,6 @@ HRError:  'not ready disks will return the following error
             Dim yTag As CShItem = y.tag
             Return xTag.CompareTo(y.tag)
         End Function
-    End Class
-#End Region
-
-#Region "   cPidl Class"
-    '''<Summary>cPidl class contains a Byte() representation of a PIDL and
-    ''' certain Methods and Properties for comparing one cPidl to another</Summary>
-    Public Class cPidl
-        Implements IEnumerable
-
-#Region "       Private Fields"
-        Dim m_bytes() As Byte   'The local copy of the PIDL
-        Dim m_ItemCount As Integer      'the # of ItemIDs in this ItemIDList (PIDL)
-        Dim m_OffsetToRelative As Integer 'the index of the start of the last itemID in m_bytes
-#End Region
-
-#Region "       Constructor"
-        Sub New(ByVal pidl As IntPtr)
-            Dim cb As Integer = ItemIDListSize(pidl)
-            If cb > 0 Then
-                ReDim m_bytes(cb + 1)
-                Marshal.Copy(pidl, m_bytes, 0, cb)
-                'DumpPidl(pidl)
-            Else
-                ReDim m_bytes(1)  'This is the DeskTop (we hope)
-            End If
-            'ensure nulnul
-            m_bytes(m_bytes.Length - 2) = 0 : m_bytes(m_bytes.Length - 1) = 0
-            m_ItemCount = PidlCount(pidl)
-        End Sub
-#End Region
-
-#Region "       Public Properties"
-        Public ReadOnly Property PidlBytes() As Byte()
-            Get
-                Return m_bytes
-            End Get
-        End Property
-
-        Public ReadOnly Property Length() As Integer
-            Get
-                Return m_bytes.Length
-            End Get
-        End Property
-
-        Public ReadOnly Property ItemCount() As Integer
-            Get
-                Return m_ItemCount
-            End Get
-        End Property
-
-#End Region
-
-#Region "       Public Intstance Methods -- ToPIDL, Decompose, and IsEqual"
-
-        '''<Summary> Copy the contents of a byte() containing a pidl to
-        '''  CoTaskMemory, returning an IntPtr that points to that mem block
-        ''' Assumes that this cPidl is properly terminated, as all New
-        ''' cPidls are.
-        ''' Caller must Free the returned IntPtr when done with mem block.
-        '''</Summary>
-        Public Function ToPIDL() As IntPtr
-            ToPIDL = BytesToPidl(m_bytes)
-        End Function
-
-        '''<Summary>Returns an object containing a byte() for each of this cPidl's
-        ''' ITEMIDs (individual PIDLS), in order such that obj(0) is
-        ''' a byte() containing the bytes of the first ITEMID, etc.
-        ''' Each ITEMID is properly terminated with a nulnul
-        '''</Summary>
-        Public Function Decompose() As Object()
-            Dim bArrays(Me.ItemCount - 1) As Object
-            Dim eByte As ICPidlEnumerator = Me.GetEnumerator()
-            Dim i As Integer
-            Do While eByte.MoveNext
-                bArrays(i) = eByte.Current
-                i += 1
-            Loop
-            Return bArrays
-        End Function
-
-        '''<Summary>Returns True if input cPidl's content exactly match the
-        ''' contents of this instance</Summary>
-        Public Function IsEqual(ByVal other As cPidl) As Boolean
-            IsEqual = False     'assume not
-            If other.Length <> Me.Length Then Exit Function
-            Dim ob() As Byte = other.PidlBytes
-            Dim i As Integer
-            For i = 0 To Me.Length - 1  'note: we look at nulnul also
-                If ob(i) <> m_bytes(i) Then Exit Function
-            Next
-            Return True         'all equal on fall thru
-        End Function
-#End Region
-
-#Region "       Public Shared Methods"
-
-#Region "           JoinPidlBytes"
-        '''<Summary> Join two byte arrays containing PIDLS, returning a
-        ''' Byte() containing the resultant ITEMIDLIST. Both Byte() must
-        ''' be properly terminated (nulnul)
-        ''' Returns NOTHING if error
-        ''' </Summary>
-        Public Shared Function JoinPidlBytes(ByVal b1() As Byte, ByVal b2() As Byte) As Byte()
-            If IsValidPidl(b1) And IsValidPidl(b2) Then
-                Dim b(b1.Length + b2.Length - 3) As Byte 'allow for leaving off first nulnul
-                Array.Copy(b1, b, b1.Length - 2)
-                Array.Copy(b2, 0, b, b1.Length - 2, b2.Length)
-                If IsValidPidl(b) Then
-                    Return b
-                Else
-                    Return Nothing
-                End If
-            Else
-                Return Nothing
-            End If
-        End Function
-#End Region
-
-#Region "           BytesToPidl"
-        '''<Summary> Copy the contents of a byte() containing a pidl to
-        '''  CoTaskMemory, returning an IntPtr that points to that mem block
-        ''' Caller must free the IntPtr when done with it
-        '''</Summary>
-        Public Shared Function BytesToPidl(ByVal b() As Byte) As IntPtr
-            BytesToPidl = IntPtr.Zero       'assume failure
-            If IsValidPidl(b) Then
-                Dim bLen As Integer = b.Length
-                BytesToPidl = Marshal.AllocCoTaskMem(bLen)
-                If BytesToPidl.Equals(IntPtr.Zero) Then Exit Function 'another bad error
-                Marshal.Copy(b, 0, BytesToPidl, bLen)
-            End If
-        End Function
-#End Region
-
-#Region "           StartsWith"
-        '''<Summary>returns True if the beginning of pidlA matches PidlB exactly for pidlB's entire length</Summary>
-        Public Shared Function StartsWith(ByVal pidlA As IntPtr, ByVal pidlB As IntPtr) As Boolean
-            Return cPidl.StartsWith(New cPidl(pidlA), New cPidl(pidlB))
-        End Function
-
-        '''<Summary>returns True if the beginning of A matches B exactly for B's entire length</Summary>
-        Public Shared Function StartsWith(ByVal A As cPidl, ByVal B As cPidl) As Boolean
-            Return A.StartsWith(B)
-        End Function
-
-        '''<Summary>Returns true if the CPidl input parameter exactly matches the
-        ''' beginning of this instance of CPidl</Summary>
-        Public Function StartsWith(ByVal cp As cPidl) As Boolean
-            Dim b() As Byte = cp.PidlBytes
-            If b.Length > m_bytes.Length Then Return False 'input is longer
-            Dim i As Integer
-            For i = 0 To b.Length - 3 'allow for nulnul at end of cp.PidlBytes
-                If b(i) <> m_bytes(i) Then Return False
-            Next
-            Return True
-        End Function
-#End Region
-
-#End Region
-
-#Region "       GetEnumerator"
-        Public Function GetEnumerator() As System.Collections.IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
-            Return New ICPidlEnumerator(m_bytes)
-        End Function
-#End Region
-
-#Region "       PIDL enumerator Class"
-        Private Class ICPidlEnumerator
-            Implements IEnumerator
-
-            Private m_sPos As Integer   'the first index in the current PIDL
-            Private m_ePos As Integer   'the last index in the current PIDL
-            Private m_bytes() As Byte   'the local copy of the PIDL
-            Private m_NotEmpty As Boolean = False 'the desktop PIDL is zero length
-
-            Sub New(ByVal b() As Byte)
-                m_bytes = b
-                If b.Length > 0 Then m_NotEmpty = True
-                m_sPos = -1 : m_ePos = -1
-            End Sub
-
-            Public ReadOnly Property Current() As Object Implements System.Collections.IEnumerator.Current
-                Get
-                    If m_sPos < 0 Then Throw New InvalidOperationException("ICPidlEnumerator --- attempt to get Current with invalidated list")
-                    Dim b((m_ePos - m_sPos) + 2) As Byte    'room for nulnul
-                    Array.Copy(m_bytes, m_sPos, b, 0, b.Length - 2)
-                    b(b.Length - 2) = 0 : b(b.Length - 1) = 0 'add nulnul
-                    Return b
-                End Get
-            End Property
-
-            Public Function MoveNext() As Boolean Implements System.Collections.IEnumerator.MoveNext
-                If m_NotEmpty Then
-                    If m_sPos < 0 Then
-                        m_sPos = 0 : m_ePos = -1
-                    Else
-                        m_sPos = m_ePos + 1
-                    End If
-                    If m_bytes.Length < m_sPos + 1 Then Throw New InvalidCastException("Malformed PIDL")
-                    Dim cb As Integer = m_bytes(m_sPos) + m_bytes(m_sPos + 1) * 256
-                    If cb = 0 Then
-                        Return False 'have passed all back
-                    Else
-                        m_ePos += cb
-                    End If
-                Else
-                    m_sPos = 0 : m_ePos = 0
-                    Return False        'in this case, we have exhausted the list of 0 ITEMIDs
-                End If
-                Return True
-            End Function
-
-            Public Sub Reset() Implements System.Collections.IEnumerator.Reset
-                m_sPos = -1 : m_ePos = -1
-            End Sub
-        End Class
-#End Region
-
     End Class
 #End Region
 
