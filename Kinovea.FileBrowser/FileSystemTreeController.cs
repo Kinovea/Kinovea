@@ -89,7 +89,7 @@ namespace Kinovea.FileBrowser
         /// <summary>
         /// Add the root and its immediate children.
         /// </summary>
-        private void BuildRoot(string rootText, IEnumerable<string> paths, bool forDrives)
+        private void BuildRoot(string name, IEnumerable<string> paths, bool forDrives)
         {
             treeView.BeginUpdate();
 
@@ -97,10 +97,27 @@ namespace Kinovea.FileBrowser
             {
                 treeView.Nodes.Clear();
 
-                // This is a purely visual root. It has no filesystem path.
-                TreeNode root = new TreeNode(rootText)
+                // This is a purely visual root, it has no filesystem path.
+                int fallbackIcon = ShellIconIndex.Get("dummy-folder", false, false);
+                int icon = 0;
+                int selectedIcon = 0;
+                if (forDrives)
                 {
-                    Tag = null
+                    icon = ShellIconIndex.GetStockIconIndex(NativeMethods.StockIconId.DesktopPc, fallbackIcon);
+                    selectedIcon = icon;
+                }
+                else
+                {
+                    int fallbackIconOpen = ShellIconIndex.Get("dummy-folder", true, false);
+                    icon = ShellIconIndex.GetStockIconIndex(NativeMethods.StockIconId.Folder, fallbackIcon);
+                    selectedIcon = ShellIconIndex.GetStockIconIndex(NativeMethods.StockIconId.FolderOpen, fallbackIconOpen);
+                }
+
+                TreeNode root = new TreeNode(name)
+                {
+                    Tag = null,
+                    ImageIndex = icon,
+                    SelectedImageIndex = selectedIcon
                 };
 
                 foreach (string path in paths)
@@ -166,18 +183,19 @@ namespace Kinovea.FileBrowser
         /// </summary>
         private TreeNode CreatePathNode(string path, bool isDrive)
         {
-            TreeNode node = new TreeNode(GetDisplayName(path, isDrive))
+            string name = GetDisplayName(path, isDrive);
+            int iconIndex = ShellIconIndex.Get(path, false, isDrive);
+            int iconIndexSelected = ShellIconIndex.Get(path, true, isDrive);
+            TreeNode node = new TreeNode(name)
             {
-                Tag = path
+                Tag = path,
+                ImageIndex = iconIndex,
+                SelectedImageIndex = iconIndexSelected
             };
 
-            node.ImageIndex = ShellIconIndex.Get(path, false, isDrive);
-            node.SelectedImageIndex = ShellIconIndex.Get(path, true, isDrive);
-
             // We don't inspect the directory while constructing the node.
-            // The dummy child gives it an expansion glyph.
+            // Add a dummy child to give it an expansion glyph.
             node.Nodes.Add(new TreeNode { Tag = DummyTag });
-
             return node;
         }
 

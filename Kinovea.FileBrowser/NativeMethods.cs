@@ -39,17 +39,51 @@ namespace Kinovea.FileBrowser
             public string szTypeName;
         }
 
+        public enum StockIconId
+        {
+            Folder = 3,
+            FolderOpen = 4,
+            DesktopPc = 94
+        }
+
+        [Flags]
+        public enum StockIconFlags : uint
+        {
+            SmallIcon = 0x00000001,
+            SysIconIndex = 0x00004000
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct SHSTOCKICONINFO
+        {
+            public uint cbSize;
+            public IntPtr hIcon;
+            public int iSysImageIndex;
+            public int iIcon;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szPath;
+        }
+
         /// <summary>
         /// Retrieves information about an object in the file system, such as a file, folder, directory, or drive root.
         /// </summary>
         [DllImport("shell32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, uint flags);
 
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
+        public static extern int SHGetStockIconInfo(StockIconId stockIconId, StockIconFlags flags, ref SHSTOCKICONINFO info);
+
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int message, IntPtr wParam, IntPtr lParam);
 
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-        internal static extern int SetWindowTheme(IntPtr window, string subApplicationName, string subIdList);
+        public static extern int SetWindowTheme(IntPtr window, string subApplicationName, string subIdList);
+
+
+
+
+
 
 
 

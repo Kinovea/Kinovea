@@ -32,5 +32,30 @@ namespace Kinovea.FileBrowser
 
             return result == IntPtr.Zero ? 0 : info.iIcon;
         }
+
+        public static int GetStockIconIndex(NativeMethods.StockIconId stockIconId, int fallbackIndex)
+        {
+            try
+            {
+                NativeMethods.SHSTOCKICONINFO info = new NativeMethods.SHSTOCKICONINFO
+                {
+                    cbSize = (uint)Marshal.SizeOf(typeof(NativeMethods.SHSTOCKICONINFO))
+                };
+
+                var flags = NativeMethods.StockIconFlags.SysIconIndex | NativeMethods.StockIconFlags.SmallIcon;
+                int result = NativeMethods.SHGetStockIconInfo(stockIconId, flags, ref info);
+
+                // SHGetStockIconInfo returns an HRESULT.
+                return result >= 0 ? info.iSysImageIndex : fallbackIndex;
+            }
+            catch (DllNotFoundException)
+            {
+                return fallbackIndex;
+            }
+            catch (EntryPointNotFoundException)
+            {
+                return fallbackIndex;
+            }
+        }
     }
 }
