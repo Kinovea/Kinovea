@@ -453,7 +453,7 @@ namespace Kinovea.FileBrowser
         /// </summary>
         public void ReloadShortcuts()
         {
-            shortcutsTree.BuildFavorites(GetShortcuts());
+            shortcutsTree.BuildShortcuts(GetShortcuts());
         }
 
         /// <summary>

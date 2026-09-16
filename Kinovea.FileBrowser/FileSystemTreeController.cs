@@ -78,12 +78,12 @@ namespace Kinovea.FileBrowser
         }
 
         /// <summary>
-        /// Build the treeview with the user's favorite folders.
+        /// Build the treeview with the shortcuts.
         /// </summary>
-        public void BuildFavorites(IEnumerable<string> paths)
+        public void BuildShortcuts(IEnumerable<string> paths)
         {
             isDrives = false;
-            string text = "Favorites";
+            string text = "Shortcuts";
             BuildRoot(text, paths, false);
         }
 
