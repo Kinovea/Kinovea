@@ -24,21 +24,12 @@ Public Class CShItem
     ' so save & expose its name on the current machine
     Private Shared m_strMyComputer As String
 
-    'To get My Documents sorted first, we need to know the Locale
-    'specific name of that folder.
-    Private Shared m_strMyDocuments As String
-
     ' The DesktopBase is set up via Sub New() (one time only) and
     '  disposed of only when DesktopBase is finally disposed of
     Private Shared DesktopBase As CShItem
 
     'We can avoid an extra SHGetFileInfo call once this is set up
     Private Shared OpenFolderIconIndex As Integer = -1
-
-    ' DragDrop, possibly among others, needs to know the Path of
-    ' the DeskTopDirectory in addition to the Desktop itself
-    ' Also need the actual CShItem for the DeskTopDirectory, so get it
-    Private Shared m_DeskTopDirectory As CShItem
 
     Private Shared ReadOnly log As log4net.ILog = log4net.LogManager.GetLogger(GetType(CShItem))
 
@@ -250,14 +241,10 @@ Public Class CShItem
         m_IsReadOnly = False
         m_IsReadOnlySetup = True
 
-        m_strMyDocuments = String.Empty
-
         m_SortFlag = ComputeSortFlag()
+
         'Set DesktopBase
         DesktopBase = Me
-
-        ' Lastly, get the Path and CShItem of the DesktopDirectory -- useful for DragDrop
-        m_DeskTopDirectory = New CShItem(CSIDL.DESKTOPDIRECTORY)
 
     End Sub
 #End Region
@@ -272,13 +259,7 @@ Public Class CShItem
             DesktopBase = New CShItem() 'This initializes the Desktop folder
         End If
         Dim HR As Integer
-        If ID = CSIDL.MYDOCUMENTS Then
-            Dim pchEaten As Integer
-            HR = DesktopBase.m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
-                     pchEaten, m_Pidl, Nothing)
-        Else
-            HR = SHGetSpecialFolderLocation(0, ID, m_Pidl)
-        End If
+        HR = SHGetSpecialFolderLocation(0, ID, m_Pidl)
         If HR = NOERROR Then
             Dim pParent As IShellFolder
             Dim relPidl As IntPtr = IntPtr.Zero
@@ -606,13 +587,7 @@ XIT:    'On any kind of exit, free the allocated memory
         End If
         Dim HR As Integer
         Dim tmpPidl As IntPtr
-        If ID = CSIDL.MYDOCUMENTS Then
-            Dim pchEaten As Integer
-            HR = GetDeskTop.Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
-                     pchEaten, tmpPidl, Nothing)
-        Else
-            HR = SHGetSpecialFolderLocation(0, ID, tmpPidl)
-        End If
+        HR = SHGetSpecialFolderLocation(0, ID, tmpPidl)
         If HR = NOERROR Then
             GetCShItem = FindCShItem(tmpPidl)
             If IsNothing(GetCShItem) Then
@@ -716,12 +691,6 @@ XIT:    'On any kind of exit, free the allocated memory
 
             If Not m_IsBrowsable Then
                 rVal = rVal Or &H10000
-
-                If Not String.IsNullOrEmpty(m_strMyDocuments) AndAlso
-                   String.Equals(m_strMyDocuments, m_DisplayName, StringComparison.CurrentCulture) Then
-
-                    rVal = rVal Or &H1
-                End If
             Else
                 rVal = rVal Or &H1000
             End If
@@ -771,12 +740,6 @@ XIT:    'On any kind of exit, free the allocated memory
     Public Shared ReadOnly Property strSystemFolder() As String
         Get
             Return m_strSystemFolder
-        End Get
-    End Property
-
-    Public Shared ReadOnly Property DesktopDirectoryPath() As String
-        Get
-            Return m_DeskTopDirectory.Path
         End Get
     End Property
 
