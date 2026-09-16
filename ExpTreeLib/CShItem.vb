@@ -40,6 +40,7 @@ Public Class CShItem
     ' Also need the actual CShItem for the DeskTopDirectory, so get it
     Private Shared m_DeskTopDirectory As CShItem
 
+    Private Shared ReadOnly log As log4net.ILog = log4net.LogManager.GetLogger(GetType(CShItem))
 
 #End Region
 
@@ -203,13 +204,15 @@ Public Class CShItem
         Dim HR As Integer
         'firstly determine what the local machine calls a "System Folder" and "My Computer"
         Dim tmpPidl As IntPtr
+
+        tmpPidl = IntPtr.Zero
         HR = SHGetSpecialFolderLocation(0, CSIDL.DRIVES, tmpPidl)
         Dim shfi As New SHFILEINFO()
-        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or _
-                                SHGFI.TYPENAME Or _
+        Dim dwflag As Integer = SHGFI.DISPLAYNAME Or
+                                SHGFI.TYPENAME Or
                                 SHGFI.PIDL
         Dim dwAttr As Integer = 0
-        SHGetFileInfo(tmpPidl, dwAttr, shfi, cbFileInfo, dwflag)
+        Dim result As IntPtr = SHGetFileInfo(tmpPidl, dwAttr, shfi, cbFileInfo, dwflag)
         m_strSystemFolder = shfi.szTypeName
         m_strMyComputer = shfi.szDisplayName
         Marshal.FreeCoTaskMem(tmpPidl)
@@ -220,7 +223,18 @@ Public Class CShItem
         m_HasSubFolders = True
         m_IsBrowsable = False
         HR = SHGetDesktopFolder(m_Folder)
-        m_Pidl = GetSpecialFolderLocation(IntPtr.Zero, CSIDL.DESKTOP)
+
+        If HR <> NOERROR Then
+            Marshal.ThrowExceptionForHR(HR)
+        End If
+
+        If m_Folder Is Nothing Then
+            Throw New InvalidOperationException("SHGetDesktopFolder reported success but returned Nothing.")
+        End If
+
+        m_Pidl = IntPtr.Zero
+        HR = SHGetSpecialFolderLocation(0, CSIDL.DESKTOP, m_Pidl)
+
         dwflag = SHGFI.DISPLAYNAME Or
                  SHGFI.TYPENAME Or
                  SHGFI.SYSICONINDEX Or
@@ -236,25 +250,15 @@ Public Class CShItem
         m_IsReadOnly = False
         m_IsReadOnlySetup = True
 
-        'also get local name for "My Documents"
-        Dim pchEaten As Integer
-        tmpPidl = IntPtr.Zero
-        HR = m_Folder.ParseDisplayName(Nothing, Nothing, "::{450d8fba-ad25-11d0-98a8-0800361b1103}",
-                 pchEaten, tmpPidl, Nothing)
-        shfi = New SHFILEINFO()
-        dwflag = SHGFI.DISPLAYNAME Or
-                                SHGFI.TYPENAME Or
-                                SHGFI.PIDL
-        dwAttr = 0
-        SHGetFileInfo(tmpPidl, dwAttr, shfi, cbFileInfo, dwflag)
-        m_strMyDocuments = shfi.szDisplayName
-        Marshal.FreeCoTaskMem(tmpPidl)
-        'this must be done after getting "My Documents" string
+        m_strMyDocuments = String.Empty
+
         m_SortFlag = ComputeSortFlag()
         'Set DesktopBase
         DesktopBase = Me
+
         ' Lastly, get the Path and CShItem of the DesktopDirectory -- useful for DragDrop
         m_DeskTopDirectory = New CShItem(CSIDL.DESKTOPDIRECTORY)
+
     End Sub
 #End Region
 
@@ -280,6 +284,11 @@ Public Class CShItem
             Dim relPidl As IntPtr = IntPtr.Zero
 
             pParent = GetParentOf(m_Pidl, relPidl)
+
+            If pParent Is Nothing Then
+                Throw New InvalidOperationException("No parent IShellFolder returned for CSIDL " & ID.ToString())
+            End If
+
             'Get the Attributes
             SetUpAttributes(pParent, relPidl)
             'Set unfetched value for IconIndex....
@@ -321,6 +330,8 @@ Public Class CShItem
         Dim relPidl As IntPtr = IntPtr.Zero
 
         pParent = GetParentOf(m_Pidl, relPidl)
+
+
 
         'Get the Attributes
         SetUpAttributes(pParent, relPidl)
@@ -449,19 +460,36 @@ XIT:    'On any kind of exit, free the allocated memory
     '''<remarks>Several internal functions need this information and do not have
     ''' it readily available. GetParentOf serves those functions</remarks>
     Private Shared Function GetParentOf(ByVal pidl As IntPtr, ByRef relPidl As IntPtr) As IShellFolder
-        GetParentOf = Nothing     'avoid VB2005 warning
-        Dim HR As Integer
-        Dim itemCnt As Integer = PidlCount(pidl)
-        If itemCnt = 1 Then         'parent is desktop
-            HR = SHGetDesktopFolder(GetParentOf)
+
+        Dim hr As Integer
+        Dim parentFolder As IShellFolder = Nothing
+        Dim itemCount As Integer = PidlCount(pidl)
+
+        If itemCount = 1 Then
+            hr = SHGetDesktopFolder(parentFolder)
             relPidl = pidl
         Else
-            Dim tmpPidl As IntPtr
-            tmpPidl = TrimPidl(pidl, relPidl)
-            HR = DesktopBase.m_Folder.BindToObject(tmpPidl, IntPtr.Zero, IID_IShellFolder, GetParentOf)
-            Marshal.FreeCoTaskMem(tmpPidl)
+            Dim tmpPidl As IntPtr = TrimPidl(pidl, relPidl)
+
+            Try
+                hr = DesktopBase.m_Folder.BindToObject(tmpPidl, IntPtr.Zero, IID_IShellFolder, parentFolder)
+            Finally
+                If Not tmpPidl.Equals(IntPtr.Zero) Then
+                    Marshal.FreeCoTaskMem(tmpPidl)
+                End If
+            End Try
         End If
-        If Not HR = NOERROR Then Marshal.ThrowExceptionForHR(HR)
+
+        If hr <> NOERROR Then
+            Marshal.ThrowExceptionForHR(hr)
+        End If
+
+        If parentFolder Is Nothing Then
+            Throw New InvalidOperationException("GetParentOf received S_OK but no IShellFolder.")
+        End If
+
+        Return parentFolder
+
     End Function
 #End Region
 
@@ -471,6 +499,11 @@ XIT:    'On any kind of exit, free the allocated memory
     ''' <param name="pidl">Relative Pidl of this Item.</param>
     '''
     Private Sub SetUpAttributes(ByVal folder As IShellFolder, ByVal pidl As IntPtr)
+
+        If folder Is Nothing Then
+            Throw New InvalidOperationException("SetUpAttributes received a null IShellFolder.")
+        End If
+
         Dim attrFlag As SFGAO
         attrFlag = SFGAO.BROWSABLE
         attrFlag = attrFlag Or SFGAO.FILESYSTEM
@@ -671,21 +704,37 @@ XIT:    'On any kind of exit, free the allocated memory
     ''' <summary>Computes the Sort key of this CShItem, based on its attributes</summary>
     '''
     Private Function ComputeSortFlag() As Integer
+
         Dim rVal As Integer = 0
-        If m_IsDisk Then rVal = &H100000
-        If m_TypeName.Equals(strSystemFolder) Then
+
+        If m_IsDisk Then
+            rVal = &H100000
+        End If
+
+        If Not String.IsNullOrEmpty(m_TypeName) AndAlso
+           String.Equals(m_TypeName, m_strSystemFolder, StringComparison.Ordinal) Then
+
             If Not m_IsBrowsable Then
                 rVal = rVal Or &H10000
-                If m_strMyDocuments.Equals(m_DisplayName) Then
+
+                If Not String.IsNullOrEmpty(m_strMyDocuments) AndAlso
+                   String.Equals(m_strMyDocuments, m_DisplayName, StringComparison.CurrentCulture) Then
+
                     rVal = rVal Or &H1
                 End If
             Else
                 rVal = rVal Or &H1000
             End If
         End If
-        If m_IsFolder Then rVal = rVal Or &H100
+
+        If m_IsFolder Then
+            rVal = rVal Or &H100
+        End If
+
         Return rVal
     End Function
+
+
 
     '''<Summary> CompareTo(obj as object)
     '''  Compares obj to this instance based on SortFlag-- obj must be a CShItem</Summary>

@@ -420,8 +420,8 @@ Public Enum SHGNLI
     '  Get an Imalloc Interface
     ' Not required for .Net apps, use Marshal class
     '</Summary>
-    Declare Auto Function SHGetMalloc Lib "shell32" ( _
-            ByRef pMalloc As IMalloc) As Integer
+    Declare Auto Function SHGetMalloc Lib "shell32" (
+            <Out(), MarshalAs(UnmanagedType.Interface)> ByRef pMalloc As IMalloc) As Integer
 #End Region
 
 #Region "       SHGetDesktopFolder"
@@ -431,8 +431,12 @@ Public Enum SHGNLI
     '<param>
     '  ppshf -- Recieves the IShellFolder interface for the desktop folder
     '</param>
-    Declare Auto Function SHGetDesktopFolder Lib "shell32.dll" ( _
-                ByRef ppshf As IShellFolder) As Integer
+    'Declare Auto Function SHGetDesktopFolder Lib "shell32.dll" (ByRef ppshf As IShellFolder) As Integer
+
+    Declare Auto Function SHGetDesktopFolder Lib "shell32.dll" (
+        <Out(), MarshalAs(UnmanagedType.Interface)>
+        ByRef ppshf As IShellFolder) As Integer
+
 #End Region
 
 #Region "       SHGetSpecialFolderLocation"
@@ -721,19 +725,18 @@ Public Interface IShellFolder
             ByRef ppidl As IntPtr, _
             ByRef pdwAttributes As Integer) As Integer
 
-        <PreserveSig()> _
-        Function EnumObjects( _
-            ByVal hwndOwner As Integer, _
-            <MarshalAs(UnmanagedType.U4)> ByVal _
-            grfFlags As SHCONTF, _
-            ByRef ppenumIDList As IEnumIDList) As Integer
+        <PreserveSig()>
+        Function EnumObjects(
+            ByVal hwndOwner As Integer,
+            <MarshalAs(UnmanagedType.U4)> ByVal grfFlags As SHCONTF,
+            <Out(), MarshalAs(UnmanagedType.Interface)> ByRef ppenumIDList As IEnumIDList) As Integer
 
-        <PreserveSig()> _
-        Function BindToObject( _
-            ByVal pidl As IntPtr, _
-            ByVal pbcReserved As IntPtr, _
-            ByRef riid As Guid, _
-            ByRef ppvOut As IShellFolder) As Integer
+        <PreserveSig()>
+        Function BindToObject(
+            ByVal pidl As IntPtr,
+            ByVal pbcReserved As IntPtr,
+            ByRef riid As Guid,
+            <Out(), MarshalAs(UnmanagedType.Interface)> ByRef ppvOut As IShellFolder) As Integer
 
         <PreserveSig()> _
         Function BindToStorage( _
@@ -748,11 +751,11 @@ Public Interface IShellFolder
             ByVal pidl1 As IntPtr, _
             ByVal pidl2 As IntPtr) As Integer
 
-        <PreserveSig()> _
-        Function CreateViewObject( _
-            ByVal hwndOwner As IntPtr, _
-            ByRef riid As Guid, _
-            ByRef ppvOut As IUnknown) As Integer
+        <PreserveSig()>
+        Function CreateViewObject(
+            ByVal hwndOwner As IntPtr,
+            ByRef riid As Guid,
+            <Out(), MarshalAs(UnmanagedType.Interface)> ByRef ppvOut As IUnknown) As Integer
 
         <PreserveSig()> _
         Function GetAttributesOf( _
@@ -761,15 +764,15 @@ Public Interface IShellFolder
             ByVal apidl() As IntPtr, _
             ByRef rgfInOut As SFGAO) As Integer
 
-        <PreserveSig()> _
-        Function GetUIObjectOf( _
-            ByVal hwndOwner As IntPtr, _
-            ByVal cidl As Integer, _
-            <MarshalAs(UnmanagedType.LPArray, sizeparamindex:=0)> _
-            ByVal apidl() As IntPtr, _
-            ByRef riid As Guid, _
-            ByRef prgfInOut As Integer, _
-            ByRef ppvOut As IUnknown) As Integer
+        <PreserveSig()>
+        Function GetUIObjectOf(
+            ByVal hwndOwner As IntPtr,
+            ByVal cidl As Integer,
+            <MarshalAs(UnmanagedType.LPArray, SizeParamIndex:=0)>
+            ByVal apidl() As IntPtr,
+            ByRef riid As Guid,
+            ByRef prgfInOut As Integer,
+            <Out(), MarshalAs(UnmanagedType.Interface)> ByRef ppvOut As IUnknown) As Integer
         'ByRef ppvOut As IDropTarget) As Integer
 
         <PreserveSig()> _
@@ -809,9 +812,9 @@ Public Interface IShellFolder
         <PreserveSig()> _
         Function Reset() As Integer
 
-        <PreserveSig()> _
-        Function Clone( _
-            ByRef ppenum As IEnumIDList) As Integer
+        <PreserveSig()>
+        Function Clone(
+            <Out(), MarshalAs(UnmanagedType.Interface)> ByRef ppenum As IEnumIDList) As Integer
     End Interface
 
 #End Region
