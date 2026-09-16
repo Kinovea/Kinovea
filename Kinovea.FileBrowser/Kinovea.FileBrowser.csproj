@@ -204,6 +204,9 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="ShellIconIndex.cs" />
     <Compile Include="ShellSystemImageList.cs" />
+    <Compile Include="UserInterface\BufferedTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UserInterface\FormCameraWizard.cs">
       <SubType>Form</SubType>
     </Compile>

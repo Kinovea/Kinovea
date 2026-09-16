@@ -53,8 +53,8 @@ namespace Kinovea.FileBrowser
       this.label1 = new System.Windows.Forms.Label();
       this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
       this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
-      this.tvExplorer = new System.Windows.Forms.TreeView();
-      this.tvShortcuts = new System.Windows.Forms.TreeView();
+      this.tvShortcuts = new Kinovea.FileBrowser.BufferedTreeView();
+      this.tvExplorer = new Kinovea.FileBrowser.BufferedTreeView();
       this.tabControl.SuspendLayout();
       this.tabPageClassic.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitExplorerFiles)).BeginInit();
@@ -425,25 +425,25 @@ namespace Kinovea.FileBrowser
       this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
       this.imgListTabs.Images.SetKeyName(3, "camera");
       // 
-      // tvDrives
-      // 
-      this.tvExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tvExplorer.Location = new System.Drawing.Point(3, 31);
-      this.tvExplorer.Name = "tvDrives";
-      this.tvExplorer.Size = new System.Drawing.Size(299, 267);
-      this.tvExplorer.TabIndex = 3;
-      // 
       // tvShortcuts
       // 
       this.tvShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tvShortcuts.Location = new System.Drawing.Point(3, 31);
+      this.tvShortcuts.Location = new System.Drawing.Point(0, 31);
       this.tvShortcuts.Name = "tvShortcuts";
-      this.tvShortcuts.Size = new System.Drawing.Size(299, 273);
-      this.tvShortcuts.TabIndex = 14;
+      this.tvShortcuts.Size = new System.Drawing.Size(302, 273);
+      this.tvShortcuts.TabIndex = 15;
+      // 
+      // tvExplorer
+      // 
+      this.tvExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tvExplorer.Location = new System.Drawing.Point(3, 31);
+      this.tvExplorer.Name = "tvExplorer";
+      this.tvExplorer.Size = new System.Drawing.Size(299, 267);
+      this.tvExplorer.TabIndex = 4;
       // 
       // FileBrowserUserInterface
       // 
@@ -495,7 +495,7 @@ namespace Kinovea.FileBrowser
         private System.Windows.Forms.ListView lvCaptured;
         private BrightIdeasSoftware.ObjectListView olvCameras;
         private System.Windows.Forms.Button btnCameraRefresh;
-        private System.Windows.Forms.TreeView tvExplorer;
-        private System.Windows.Forms.TreeView tvShortcuts;
+        private BufferedTreeView tvShortcuts;
+        private BufferedTreeView tvExplorer;
     }
 }

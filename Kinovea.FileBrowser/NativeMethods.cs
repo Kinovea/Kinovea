@@ -47,5 +47,11 @@ namespace Kinovea.FileBrowser
 
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int message, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        internal static extern int SetWindowTheme(IntPtr window, string subApplicationName, string subIdList);
+
+
+
     }
 }
