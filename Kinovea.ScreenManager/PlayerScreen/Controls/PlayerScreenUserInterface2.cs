@@ -700,7 +700,7 @@ namespace Kinovea.ScreenManager
                 if (screenDescriptor.Stretch)
                 {
                     m_fill = true;
-                    ResizeUpdate(true);
+                    ResizeFinished();
                 }
             }
 
@@ -951,7 +951,7 @@ namespace Kinovea.ScreenManager
                     oldCachingMode, newCachingMode);
                 
                 // This will trigger a PresentFrame.
-                ResizeUpdate(true);
+                ResizeFinished();
             }
             else if (currentTimestamp != oldTimestamp)
             {
@@ -1091,7 +1091,7 @@ namespace Kinovea.ScreenManager
             videoFilterIsActive = true;
             CollapseKeyframePanel(true);
             m_fill = true;
-            ResizeUpdate(true);
+            ResizeFinished();
             UpdateInfobar();
             btnExitFilter.Visible = true;
 
@@ -1137,7 +1137,7 @@ namespace Kinovea.ScreenManager
             if (_bFullScreen && !m_fill)
             {
                 m_fill = true;
-                ResizeUpdate(true);
+                ResizeFinished();
             }
         }
         public void BeforeAddImageDrawing()
@@ -1508,7 +1508,7 @@ namespace Kinovea.ScreenManager
 
             UpdateFramesMarkers();
             ShowHideRenderingSurface(true);
-            ResizeUpdate(true);
+            ResizeFinished();
             PresentFrame(currentTimestamp);
             
             // Handle auto-playback for replay watchers.
@@ -2632,6 +2632,7 @@ namespace Kinovea.ScreenManager
         /// Recompute the presentation size and replace resizers.
         /// If the operation is finished, signal the change to the reader and update the decoding size.
         /// Returns true if the reader has been invalidate and restarted already.
+        /// Does NOT trigger a present frame by itself.
         /// </summary>
         private bool StretchSqueezeSurface(bool finished)
         {
@@ -2793,7 +2794,8 @@ namespace Kinovea.ScreenManager
             m_fill = false;
             m_lastUserStretch = m_FrameServer.ImageTransform.Stretch;
 
-            ResizeUpdate(false);
+            StretchSqueezeSurface(false);
+            DoInvalidate();
         }
         private void Resizers_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -2801,32 +2803,27 @@ namespace Kinovea.ScreenManager
         }
         private void Resizers_MouseUp(object sender, MouseEventArgs e)
         {
-            ResizeUpdate(true);
+            ResizeFinished();
         }
 
         /// <summary>
-        /// Stretch or squeeze the video image in the viewport.
+        /// Resize the image in the viewport based on current presentation geometry.
         /// May trigger a decoding size change at the reader level.
         /// </summary>
-        private void ResizeUpdate(bool finished)
+        private bool ResizeFinished()
         {
             if (!m_FrameServer.Loaded)
-                return;
+                return false;
 
-            bool cacheInvalidated = StretchSqueezeSurface(finished);
+            bool cacheInvalidated = StretchSqueezeSurface(true);
 
-            if (finished)
+            m_FrameServer.Metadata.ResizeFinished();
+            if (cacheInvalidated)
             {
-                m_FrameServer.Metadata.ResizeFinished();
-                if (cacheInvalidated)
-                {
-                    PresentFrame(currentTimestamp);
-                }
+                PresentFrame(currentTimestamp);
             }
-            else
-            {
-                DoInvalidate();
-            }
+
+            return cacheInvalidated;
         }
 
         /// <summary>
@@ -2865,7 +2862,7 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.VideoReader.RestartPrebuffering(memoTimestamp);
             }
 
-            ResizeUpdate(true);
+            ResizeFinished();
         }
         #endregion
 
@@ -4950,7 +4947,7 @@ namespace Kinovea.ScreenManager
         private void PanelCenter_Resize(object sender, EventArgs e)
         {
             if (m_Constructed)
-                ResizeUpdate(true);
+                ResizeFinished();
         }
         private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
         {
@@ -6170,7 +6167,7 @@ namespace Kinovea.ScreenManager
             DisableMagnifier();
             ToastZoom();
 
-            ResizeUpdate(true);
+            ResizeFinished();
         }
         private void mnuMagnifierFreeze_Click(object sender, EventArgs e)
         {
@@ -6214,7 +6211,7 @@ namespace Kinovea.ScreenManager
                 ToastZoom();
 
             ReportForSyncMerge();
-            ResizeUpdate(true);
+            ResizeFinished();
         }
         private void IncreaseDirectZoom(Point mouseLocation)
         {
@@ -6246,7 +6243,7 @@ namespace Kinovea.ScreenManager
             ToastZoom();
             UpdateCursor();
             ReportForSyncMerge();
-            ResizeUpdate(true);
+            ResizeFinished();
         }
         #endregion
 
