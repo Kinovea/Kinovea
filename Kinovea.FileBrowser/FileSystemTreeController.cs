@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kinovea.Services;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -97,7 +98,8 @@ namespace Kinovea.FileBrowser
             {
                 treeView.Nodes.Clear();
 
-                // This is a purely visual root, it has no filesystem path.
+                // This is a purely visual root, no filesystem path.
+                // The "explorer" tab gets the "Computer" icon and the shortcuts gets a generic folder icon.
                 int fallbackIcon = ShellIconIndex.Get("dummy-folder", false, false);
                 int icon = 0;
                 int selectedIcon = 0;
@@ -139,6 +141,7 @@ namespace Kinovea.FileBrowser
 
         /// <summary>
         /// Add a new child to the root node if it doesn't already exist.
+        /// This should only be used to add shortcuts.
         /// </summary>
         public void AddRootChild(string folderPath)
         {
@@ -184,8 +187,21 @@ namespace Kinovea.FileBrowser
         private TreeNode CreatePathNode(string path, bool isDrive)
         {
             string name = GetDisplayName(path, isDrive);
-            int iconIndex = ShellIconIndex.Get(path, false, isDrive);
-            int iconIndexSelected = ShellIconIndex.Get(path, true, isDrive);
+
+            int iconIndex = 0;
+            int iconIndexSelected = 0;
+
+            if (isDrive)
+            {
+                iconIndex = GetDriveIconIndex(path);
+                iconIndexSelected = iconIndex;
+            }
+            else
+            {
+                iconIndex = ShellIconIndex.Get(path, false, isDrive);
+                iconIndexSelected = ShellIconIndex.Get(path, true, isDrive);
+            }
+            
             TreeNode node = new TreeNode(name)
             {
                 Tag = path,
@@ -273,6 +289,16 @@ namespace Kinovea.FileBrowser
 
             string name = Path.GetFileName(trimmed);
             return string.IsNullOrEmpty(name) ? trimmed : name;
+        }
+
+        private int GetDriveIconIndex(string drivePath)
+        {
+            int genericIcon = ShellIconIndex.GetStockIconIndex(NativeMethods.StockIconId.DriveFixed, 0);
+
+            if (!PreferencesManager.FileExplorerPreferences.UseDriveIcons)
+                return genericIcon;
+
+            return ShellIconIndex.Get(drivePath, false, true, genericIcon);
         }
 
         #endregion

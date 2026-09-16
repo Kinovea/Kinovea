@@ -43,6 +43,15 @@ namespace Kinovea.FileBrowser
         {
             Folder = 3,
             FolderOpen = 4,
+
+            DriveRemovable = 7,
+            DriveFixed = 8,
+            DriveNetwork = 9,
+            DriveNetworkDisconnected = 10,
+            DriveCd = 11,
+            DriveRam = 12,
+
+            DriveUnknown = 58,
             DesktopPc = 94
         }
 

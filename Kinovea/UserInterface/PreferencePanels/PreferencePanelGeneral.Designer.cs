@@ -48,12 +48,15 @@ namespace Kinovea.Root
 		/// </summary>
 		private void InitializeComponent()
 		{
+      this.components = new System.ComponentModel.Container();
       this.cmbHistoryCount = new System.Windows.Forms.ComboBox();
       this.lblLanguage = new System.Windows.Forms.Label();
       this.lblHistoryCount = new System.Windows.Forms.Label();
       this.cmbLanguage = new System.Windows.Forms.ComboBox();
       this.cbEnableDebugLogs = new System.Windows.Forms.CheckBox();
       this.cbEnableAllLanguages = new System.Windows.Forms.CheckBox();
+      this.chkUseDriveIcons = new System.Windows.Forms.CheckBox();
+      this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // cmbHistoryCount
@@ -112,7 +115,7 @@ namespace Kinovea.Root
       // cbEnableDebugLogs
       // 
       this.cbEnableDebugLogs.AutoSize = true;
-      this.cbEnableDebugLogs.Location = new System.Drawing.Point(32, 150);
+      this.cbEnableDebugLogs.Location = new System.Drawing.Point(32, 185);
       this.cbEnableDebugLogs.Name = "cbEnableDebugLogs";
       this.cbEnableDebugLogs.Size = new System.Drawing.Size(114, 17);
       this.cbEnableDebugLogs.TabIndex = 55;
@@ -131,11 +134,23 @@ namespace Kinovea.Root
       this.cbEnableAllLanguages.UseVisualStyleBackColor = true;
       this.cbEnableAllLanguages.CheckedChanged += new System.EventHandler(this.cbEnableAllLanguages_CheckedChanged);
       // 
+      // chkUseDriveIcons
+      // 
+      this.chkUseDriveIcons.AutoSize = true;
+      this.chkUseDriveIcons.Location = new System.Drawing.Point(32, 152);
+      this.chkUseDriveIcons.Name = "chkUseDriveIcons";
+      this.chkUseDriveIcons.Size = new System.Drawing.Size(138, 17);
+      this.chkUseDriveIcons.TabIndex = 57;
+      this.chkUseDriveIcons.Text = "Use drive-specific icons";
+      this.chkUseDriveIcons.UseVisualStyleBackColor = true;
+      this.chkUseDriveIcons.CheckedChanged += new System.EventHandler(this.chkUseDriveIcons_CheckedChanged);
+      // 
       // PreferencePanelGeneral
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.Gainsboro;
+      this.Controls.Add(this.chkUseDriveIcons);
       this.Controls.Add(this.cbEnableAllLanguages);
       this.Controls.Add(this.cbEnableDebugLogs);
       this.Controls.Add(this.cmbHistoryCount);
@@ -154,5 +169,7 @@ namespace Kinovea.Root
 		private System.Windows.Forms.ComboBox cmbHistoryCount;
         private System.Windows.Forms.CheckBox cbEnableDebugLogs;
         private System.Windows.Forms.CheckBox cbEnableAllLanguages;
+        private System.Windows.Forms.CheckBox chkUseDriveIcons;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

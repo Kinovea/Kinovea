@@ -5,14 +5,17 @@ namespace Kinovea.FileBrowser
 {
     public static class ShellIconIndex
     {
-        public static int Get(string path, bool open, bool isDrive)
+    
+        /// <summary>
+        /// Get the index of the system icon for a folder or drive.
+        /// </summary>
+        public static int Get(string path, bool open, bool isDrive, int fallback = 0)
         {
             NativeMethods.SHFILEINFO info = new NativeMethods.SHFILEINFO();
 
-            uint flags = NativeMethods.SHGFI_SYSICONINDEX;
+            uint flags = NativeMethods.SHGFI_SYSICONINDEX | NativeMethods.SHGFI_SMALLICON;
 
-            // For ordinary folders, avoid accessing the filesystem merely
-            // to retrieve the generic folder icon.
+            // For ordinary folders, assume generic folder icon and don't access the file system.
             if (!isDrive)
             {
                 flags |= NativeMethods.SHGFI_USEFILEATTRIBUTES;
@@ -30,7 +33,7 @@ namespace Kinovea.FileBrowser
                 (uint)Marshal.SizeOf(typeof(NativeMethods.SHFILEINFO)),
                 flags);
 
-            return result == IntPtr.Zero ? 0 : info.iIcon;
+            return result == IntPtr.Zero ? fallback : info.iIcon;
         }
 
         public static int GetStockIconIndex(NativeMethods.StockIconId stockIconId, int fallbackIndex)

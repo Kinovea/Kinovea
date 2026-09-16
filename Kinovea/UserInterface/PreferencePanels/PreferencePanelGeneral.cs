@@ -62,6 +62,7 @@ namespace Kinovea.Root
         private int maxRecentFiles;
         private bool enableDebugLogs;
         private bool enableAllLanguages;
+        private bool useDriveIcons;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -92,6 +93,7 @@ namespace Kinovea.Root
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             enableDebugLogs = PreferencesManager.GeneralPreferences.EnableDebugLog;
             enableAllLanguages = PreferencesManager.GeneralPreferences.EnableAllLanguages;
+            useDriveIcons = PreferencesManager.FileExplorerPreferences.UseDriveIcons;
         }
         private void InitPage()
         {
@@ -107,7 +109,11 @@ namespace Kinovea.Root
             cbEnableDebugLogs.Text = Kinovea.Root.Languages.RootLang.mnuEnableDebugLogs;
             cbEnableDebugLogs.Checked = enableDebugLogs;
             cbEnableAllLanguages.Text = Kinovea.Root.Languages.RootLang.prefPanelGeneral_EnableAllLanguages;
+            toolTip1.SetToolTip(cbEnableAllLanguages, "Allow selecting languages that have low translation coverage.");
             cbEnableAllLanguages.Checked = enableAllLanguages;
+            chkUseDriveIcons.Text = "Use drive-specific icons";
+            toolTip1.SetToolTip(chkUseDriveIcons, "This may delay startup when mapped network drives are unavailable.");
+            chkUseDriveIcons.Checked = useDriveIcons;
         }
         private void RebuildLanguageList()
         {
@@ -168,6 +174,10 @@ namespace Kinovea.Root
             RebuildLanguageList();
             SelectCurrentLanguage();
         }
+        private void chkUseDriveIcons_CheckedChanged(object sender, EventArgs e)
+        {
+            useDriveIcons = chkUseDriveIcons.Checked;
+        }
         #endregion
 
         public void CommitChanges()
@@ -176,6 +186,7 @@ namespace Kinovea.Root
             PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
             PreferencesManager.GeneralPreferences.EnableDebugLog = enableDebugLogs;
             PreferencesManager.GeneralPreferences.EnableAllLanguages = enableAllLanguages;
+            PreferencesManager.FileExplorerPreferences.UseDriveIcons = useDriveIcons;
         }
     }
 }

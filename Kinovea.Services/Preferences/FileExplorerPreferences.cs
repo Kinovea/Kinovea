@@ -125,6 +125,12 @@ namespace Kinovea.Services
             get { BeforeRead(); return fileSortAscending; }
             set { fileSortAscending = value; Save(); }
         }
+
+        public bool UseDriveIcons
+        {
+            get { BeforeRead(); return useDriveIcons; }
+            set { useDriveIcons = value; Save(); }
+        }
         #endregion
 
         #region Members
@@ -140,6 +146,7 @@ namespace Kinovea.Services
         private string lastReplayFolder;
         private FileSortAxis fileSortAxis = FileSortAxis.Name;
         private bool fileSortAscending = true;
+        private bool useDriveIcons = true;
         #endregion
 
         private void Save()
@@ -258,6 +265,8 @@ namespace Kinovea.Services
             writer.WriteElementString("LastReplayFolder", lastReplayFolder);
             writer.WriteElementString("FileSortAxis", fileSortAxis.ToString());
             writer.WriteElementString("FileSortAscending", XmlHelper.WriteBoolean(fileSortAscending));
+            writer.WriteElementString("UseDriveIcons", XmlHelper.WriteBoolean(useDriveIcons));
+
         }
 
         private void WriteRecents(XmlWriter writer, List<string> recentFiles, int max, string collectionTag, string itemTag)
@@ -321,6 +330,9 @@ namespace Kinovea.Services
                         break;
                     case "FileSortAscending":
                         fileSortAscending = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "UseDriveIcons":
+                        useDriveIcons = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();
