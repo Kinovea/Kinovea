@@ -33,16 +33,14 @@ namespace Kinovea.FileBrowser
       this.tabControl = new System.Windows.Forms.TabControl();
       this.tabPageClassic = new System.Windows.Forms.TabPage();
       this.splitExplorerFiles = new System.Windows.Forms.SplitContainer();
-      this.lblFolders = new System.Windows.Forms.Label();
+      this.tvExplorer = new Kinovea.FileBrowser.BufferedTreeView();
       this.lvExplorer = new System.Windows.Forms.ListView();
       this.imgListFiles = new System.Windows.Forms.ImageList(this.components);
-      this.lblVideoFiles = new System.Windows.Forms.Label();
       this.tabPageShortcuts = new System.Windows.Forms.TabPage();
       this.splitShortcutsFiles = new System.Windows.Forms.SplitContainer();
+      this.tvShortcuts = new Kinovea.FileBrowser.BufferedTreeView();
       this.btnDeleteShortcut = new System.Windows.Forms.Button();
       this.btnAddShortcut = new System.Windows.Forms.Button();
-      this.lblFavFolders = new System.Windows.Forms.Label();
-      this.lblFavFiles = new System.Windows.Forms.Label();
       this.lvShortcuts = new System.Windows.Forms.ListView();
       this.tabPageCameras = new System.Windows.Forms.TabPage();
       this.btnCameraRefresh = new System.Windows.Forms.Button();
@@ -50,11 +48,8 @@ namespace Kinovea.FileBrowser
       this.lvCaptured = new System.Windows.Forms.ListView();
       this.lblCaptureHistory = new System.Windows.Forms.Label();
       this.btnManual = new System.Windows.Forms.Button();
-      this.label1 = new System.Windows.Forms.Label();
       this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
       this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
-      this.tvShortcuts = new Kinovea.FileBrowser.BufferedTreeView();
-      this.tvExplorer = new Kinovea.FileBrowser.BufferedTreeView();
       this.tabControl.SuspendLayout();
       this.tabPageClassic.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitExplorerFiles)).BeginInit();
@@ -105,32 +100,26 @@ namespace Kinovea.FileBrowser
       // splitExplorerFiles.Panel1
       // 
       this.splitExplorerFiles.Panel1.Controls.Add(this.tvExplorer);
-      this.splitExplorerFiles.Panel1.Controls.Add(this.lblFolders);
       // 
       // splitExplorerFiles.Panel2
       // 
       this.splitExplorerFiles.Panel2.BackColor = System.Drawing.Color.White;
       this.splitExplorerFiles.Panel2.Controls.Add(this.lvExplorer);
-      this.splitExplorerFiles.Panel2.Controls.Add(this.lblVideoFiles);
       this.splitExplorerFiles.Size = new System.Drawing.Size(305, 527);
       this.splitExplorerFiles.SplitterDistance = 301;
       this.splitExplorerFiles.TabIndex = 0;
       // 
-      // lblFolders
+      // tvExplorer
       // 
-      this.lblFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tvExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblFolders.BackColor = System.Drawing.Color.White;
-      this.lblFolders.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblFolders.ForeColor = System.Drawing.Color.Gray;
-      this.lblFolders.Location = new System.Drawing.Point(0, 8);
-      this.lblFolders.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
-      this.lblFolders.Name = "lblFolders";
-      this.lblFolders.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-      this.lblFolders.Size = new System.Drawing.Size(305, 20);
-      this.lblFolders.TabIndex = 2;
-      this.lblFolders.Text = "Folders";
-      this.lblFolders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.tvExplorer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.tvExplorer.Location = new System.Drawing.Point(3, 3);
+      this.tvExplorer.Margin = new System.Windows.Forms.Padding(5, 10, 5, 5);
+      this.tvExplorer.Name = "tvExplorer";
+      this.tvExplorer.Size = new System.Drawing.Size(299, 295);
+      this.tvExplorer.TabIndex = 4;
       // 
       // lvExplorer
       // 
@@ -145,11 +134,11 @@ namespace Kinovea.FileBrowser
       this.lvExplorer.GridLines = true;
       this.lvExplorer.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.lvExplorer.HideSelection = false;
-      this.lvExplorer.Location = new System.Drawing.Point(0, 43);
+      this.lvExplorer.Location = new System.Drawing.Point(3, 3);
       this.lvExplorer.MultiSelect = false;
       this.lvExplorer.Name = "lvExplorer";
       this.lvExplorer.ShowGroups = false;
-      this.lvExplorer.Size = new System.Drawing.Size(305, 179);
+      this.lvExplorer.Size = new System.Drawing.Size(299, 216);
       this.lvExplorer.SmallImageList = this.imgListFiles;
       this.lvExplorer.TabIndex = 0;
       this.lvExplorer.UseCompatibleStateImageBehavior = false;
@@ -164,19 +153,6 @@ namespace Kinovea.FileBrowser
       this.imgListFiles.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListFiles.ImageStream")));
       this.imgListFiles.TransparentColor = System.Drawing.Color.Transparent;
       this.imgListFiles.Images.SetKeyName(0, "film_small.png");
-      // 
-      // lblVideoFiles
-      // 
-      this.lblVideoFiles.BackColor = System.Drawing.Color.White;
-      this.lblVideoFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblVideoFiles.ForeColor = System.Drawing.Color.Gray;
-      this.lblVideoFiles.Location = new System.Drawing.Point(-3, 20);
-      this.lblVideoFiles.Name = "lblVideoFiles";
-      this.lblVideoFiles.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-      this.lblVideoFiles.Size = new System.Drawing.Size(305, 20);
-      this.lblVideoFiles.TabIndex = 1;
-      this.lblVideoFiles.Text = "Video files   ";
-      this.lblVideoFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // tabPageShortcuts
       // 
@@ -201,15 +177,25 @@ namespace Kinovea.FileBrowser
       this.splitShortcutsFiles.Panel1.Controls.Add(this.tvShortcuts);
       this.splitShortcutsFiles.Panel1.Controls.Add(this.btnDeleteShortcut);
       this.splitShortcutsFiles.Panel1.Controls.Add(this.btnAddShortcut);
-      this.splitShortcutsFiles.Panel1.Controls.Add(this.lblFavFolders);
       // 
       // splitShortcutsFiles.Panel2
       // 
-      this.splitShortcutsFiles.Panel2.Controls.Add(this.lblFavFiles);
       this.splitShortcutsFiles.Panel2.Controls.Add(this.lvShortcuts);
       this.splitShortcutsFiles.Size = new System.Drawing.Size(305, 527);
       this.splitShortcutsFiles.SplitterDistance = 307;
       this.splitShortcutsFiles.TabIndex = 6;
+      // 
+      // tvShortcuts
+      // 
+      this.tvShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tvShortcuts.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.tvShortcuts.Location = new System.Drawing.Point(3, 31);
+      this.tvShortcuts.Margin = new System.Windows.Forms.Padding(5, 10, 5, 5);
+      this.tvShortcuts.Name = "tvShortcuts";
+      this.tvShortcuts.Size = new System.Drawing.Size(299, 273);
+      this.tvShortcuts.TabIndex = 15;
       // 
       // btnDeleteShortcut
       // 
@@ -247,34 +233,6 @@ namespace Kinovea.FileBrowser
       this.btnAddShortcut.UseVisualStyleBackColor = false;
       this.btnAddShortcut.Click += new System.EventHandler(this.btnAddShortcut_Click);
       // 
-      // lblFavFolders
-      // 
-      this.lblFavFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblFavFolders.BackColor = System.Drawing.Color.White;
-      this.lblFavFolders.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblFavFolders.ForeColor = System.Drawing.Color.Gray;
-      this.lblFavFolders.Location = new System.Drawing.Point(0, 8);
-      this.lblFavFolders.Name = "lblFavFolders";
-      this.lblFavFolders.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-      this.lblFavFolders.Size = new System.Drawing.Size(244, 20);
-      this.lblFavFolders.TabIndex = 6;
-      this.lblFavFolders.Text = "Folders";
-      this.lblFavFolders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // lblFavFiles
-      // 
-      this.lblFavFiles.BackColor = System.Drawing.Color.White;
-      this.lblFavFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblFavFiles.ForeColor = System.Drawing.Color.Gray;
-      this.lblFavFiles.Location = new System.Drawing.Point(-3, 16);
-      this.lblFavFiles.Name = "lblFavFiles";
-      this.lblFavFiles.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-      this.lblFavFiles.Size = new System.Drawing.Size(305, 20);
-      this.lblFavFiles.TabIndex = 3;
-      this.lblFavFiles.Text = "Video files  ";
-      this.lblFavFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
       // lvShortcuts
       // 
       this.lvShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -286,9 +244,9 @@ namespace Kinovea.FileBrowser
       this.lvShortcuts.GridLines = true;
       this.lvShortcuts.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.lvShortcuts.HideSelection = false;
-      this.lvShortcuts.Location = new System.Drawing.Point(0, 39);
+      this.lvShortcuts.Location = new System.Drawing.Point(3, 3);
       this.lvShortcuts.Name = "lvShortcuts";
-      this.lvShortcuts.Size = new System.Drawing.Size(302, 174);
+      this.lvShortcuts.Size = new System.Drawing.Size(299, 210);
       this.lvShortcuts.SmallImageList = this.imgListFiles;
       this.lvShortcuts.TabIndex = 2;
       this.lvShortcuts.UseCompatibleStateImageBehavior = false;
@@ -305,7 +263,6 @@ namespace Kinovea.FileBrowser
       this.tabPageCameras.Controls.Add(this.lvCaptured);
       this.tabPageCameras.Controls.Add(this.lblCaptureHistory);
       this.tabPageCameras.Controls.Add(this.btnManual);
-      this.tabPageCameras.Controls.Add(this.label1);
       this.tabPageCameras.ImageKey = "camera";
       this.tabPageCameras.Location = new System.Drawing.Point(4, 23);
       this.tabPageCameras.Name = "tabPageCameras";
@@ -401,21 +358,6 @@ namespace Kinovea.FileBrowser
       this.btnManual.UseVisualStyleBackColor = true;
       this.btnManual.Click += new System.EventHandler(this.BtnManualClick);
       // 
-      // label1
-      // 
-      this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.label1.BackColor = System.Drawing.Color.White;
-      this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label1.ForeColor = System.Drawing.Color.Gray;
-      this.label1.Location = new System.Drawing.Point(0, 8);
-      this.label1.Name = "label1";
-      this.label1.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-      this.label1.Size = new System.Drawing.Size(272, 20);
-      this.label1.TabIndex = 3;
-      this.label1.Text = "Cameras";
-      this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
       // imgListTabs
       // 
       this.imgListTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListTabs.ImageStream")));
@@ -424,26 +366,6 @@ namespace Kinovea.FileBrowser
       this.imgListTabs.Images.SetKeyName(1, "shortcuts");
       this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
       this.imgListTabs.Images.SetKeyName(3, "camera");
-      // 
-      // tvShortcuts
-      // 
-      this.tvShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tvShortcuts.Location = new System.Drawing.Point(0, 31);
-      this.tvShortcuts.Name = "tvShortcuts";
-      this.tvShortcuts.Size = new System.Drawing.Size(302, 273);
-      this.tvShortcuts.TabIndex = 15;
-      // 
-      // tvExplorer
-      // 
-      this.tvExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tvExplorer.Location = new System.Drawing.Point(3, 31);
-      this.tvExplorer.Name = "tvExplorer";
-      this.tvExplorer.Size = new System.Drawing.Size(299, 267);
-      this.tvExplorer.TabIndex = 4;
       // 
       // FileBrowserUserInterface
       // 
@@ -471,7 +393,6 @@ namespace Kinovea.FileBrowser
         }
         
         private System.Windows.Forms.Button btnManual;
-        public System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tabPageCameras;
         private System.Windows.Forms.ImageList imgListFiles;
         private System.Windows.Forms.SplitContainer splitShortcutsFiles;
@@ -481,9 +402,6 @@ namespace Kinovea.FileBrowser
         private System.Windows.Forms.Button btnDeleteShortcut;
         private System.Windows.Forms.Button btnAddShortcut;
         public System.Windows.Forms.TabPage tabPageShortcuts;
-        public System.Windows.Forms.Label lblFavFiles;
-        public System.Windows.Forms.Label lblFavFolders;
-        public System.Windows.Forms.Label lblVideoFiles;
         public System.Windows.Forms.TabPage tabPageClassic;
         public System.Windows.Forms.TabControl tabControl;
 
@@ -491,7 +409,6 @@ namespace Kinovea.FileBrowser
         private System.Windows.Forms.ListView lvExplorer;
         private System.Windows.Forms.ListView lvShortcuts;
         public System.Windows.Forms.Label lblCaptureHistory;
-        public System.Windows.Forms.Label lblFolders;
         private System.Windows.Forms.ListView lvCaptured;
         private BrightIdeasSoftware.ObjectListView olvCameras;
         private System.Windows.Forms.Button btnCameraRefresh;

@@ -416,18 +416,10 @@ namespace Kinovea.FileBrowser
         }
         public void RefreshUICulture()
         {
-            // ExpTree tab.
             tabPageClassic.Text = "";
-            lblFolders.Text = FileBrowserLang.lblFolders;
-            lblVideoFiles.Text = FileBrowserLang.lblVideoFiles;
-
-            // Shortcut tab.
             tabPageShortcuts.Text = "";
-            lblFavFolders.Text = lblFolders.Text;
-            lblFavFiles.Text = lblVideoFiles.Text;
-
             tabPageCameras.Text = "";
-            label1.Text = FileBrowserLang.lblCameras;
+
             btnManual.Text = FileBrowserLang.FormCameraWizard_Title;
             lblCaptureHistory.Text = FileBrowserLang.lblCaptureHistory;
 

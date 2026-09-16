@@ -32,12 +32,10 @@ namespace Kinovea.FileBrowser
             tv.AfterSelect += TreeView_AfterSelect;
 
             tv.AllowDrop = false;
-            tv.BorderStyle = BorderStyle.None;
             tv.ItemHeight = 20;
             tv.ShowLines = false;
-            tv.ShowPlusMinus = true; // Can't get the chevron.
             tv.FullRowSelect = true;
-            tv.HotTracking = false; // underline on hover.
+            tv.HotTracking = true;
             tv.Indent = 20;
             tv.KeyDown += (s, e) =>
             {
