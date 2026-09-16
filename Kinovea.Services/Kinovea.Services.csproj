@@ -221,6 +221,7 @@
     <Compile Include="Filesystem\FolderNavigationType.cs" />
     <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Bitmap\BitmapHelper.cs" />
+    <Compile Include="PlatformHelper.cs" />
     <Compile Include="Types\Capture\CaptureCodec.cs" />
     <Compile Include="Types\Export\EncodingSpeed.cs" />
     <Compile Include="Types\Export\VideoCodec.cs" />

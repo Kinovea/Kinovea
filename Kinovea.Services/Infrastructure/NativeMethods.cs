@@ -14,6 +14,12 @@ namespace Kinovea.Services
         [DllImport("kernel32.dll")]
         public static extern bool AttachConsole(int dwProcessId);
 
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr GetModuleHandle(string moduleName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
+        public static extern IntPtr GetProcAddress(IntPtr module, string procedureName);
+
         [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static unsafe extern int memcpy(void* dest, void* src, int count);
 
@@ -66,6 +72,5 @@ namespace Kinovea.Services
                 return result;
             }
         }
-
     }
 }
