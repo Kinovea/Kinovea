@@ -129,8 +129,6 @@ namespace Kinovea.FileBrowser
       this.etExplorer.ShowRootLines = false;
       this.etExplorer.Size = new System.Drawing.Size(299, 267);
       this.etExplorer.TabIndex = 0;
-      this.etExplorer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.etExplorer_MouseDown);
-      this.etExplorer.MouseEnter += new System.EventHandler(this.etExplorer_MouseEnter);
       // 
       // lblFolders
       // 
@@ -240,8 +238,6 @@ namespace Kinovea.FileBrowser
       this.etShortcuts.ShowRootLines = false;
       this.etShortcuts.Size = new System.Drawing.Size(305, 272);
       this.etShortcuts.TabIndex = 13;
-      this.etShortcuts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.etShortcuts_MouseDown);
-      this.etShortcuts.MouseEnter += new System.EventHandler(this.etShortcuts_MouseEnter);
       // 
       // btnDeleteShortcut
       // 

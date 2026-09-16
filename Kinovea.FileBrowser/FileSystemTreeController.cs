@@ -405,14 +405,6 @@ namespace Kinovea.FileBrowser
         }
 
         /// <summary>
-        /// Whether the mouse position is over the currently selected node.
-        /// </summary>
-        public bool IsOnSelected(Point pos)
-        {
-            return treeView.SelectedNode.Equals(treeView.GetNodeAt(pos));
-        }
-
-        /// <summary>
         /// Selects an immediate child of the root node.
         /// This is used to select a shortcut based on the current video path.
         /// </summary>

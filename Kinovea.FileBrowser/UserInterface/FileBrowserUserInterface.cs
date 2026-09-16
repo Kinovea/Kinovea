@@ -32,7 +32,6 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Globalization;
 
-using ExpTreeLib;
 using Kinovea.Camera;
 using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
@@ -166,8 +165,10 @@ namespace Kinovea.FileBrowser
             });
             
             // The context menus will be configured on a per event basis.
-            etShortcuts.ContextMenuStrip = popMenuFolders;
-            etExplorer.ContextMenuStrip = popMenuFolders;
+            etShortcuts.tv1.ContextMenuStrip = popMenuFolders;
+            etExplorer.tv1.ContextMenuStrip = popMenuFolders;
+            etExplorer.tv1.MouseDown += ExplorerTree_MouseDown;
+            etShortcuts.tv1.MouseDown += ShortcutsTree_MouseDown;
 
             // Sort menus
             mnuSortBy.Image = Properties.Resources.sort;
@@ -546,19 +547,16 @@ namespace Kinovea.FileBrowser
                 UpdateFileList(folderPath, lvExplorer, true);
             }
         }
-        private void etExplorer_MouseEnter(object sender, EventArgs e)
-        {
-            // Give focus to enable mouse scroll.
-            //etExplorer.Focus();
-        }
-        private void etExplorer_MouseDown(object sender, MouseEventArgs e)
+        private void ExplorerTree_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Right)
                 return;
 
-            bool isOnSelected = explorerTree.IsOnSelected(e.Location);
-            mnuAddToShortcuts.Visible = isOnSelected;
-            mnuLocateFolder.Visible = isOnSelected;
+            TreeView tv = sender as TreeView;
+            string path;
+            bool valid = TryGetSelectedPathAt(tv, e.Location, out path);
+            mnuAddToShortcuts.Visible = valid;
+            mnuLocateFolder.Visible = valid;
             mnuDeleteShortcut.Visible = false;
         }
         #endregion
@@ -646,21 +644,17 @@ namespace Kinovea.FileBrowser
             }
         }
 
-        private void etShortcuts_MouseEnter(object sender, EventArgs e)
-        {
-            // Give focus to enable mouse scroll.
-            //etShortcuts.Focus();	
-        }
-        private void etShortcuts_MouseDown(object sender, MouseEventArgs e)
+        private void ShortcutsTree_MouseDown(object sender, MouseEventArgs e)
         {
             if(e.Button != MouseButtons.Right)
                 return;
 
-            if (string.IsNullOrWhiteSpace(currentShortcutPath))
-                return;
+            TreeView tv = sender as TreeView;
 
-            bool isOnSelected = shortcutsTree.IsOnSelected(e.Location);
-            if (!isOnSelected)
+            string path;
+            bool valid = TryGetSelectedPathAt(tv, e.Location, out path);
+
+            if (!valid)
             {
                 mnuAddToShortcuts.Visible = false;
                 mnuLocateFolder.Visible = false;
@@ -668,7 +662,7 @@ namespace Kinovea.FileBrowser
                 return;
             }
 
-            bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(currentShortcutPath);
+            bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(path);
             mnuAddToShortcuts.Visible = !known;
             mnuLocateFolder.Visible = true;
             mnuDeleteShortcut.Visible = known;
@@ -1049,6 +1043,17 @@ namespace Kinovea.FileBrowser
 
             listView.Invalidate();
             listView.EndUpdate();
+        }
+
+
+        /// <summary>
+        /// Whether the mouse position is over the currently selected node.
+        /// </summary>
+        public bool TryGetSelectedPathAt(TreeView tv, Point loc, out string path)
+        {
+            TreeNode node = tv.GetNodeAt(loc);
+            path = node?.Tag as string;
+            return node != null && node == tv.SelectedNode && path != null;
         }
 
         private void listView_ItemDrag(object sender, ItemDragEventArgs e)
