@@ -326,10 +326,6 @@
     <None Include="Resources\calendar_view_day.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExpTreeLib\ExpTreeLib.vbproj">
-      <Project>{22d53870-1b39-4fa2-92d7-1f4b7d3df0c8}</Project>
-      <Name>ExpTreeLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>{2BF373B8-5D33-4FCF-8C30-5E8CAF6777E7}</Project>
       <Name>Kinovea.Camera</Name>
