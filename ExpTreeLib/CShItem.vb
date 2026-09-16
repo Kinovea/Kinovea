@@ -64,8 +64,6 @@ Public Class CShItem
     Private m_IsDropTarget As Boolean '= False
     Private m_Attributes As SFGAO       'the original, returned from GetAttributesOf
 
-    Private m_SortFlag As Integer '= 0 'Used in comparisons
-
     Private m_Directories As ArrayList
 
     'The following elements are only filled in on demand
@@ -75,7 +73,7 @@ Public Class CShItem
     Private m_LastAccessTime As DateTime
     Private m_Length As Long
 
-    'Indicates whether DisplayName, TypeName, SortFlag have been set up
+    'Indicates whether DisplayName, TypeName have been set up
     Private m_HasDispType As Boolean '= False
 
     'Indicates whether IsReadOnly has been set up
@@ -240,8 +238,6 @@ Public Class CShItem
         m_IsDropTarget = True
         m_IsReadOnly = False
         m_IsReadOnlySetup = True
-
-        m_SortFlag = ComputeSortFlag()
 
         'Set DesktopBase
         DesktopBase = Me
@@ -676,55 +672,32 @@ XIT:    'On any kind of exit, free the allocated memory
 
 #Region "   Icomparable -- for default Sorting"
 
-    ''' <summary>Computes the Sort key of this CShItem, based on its attributes</summary>
-    '''
-    Private Function ComputeSortFlag() As Integer
-
-        Dim rVal As Integer = 0
-
-        If m_IsDisk Then
-            rVal = &H100000
-        End If
-
-        If Not String.IsNullOrEmpty(m_TypeName) AndAlso
-           String.Equals(m_TypeName, m_strSystemFolder, StringComparison.Ordinal) Then
-
-            If Not m_IsBrowsable Then
-                rVal = rVal Or &H10000
-            Else
-                rVal = rVal Or &H1000
-            End If
-        End If
-
-        If m_IsFolder Then
-            rVal = rVal Or &H100
-        End If
-
-        Return rVal
-    End Function
-
-
-
-    '''<Summary> CompareTo(obj as object)
-    '''  Compares obj to this instance based on SortFlag-- obj must be a CShItem</Summary>
-    '''<SortOrder>  (low)Disks,non-browsable System Folders,
-    '''              browsable System Folders,
-    '''               Directories, Files, Nothing (high)</SortOrder>
     Public Overridable Overloads Function CompareTo(ByVal obj As Object) As Integer _
-            Implements IComparable.CompareTo
-        If IsNothing(obj) Then Return 1 'non-existant is always low
-        Dim Other As CShItem = obj
-        If Not m_HasDispType Then SetDispType()
-        Dim cmp As Integer = Other.SortFlag - m_SortFlag 'Note the reversal
-        If cmp <> 0 Then
-            Return cmp
-        Else
-            If m_IsDisk Then 'implies that both are
-                Return String.Compare(m_Path, Other.Path)
-            Else
-                Return String.Compare(m_DisplayName, Other.DisplayName)
-            End If
+        Implements IComparable.CompareTo
+
+        If obj Is Nothing Then
+            Return 1
         End If
+
+        Dim other As CShItem = TryCast(obj, CShItem)
+        If other Is Nothing Then
+            Throw New ArgumentException("Object must be a CShItem.", NameOf(obj))
+        End If
+
+        ' Drives always come first.
+        If m_IsDisk <> other.m_IsDisk Then
+            Return If(m_IsDisk, -1, 1)
+        End If
+
+        ' Sort drives by their paths so C: comes before D:, etc.
+        If m_IsDisk Then
+            Return StringComparer.OrdinalIgnoreCase.Compare(m_Path, other.m_Path)
+        End If
+
+        ' Everything else is sorted alphabetically by display name.
+        Return StringComparer.CurrentCultureIgnoreCase.Compare(
+        Me.DisplayName,
+        other.DisplayName)
     End Function
 #End Region
 
@@ -854,7 +827,7 @@ XIT:    'On any kind of exit, free the allocated memory
 
 #Region "           Filled based on m_HasDispType"
     ''' <summary>
-    ''' Set DisplayName, TypeName, and SortFlag when actually needed
+    ''' Set DisplayName, TypeName when actually needed
     ''' </summary>
     '''
     Private Sub SetDispType()
@@ -875,11 +848,7 @@ XIT:    'On any kind of exit, free the allocated memory
         If m_DisplayName.Equals("") Then
             m_DisplayName = m_Path
         End If
-        'Fix TypeName
-        'If m_IsFolder And m_TypeName.Equals("File") Then
-        '    m_TypeName = "File Folder"
-        'End If
-        m_SortFlag = ComputeSortFlag()
+
         m_HasDispType = True
     End Sub
 
@@ -887,13 +856,6 @@ XIT:    'On any kind of exit, free the allocated memory
         Get
             If Not m_HasDispType Then SetDispType()
             Return m_DisplayName
-        End Get
-    End Property
-
-    Private ReadOnly Property SortFlag() As Integer
-        Get
-            If Not m_HasDispType Then SetDispType()
-            Return m_SortFlag
         End Get
     End Property
 
