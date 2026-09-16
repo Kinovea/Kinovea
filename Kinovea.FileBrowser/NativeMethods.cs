@@ -12,8 +12,10 @@ namespace Kinovea.FileBrowser
         
         public static uint SHGFI_SMALLICON          = 0x000000001;
         public static uint SHGFI_OPENICON           = 0x000000002;
-        public static uint SHGFI_SYSICONINDEX       = 0x000004000;
+        public static uint SHGFI_PIDL               = 0x000000008;
         public static uint SHGFI_USEFILEATTRIBUTES  = 0x000000010;
+        public static uint SHGFI_DISPLAYNAME        = 0x000000200;
+        public static uint SHGFI_SYSICONINDEX       = 0x000004000;
 
         public static uint FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
         public static uint FILE_ATTRIBUTE_NORMAL    = 0x00000080;
@@ -82,6 +84,15 @@ namespace Kinovea.FileBrowser
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
         public static extern int SHGetStockIconInfo(StockIconId stockIconId, StockIconFlags flags, ref SHSTOCKICONINFO info);
+
+        [DllImport("shell32.dll")]
+        public static extern int SHGetKnownFolderIDList(ref Guid folderId, uint flags, IntPtr userToken, out IntPtr pidl);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, EntryPoint = "SHGetFileInfoW")]
+        public static extern IntPtr SHGetFileInfo(IntPtr pidl, uint fileAttributes, ref SHFILEINFO fileInfo, uint fileInfoSize, uint flags);
+
+        [DllImport("shell32.dll")]
+        public static extern void ILFree(IntPtr pidl);
 
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int message, IntPtr wParam, IntPtr lParam);

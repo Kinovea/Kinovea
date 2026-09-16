@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Kinovea.FileBrowser
@@ -16,6 +17,7 @@ namespace Kinovea.FileBrowser
         private bool showHiddenFolders;
         private bool isDrives;
         private readonly TreeView treeView;
+        private static readonly Guid ComputerFolderId = new Guid("0AC0837C-BBF8-452A-850D-79D08E667CA7");
         private static readonly object DummyTag = new object();
         #endregion
 
@@ -72,8 +74,8 @@ namespace Kinovea.FileBrowser
                 drives = new string[0];
             }
 
-            string rootText = "Computer";
-            BuildRoot(rootText, drives, true);
+            string text = GetComputerDisplayName();
+            BuildRoot(text, drives, true);
 
         }
 
@@ -83,8 +85,8 @@ namespace Kinovea.FileBrowser
         public void BuildFavorites(IEnumerable<string> paths)
         {
             isDrives = false;
-            string rootText = "Favorites";
-            BuildRoot(rootText, paths, false);
+            string text = "Favorites";
+            BuildRoot(text, paths, false);
         }
 
         /// <summary>
@@ -289,6 +291,56 @@ namespace Kinovea.FileBrowser
 
             string name = Path.GetFileName(trimmed);
             return string.IsNullOrEmpty(name) ? trimmed : name;
+        }
+
+        /// <summary>
+        /// Returns the display name of the virtual folder "Computer" (or "This PC").
+        /// </summary>
+        private static string GetComputerDisplayName()
+        {
+            const string fallback = "Computer";
+
+            IntPtr pidl = IntPtr.Zero;
+
+            try
+            {
+                // Get the PIDL of the Computer folder.
+                Guid folderId = ComputerFolderId;
+                int result = NativeMethods.SHGetKnownFolderIDList(ref folderId, 0, IntPtr.Zero, out pidl);
+                if (result < 0 || pidl == IntPtr.Zero)
+                    return fallback;
+
+                // Get the display name.
+                NativeMethods.SHFILEINFO info = new NativeMethods.SHFILEINFO();
+                IntPtr shellResult = NativeMethods.SHGetFileInfo(
+                    pidl,
+                    0,
+                    ref info,
+                    (uint)Marshal.SizeOf(typeof(NativeMethods.SHFILEINFO)),
+                    NativeMethods.SHGFI_PIDL | NativeMethods.SHGFI_DISPLAYNAME);
+
+                if (shellResult == IntPtr.Zero || string.IsNullOrWhiteSpace(info.szDisplayName))
+                {
+                    return fallback;
+                }
+
+                return info.szDisplayName;
+            }
+            catch (DllNotFoundException)
+            {
+                return fallback;
+            }
+            catch (EntryPointNotFoundException)
+            {
+                return fallback;
+            }
+            finally
+            {
+                if (pidl != IntPtr.Zero)
+                {
+                    NativeMethods.ILFree(pidl);
+                }
+            }
         }
 
         private int GetDriveIconIndex(string drivePath)
