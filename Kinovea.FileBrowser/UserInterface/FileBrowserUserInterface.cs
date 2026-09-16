@@ -91,7 +91,7 @@ namespace Kinovea.FileBrowser
 
         private static string pathDesktop = "::{00021400-0000-0000-c000-000000000046}";
         private static string pathComputer = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
-        private static readonly bool filtering = false;
+        private static readonly bool filtering = true;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -108,7 +108,7 @@ namespace Kinovea.FileBrowser
             InitializeTreeView(etShortcuts);
             etExplorer.TreeViewBeforeExpand += etExplorer_TreeViewBeforeExpand;
             etExplorer.RebuildFromRoot();
-            //FilterOutDesktopChildren(etExplorer);
+            FilterOutDesktopChildren(etExplorer);
 
             PrepareCameraListView();
             BuildContextMenu();
