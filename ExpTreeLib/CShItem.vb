@@ -56,12 +56,7 @@ Public Class CShItem
     Private m_IsNetWorkDrive As Boolean '= False
     Private m_IsRemovable As Boolean '= False
     Private m_IsReadOnly As Boolean '= False
-    'Properties of interest to Drag Operations
-    Private m_CanMove As Boolean '= False
-    Private m_CanCopy As Boolean '= False
-    Private m_CanDelete As Boolean '= False
-    Private m_CanLink As Boolean '= False
-    Private m_IsDropTarget As Boolean '= False
+
     Private m_Attributes As SFGAO       'the original, returned from GetAttributesOf
 
     Private m_Directories As ArrayList
@@ -235,7 +230,6 @@ Public Class CShItem
         m_IconIndexNormal = shfi.iIcon
         m_IconIndexOpen = shfi.iIcon
         m_HasDispType = True
-        m_IsDropTarget = True
         m_IsReadOnly = False
         m_IsReadOnlySetup = True
 
@@ -330,64 +324,6 @@ Public Class CShItem
     End Sub
 #End Region
 
-#Region "       New(ByVal FoldBytes() as Byte, ByVal ItemBytes() as Byte)"
-    '''<Summary>Given a Byte() containing the Pidl of the parent
-    ''' folder and another Byte() containing the Pidl of the Item,
-    ''' relative to the Folder, Create a CShItem for the Item.
-    ''' This is of primary use in dealing with "Shell IDList Array"
-    ''' formatted info passed in a Drag Operation
-    ''' </Summary>
-    Sub New(ByVal FoldBytes() As Byte, ByVal ItemBytes() As Byte)
-        Debug.WriteLine("CShItem.New(FoldBytes,ItemBytes) Fold len= " & FoldBytes.Length & " Item Len = " & ItemBytes.Length)
-        If IsNothing(DesktopBase) Then
-            DesktopBase = New CShItem() 'This initializes the Desktop folder
-        End If
-        Dim pParent As IShellFolder = MakeFolderFromBytes(FoldBytes)
-        If IsNothing(pParent) Then
-            GoTo XIT    'm_PIDL will = IntPtr.Zero for really bad CShitem
-        End If
-        Dim ipParent As IntPtr = cPidl.BytesToPidl(FoldBytes)
-        Dim ipItem As IntPtr = cPidl.BytesToPidl(ItemBytes)
-        If ipParent.Equals(IntPtr.Zero) Or ipItem.Equals(IntPtr.Zero) Then
-            GoTo XIT
-        End If
-        ' Now process just like sub new(folder,pidl,parent) version
-        m_Pidl = concatPidls(ipParent, ipItem)
-
-        'Get some attributes
-        SetUpAttributes(pParent, ipItem)
-
-        'Set unfetched value for IconIndex....
-        m_IconIndexNormal = -1
-        m_IconIndexOpen = -1
-        'finally, set up my Folder
-        If m_IsFolder Then
-            Dim HR As Integer
-            HR = pParent.BindToObject(ipItem, IntPtr.Zero, IID_IShellFolder, m_Folder)
-#If DEBUG Then
-            If HR <> NOERROR Then
-                Marshal.ThrowExceptionForHR(HR)
-            End If
-#End If
-        End If
-XIT:    'On any kind of exit, free the allocated memory
-#If DEBUG Then
-        If m_Pidl.Equals(IntPtr.Zero) Then
-            Debug.WriteLine("CShItem.New(FoldBytes,ItemBytes) Failed")
-        Else
-            Debug.WriteLine("CShItem.New(FoldBytes,ItemBytes) Created " & Me.Path)
-        End If
-#End If
-        If Not ipParent.Equals(IntPtr.Zero) Then
-            Marshal.FreeCoTaskMem(ipParent)
-        End If
-        If Not ipItem.Equals(IntPtr.Zero) Then
-            Marshal.FreeCoTaskMem(ipItem)
-        End If
-    End Sub
-
-#End Region
-
 #Region "       Utility functions used in Constructors"
 
 #Region "       IsValidPidl"
@@ -407,26 +343,6 @@ XIT:    'On any kind of exit, free the allocated memory
         Loop
         ' on fall thru, it is ok as far as we can check
         IsValidPidl = True
-    End Function
-#End Region
-
-#Region "   MakeFolderFromBytes"
-    Public Shared Function MakeFolderFromBytes(ByVal b As Byte()) As ShellDll.IShellFolder
-        MakeFolderFromBytes = Nothing       'get rid of VS2005 warning
-        If Not IsValidPidl(b) Then Return Nothing
-        If b.Length = 2 AndAlso ((b(0) = 0) And (b(1) = 0)) Then 'this is the desktop
-            Return DesktopBase.Folder
-        ElseIf b.Length = 0 Then   'Also indicates the desktop
-            Return DesktopBase.Folder
-        Else
-            Dim ptr As IntPtr = Marshal.AllocCoTaskMem(b.Length)
-            If ptr.Equals(IntPtr.Zero) Then Return Nothing
-            Marshal.Copy(b, 0, ptr, b.Length)
-            'the next statement assigns a IshellFolder object to the function return, or has an error
-            Dim hr As Integer = DesktopBase.Folder.BindToObject(ptr, IntPtr.Zero, IID_IShellFolder, MakeFolderFromBytes)
-            If hr <> 0 Then MakeFolderFromBytes = Nothing
-            Marshal.FreeCoTaskMem(ptr)
-        End If
     End Function
 #End Region
 
@@ -491,11 +407,6 @@ XIT:    'On any kind of exit, free the allocated memory
         attrFlag = attrFlag Or SFGAO.HIDDEN
         attrFlag = attrFlag Or SFGAO.REMOVABLE
         'attrFlag = attrFlag Or SFGAO.RDONLY   'made into an on-demand attribute
-        attrFlag = attrFlag Or SFGAO.CANCOPY
-        attrFlag = attrFlag Or SFGAO.CANDELETE
-        attrFlag = attrFlag Or SFGAO.CANLINK
-        attrFlag = attrFlag Or SFGAO.CANMOVE
-        attrFlag = attrFlag Or SFGAO.DROPTARGET
         'Note: for GetAttributesOf, we must provide an array, in  all cases with 1 element
         Dim aPidl(0) As IntPtr
         aPidl(0) = pidl
@@ -510,11 +421,6 @@ XIT:    'On any kind of exit, free the allocated memory
         m_IsHidden = CBool(attrFlag And SFGAO.HIDDEN)
         m_IsRemovable = CBool(attrFlag And SFGAO.REMOVABLE)
         'm_IsReadOnly = CBool(attrFlag And SFGAO.RDONLY)      'made into an on-demand attribute
-        m_CanCopy = CBool(attrFlag And SFGAO.CANCOPY)
-        m_CanDelete = CBool(attrFlag And SFGAO.CANDELETE)
-        m_CanLink = CBool(attrFlag And SFGAO.CANLINK)
-        m_CanMove = CBool(attrFlag And SFGAO.CANMOVE)
-        m_IsDropTarget = CBool(attrFlag And SFGAO.DROPTARGET)
 
         'Get the Path
         Dim strr As IntPtr = Marshal.AllocCoTaskMem(MAX_PATH * 2 + 4)
@@ -597,28 +503,6 @@ XIT:    'On any kind of exit, free the allocated memory
         If Not tmpPidl.Equals(IntPtr.Zero) Then
             Marshal.FreeCoTaskMem(tmpPidl)
         End If
-    End Function
-#End Region
-
-#Region "       Public Shared Function GetCShItem(ByVal FoldBytes() As Byte, ByVal ItemBytes() As Byte) As CShItem"
-    Public Shared Function GetCShItem(ByVal FoldBytes() As Byte, ByVal ItemBytes() As Byte) As CShItem
-        GetCShItem = Nothing    'assume failure
-        Dim b() As Byte = cPidl.JoinPidlBytes(FoldBytes, ItemBytes)
-        If IsNothing(b) Then Exit Function 'can do no more with invalid pidls
-        'otherwise do like below, skipping unnecessary validation check
-        Dim thisPidl As IntPtr = Marshal.AllocCoTaskMem(b.Length)
-        If thisPidl.Equals(IntPtr.Zero) Then Return Nothing
-        Marshal.Copy(b, 0, thisPidl, b.Length)
-        GetCShItem = FindCShItem(thisPidl)
-        Marshal.FreeCoTaskMem(thisPidl)
-        If IsNothing(GetCShItem) Then   'didn't find it, make new
-            Try
-                GetCShItem = New CShItem(FoldBytes, ItemBytes)
-            Catch
-
-            End Try
-        End If
-        If GetCShItem.PIDL.Equals(IntPtr.Zero) Then GetCShItem = Nothing
     End Function
 #End Region
 
@@ -792,35 +676,6 @@ XIT:    'On any kind of exit, free the allocated memory
             Return m_IsRemovable
         End Get
     End Property
-
-#Region "       Drag Ops Properties"
-    Public ReadOnly Property CanMove() As Boolean
-        Get
-            Return m_CanMove
-        End Get
-    End Property
-    Public ReadOnly Property CanCopy() As Boolean
-        Get
-            Return m_CanCopy
-        End Get
-    End Property
-    Public ReadOnly Property CanDelete() As Boolean
-        Get
-            Return m_CanDelete
-        End Get
-    End Property
-    Public ReadOnly Property CanLink() As Boolean
-        Get
-            Return m_CanLink
-        End Get
-    End Property
-    Public ReadOnly Property IsDropTarget() As Boolean
-        Get
-            Return m_IsDropTarget
-        End Get
-    End Property
-#End Region
-
 #End Region
 
 #Region "       Filled on Demand Properties"
@@ -1048,27 +903,6 @@ XIT:    'On any kind of exit, free the allocated memory
             '    FillDemandInfo()
             'End If
             'Return m_Attributes And FileAttributes.ReadOnly = FileAttributes.ReadOnly
-        End Get
-    End Property
-    '''<Summary>The IsSystem attribute is seldom used, but required by DragDrop operations.
-    ''' Since there is no way of getting ONLY the System attribute without getting
-    ''' the RO attribute (which forces a reference to the floppy drive), we pay
-    ''' the price of getting its own File/DirectoryInfo for this purpose alone.
-    '''</Summary>
-    Public ReadOnly Property IsSystem() As Boolean
-        Get
-            Static HaveSysInfo As Boolean   'true once we have gotten this attr
-            Static m_IsSystem As Boolean    'the value of this attr once we have it
-            If Not HaveSysInfo Then
-                Try
-                    m_IsSystem = (File.GetAttributes(m_Path) And FileAttributes.System) = FileAttributes.System
-                    HaveSysInfo = True
-                Catch ex As Exception
-                    HaveSysInfo = True
-                End Try
-            End If
-            Debug.WriteLine("In IsSystem -- Path = " & m_Path & " IsSystem = " & m_IsSystem)
-            Return m_IsSystem
         End Get
     End Property
 
@@ -1399,12 +1233,7 @@ NXTOLD:                 Next
         Debug.WriteLine(vbTab & "IsFileSystem= " & m_IsFileSystem)
         Debug.WriteLine(vbTab & "IsFolder    = " & m_IsFolder)
         Debug.WriteLine(vbTab & "IsLink    = " & m_IsLink)
-        Debug.WriteLine(vbTab & "IsDropTarget = " & m_IsDropTarget)
         Debug.WriteLine(vbTab & "IsReadOnly   = " & Me.IsReadOnly)
-        Debug.WriteLine(vbTab & "CanCopy = " & Me.CanCopy)
-        Debug.WriteLine(vbTab & "CanLink = " & Me.CanLink)
-        Debug.WriteLine(vbTab & "CanMove = " & Me.CanMove)
-        Debug.WriteLine(vbTab & "CanDelete = " & Me.CanDelete)
         If m_IsFolder Then
             If Not IsNothing(m_Directories) Then
                 Debug.WriteLine(vbTab & "Directory Count = " & m_Directories.Count)
@@ -1413,21 +1242,6 @@ NXTOLD:                 Next
             End If
         End If
     End Sub
-#End Region
-
-#Region "       GetDropTargetOf"
-    Public Function GetDropTargetOf(ByVal tn As Control) As IDropTarget
-        If IsNothing(m_Folder) Then Return Nothing
-        Dim apidl(0) As IntPtr
-        Dim HR As Integer
-        Dim theInterface As IDropTarget = Nothing
-        Dim tnH As IntPtr = tn.Handle
-        HR = m_Folder.CreateViewObject(tnH, ShellDll.IID_IDropTarget, theInterface)
-        If HR <> 0 Then
-            Marshal.ThrowExceptionForHR(HR)
-        End If
-        Return theInterface
-    End Function
 #End Region
 
 #End Region

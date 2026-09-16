@@ -943,15 +943,6 @@ Public Interface IShellLink
     Declare Auto Sub ReleaseStgMedium Lib "ole32.dll" (ByRef pmedium As STGMEDIUM)
 #End Region
 
-#Region "           RegisterDragDrop, RevokeDragDrop"
-    Declare Auto Function RegisterDragDrop Lib "ole32.dll" ( _
-            ByVal hWnd As IntPtr, _
-            ByVal IdropTgt As IDropTarget) As Integer
-
-    Declare Auto Function RevokeDragDrop Lib "ole32.dll" ( _
-            ByVal hWnd As IntPtr) As Integer
-#End Region
-
 #Region "           DragQueryFiles"
     'UINT DragQueryFile(HDROP hDrop,
     'UINT iFile,

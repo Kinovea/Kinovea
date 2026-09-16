@@ -28,8 +28,6 @@ Public Class ExpTree
 
     Private EnableEventPost As Boolean = True 'flag to supress ExpTreeNodeSelected raising during refresh and 
 
-    Private WithEvents DragDropHandler As TVDragWrapper
-
     Private m_showHiddenFolders As Boolean = False
 
     Private m_bShortcutsMode As Boolean = False
@@ -58,24 +56,6 @@ Public Class ExpTree
         ' also one bad thing -- the "tooltip" like display of selectednode.text
         ' is made invisible.  This remains a problem to be solved.
         SystemImageListManager.SetTreeViewImageList(tv1, False)
-
-        If tv1.IsHandleCreated Then
-            If Me.AllowDrop Then
-                If Application.OleRequired = Threading.ApartmentState.STA Then
-                    DragDropHandler = New TVDragWrapper(tv1)
-                    Dim res As Integer
-                    res = RegisterDragDrop(tv1.Handle, DragDropHandler)
-                    If Not (res = 0) Or (res = -2147221247) Then
-                        Marshal.ThrowExceptionForHR(res)
-                        Throw New Exception("Failed to Register DragDrop for " & Me.Name)
-                    End If
-                Else
-                    Throw New ThreadStateException("ThreadMustBeSTA")
-                End If
-            End If
-        End If
-
-
     End Sub
     'ExpTree overrides dispose to clean up the component list.
     Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
@@ -775,21 +755,6 @@ NXTOLD:             Next
     End Sub
 #End Region
 
-#Region "   tv1_HandleDestroyed"
-    Private Sub tv1_HandleDestroyed(ByVal sender As Object, ByVal e As EventArgs) Handles tv1.HandleDestroyed
-        'Debug.WriteLine("in handle destroyed")
-        If Me.AllowDrop Then
-            Dim res As Integer
-            res = RevokeDragDrop(tv1.Handle)
-            If res <> 0 Then
-                Debug.WriteLine("RevokeDragDrop returned " & res)
-            End If
-            'Else
-            '    Debug.WriteLine("HandleDestroyed with allowdrop false")
-        End If
-    End Sub
-#End Region
-
 #Region "   FindAncestorNode"
     '''<Summary>Given a CShItem, find the TreeNode that belongs to the
     ''' equivalent (matching PIDL) CShItem's most immediate surviving ancestor.
@@ -822,208 +787,6 @@ NEXTLEV: Loop
     End Function
 #End Region
 
-#Region "   Drag/Drop From Tree Processing"
-
-    Private Sub tv1_ItemDrag(ByVal sender As Object, ByVal e As System.Windows.Forms.ItemDragEventArgs)
-        'Primary (internal) data type
-        Dim toDrag As New ArrayList()
-        Dim csi As CShItem = CType(e.Item, TreeNode).Tag
-        toDrag.Add(csi)
-        'also need Shell IDList Array
-        Dim MS As System.IO.MemoryStream
-        MS = CProcDataObject.MakeShellIDArray(toDrag)
-        'Fairly universal data type (must be an array)
-        Dim strD(0) As String
-        strD(0) = csi.Path
-        'Build data to drag
-        Dim dataObj As New DataObject()
-        With dataObj
-            .SetData(toDrag)
-            If Not IsNothing(MS) Then
-                .SetData("Shell IDList Array", True, MS)
-            End If
-            .SetData("FileDrop", True, strD)
-        End With
-        'Do drag, allowing Copy and Move
-        Dim ddeff As DragDropEffects
-        ddeff = tv1.DoDragDrop(dataObj, DragDropEffects.Copy Or DragDropEffects.Move)
-        'the following line commented out, since we can't depend on ddeff
-        'If ddeff = DragDropEffects.None Then Exit Sub 'nothing happened
-        RefreshNode(FindAncestorNode(csi))
-    End Sub
-
-#End Region
-
-#Region "   DragWrapper Event Handling"
-
-    ' dropNode is the TreeNode that most recently was DraggedOver or
-    '    Dropped onto.  
-    Private dropNode As TreeNode
-
-    'expandNodeTimer is used to expand a node that is hovered over, with a delay
-    Private WithEvents expandNodeTimer As New System.Windows.Forms.Timer()
-
-#Region "       expandNodeTimer_Tick"
-    Private Sub expandNodeTimer_Tick(ByVal sender As Object, ByVal e As EventArgs) _
-       Handles expandNodeTimer.Tick
-        expandNodeTimer.Stop()
-        If Not IsNothing(dropNode) Then
-            RemoveHandler DragDropHandler.ShDragOver, AddressOf DragWrapper_ShDragOver
-            Try
-                tv1.BeginUpdate()
-                dropNode.Expand()
-                dropNode.EnsureVisible()
-            Finally
-                tv1.EndUpdate()
-            End Try
-            AddHandler DragDropHandler.ShDragOver, AddressOf DragWrapper_ShDragOver
-        End If
-    End Sub
-#End Region
-
-    '''<Summary>ShDragEnter does nothing. It is here for debug tracking</Summary>
-    Private Sub DragWrapper_ShDragEnter(ByVal Draglist As ArrayList,
-                                        ByVal pDataObj As IntPtr,
-                                        ByVal grfKeyState As Integer,
-                                        ByVal pdwEffect As Integer) _
-                                Handles DragDropHandler.ShDragEnter
-        'Debug.WriteLine("Enter ExpTree ShDragEnter. PdwEffect = " & pdwEffect)
-    End Sub
-
-    '''<Summary>Drag has left the control. Cleanup what we have to</Summary>
-    Private Sub DragWrapper_ShDragLeave() Handles DragDropHandler.ShDragLeave
-        expandNodeTimer.Stop()    'shut off the dragging over nodes timer
-        'Debug.WriteLine("Enter ExpTree ShDragLeave")
-        If Not IsNothing(dropNode) Then
-            ResetTreeviewNodeColor(dropNode)
-        End If
-        dropNode = Nothing
-    End Sub
-
-    '''<Summary>ShDragOver manages the appearance of the TreeView.  Management of
-    ''' the underlying FolderItem is done in DragWrapper
-    ''' Credit to Cory Smith for TreeView colorizing technique and code,
-    ''' at http://addressof.com/blog/archive/2004/10/01/955.aspx
-    ''' Node expansion based on expandNodeTimer added by me.
-    '''</Summary>
-    Private Sub DragWrapper_ShDragOver(ByVal Node As Object,
-                                ByVal pt As System.Drawing.Point,
-                                ByVal grfKeyState As Integer,
-                                ByVal pdwEffect As Integer) _
-                                Handles DragDropHandler.ShDragOver
-        'Debug.WriteLine("Enter ExpTree ShDragOver. PdwEffect = " & pdwEffect)
-        'Debug.WriteLine(vbTab & "Over node: " & CType(Node, TreeNode).Text)
-
-        If IsNothing(Node) Then  'clean up node stuff & fix color. Leave Draginfo alone-cleaned up on DragLeave
-            expandNodeTimer.Stop()
-            If Not dropNode Is Nothing Then
-                ResetTreeviewNodeColor(dropNode)
-                dropNode = Nothing
-            End If
-        Else  'Drag is Over a node - fix color & DragDropEffects
-            If Node Is dropNode Then
-                Exit Sub    'we've already done it all
-            End If
-
-            expandNodeTimer.Stop() 'not over previous node anymore
-            Try
-                tv1.BeginUpdate()
-                Dim delta As Integer = tv1.Height - pt.Y
-                If delta < tv1.Height / 2 And delta > 0 Then
-                    If Not IsNothing(Node) AndAlso Not (Node.NextVisibleNode Is Nothing) Then
-                        Node.NextVisibleNode.EnsureVisible()
-                        ' Thread.Sleep(250)  'slow down a bit
-                    End If
-                End If
-                If delta > tv1.Height / 2 And delta < tv1.Height Then
-                    If Not IsNothing(Node) AndAlso Not (Node.PrevVisibleNode Is Nothing) Then
-                        Node.PrevVisibleNode.EnsureVisible()
-                        ' Thread.Sleep(250)   'slow down a bit
-                    End If
-                End If
-                If Not Node.BackColor.Equals(SystemColors.Highlight) Then
-                    ResetTreeviewNodeColor(tv1.Nodes(0))
-                    Node.BackColor = SystemColors.Highlight
-                    Node.ForeColor = SystemColors.HighlightText
-                End If
-            Finally
-                tv1.EndUpdate()
-            End Try
-            dropNode = Node     'dropNode is the Saved Global version of Node
-            If Not dropNode.IsExpanded Then
-                expandNodeTimer.Interval = 1200
-                expandNodeTimer.Start()
-            End If
-        End If
-    End Sub
-
-    Private Sub DragWrapper_ShDragDrop(ByVal DragList As ArrayList,
-                                ByVal Node As Object,
-                                ByVal grfKeyState As Integer,
-                                ByVal pdwEffect As Integer) Handles DragDropHandler.ShDragDrop
-        expandNodeTimer.Stop()
-        'Debug.WriteLine("Enter ExpTree ShDragDrop. PdwEffect = " & pdwEffect)
-        'Debug.WriteLine(vbTab & "Over node: " & CType(Node, TreeNode).Text)
-
-        If Not IsNothing(dropNode) Then
-            ResetTreeviewNodeColor(dropNode)
-        Else
-            ResetTreeviewNodeColor(tv1.Nodes(0))
-        End If
-        ' If Directories were Moved, we must find and update the DragSource TreeNodes
-        '  of course, it is possible that the Drag was external to the App and 
-        '  the DragSource TreeNode might not exist in the Tree
-        'All of this is somewhat chancy since we can't count on pdwEffect or
-        '  on a Move having actually started, let alone finished
-        Dim CSI As CShItem      'that is what is in DragList
-        For Each CSI In DragList
-            If CSI.IsFolder Then    'only care about Folders
-                RefreshNode(FindAncestorNode(CSI))
-            End If
-        Next
-        If tv1.SelectedNode Is dropNode Then   'Fake a reselect
-            Dim e As New System.Windows.Forms.TreeViewEventArgs(tv1.SelectedNode, TreeViewAction.Unknown)
-            tv1_AfterSelect(tv1, e)      'will do a RefreshNode and raise AfterNodeSelect Event
-        Else
-            RefreshNode(dropNode)        'Otherwise, just refresh the Target
-            If pdwEffect <> DragDropEffects.Copy AndAlso pdwEffect <> DragDropEffects.Link Then
-                'it may have been a move. if so need to do an AfterSelect on the DragSource if it is SelectedNode
-                If DragList.Count > 0 Then     'can't happen but check
-                    If Not IsNothing(tv1.SelectedNode) Then     'ditto
-                        Dim csiSel As CShItem = tv1.SelectedNode.Tag
-                        Dim csiSource As CShItem = DragList(0)  'assume all from same dir
-                        If CShItem.IsAncestorOf(csiSel, csiSource) Then 'also true for equality
-                            Dim e As New System.Windows.Forms.TreeViewEventArgs(tv1.SelectedNode, TreeViewAction.Unknown)
-                            tv1_AfterSelect(tv1, e)      'will do a RefreshNode and raise AfterNodeSelect Event
-                        End If
-                    End If
-                End If
-            End If
-        End If
-        dropNode = Nothing
-        'Debug.WriteLine("Leaving ExpTree ShDragDrop")
-    End Sub
-
-    Private Sub ResetTreeviewNodeColor(ByVal node As TreeNode)
-        If Not node.BackColor.Equals(Color.Empty) Then
-            node.BackColor = Color.Empty
-            node.ForeColor = Color.Empty
-        End If
-        If Not node.FirstNode Is Nothing AndAlso node.IsExpanded Then
-            Dim child As TreeNode
-            For Each child In node.Nodes
-                If Not child.BackColor.Equals(Color.Empty) Then
-                    child.BackColor = Color.Empty
-                    child.ForeColor = Color.Empty
-                End If
-                If Not child.FirstNode Is Nothing AndAlso child.IsExpanded Then
-                    ResetTreeviewNodeColor(child)
-                End If
-            Next
-        End If
-    End Sub
-#End Region
-
 #Region "   Propagation of treeview events"
     Private Sub tv1_MouseEnter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tv1.MouseEnter
         MyBase.OnMouseEnter(e)
@@ -1038,6 +801,5 @@ NEXTLEV: Loop
         MyBase.OnDoubleClick(e)
     End Sub
 #End Region
-
 
 End Class
