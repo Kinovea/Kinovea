@@ -149,51 +149,92 @@ namespace Kinovea.FileBrowser
             return root;
         }
 
+
+        public void UpdateShortcuts(IEnumerable<BrowserLocation> shortcuts)
+        {
+            if (shortcutsRoot == null)
+                return;
+
+            TreeNode selectedNode = treeView.SelectedNode;
+
+            // Remember if the selected node is somewhere under the shortcuts root.
+            bool selectionWasUnderShortcuts = selectedNode != null && IsDescendantOf(selectedNode, shortcutsRoot);
+            BrowserLocation selectedLocation = selectionWasUnderShortcuts ? selectedNode.Tag as BrowserLocation : null;
+
+            // Create the nodes at once before modifying the tree.
+            TreeNode[] nodes = shortcuts.Select(s => CreateNode(s, false)).ToArray();
+
+            suppressSelectionEvent = true;
+            treeView.BeginUpdate();
+            try
+            {
+                shortcutsRoot.Nodes.Clear();
+                shortcutsRoot.Nodes.AddRange(nodes);
+                
+                // Always expand the shortcuts root.
+                shortcutsRoot.Expand();
+
+                // Reselect the selected path.
+                // This may move to a different part of the tree.
+                if (selectionWasUnderShortcuts && selectedLocation != null)
+                {
+                    TryReveal(selectedLocation);
+                }
+            }
+            finally
+            {
+                treeView.EndUpdate();
+            }
+
+            suppressSelectionEvent = false;
+        }
+
         /// <summary>
         /// Add a new child to the root node if it doesn't already exist.
         /// This should only be used to add shortcuts.
         /// </summary>
-        public void AddShortcut(BrowserLocation location)
-        {
-            if (location.Type != BrowserLocationType.FileSystem)
-                return;
+        //public void AddShortcut(BrowserLocation location)
+        //{
+        //    if (location.Type != BrowserLocationType.FileSystem)
+        //        return;
 
-            string path = location.Path;
-            if (string.IsNullOrWhiteSpace(path))
-                return;
+        //    string path = location.Path;
+        //    if (string.IsNullOrWhiteSpace(path))
+        //        return;
 
-            // Look for the path in the root's children. If not found, add it.
-            TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, location);
+        //    // Look for the path in the root's children. If not found, add it.
+        //    TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, path);
 
-            if (foundNode == null)
-            {
-                treeView.BeginUpdate();
-                TreeNode newNode = CreateNode(location, false);
-                shortcutsRoot.Nodes.Insert(0, newNode);
-                treeView.EndUpdate();
-            }
-        }
+        //    if (foundNode == null)
+        //    {
+        //        treeView.BeginUpdate();
+        //        TreeNode newNode = CreateNode(location, false);
+        //        shortcutsRoot.Nodes.Insert(0, newNode);
+        //        treeView.EndUpdate();
+        //    }
+        //}
 
         /// <summary>
         /// Remove a child of the shortcuts root if it exists.
         /// </summary>
-        public void RemoveShortcut(BrowserLocation location)
-        {
-            if (location == null || location.Type != BrowserLocationType.FileSystem)
-                return;
+        //public void RemoveShortcut(BrowserLocation location)
+        //{
+        //    if (location == null || location.Type != BrowserLocationType.FileSystem)
+        //        return;
 
-            // Look for the path in the root's children. If found, remove it.
-            TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, location);
-            if (foundNode != null)
-            {
-                treeView.BeginUpdate();
-                shortcutsRoot.Nodes.Remove(foundNode);
-                treeView.EndUpdate();
-            }
-        }
+        //    // Look for the path in the root's children. If found, remove it.
+        //    TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, location.Path);
+        //    if (foundNode != null)
+        //    {
+        //        treeView.BeginUpdate();
+        //        shortcutsRoot.Nodes.Remove(foundNode);
+        //        treeView.EndUpdate();
+        //    }
+        //}
 
         /// <summary>
         /// Make a TreeNode from a browser location.
+        /// Does not inspect the sub-folders.
         /// </summary>
         private TreeNode CreateNode(BrowserLocation location, bool isDrive)
         {
@@ -222,14 +263,12 @@ namespace Kinovea.FileBrowser
                 iconIndexSelected = ShellIconIndex.Get(path, true, isDrive);
             }
 
-            TreeNode node = new TreeNode(name)
-            {
-                Tag = location,
-                ImageIndex = iconIndex,
-                SelectedImageIndex = iconIndexSelected
-            };
+            TreeNode node = new TreeNode(name);
+            node.Tag = location;
+            node.ImageIndex = iconIndex;
+            node.SelectedImageIndex = iconIndexSelected;
 
-            // We don't inspect the sub-folders while constructing the node.
+            // Don't inspect the sub-folders while constructing the node.
             // Add a dummy child to give it an expansion glyph.
             if (!isRecentFiles)
             {
@@ -396,154 +435,187 @@ namespace Kinovea.FileBrowser
             if (location == null)
                 return;
 
-            // Always expand as soon as selected.
-            e.Node.Expand();
-
             if (!suppressSelectionEvent)
             {
                 LocationSelected?.Invoke(this, new EventArgs<BrowserLocation>(location));
+            
+                // Expand as soon as selected.
+                e.Node.Expand();
             }
         }
         #endregion
 
         #region Selection and expansion
         /// <summary>
-        /// Expands the drives sub-tree to the given folder. 
-        /// Selects the target folder, scrolls it into view, and expand it.
-        /// This is used to synchronize the drives tree view with the shortcuts.
+        /// Expands the passed node to the given location. 
+        /// Build-expand children, scrolls it into view, and expand it.
+        /// Returns true if the node was found and selected.
+        /// This will find a path even it's a sub-folder of a shortcut.
         /// </summary>
-        public bool ExpandToPath(BrowserLocation location, bool notifySelection = false)
+        private bool ExpandToPath(TreeNode startNode, BrowserLocation location)
         {
-            if (location == null || location.Type != BrowserLocationType.FileSystem)
+            if (startNode == null || location == null || !location.IsFileSystem)
                 return false;
 
-            string path = location.Path;
-            if (string.IsNullOrWhiteSpace(path))
-                return false;
+            string targetPath = NormalizePath(location.Path);
+            TreeNode currentNode = startNode;
 
-            string targetPath;
-            string rootPath;
-
-            try
+            while (currentNode != null)
             {
-                targetPath = NormalizePath(path);
-                rootPath = NormalizePath(Path.GetPathRoot(targetPath));
-            }
-            catch (Exception ex) when (
-                ex is ArgumentException ||
-                ex is NotSupportedException ||
-                ex is PathTooLongException)
-            {
-                return false;
-            }
+                BrowserLocation currentLocation = currentNode.Tag as BrowserLocation;
 
-            if (treeView.Nodes.Count == 0)
-                return false;
-
-            // Find C:\, D:\, mapped Z:\, etc.
-            TreeNode currentNode = FindChildByPath(drivesRoot.Nodes, location);
-
-            if (currentNode == null)
-                return false;
-
-            // Build a stack of path parts:
-            //
-            // C:\
-            // C:\Users
-            // C:\Users\Name
-            // C:\Users\Name\Videos
-            //
-            Stack<string> remainingPaths = new Stack<string>();
-            string currentPath = targetPath;
-
-            while (!PathsEqual(currentPath, rootPath))
-            {
-                remainingPaths.Push(currentPath);
-
-                DirectoryInfo parent;
-
-                try
+                if (currentLocation != null && currentLocation.IsFileSystem)
                 {
-                    parent = Directory.GetParent(currentPath);
-                }
-                catch (Exception ex) when (
-                    ex is ArgumentException ||
-                    ex is NotSupportedException ||
-                    ex is PathTooLongException)
-                {
-                    return false;
-                }
+                    string currentPath = NormalizePath(currentLocation.Path);
 
-                if (parent == null)
-                    return false;
+                    if (string.Equals(currentPath, targetPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        treeView.SelectedNode = currentNode;
+                        currentNode.EnsureVisible();
+                        return true;
+                    }
 
-                string parentPath = NormalizePath(parent.FullName);
-
-                // Protection against malformed paths.
-                if (PathsEqual(parentPath, currentPath))
-                    return false;
-
-                currentPath = parentPath;
-            }
-
-            bool previousSuppression = suppressSelectionEvent;
-            suppressSelectionEvent = !notifySelection;
-
-            // Walk down the tree, expanding and building children as we go.
-            treeView.BeginUpdate();
-
-            try
-            {
-                drivesRoot.Expand();
-
-                while (remainingPaths.Count > 0)
-                {
-                    BuildChildren(currentNode);
-                    currentNode.Expand();
-
-                    string nextPath = remainingPaths.Pop();
-                    BrowserLocation loc = new BrowserLocation(nextPath);
-                    TreeNode nextNode = FindChildByPath(currentNode.Nodes, loc);
-
-                    if (nextNode == null)
+                    // Bail out if the target cannot exist below this node.
+                    if (!IsDescendantOf(targetPath, currentPath))
+                    {
                         return false;
-
-                    currentNode = nextNode;
+                    }
                 }
 
-                // Also expand the target itself.
-                BuildChildren(currentNode);
+                // At this point we know the target is a descendant of the node.
+                // Expand to look for the best child.
+                // Expand() is synchronous, so the children are available when this call returns.
                 currentNode.Expand();
 
-                // Select and scroll into view.
-                treeView.SelectedNode = currentNode;
-                currentNode.EnsureVisible();
+                TreeNode nextNode = FindBestChildAncestor(currentNode, targetPath);
 
-                return true;
+                if (nextNode == null)
+                    return false;
+
+                currentNode = nextNode;
             }
-            finally
-            {
-                treeView.EndUpdate();
-                suppressSelectionEvent = previousSuppression;
-            }
+
+            return false;
         }
 
         /// <summary>
-        /// Selects an immediate child of the root node.
-        /// This is used to select a shortcut based on the current video path.
+        /// Look for the location anywhere in the tree, building and expanding as needed.
+        /// This version looks by priority:
+        /// - currently selected node
+        /// - in shortcuts, possibly as a sub-folder of a shortcut.
+        /// - in drives.
         /// </summary>
-        public void SelectRootChild(string folderPath)
+        public bool TryReveal(BrowserLocation location)
         {
-            if (string.IsNullOrWhiteSpace(folderPath))
-                return;
+            if (location == null || !location.IsFileSystem)
+                return false;
 
-            BrowserLocation location = new BrowserLocation(folderPath);
-            TreeNode currentNode = FindChildByPath(shortcutsRoot.Nodes, location);
-            if (currentNode != null)
+            if (IsSelectedNode(location))
+                return true;
+
+            // This function should be called with suppressSelectionEvent if needed.
+            bool found = ExpandToPath(shortcutsRoot, location);
+            if (found)
             {
-                treeView.SelectedNode = currentNode;
-                currentNode.EnsureVisible();
+                return true;
             }
+
+            found = ExpandToPath(drivesRoot, location);
+            return found;
+        }
+
+        /// <summary>
+        /// Look for the location anywhere under the shortcuts root and select it.
+        /// </summary>
+        public bool TryRevealInShortcuts(BrowserLocation location)
+        {
+            if (location == null || !location.IsFileSystem)
+                return false;
+
+            bool found = ExpandToPath(shortcutsRoot, location);
+            
+            return found;
+        }
+
+        /// <summary>
+        /// Returns true if the passed location is the same as the currently selected node.
+        /// </summary>
+        private bool IsSelectedNode(BrowserLocation location)
+        {
+            TreeNode selectedNode = treeView.SelectedNode;
+            
+            if (selectedNode == null)
+                return false;
+            
+            BrowserLocation selectedLocation = selectedNode.Tag as BrowserLocation;
+            if (selectedLocation == null)
+                return false;
+            
+            return PathsEqual(selectedLocation.Path, location.Path);
+        }
+
+
+        //private TreeNode FindDeepestShortcutAncestor(string targetPath)
+        //{
+        //    string normalizedTarget = NormalizePath(targetPath);
+
+        //    TreeNode bestMatch = null;
+        //    int bestMatchLength = -1;
+
+        //    foreach (TreeNode child in shortcutsRoot.Nodes)
+        //    {
+        //        BrowserLocation childLocation = child.Tag as BrowserLocation;
+        //        if (childLocation == null || !childLocation.IsFileSystem)
+        //        {
+        //            continue;
+        //        }
+
+        //        string childPath = NormalizePath(childLocation.Path);
+        //        if (!IsDescendantOf(normalizedTarget, childPath))
+        //        {
+        //            continue;
+        //        }
+
+        //        if (childPath.Length > bestMatchLength)
+        //        {
+        //            bestMatch = child;
+        //            bestMatchLength = childPath.Length;
+        //        }
+        //    }
+
+        //    return bestMatch;
+        //}
+
+        /// <summary>
+        /// Find the child of a node that is an ancestor to the path.
+        /// </summary>
+        private TreeNode FindBestChildAncestor(TreeNode parent, string targetPath)
+        {
+            TreeNode bestMatch = null;
+            int bestMatchLength = -1;
+
+            foreach (TreeNode child in parent.Nodes)
+            {
+                BrowserLocation childLocation = child.Tag as BrowserLocation;
+                if (childLocation == null || !childLocation.IsFileSystem)
+                {
+                    continue;
+                }
+
+                string childPath = NormalizePath(childLocation.Path);
+                if (!IsDescendantOf(targetPath, childPath))
+                {
+                    continue;
+                }
+
+                if (childPath.Length > bestMatchLength)
+                {
+                    bestMatch = child;
+                    bestMatchLength = childPath.Length;
+                }
+            }
+
+            return bestMatch;
         }
 
         #endregion
@@ -619,27 +691,53 @@ namespace Kinovea.FileBrowser
             return true;
         }
 
-
         /// <summary>
-        /// Returns the child node matching the given path.
+        /// Walk the tree upwards to see if the candidate is an ancestor of the node.
         /// </summary>
-        private static TreeNode FindChildByPath(TreeNodeCollection nodes, BrowserLocation queryLocation)
+        private static bool IsDescendantOf(TreeNode node, TreeNode candidate)
         {
-            if (queryLocation == null || queryLocation.Type != BrowserLocationType.FileSystem)
-                return null;
-
-            foreach (TreeNode node in nodes)
+            for (TreeNode current = node; current != null; current = current.Parent)
             {
-                BrowserLocation location = node.Tag as BrowserLocation;
-                string nodePath = location?.Path;
-                string queryPath = queryLocation.Path;
-                if (nodePath != null && PathsEqual(nodePath, queryPath))
-                {
-                    return node;
-                }
+                if (ReferenceEquals(current, candidate))
+                    return true;
             }
 
-            return null;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the path is a descendant of the candidate.
+        /// </summary>
+        private static bool IsDescendantOf(string path, string candidate)
+        {
+            if (string.Equals(path, candidate, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (!path.StartsWith(candidate, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            // At this point we have the following cases:
+            // full path: C:\Videos\Foo
+            // candidate: C:\           good.
+            // candidate: C:\Videos     good.
+            // candidate: C:\Video      wrong.
+
+            char lastChar = candidate[candidate.Length - 1];
+            bool candidateIsDrive = lastChar == Path.DirectorySeparatorChar || lastChar == Path.AltDirectorySeparatorChar;
+            if (candidateIsDrive)
+            {
+                return true;
+            }
+
+            // Ensure we don't match C:\Video.
+            // The next character after the matching prefix must be a directory separator.
+            char nextChar = path[candidate.Length];
+            bool isGood = nextChar == Path.DirectorySeparatorChar || nextChar == Path.AltDirectorySeparatorChar;
+            return isGood;
         }
 
         private static bool PathsEqual(string left, string right)
@@ -647,27 +745,23 @@ namespace Kinovea.FileBrowser
             if (left == null || right == null)
                 return false;
 
-            return string.Equals(
-                NormalizePath(left).TrimEnd('\\', '/'),
-                NormalizePath(right).TrimEnd('\\', '/'),
-                StringComparison.OrdinalIgnoreCase);
+            return string.Equals(NormalizePath(left), NormalizePath(right), StringComparison.OrdinalIgnoreCase);
         }
 
         private static string NormalizePath(string path)
         {
             string fullPath = Path.GetFullPath(path);
+            fullPath = fullPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
             string rootPath = Path.GetPathRoot(fullPath);
 
             // Preserve the trailing separator for filesystem roots.
-            if (string.Equals(
-                fullPath.TrimEnd('\\', '/'),
-                rootPath.TrimEnd('\\', '/'),
-                StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(fullPath, rootPath, StringComparison.OrdinalIgnoreCase))
             {
-                return rootPath;
+                return fullPath;
             }
 
-            return fullPath.TrimEnd('\\', '/');
+            return fullPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
     }
 }

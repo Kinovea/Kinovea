@@ -27,6 +27,11 @@ namespace Kinovea.Services
         /// </summary>
         public string Path { get; }
 
+        public bool IsFileSystem 
+        {
+            get { return Type == BrowserLocationType.FileSystem; }
+        }
+
         /// <summary>
         /// Build a BrowserLocation for a folder on the file system.
         /// </summary>

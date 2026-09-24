@@ -384,3 +384,4 @@ Installer/build-*.txt
 /Tools/explorer-harness/videos/*
 /Tools/explorer-harness/*.mp4
 /Refs/FFmpeg/ffmpeg-8.1.2-full_build-shared/*
+/Tools/explorer-harness/videos2/*
