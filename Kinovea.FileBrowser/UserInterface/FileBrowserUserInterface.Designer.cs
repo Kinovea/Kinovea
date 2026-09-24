@@ -33,7 +33,7 @@ namespace Kinovea.FileBrowser
       this.tabControl = new System.Windows.Forms.TabControl();
       this.tabPageClassic = new System.Windows.Forms.TabPage();
       this.splitExplorerFiles = new System.Windows.Forms.SplitContainer();
-      this.btnAddShortcut = new System.Windows.Forms.Button();
+      this.btnAddFavorite = new System.Windows.Forms.Button();
       this.tvExplorer = new Kinovea.FileBrowser.BufferedTreeView();
       this.lvExplorer = new System.Windows.Forms.ListView();
       this.imgListFiles = new System.Windows.Forms.ImageList(this.components);
@@ -88,7 +88,7 @@ namespace Kinovea.FileBrowser
       // 
       // splitExplorerFiles.Panel1
       // 
-      this.splitExplorerFiles.Panel1.Controls.Add(this.btnAddShortcut);
+      this.splitExplorerFiles.Panel1.Controls.Add(this.btnAddFavorite);
       this.splitExplorerFiles.Panel1.Controls.Add(this.tvExplorer);
       // 
       // splitExplorerFiles.Panel2
@@ -101,21 +101,21 @@ namespace Kinovea.FileBrowser
       // 
       // btnAddShortcut
       // 
-      this.btnAddShortcut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnAddShortcut.BackColor = System.Drawing.Color.Transparent;
-      this.btnAddShortcut.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.folder_add;
-      this.btnAddShortcut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnAddShortcut.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnAddShortcut.FlatAppearance.BorderSize = 0;
-      this.btnAddShortcut.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnAddShortcut.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnAddShortcut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnAddShortcut.Location = new System.Drawing.Point(279, 5);
-      this.btnAddShortcut.Name = "btnAddShortcut";
-      this.btnAddShortcut.Size = new System.Drawing.Size(20, 20);
-      this.btnAddShortcut.TabIndex = 10;
-      this.btnAddShortcut.UseVisualStyleBackColor = false;
-      this.btnAddShortcut.Click += new System.EventHandler(this.btnAddShortcut_Click);
+      this.btnAddFavorite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnAddFavorite.BackColor = System.Drawing.Color.Transparent;
+      this.btnAddFavorite.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.folder_add;
+      this.btnAddFavorite.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnAddFavorite.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnAddFavorite.FlatAppearance.BorderSize = 0;
+      this.btnAddFavorite.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnAddFavorite.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnAddFavorite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnAddFavorite.Location = new System.Drawing.Point(279, 5);
+      this.btnAddFavorite.Name = "btnAddShortcut";
+      this.btnAddFavorite.Size = new System.Drawing.Size(20, 20);
+      this.btnAddFavorite.TabIndex = 10;
+      this.btnAddFavorite.UseVisualStyleBackColor = false;
+      this.btnAddFavorite.Click += new System.EventHandler(this.btnAddFavorite_Click);
       // 
       // tvExplorer
       // 
@@ -307,6 +307,6 @@ namespace Kinovea.FileBrowser
         private BrightIdeasSoftware.ObjectListView olvCameras;
         private System.Windows.Forms.Button btnCameraRefresh;
         private BufferedTreeView tvExplorer;
-        private System.Windows.Forms.Button btnAddShortcut;
+        private System.Windows.Forms.Button btnAddFavorite;
     }
 }

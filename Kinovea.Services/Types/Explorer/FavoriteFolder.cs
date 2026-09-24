@@ -24,7 +24,7 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
-    public class ShortcutFolder : IComparable
+    public class FavoriteFolder : IComparable
     {
         public string Path 
         {
@@ -38,7 +38,7 @@ namespace Kinovea.Services
         private string friendlyName;		
         private string location;
         
-        public ShortcutFolder(string friendlyName, string location)
+        public FavoriteFolder(string friendlyName, string location)
         {
             this.friendlyName = friendlyName;
             this.location = location;
@@ -53,7 +53,7 @@ namespace Kinovea.Services
             writer.WriteElementString("Location", location);
         }
         
-        public ShortcutFolder(XmlReader reader)
+        public FavoriteFolder(XmlReader reader)
         {
             reader.ReadStartElement();
             
@@ -79,7 +79,7 @@ namespace Kinovea.Services
         #region IComparable Implementation
         public int CompareTo(object obj)
         {
-            ShortcutFolder sf = obj as ShortcutFolder;
+            FavoriteFolder sf = obj as FavoriteFolder;
             if(sf != null)
             {
                 String path1 = System.IO.Path.GetFileName(this.location);

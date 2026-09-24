@@ -339,7 +339,7 @@
     <Compile Include="Types\Export\KinoveaImageFormat.cs" />
     <Compile Include="Types\Export\VideoContainer.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
-    <Compile Include="Types\Explorer\ShortcutFolder.cs" />
+    <Compile Include="Types\Explorer\FavoriteFolder.cs" />
     <Compile Include="Types\Units\SpeedUnit.cs" />
     <Compile Include="Types\TimecodeFormat.cs" />
     <Compile Include="Types\TimecodeType.cs" />

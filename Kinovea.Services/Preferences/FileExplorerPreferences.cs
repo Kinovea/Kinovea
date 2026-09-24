@@ -88,9 +88,9 @@ namespace Kinovea.Services
             set { explorerThumbsSize = value; Save(); }
         }
 
-        public List<ShortcutFolder> ShortcutFolders
+        public List<FavoriteFolder> FavoriteFolders
         {
-            get { BeforeRead(); return shortcutFolders;}
+            get { BeforeRead(); return favoriteFolders;}
         }
         
         public string LastBrowsedDirectory 
@@ -139,7 +139,7 @@ namespace Kinovea.Services
         private List<string> recentFiles = new List<string>();
         private List<string> recentWatchers = new List<string>();
         private List<string> recentCapturedFiles = new List<string>();
-        private List<ShortcutFolder> shortcutFolders = new List<ShortcutFolder>();
+        private List<FavoriteFolder> favoriteFolders = new List<FavoriteFolder>();
         private ExplorerThumbSize explorerThumbsSize = ExplorerThumbSize.Medium; 
         private string lastBrowsedDirectory;
         private FilePropertyVisibility filePropertyVisibility = new FilePropertyVisibility();
@@ -202,28 +202,28 @@ namespace Kinovea.Services
             Save();
         }
 
-        public void RemoveShortcut(ShortcutFolder shortcut)
+        public void RemoveFavorite(FavoriteFolder favorite)
         {
-            shortcutFolders.RemoveAll(s => s.Path == shortcut.Path);
+            favoriteFolders.RemoveAll(s => s.Path == favorite.Path);
             Save();
         }
         
-        public void AddShortcut(ShortcutFolder shortcut)
+        public void AddFavorite(FavoriteFolder favorite)
         {
-            bool known = shortcutFolders.Any(s => s.Path == shortcut.Path);
+            bool known = favoriteFolders.Any(s => s.Path == favorite.Path);
 
             if(!known)
             {
-                shortcutFolders.Add(shortcut);
-                shortcutFolders.Sort();
+                favoriteFolders.Add(favorite);
+                favoriteFolders.Sort();
             }
 
             Save();
         }
         
-        public bool IsShortcutKnown(string path)
+        public bool IsFavoriteKnown(string path)
         {
-            return shortcutFolders.Any(s => s.Path == path);
+            return favoriteFolders.Any(s => s.Path == path);
         }
 
         public void SetFilePropertyVisible(FileProperty prop, bool state)
@@ -242,14 +242,14 @@ namespace Kinovea.Services
             writer.WriteElementString("MaxRecentCapturedFiles", maxRecentCapturedFiles.ToString());
             WriteRecents(writer, recentCapturedFiles, maxRecentCapturedFiles, "RecentCapturedFiles", "RecentCapturedFile");
 
-            if (shortcutFolders.Count > 0)
+            if (favoriteFolders.Count > 0)
             {
                 writer.WriteStartElement("Shortcuts");
 
-                foreach(ShortcutFolder shortcut in shortcutFolders)
+                foreach(FavoriteFolder favorite in favoriteFolders)
                 {
                     writer.WriteStartElement("Shortcut");
-                    shortcut.WriteXML(writer);
+                    favorite.WriteXML(writer);
                     writer.WriteEndElement();
                 }
 
@@ -314,7 +314,7 @@ namespace Kinovea.Services
                         ParseRecentFiles(reader, recentCapturedFiles, "RecentCapturedFile");
                         break;
                     case "Shortcuts":
-                        ParseShortcuts(reader);
+                        ParseFavorites(reader);
                         break;
                     case "ThumbnailSize":
                         explorerThumbsSize = (ExplorerThumbSize) Enum.Parse(typeof(ExplorerThumbSize), reader.ReadElementContentAsString());
@@ -364,9 +364,9 @@ namespace Kinovea.Services
             reader.ReadEndElement();
         }
         
-        private void ParseShortcuts(XmlReader reader)
+        private void ParseFavorites(XmlReader reader)
         {
-            shortcutFolders.Clear();
+            favoriteFolders.Clear();
             bool empty = reader.IsEmptyElement;
             
             reader.ReadStartElement();
@@ -378,9 +378,9 @@ namespace Kinovea.Services
             {
                 if(reader.Name == "Shortcut")
                 {
-                    ShortcutFolder shortcut = new ShortcutFolder(reader);
-                    if(Directory.Exists(shortcut.Path))
-                        shortcutFolders.Add(shortcut);
+                    FavoriteFolder favorite = new FavoriteFolder(reader);
+                    if(Directory.Exists(favorite.Path))
+                        favoriteFolders.Add(favorite);
                 }
                 else
                 {
@@ -390,7 +390,7 @@ namespace Kinovea.Services
             
             reader.ReadEndElement();
             
-            shortcutFolders.Sort();
+            favoriteFolders.Sort();
             
         }
         #endregion

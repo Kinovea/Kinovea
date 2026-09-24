@@ -69,8 +69,8 @@ namespace Kinovea.FileBrowser
         #region Menu
         private ContextMenuStrip popMenuFolders = new ContextMenuStrip();
         private ToolStripMenuItem mnuLocateFolder = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAddToFavorites = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteFavorite = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuFiles = new ContextMenuStrip();
         private ToolStripMenuItem mnuSortBy = new ToolStripMenuItem();
@@ -101,9 +101,9 @@ namespace Kinovea.FileBrowser
             
             // Build the tree view.
             explorerTree = new BrowserTreeController(tvExplorer);
-            var shortcuts = PreferencesManager.FileExplorerPreferences.ShortcutFolders;
-            List<BrowserLocation> shortcutLocations = shortcuts.Select(s => new BrowserLocation(s.Path)).ToList();
-            explorerTree.Build(shortcutLocations);
+            var favorites = PreferencesManager.FileExplorerPreferences.FavoriteFolders;
+            List<BrowserLocation> favoriteLocations = favorites.Select(s => new BrowserLocation(s.Path)).ToList();
+            explorerTree.Build(favoriteLocations);
             explorerTree.LocationSelected += ExplorerTree_LocationSelected;
 
             PrepareCameraListView();
@@ -139,19 +139,19 @@ namespace Kinovea.FileBrowser
             mnuLocateFolder.Click += mnuLocateFolder_Click;
             mnuLocateFolder.Visible = true;
             
-            mnuAddToShortcuts.Image = Properties.Resources.star;
-            mnuAddToShortcuts.Click += mnuAddToShortcuts_Click;
-            mnuAddToShortcuts.Visible = false;
+            mnuAddToFavorites.Image = Properties.Resources.star;
+            mnuAddToFavorites.Click += mnuAddToFavorites_Click;
+            mnuAddToFavorites.Visible = false;
 
-            mnuDeleteShortcut.Image = Properties.Resources.folder_delete;
-            mnuDeleteShortcut.Click += mnuDeleteShortcut_Click;
-            mnuDeleteShortcut.Visible = false;
+            mnuDeleteFavorite.Image = Properties.Resources.folder_delete;
+            mnuDeleteFavorite.Click += mnuDeleteFavorite_Click;
+            mnuDeleteFavorite.Visible = false;
             
             popMenuFolders.Items.AddRange(new ToolStripItem[] 
             { 
                 mnuLocateFolder, 
-                mnuAddToShortcuts, 
-                mnuDeleteShortcut 
+                mnuAddToFavorites, 
+                mnuDeleteFavorite 
             });
             
             tvExplorer.ContextMenuStrip = popMenuFolders;
@@ -383,7 +383,7 @@ namespace Kinovea.FileBrowser
         }
         private void NotificationCenter_FileOpened(object sender, EventArgs<string> e)
         {
-            // Create a virtual shortcut for the folder of the opened video and select it.
+            // Create a virtual favorite for the folder of the opened video and select it.
             string parent = Path.GetDirectoryName(e.Value);
             BrowserLocation location = new BrowserLocation(parent);
             if (currentLocation != null && currentLocation.Path == location.Path)
@@ -433,11 +433,6 @@ namespace Kinovea.FileBrowser
             btnManual.Text = FileBrowserLang.FormCameraWizard_Title;
             lblCaptureHistory.Text = FileBrowserLang.lblCaptureHistory;
 
-            // Menus
-            mnuLocateFolder.Text = FileBrowserLang.mnuVideoLocate;
-            mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
-            mnuDeleteShortcut.Text = FileBrowserLang.mnuRemoveFromShortcuts;
-
             mnuSortBy.Text = FileBrowserLang.mnuSortBy;
             mnuSortByName.Text = FileBrowserLang.mnuSortBy_Name;
             mnuSortByDate.Text = FileBrowserLang.mnuSortBy_Date;
@@ -451,20 +446,19 @@ namespace Kinovea.FileBrowser
             mnuForgetCamera.Text = FileBrowserLang.ForgetCustomSettings;
 
             // ToolTips
-            //ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
-            ttTabs.SetToolTip(tabPageClassic, Kinovea.FileBrowser.Languages.FileBrowserLang.navPane_FileSystem);
-            ttTabs.SetToolTip(tabPageCameras, Kinovea.FileBrowser.Languages.FileBrowserLang.tabCameras);
-            ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
+            ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.navPane_FileSystem);
+            ttTabs.SetToolTip(tabPageCameras, FileBrowserLang.tabCameras);
+            ttTabs.SetToolTip(btnAddFavorite, FileBrowserLang.mnuAddShortcut);
         }
         
         /// <summary>
-        /// Reload the shortcut root in the tree view.
+        /// Reload the favorite root in the tree view.
         /// </summary>
-        private void ReloadShortcuts()
+        private void ReloadFavorites()
         {
-            var shortcuts = PreferencesManager.FileExplorerPreferences.ShortcutFolders;
-            List<BrowserLocation> shortcutLocations = shortcuts.Select(s => new BrowserLocation(s.Path)).ToList();
-            explorerTree.UpdateShortcuts(shortcutLocations);
+            var favorites = PreferencesManager.FileExplorerPreferences.FavoriteFolders;
+            List<BrowserLocation> favoriteLocations = favorites.Select(s => new BrowserLocation(s.Path)).ToList();
+            explorerTree.UpdateFavorites(favoriteLocations);
         }
 
         public void CamerasDiscovered(List<CameraSummary> summaries)
@@ -533,81 +527,81 @@ namespace Kinovea.FileBrowser
 
         #region File system tab
 
-        #region Add/Remove shortcuts
+        #region Add/Remove favorites
 
         /// <summary>
-        /// Add a shortcut by picking a folder in the file system via FolderBrowserDialog.
+        /// Add a favorite by picking a folder in the file system via FolderBrowserDialog.
         /// </summary>
-        private void btnAddShortcut_Click(object sender, EventArgs e)
+        private void btnAddFavorite_Click(object sender, EventArgs e)
         {
             string pathToAdd = FilesystemHelper.OpenFolderBrowserDialog("");
             if (string.IsNullOrWhiteSpace(pathToAdd))
                 return;
 
-            ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(pathToAdd), pathToAdd);
-            PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
+            FavoriteFolder ff = new FavoriteFolder(Path.GetFileName(pathToAdd), pathToAdd);
+            PreferencesManager.FileExplorerPreferences.AddFavorite(ff);
             
-            ReloadShortcuts();
+            ReloadFavorites();
 
-            // Move to the newly added shortcut.
-            BrowserLocation location = new BrowserLocation(sf.Path);
-            explorerTree.TryRevealInShortcuts(location);
+            // Move to the newly added favorite.
+            BrowserLocation location = new BrowserLocation(ff.Path);
+            explorerTree.TryRevealInFavorites(location);
         }
 
         /// <summary>
         /// Add a shortcut by right click on a node in the tree.
         /// </summary>
-        private void mnuAddToShortcuts_Click(object sender, EventArgs e)
+        private void mnuAddToFavorites_Click(object sender, EventArgs e)
         {
-            // Add the active folder to the shortcuts.
+            // Add the active folder to the favorite.
             if (currentLocation == null || currentLocation.Type != BrowserLocationType.FileSystem)
                 return;
 
             if (string.IsNullOrWhiteSpace(currentLocation.Path))
                 return;
 
-            bool isKnown = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(currentLocation.Path);
+            bool isKnown = PreferencesManager.FileExplorerPreferences.IsFavoriteKnown(currentLocation.Path);
 
             if (isKnown)
                 return;
 
-            ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(currentLocation.Path), currentLocation.Path);
-            PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
-            ReloadShortcuts();
+            FavoriteFolder ff = new FavoriteFolder(Path.GetFileName(currentLocation.Path), currentLocation.Path);
+            PreferencesManager.FileExplorerPreferences.AddFavorite(ff);
+            ReloadFavorites();
 
-            // Move to the newly added shortcut.
-            explorerTree.TryRevealInShortcuts(currentLocation);
+            // Move to the newly added favorite.
+            explorerTree.TryRevealInFavorites(currentLocation);
         }
 
         /// <summary>
-        /// Delete the active folder from the shortcuts.
+        /// Delete the active folder from the favorites.
         /// </summary>
-        private void mnuDeleteShortcut_Click(object sender, EventArgs e)
+        private void mnuDeleteFavorite_Click(object sender, EventArgs e)
         {
             // In theory the delete menu is only shown when the user right
-            // clicked on the active folder and it's a known shortcut.
+            // clicked on the active folder and it's a known favorite.
             if (currentLocation == null || currentLocation.Type != BrowserLocationType.FileSystem)
                 return;
 
             if (string.IsNullOrWhiteSpace(currentLocation.Path))
                 return;
 
-            // Look for the location in the shortcuts.
-            foreach (ShortcutFolder sf in PreferencesManager.FileExplorerPreferences.ShortcutFolders)
+            // Look for the location in the favorites.
+            foreach (FavoriteFolder ff in PreferencesManager.FileExplorerPreferences.FavoriteFolders)
             {
-                if (sf.Path != currentLocation.Path)
+                if (ff.Path != currentLocation.Path)
                     continue;
 
                 // Remove from preferences and from tree view.
-                PreferencesManager.FileExplorerPreferences.RemoveShortcut(sf);
-                ReloadShortcuts();
+                PreferencesManager.FileExplorerPreferences.RemoveFavorite(ff);
+                ReloadFavorites();
                 break;
             }
 
             // What folder should we fall back to?
             // If we don't do anyting the tree will TryReveal() the old selection, and it will find
-            // it somewhere else in the tree, either under another shortcut or in the drives.
-            // This looks a bit weird, we delete a shortcut and it jumps to that same folder by
+            // it somewhere else in the tree, either under another favorite or in the drives.
+            // This looks a bit weird, we delete a favorite and it jumps to that same folder by
             // a different way.
         }
 
@@ -637,22 +631,22 @@ namespace Kinovea.FileBrowser
             if (!isOnSelected)
             {
                 mnuLocateFolder.Visible = false;
-                mnuAddToShortcuts.Visible = false;
-                mnuDeleteShortcut.Visible = false;
+                mnuAddToFavorites.Visible = false;
+                mnuDeleteFavorite.Visible = false;
             }
             else
             {
-                bool knownShortcut = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(path);
+                bool knownFavorite = PreferencesManager.FileExplorerPreferences.IsFavoriteKnown(path);
 
                 // Name the path directly in the menu as feedback.
                 string name = Path.GetFileName(path);
                 mnuLocateFolder.Text = string.Format("Locate \"{0}\" in Windows explorer", name);
-                mnuAddToShortcuts.Text = string.Format("Add \"{0}\" to shortcuts", name);
-                mnuDeleteShortcut.Text = string.Format("Remove \"{0}\" from shortcuts", name);
+                mnuAddToFavorites.Text = string.Format("Add \"{0}\" to favorites", name);
+                mnuDeleteFavorite.Text = string.Format("Remove \"{0}\" from favorites", name);
 
                 mnuLocateFolder.Visible = true;
-                mnuAddToShortcuts.Visible = !knownShortcut;
-                mnuDeleteShortcut.Visible = knownShortcut;
+                mnuAddToFavorites.Visible = !knownFavorite;
+                mnuDeleteFavorite.Visible = knownFavorite;
             }
         }
 

@@ -18,7 +18,7 @@ namespace Kinovea.FileBrowser
         private bool showHiddenFolders;
         private readonly TreeView treeView;
         private TreeNode drivesRoot;
-        private TreeNode shortcutsRoot;
+        private TreeNode favoritesRoot;
         private static readonly Guid ComputerFolderId = new Guid("0AC0837C-BBF8-452A-850D-79D08E667CA7");
         private static readonly object DummyTag = new object();
         #endregion
@@ -58,11 +58,11 @@ namespace Kinovea.FileBrowser
 
         #region Building the treeview nodes
 
-        public void Build(IEnumerable<BrowserLocation> shortcuts)
+        public void Build(IEnumerable<BrowserLocation> favorites)
         {
             treeView.Nodes.Clear();
             AddComputerRoot();
-            AddShortcutsRoot(shortcuts);
+            AddFavoritesRoot(favorites);
         }
 
         private void AddComputerRoot()
@@ -86,10 +86,10 @@ namespace Kinovea.FileBrowser
             drivesRoot = AddRoot(text, driveLocations, true);
         }
 
-        private void AddShortcutsRoot(IEnumerable<BrowserLocation> shortcuts)
+        private void AddFavoritesRoot(IEnumerable<BrowserLocation> favorites)
         {
-            string text = "Shortcuts";
-            shortcutsRoot = AddRoot(text, shortcuts, false);
+            string text = "Favorites";
+            favoritesRoot = AddRoot(text, favorites, false);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Kinovea.FileBrowser
             try
             {
                 // This is a purely visual root, not a filesystem path.
-                // The "computer" root gets the "My Computer" icon and the shortcuts gets a generic folder icon.
+                // The "computer" root gets the "My Computer" icon and the favorites gets a generic folder icon.
                 int fallbackIcon = ShellIconIndex.Get("dummy-folder", false, false);
                 int icon = 0;
                 int selectedIcon = 0;
@@ -157,33 +157,33 @@ namespace Kinovea.FileBrowser
         }
 
 
-        public void UpdateShortcuts(IEnumerable<BrowserLocation> shortcuts)
+        public void UpdateFavorites(IEnumerable<BrowserLocation> favorites)
         {
-            if (shortcutsRoot == null)
+            if (favoritesRoot == null)
                 return;
 
             TreeNode selectedNode = treeView.SelectedNode;
 
-            // Remember if the selected node is somewhere under the shortcuts root.
-            bool selectionWasUnderShortcuts = selectedNode != null && IsDescendantOf(selectedNode, shortcutsRoot);
-            BrowserLocation selectedLocation = selectionWasUnderShortcuts ? selectedNode.Tag as BrowserLocation : null;
+            // Remember if the selected node is somewhere under the favorites root.
+            bool selectionWasUnderFavorites = selectedNode != null && IsDescendantOf(selectedNode, favoritesRoot);
+            BrowserLocation selectedLocation = selectionWasUnderFavorites ? selectedNode.Tag as BrowserLocation : null;
 
             // Create the nodes at once before modifying the tree.
-            TreeNode[] nodes = shortcuts.Select(s => CreateNode(s, false)).ToArray();
+            TreeNode[] nodes = favorites.Select(s => CreateNode(s, false)).ToArray();
 
             suppressSelectionEvent = true;
             treeView.BeginUpdate();
             try
             {
-                shortcutsRoot.Nodes.Clear();
-                shortcutsRoot.Nodes.AddRange(nodes);
+                favoritesRoot.Nodes.Clear();
+                favoritesRoot.Nodes.AddRange(nodes);
                 
-                // Always expand the shortcuts root.
-                shortcutsRoot.Expand();
+                // Always expand the favorites root.
+                favoritesRoot.Expand();
 
                 // Reselect the selected path.
                 // This may move to a different part of the tree.
-                if (selectionWasUnderShortcuts && selectedLocation != null)
+                if (selectionWasUnderFavorites && selectedLocation != null)
                 {
                     TryReveal(selectedLocation);
                 }
@@ -414,7 +414,7 @@ namespace Kinovea.FileBrowser
         /// Expands the passed node to the given location. 
         /// Build-expand children, scrolls it into view, and expand it.
         /// Returns true if the node was found and selected.
-        /// This will find a path even it's a sub-folder of a shortcut.
+        /// This will find a path even it's a sub-folder of a favorite.
         /// </summary>
         private bool ExpandToPath(TreeNode startNode, BrowserLocation location)
         {
@@ -466,7 +466,7 @@ namespace Kinovea.FileBrowser
         /// Look for the location anywhere in the tree, building and expanding as needed.
         /// This version looks by priority:
         /// - currently selected node
-        /// - in shortcuts, possibly as a sub-folder of a shortcut.
+        /// - in favorites, possibly as a sub-folder of a favorite.
         /// - in drives.
         /// </summary>
         public bool TryReveal(BrowserLocation location, bool suppress = false)
@@ -480,7 +480,7 @@ namespace Kinovea.FileBrowser
             if (suppress)
                 suppressSelectionEvent = true;
 
-            bool found = ExpandToPath(shortcutsRoot, location);
+            bool found = ExpandToPath(favoritesRoot, location);
             suppressSelectionEvent = false;
             
             if (found)
@@ -497,14 +497,14 @@ namespace Kinovea.FileBrowser
         }
 
         /// <summary>
-        /// Look for the location anywhere under the shortcuts root and select it.
+        /// Look for the location anywhere under the favorites root and select it.
         /// </summary>
-        public bool TryRevealInShortcuts(BrowserLocation location)
+        public bool TryRevealInFavorites(BrowserLocation location)
         {
             if (location == null || !location.IsFileSystem)
                 return false;
 
-            bool found = ExpandToPath(shortcutsRoot, location);
+            bool found = ExpandToPath(favoritesRoot, location);
             
             return found;
         }
