@@ -204,13 +204,13 @@ namespace Kinovea.Services
 
         public void RemoveShortcut(ShortcutFolder shortcut)
         {
-            shortcutFolders.RemoveAll(s => s.Location == shortcut.Location);
+            shortcutFolders.RemoveAll(s => s.Path == shortcut.Path);
             Save();
         }
         
         public void AddShortcut(ShortcutFolder shortcut)
         {
-            bool known = shortcutFolders.Any(s => s.Location == shortcut.Location);
+            bool known = shortcutFolders.Any(s => s.Path == shortcut.Path);
 
             if(!known)
             {
@@ -223,7 +223,7 @@ namespace Kinovea.Services
         
         public bool IsShortcutKnown(string path)
         {
-            return shortcutFolders.Any(s => s.Location == path);
+            return shortcutFolders.Any(s => s.Path == path);
         }
 
         public void SetFilePropertyVisible(FileProperty prop, bool state)
@@ -379,7 +379,7 @@ namespace Kinovea.Services
                 if(reader.Name == "Shortcut")
                 {
                     ShortcutFolder shortcut = new ShortcutFolder(reader);
-                    if(Directory.Exists(shortcut.Location))
+                    if(Directory.Exists(shortcut.Path))
                         shortcutFolders.Add(shortcut);
                 }
                 else

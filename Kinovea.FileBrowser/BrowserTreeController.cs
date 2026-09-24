@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -10,13 +11,14 @@ namespace Kinovea.FileBrowser
 {
     public class BrowserTreeController : IDisposable
     {
-        public event Action<string> SelectedPathChanged;
+        public event EventHandler<EventArgs<BrowserLocation>> LocationSelected;
 
         #region Members
         private bool suppressSelectionEvent;
         private bool showHiddenFolders;
-        private bool isDrives;
         private readonly TreeView treeView;
+        private TreeNode drivesRoot;
+        private TreeNode shortcutsRoot;
         private static readonly Guid ComputerFolderId = new Guid("0AC0837C-BBF8-452A-850D-79D08E667CA7");
         private static readonly object DummyTag = new object();
         #endregion
@@ -53,12 +55,15 @@ namespace Kinovea.FileBrowser
 
         #region Building the treeview nodes
 
-        /// <summary>
-        /// Build the treeview with the logical drives of the computer.
-        /// </summary>
-        public void BuildComputer()
+        public void Build(IEnumerable<BrowserLocation> shortcuts)
         {
-            isDrives = true;
+            treeView.Nodes.Clear();
+            AddComputerRoot();
+            AddShortcutsRoot(shortcuts);
+        }
+
+        private void AddComputerRoot()
+        {
             string[] drives;
 
             try
@@ -72,34 +77,31 @@ namespace Kinovea.FileBrowser
                 drives = new string[0];
             }
 
+            List<BrowserLocation> driveLocations = drives.Select(d => new BrowserLocation(d)).ToList();
+
             string text = GetComputerDisplayName();
-            BuildRoot(text, drives, true);
-
+            drivesRoot = AddRoot(text, driveLocations, true);
         }
 
-        /// <summary>
-        /// Build the treeview with the shortcuts.
-        /// </summary>
-        public void BuildShortcuts(IEnumerable<string> paths)
+        private void AddShortcutsRoot(IEnumerable<BrowserLocation> shortcuts)
         {
-            isDrives = false;
             string text = "Shortcuts";
-            BuildRoot(text, paths, false);
+            shortcutsRoot = AddRoot(text, shortcuts, false);
         }
 
         /// <summary>
-        /// Add the root and its immediate children.
+        /// Add a root and its immediate children, returns the root.
         /// </summary>
-        private void BuildRoot(string name, IEnumerable<string> paths, bool forDrives)
+        private TreeNode AddRoot(string name, IEnumerable<BrowserLocation> locations, bool forDrives)
         {
             treeView.BeginUpdate();
 
+            TreeNode root = null;
+
             try
             {
-                treeView.Nodes.Clear();
-
-                // This is a purely visual root, no filesystem path.
-                // The "explorer" tab gets the "Computer" icon and the shortcuts gets a generic folder icon.
+                // This is a purely visual root, not a filesystem path.
+                // The "computer" root gets the "My Computer" icon and the shortcuts gets a generic folder icon.
                 int fallbackIcon = ShellIconIndex.Get("dummy-folder", false, false);
                 int icon = 0;
                 int selectedIcon = 0;
@@ -115,18 +117,24 @@ namespace Kinovea.FileBrowser
                     selectedIcon = ShellIconIndex.GetStockIconIndex(NativeMethods.StockIconId.FolderOpen, fallbackIconOpen);
                 }
 
-                TreeNode root = new TreeNode(name)
-                {
-                    Tag = null,
-                    ImageIndex = icon,
-                    SelectedImageIndex = selectedIcon
-                };
+                root = new TreeNode(name);
+                root.Tag = null;
+                root.ImageIndex = icon;
+                root.SelectedImageIndex = selectedIcon;
 
-                foreach (string path in paths)
+                foreach (BrowserLocation location in locations)
                 {
-                    if (!string.IsNullOrWhiteSpace(path))
+                    if (location.Type == BrowserLocationType.FileSystem)
                     {
-                        root.Nodes.Add(CreatePathNode(path, forDrives));
+                        string path = location.Path;
+                        if (!string.IsNullOrWhiteSpace(path))
+                        {
+                            root.Nodes.Add(CreateNode(location, forDrives));
+                        }
+                    }
+                    else
+                    {
+                        // Skip non-filesystem locations for now.
                     }
                 }
 
@@ -137,26 +145,31 @@ namespace Kinovea.FileBrowser
             {
                 treeView.EndUpdate();
             }
+
+            return root;
         }
 
         /// <summary>
         /// Add a new child to the root node if it doesn't already exist.
         /// This should only be used to add shortcuts.
         /// </summary>
-        public void AddRootChild(string folderPath)
+        public void AddShortcut(BrowserLocation location)
         {
-            if (string.IsNullOrWhiteSpace(folderPath))
+            if (location.Type != BrowserLocationType.FileSystem)
+                return;
+
+            string path = location.Path;
+            if (string.IsNullOrWhiteSpace(path))
                 return;
 
             // Look for the path in the root's children. If not found, add it.
-            TreeNode rootNode = treeView.Nodes[0];
-            TreeNode foundNode = FindChildByPath(rootNode.Nodes, folderPath);
+            TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, location);
 
             if (foundNode == null)
             {
                 treeView.BeginUpdate();
-                TreeNode newNode = CreatePathNode(folderPath, false);
-                rootNode.Nodes.Insert(0, newNode);
+                TreeNode newNode = CreateNode(location, false);
+                shortcutsRoot.Nodes.Insert(0, newNode);
                 treeView.EndUpdate();
             }
         }
@@ -165,55 +178,65 @@ namespace Kinovea.FileBrowser
         /// Remove a child from the root node if it exists.
         /// This should only be used to remove the virtual shortcut.
         /// </summary>
-        public void RemoveRootChild(string folderPath)
+        public void RemoveShortcut(BrowserLocation location)
         {
-            if (string.IsNullOrWhiteSpace(folderPath))
+            if (location == null || location.Type != BrowserLocationType.FileSystem)
                 return;
 
             // Look for the path in the root's children. If found, remove it.
-            TreeNode rootNode = treeView.Nodes[0];
-            TreeNode foundNode = FindChildByPath(rootNode.Nodes, folderPath);
+            TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, location);
             if (foundNode != null)
             {
                 treeView.BeginUpdate();
-                rootNode.Nodes.Remove(foundNode);
+                shortcutsRoot.Nodes.Remove(foundNode);
                 treeView.EndUpdate();
             }
         }
 
         /// <summary>
-        /// Make one TreeNode from a file system path.
+        /// Make a TreeNode from a browser location.
         /// </summary>
-        private TreeNode CreatePathNode(string path, bool isDrive)
+        private TreeNode CreateNode(BrowserLocation location, bool isDrive)
         {
-            string name = GetDisplayName(path, isDrive);
+            bool isRecentFiles = location.Type == BrowserLocationType.RecentFiles;
+
+            string name = isRecentFiles ? "Recent files" : GetDisplayName(location.Path, isDrive);
 
             int iconIndex = 0;
             int iconIndexSelected = 0;
 
-            if (isDrive)
+            if (isRecentFiles)
             {
+                iconIndex = ShellIconIndex.GetStockIconIndex(NativeMethods.StockIconId.Folder, 0);
+                iconIndexSelected = iconIndex;
+            }
+            else if (isDrive)
+            {
+                string path = location.Path;
                 iconIndex = GetDriveIconIndex(path);
                 iconIndexSelected = iconIndex;
             }
             else
             {
+                string path = location.Path;
                 iconIndex = ShellIconIndex.Get(path, false, isDrive);
                 iconIndexSelected = ShellIconIndex.Get(path, true, isDrive);
             }
 
-            BrowserLocation browserLocation = BrowserLocation.FromFileSystem(path);
-
             TreeNode node = new TreeNode(name)
             {
-                Tag = browserLocation,
+                Tag = location,
                 ImageIndex = iconIndex,
                 SelectedImageIndex = iconIndexSelected
             };
 
-            // We don't inspect the directory while constructing the node.
+            // We don't inspect the sub-folders while constructing the node.
             // Add a dummy child to give it an expansion glyph.
-            node.Nodes.Add(new TreeNode { Tag = DummyTag });
+            if (!isRecentFiles)
+            {
+                node.Nodes.Add(new TreeNode { Tag = DummyTag });
+            }
+            
             return node;
         }
 
@@ -271,7 +294,8 @@ namespace Kinovea.FileBrowser
                 if (existingNodes.ContainsKey(key))
                     continue;
 
-                TreeNode newNode = CreatePathNode(directoryPath, false);
+                BrowserLocation newLocation = new BrowserLocation(directoryPath);
+                TreeNode newNode = CreateNode(newLocation, false);
 
                 // Inserting at the corresponding position preserves alphabetical
                 // ordering without moving the existing nodes.
@@ -284,6 +308,9 @@ namespace Kinovea.FileBrowser
         
         private static string GetDisplayName(string path, bool isDrive)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                return string.Empty;
+
             string trimmed = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             if (isDrive)
@@ -343,6 +370,9 @@ namespace Kinovea.FileBrowser
             }
         }
 
+        /// <summary>
+        /// Get the icon index for a drive.
+        /// </summary>
         private int GetDriveIconIndex(string drivePath)
         {
             int genericIcon = ShellIconIndex.GetStockIconIndex(NativeMethods.StockIconId.DriveFixed, 0);
@@ -355,7 +385,6 @@ namespace Kinovea.FileBrowser
 
         #endregion
 
-
         #region Event handlers
         private void TreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
@@ -365,8 +394,7 @@ namespace Kinovea.FileBrowser
         private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             BrowserLocation location = e.Node.Tag as BrowserLocation;
-            string path = location?.Path;
-            if (path == null)
+            if (location == null)
                 return;
 
             // Always expand as soon as selected.
@@ -374,24 +402,24 @@ namespace Kinovea.FileBrowser
 
             if (!suppressSelectionEvent)
             {
-                SelectedPathChanged?.Invoke(path);
+                LocationSelected?.Invoke(this, new EventArgs<BrowserLocation>(location));
             }
         }
-
         #endregion
 
         #region Selection and expansion
         /// <summary>
-        /// Expands the drives tree to the given folder. 
+        /// Expands the drives sub-tree to the given folder. 
         /// Selects the target folder, scrolls it into view, and expand it.
         /// This is used to synchronize the drives tree view with the shortcuts.
         /// </summary>
-        public bool ExpandToPath(string folderPath, bool notifySelection = false)
+        public bool ExpandToPath(BrowserLocation location, bool notifySelection = false)
         {
-            if (string.IsNullOrWhiteSpace(folderPath))
+            if (location == null || location.Type != BrowserLocationType.FileSystem)
                 return false;
 
-            if (!isDrives)
+            string path = location.Path;
+            if (string.IsNullOrWhiteSpace(path))
                 return false;
 
             string targetPath;
@@ -399,7 +427,7 @@ namespace Kinovea.FileBrowser
 
             try
             {
-                targetPath = NormalizePath(folderPath);
+                targetPath = NormalizePath(path);
                 rootPath = NormalizePath(Path.GetPathRoot(targetPath));
             }
             catch (Exception ex) when (
@@ -413,10 +441,8 @@ namespace Kinovea.FileBrowser
             if (treeView.Nodes.Count == 0)
                 return false;
 
-            TreeNode rootNode = treeView.Nodes[0];
-
             // Find C:\, D:\, mapped Z:\, etc.
-            TreeNode currentNode = FindChildByPath(rootNode.Nodes, rootPath);
+            TreeNode currentNode = FindChildByPath(drivesRoot.Nodes, location);
 
             if (currentNode == null)
                 return false;
@@ -469,7 +495,7 @@ namespace Kinovea.FileBrowser
 
             try
             {
-                rootNode.Expand();
+                drivesRoot.Expand();
 
                 while (remainingPaths.Count > 0)
                 {
@@ -477,8 +503,8 @@ namespace Kinovea.FileBrowser
                     currentNode.Expand();
 
                     string nextPath = remainingPaths.Pop();
-
-                    TreeNode nextNode = FindChildByPath(currentNode.Nodes, nextPath);
+                    BrowserLocation loc = new BrowserLocation(nextPath);
+                    TreeNode nextNode = FindChildByPath(currentNode.Nodes, loc);
 
                     if (nextNode == null)
                         return false;
@@ -512,9 +538,8 @@ namespace Kinovea.FileBrowser
             if (string.IsNullOrWhiteSpace(folderPath))
                 return;
 
-            TreeNode rootNode = treeView.Nodes[0];
-            TreeNode currentNode = FindChildByPath(rootNode.Nodes, folderPath);
-
+            BrowserLocation location = new BrowserLocation(folderPath);
+            TreeNode currentNode = FindChildByPath(shortcutsRoot.Nodes, location);
             if (currentNode != null)
             {
                 treeView.SelectedNode = currentNode;
@@ -588,7 +613,9 @@ namespace Kinovea.FileBrowser
             }
 
             result.Sort((left, right) =>
-                StringComparer.CurrentCultureIgnoreCase.Compare(GetDisplayName(left, false), GetDisplayName(right, false)));
+                StringComparer.CurrentCultureIgnoreCase.Compare(
+                    GetDisplayName(left, false), 
+                    GetDisplayName(right, false)));
 
             return true;
         }
@@ -597,13 +624,17 @@ namespace Kinovea.FileBrowser
         /// <summary>
         /// Returns the child node matching the given path.
         /// </summary>
-        private static TreeNode FindChildByPath(TreeNodeCollection nodes, string path)
+        private static TreeNode FindChildByPath(TreeNodeCollection nodes, BrowserLocation queryLocation)
         {
+            if (queryLocation == null || queryLocation.Type != BrowserLocationType.FileSystem)
+                return null;
+
             foreach (TreeNode node in nodes)
             {
                 BrowserLocation location = node.Tag as BrowserLocation;
                 string nodePath = location?.Path;
-                if (nodePath != null && PathsEqual(nodePath, path))
+                string queryPath = queryLocation.Path;
+                if (nodePath != null && PathsEqual(nodePath, queryPath))
                 {
                     return node;
                 }

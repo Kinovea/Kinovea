@@ -26,7 +26,7 @@ namespace Kinovea.Services
 {
     public class ShortcutFolder : IComparable
     {
-        public string Location 
+        public string Path 
         {
             get { return location; }
         }
@@ -82,8 +82,8 @@ namespace Kinovea.Services
             ShortcutFolder sf = obj as ShortcutFolder;
             if(sf != null)
             {
-                String path1 = Path.GetFileName(this.location);
-                String path2 = Path.GetFileName(sf.Location);
+                String path1 = System.IO.Path.GetFileName(this.location);
+                String path2 = System.IO.Path.GetFileName(sf.Path);
                 return path1.CompareTo(path2);
             }
             else

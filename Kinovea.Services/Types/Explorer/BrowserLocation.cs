@@ -27,16 +27,14 @@ namespace Kinovea.Services
         /// </summary>
         public string Path { get; }
 
+        /// <summary>
+        /// Build a BrowserLocation for a folder on the file system.
+        /// </summary>
         public BrowserLocation(string path)
         {
             Type = BrowserLocationType.FileSystem;
             Key = path;
             Path = path;
-        }
-
-        public static BrowserLocation FromFileSystem(string path)
-        {
-            return new BrowserLocation(path);
         }
     }
 }
