@@ -1082,81 +1082,6 @@ namespace Kinovea.ScreenManager
             return (index >= 0 && index < screenList.Count) ? screenList[index] : null;
         }
 
-        public void SwapScreens()
-        {
-            if (screenList.Count != 2)
-                return;
-
-            AbstractScreen temp = screenList[0];
-            screenList[0] = screenList[1];
-            screenList[1] = temp;
-
-            IdentifyScreens();
-        }
-
-        /// <summary>
-        /// Make sure the screens know their index in the list.
-        /// Should be called after any change to the screen list.
-        /// </summary>
-        private void IdentifyScreens()
-        {
-            for (int i = 0; i < screenList.Count; i++)
-                screenList[i].Identify(i);
-        }
-
-        /// <summary>
-        /// This is called after the screen list changed.
-        /// </summary>
-        public void OrganizeScreens()
-        {
-            IdentifyScreens();
-
-            view.OrganizeScreens(screenList);
-            NotificationCenter.RaiseUpdateStatus();
-
-            if (captureScreens.Count() == 0)
-            {
-                audioInputLevelMonitor.Stop();
-                udpMonitor.Stop();
-            }
-            else
-            {
-                if (audioInputLevelMonitor.Enabled)
-                {
-                    string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
-                    audioInputLevelMonitor.Start(id);
-                }
-                else
-                {
-                   audioInputLevelMonitor.Stop();
-                }
-
-                if (udpMonitor.Enabled)
-                {
-                    int port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
-                    udpMonitor.Start(port);
-                }
-                else
-                {
-                    udpMonitor.Stop();
-                }
-            }
-
-            // If we are in "Continue where you left off" mode, save immediately.
-            // This is not strictly necessary as we will save on close but it helps 
-            // the other windows get a more up to date state of this window.
-            // We must only do this if we are not in the process of closing though
-            // otherwise we always save an empty state as this also runs *after* the screens are closed.
-            if (WindowManager.ActiveWindow.StartupMode == WindowStartupMode.Continue &&
-                !autoLaunchInProgress && 
-                !view.Closing)
-            {
-                var descriptors = GetScreenDescriptors();
-                WindowManager.ActiveWindow.ReplaceScreens(descriptors);
-                WindowManager.SaveActiveWindow();
-            }
-        }
-
         /// <summary>
         /// Get the current status string for the status bar.
         /// </summary>
@@ -1180,6 +1105,11 @@ namespace Kinovea.ScreenManager
 
             return statusString;
         }
+
+        /// <summary>
+        /// Organize the joint controls after the screen list changed.
+        /// This only depends on the types of the screens, not their content.
+        /// </summary>
         public void OrganizeCommonControls()
         {
             dualPlayer.ScreenListChanged(screenList);
@@ -2404,11 +2334,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             SwapScreens();
-            OrganizeScreens();
-            OrganizeMenus();
-            NotificationCenter.RaiseUpdateStatus();
-
-            dualPlayer.SwapSync();
         }
         private void mnuToggleCommonCtrlsOnClick(object sender, EventArgs e)
         {
@@ -3392,7 +3317,6 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Get the current screen configuration.
-        /// This should return what is currently visible, not the underlying screen list.
         /// </summary>
         private ScreenConfig GetCurrentScreenConfig()
         {
@@ -3435,16 +3359,75 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Disable synchronization or reset it to the screens' time origins.
-        /// This should be called any time the screen list change, working zones change, dual controls visiblity changes.
+        /// Setup the screens in the view.
+        /// Start/stop audio and UDP monitors depending on the presence of capture screens.
+        /// Save the screen descriptors for the "continue where you left off" mode.
+        /// This should be called after the number, visibility or association of screens has changed.
         /// </summary>
-        private void ResetSync()
+        public void OrganizeScreens()
         {
-            foreach (PlayerScreen p in playerScreens)
-                p.Synched = false;
+            IdentifyScreens();
 
-            if (view.CommonControlsVisible)
-                dualPlayer.ResetSync();
+            view.OrganizeScreens(screenList);
+            NotificationCenter.RaiseUpdateStatus();
+
+            if (captureScreens.Count() == 0)
+            {
+                audioInputLevelMonitor.Stop();
+                udpMonitor.Stop();
+            }
+            else
+            {
+                if (audioInputLevelMonitor.Enabled)
+                {
+                    string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
+                    audioInputLevelMonitor.Start(id);
+                }
+                else
+                {
+                    audioInputLevelMonitor.Stop();
+                }
+
+                if (udpMonitor.Enabled)
+                {
+                    int port = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.UDPPort;
+                    udpMonitor.Start(port);
+                }
+                else
+                {
+                    udpMonitor.Stop();
+                }
+            }
+
+            // If we are in "Continue where you left off" mode, save immediately.
+            // This is not strictly necessary as we will save on close but it helps 
+            // the other windows get a more up to date state of this window.
+            // We must only do this if we are not in the process of closing though
+            // otherwise we always save an empty state as this also runs *after* the screens are closed.
+            if (WindowManager.ActiveWindow.StartupMode == WindowStartupMode.Continue &&
+                !autoLaunchInProgress &&
+                !view.Closing)
+            {
+                var descriptors = GetScreenDescriptors();
+                WindowManager.ActiveWindow.ReplaceScreens(descriptors);
+                WindowManager.SaveActiveWindow();
+            }
+        }
+        
+        private void SwapScreens()
+        {
+            if (screenList.Count != 2)
+                return;
+
+            AbstractScreen temp = screenList[0];
+            screenList[0] = screenList[1];
+            screenList[1] = temp;
+
+            OrganizeScreens();
+            OrganizeMenus();
+            NotificationCenter.RaiseUpdateStatus();
+
+            dualPlayer.SwapSync();
         }
 
         private void AddPlayerScreen()
@@ -3604,6 +3587,29 @@ namespace Kinovea.ScreenManager
                 default:
                     return -1;
             }
+        }
+
+        /// <summary>
+        /// Make sure the screens know their index in the list.
+        /// Should be called after any change to the screen list.
+        /// </summary>
+        private void IdentifyScreens()
+        {
+            for (int i = 0; i < screenList.Count; i++)
+                screenList[i].Identify(i);
+        }
+
+        /// <summary>
+        /// Disable synchronization or reset it to the screens' time origins.
+        /// This should be called any time the screen list change, working zones change, dual controls visiblity changes.
+        /// </summary>
+        private void ResetSync()
+        {
+            foreach (PlayerScreen p in playerScreens)
+                p.Synched = false;
+
+            if (view.CommonControlsVisible)
+                dualPlayer.ResetSync();
         }
 
 

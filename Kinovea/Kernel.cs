@@ -1133,9 +1133,8 @@ namespace Kinovea.Root
                 sdp.Stretch = true;
                 sdp.Autoplay = true;
                 sdp.SpeedFactorNominal = 1.0;
-                LoaderVideo.LoadVideoInScreen(screenManager, path, sdp);
-
-                screenManager.OrganizeScreens();
+                int index = screenManager.EnsurePlayerVisible();
+                LoaderVideo.LoadVideoInScreen(screenManager, path, sdp, index);
             }
             else if (FilesystemHelper.IsReplayWatcher(path))
             {
@@ -1147,9 +1146,8 @@ namespace Kinovea.Root
                 sdp.Stretch = true;
                 sdp.Autoplay = true;
                 sdp.SpeedFactorNominal = 1.0;
-                LoaderVideo.LoadVideoInScreen(screenManager, path, sdp);
-
-                screenManager.OrganizeScreens();
+                int index = screenManager.EnsurePlayerVisible();
+                LoaderVideo.LoadVideoInScreen(screenManager, path, sdp, index);
             }
             else
             {
@@ -1162,9 +1160,8 @@ namespace Kinovea.Root
                     sdp.Stretch = false;
                     sdp.Autoplay = false;
                     sdp.SpeedFactorNominal = 1.0;
-
-                    LoaderVideo.LoadVideoInScreen(screenManager, path, sdp);
-                    screenManager.OrganizeScreens();
+                    int index = screenManager.EnsurePlayerVisible();
+                    LoaderVideo.LoadVideoInScreen(screenManager, path, sdp, index);
                 }
                 else
                 {
