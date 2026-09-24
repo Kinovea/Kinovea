@@ -175,8 +175,7 @@ namespace Kinovea.FileBrowser
         }
 
         /// <summary>
-        /// Remove a child from the root node if it exists.
-        /// This should only be used to remove the virtual shortcut.
+        /// Remove a child of the shortcuts root if it exists.
         /// </summary>
         public void RemoveShortcut(BrowserLocation location)
         {

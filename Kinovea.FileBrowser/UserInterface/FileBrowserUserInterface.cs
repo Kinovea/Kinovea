@@ -50,13 +50,19 @@ namespace Kinovea.FileBrowser
         private BrowserTreeController explorerTree;
         private BrowserTreeController shortcutsTree;
 
-        private string currentExplorerPath; // Current path in exptree tab.
-        private string currentShortcutPath; // Current path in shortcuts tab.
+        //private string currentExplorerPath; // Current path in exptree tab.
+        //private string currentShortcutPath; // Current path in shortcuts tab.
 
         private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
         private bool isClosing = false;
         
+        
+        private BrowserContentSnapshot currentBrowserContent;
+        private BrowserLocation currentLocation;
+        private long browserContentRevision = 0;
+
+
         private List<CameraSummary> cameraSummaries = new List<CameraSummary>();
         private Dictionary<string, int> cameraSummaryMap = new Dictionary<string, int>();
         private ImageList imgListCameras = new ImageList();
@@ -262,19 +268,93 @@ namespace Kinovea.FileBrowser
         #region Navigation
         private void NavigateTo(BrowserLocation location)
         {
-            // Build a BrowserContentSnapshot of the location.
-
-            // TODO: handle recent files.
-            if (location.Type == BrowserLocationType.RecentFiles)
+            if (location == null)
                 return;
 
-            string folderPath = location.Path;
-            currentExplorerPath = folderPath;
+            BrowserContentSnapshot snapshot = BuildBrowserContent(location);
+            CommitBrowserContent(snapshot);
+        }
 
-            if (!expanding && !initializing && !isClosing)
+        private BrowserContentSnapshot BuildBrowserContent(BrowserLocation location)
+        {   
+            List<BrowserItem> items = new List<BrowserItem>();
+
+            if (location.Type == BrowserLocationType.RecentFiles)
             {
-                UpdateFileList(folderPath, lvExplorer, true);
+                // TODO: get recent files.
+                return new BrowserContentSnapshot(location, items, NextBrowserContentRevision());
             }
+            else
+            {
+                string path = location.Path;
+                if (!Directory.Exists(path))
+                {
+                    return new BrowserContentSnapshot(location, items, NextBrowserContentRevision());
+                }
+
+                IEnumerable<string> filePaths = Directory.EnumerateFiles(path);
+
+                // Filter out unsupported files.
+                List<string> supportedFiles = filePaths.Where(f => VideoTypeManager.IsSupported(Path.GetExtension(f))).ToList();
+
+                // Sort.
+                try
+                {
+                    FileSortAxis axis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
+                    bool ascending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
+                    supportedFiles.Sort(new FileComparator(axis, ascending));
+
+                    foreach (string filePath in supportedFiles)
+                    {
+                        BrowserItem item = BrowserItem.FromFile(filePath);
+                        items.Add(item);
+                    }
+
+                    return new BrowserContentSnapshot(location, items, NextBrowserContentRevision());
+                }
+                catch (Exception e)
+                {
+                    // Sometimes when renaming a file this might throw with "FileNotFoundException.
+                    log.ErrorFormat("An error happened while trying to sort files : {0}", e.Message);
+                }
+            }
+
+            return null;
+        }
+
+        private void CommitBrowserContent(BrowserContentSnapshot snapshot)
+        {
+            currentBrowserContent = snapshot;
+            currentLocation = snapshot.Location;
+
+            UpdateFileList(snapshot);
+
+            if (snapshot.Location.Type == BrowserLocationType.FileSystem)
+            {
+                UpdateFileWatcher(snapshot.Location.Path);
+            }
+
+            // Publish legacy event for the thumbnail viewer.
+            if (snapshot.Location.Type == BrowserLocationType.FileSystem)
+            {
+                string folderPath = snapshot.Location.Path;
+                List<string> files = snapshot.Items.Select(i => i.Path).ToList();
+                bool isShortcuts = false;
+                bool doRefresh = true;
+
+                NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, files, isShortcuts, doRefresh);
+                NotificationCenter.RaiseUpdateStatus();
+            }
+
+            //if (!expanding && !initializing && !isClosing)
+            //{
+            //    UpdateFileList(folderPath, lvExplorer, true);
+            //}
+        }
+
+        public long NextBrowserContentRevision()
+        {
+            return ++browserContentRevision;
         }
         #endregion
 
@@ -402,32 +482,52 @@ namespace Kinovea.FileBrowser
             if(initializing || isClosing)
                 return;
             
-            // Figure out which tab we are on to update the right listview.
-            if(activeTab == BrowserContentType.Files)
+            if (!refreshThumbnails)
             {
-                UpdateFileList(currentExplorerPath, lvExplorer, refreshThumbnails);
-                // TODO: synchronize shortcuts tab.
+                log.DebugFormat("do not refresh thumbnails");
             }
-            else if(activeTab == BrowserContentType.Shortcuts)
+
+
+            if (activeTab == BrowserContentType.Files)
             {
-                if (!string.IsNullOrWhiteSpace(currentShortcutPath))
-                {
-                    UpdateFileList(currentShortcutPath, lvShortcuts, refreshThumbnails);
-                }
-                else if (!string.IsNullOrWhiteSpace(currentExplorerPath))
-                {
-                    // Case where we select a folder on the explorer tab
-                    // and then move to the shortcuts tab.
-                    // -> reload the hidden list of the exptree tab.
-                    // We also force the thumbnail refresh, because in this case it is the only way to update the
-                    // filename list held in ScreenManager.
-                    UpdateFileList(currentExplorerPath, lvExplorer, true);
-                }
+                NavigateTo(currentLocation);
+
+
+                //UpdateFileList(currentBrowserContent);
             }
-            else if(activeTab == BrowserContentType.Cameras)
+            else if (activeTab == BrowserContentType.Cameras)
             {
-                UpdateFileList(PreferencesManager.FileExplorerPreferences.RecentCapturedFiles, lvCaptured, false, false);
+                UpdateCapturedFileList(PreferencesManager.FileExplorerPreferences.RecentCapturedFiles);
             }
+
+
+
+            //// Figure out which tab we are on to update the right listview.
+            //if (activeTab == BrowserContentType.Files)
+            //{
+            //    UpdateFileList(currentExplorerPath, lvExplorer, refreshThumbnails);
+            //    // TODO: synchronize shortcuts tab.
+            //}
+            //else if (activeTab == BrowserContentType.Shortcuts)
+            //{
+            //    if (!string.IsNullOrWhiteSpace(currentShortcutPath))
+            //    {
+            //        UpdateFileList(currentShortcutPath, lvShortcuts, refreshThumbnails);
+            //    }
+            //    else if (!string.IsNullOrWhiteSpace(currentExplorerPath))
+            //    {
+            //        // Case where we select a folder on the explorer tab
+            //        // and then move to the shortcuts tab.
+            //        // -> reload the hidden list of the exptree tab.
+            //        // We also force the thumbnail refresh, because in this case it is the only way to update the
+            //        // filename list held in ScreenManager.
+            //        UpdateFileList(currentExplorerPath, lvExplorer, true);
+            //    }
+            //}
+            //else if (activeTab == BrowserContentType.Cameras)
+            //{
+            //    UpdateCapturedFileList(PreferencesManager.FileExplorerPreferences.RecentCapturedFiles);
+            //}
         }
         public void RefreshUICulture()
         {
@@ -521,10 +621,15 @@ namespace Kinovea.FileBrowser
         public void Closing()
         {
             isClosing = true;
-            if(!string.IsNullOrEmpty(currentExplorerPath))
-            {
-                PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentExplorerPath;
-            }
+
+            // Remember the last browsed location.
+            if (currentLocation == null || currentLocation.Type != BrowserLocationType.FileSystem)
+                return;
+
+            if (string.IsNullOrEmpty(currentLocation.Path))
+                return;
+
+            PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentLocation.Path;
         }
 
         private void Splitters_SplitterMoved(object sender, SplitterEventArgs e)
@@ -582,6 +687,11 @@ namespace Kinovea.FileBrowser
         {
             RemoveSelectedShortcut();
         }
+        private void mnuDeleteShortcut_Click(object sender, EventArgs e)
+        {
+            RemoveSelectedShortcut();
+        }
+
         private void AddShortcut()
         {
             string selectedPath = FilesystemHelper.OpenFolderBrowserDialog("");
@@ -595,21 +705,25 @@ namespace Kinovea.FileBrowser
 
         /// <summary>
         /// Delete the shortcut currently selected.
+        /// Removes it from the preferences and from the tree view.
         /// </summary>
         private void RemoveSelectedShortcut()
         {
-            if(string.IsNullOrWhiteSpace(currentShortcutPath))
+            if (currentLocation == null || currentLocation.Type != BrowserLocationType.FileSystem)
                 return;
-            
+
+            if (string.IsNullOrWhiteSpace(currentLocation.Path))
+                return;
+
+            // Look for the location in the shortcuts.
             foreach(ShortcutFolder sf in PreferencesManager.FileExplorerPreferences.ShortcutFolders)
             {
-                if(sf.Path != currentShortcutPath)
+                if(sf.Path != currentLocation.Path)
                     continue;
 
                 PreferencesManager.FileExplorerPreferences.RemoveShortcut(sf);
 
-                BrowserLocation location = new BrowserLocation(sf.Path);
-                //shortcutsTree.RemoveShortcut(location);
+                explorerTree.RemoveShortcut(currentLocation);
                 break;
             }
         }
@@ -952,86 +1066,92 @@ namespace Kinovea.FileBrowser
             DoRefreshFileList(true);
         }
 
+        private void UpdateFileList(BrowserContentSnapshot snapshot)
+        {
+            this.Cursor = Cursors.WaitCursor;
+
+            // Configure the list view.
+            lvExplorer.BeginUpdate();
+
+            lvExplorer.View = View.Details;
+            lvExplorer.Items.Clear();
+            lvExplorer.Columns.Clear();
+            lvExplorer.Columns.Add("", lvExplorer.Width);
+            lvExplorer.GridLines = true;
+            lvExplorer.HeaderStyle = ColumnHeaderStyle.None;
+
+            // Push them to the list view.
+            foreach (var item in snapshot.Items)
+            {
+                string path = item.Path;
+
+                ListViewItem lvi = new ListViewItem(Path.GetFileName(path));
+                lvi.Tag = path;
+                lvi.ImageIndex = 0;
+                lvExplorer.Items.Add(lvi);
+            }
+
+            lvExplorer.EndUpdate();
+
+            this.Cursor = Cursors.Default;
+        }
+
+
         /// <summary>
         /// Update a list view with the files from the passed folder.
         /// Optionally triggers an update of the thumbnails pane.
         /// </summary>
         private void UpdateFileList(string folderPath, ListView listView, bool doRefresh)
         {
-            if (string.IsNullOrEmpty(folderPath))
-                return;
+            //if (string.IsNullOrEmpty(folderPath))
+            //    return;
 
-            bool isShortcuts = listView == lvShortcuts;
+            //bool isShortcuts = listView == lvShortcuts;
 
-            string logPrefix = isShortcuts ? "Shortcuts" : "Filesystem";
-            log.DebugFormat("[{0}] - Updating the file list.", logPrefix);
-            stopwatch.Restart();
-
-            this.Cursor = Cursors.WaitCursor;
+            //this.Cursor = Cursors.WaitCursor;
             
-            // Configure the list view.
-            listView.BeginUpdate();
-            listView.View = View.Details;
-            listView.Items.Clear();
-            listView.Columns.Clear();
-            listView.Columns.Add("", listView.Width);
-            listView.GridLines = true;
-            listView.HeaderStyle = ColumnHeaderStyle.None;
+            //// Configure the list view.
+            //listView.BeginUpdate();
+            //listView.View = View.Details;
+            //listView.Items.Clear();
+            //listView.Columns.Clear();
+            //listView.Columns.Add("", listView.Width);
+            //listView.GridLines = true;
+            //listView.HeaderStyle = ColumnHeaderStyle.None;
 
-
-            IEnumerable<string> filePaths = Directory.EnumerateFiles(folderPath);
-
-            // Filter out unsupported files.
-            List<string> supportedFiles = filePaths.Where(f => VideoTypeManager.IsSupported(Path.GetExtension(f))).ToList();
-
-            // Sort.
-            try
-            {
-                FileSortAxis axis = PreferencesManager.FileExplorerPreferences.FileSortAxis;
-                bool ascending = PreferencesManager.FileExplorerPreferences.FileSortAscending;
-                supportedFiles.Sort(new FileComparator(axis, ascending));
-            }
-            catch(Exception e)
-            {
-                // Sometimes when renaming a file this might throw with "FileNotFoundException.
-                log.ErrorFormat("An error happened while trying to sort files : {0}", e.Message);
-            }
-
-            log.DebugFormat("[{0}] - Sorted files: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
-
-            // Push them to the list view.
-            foreach (string path in supportedFiles)
-            {
-                ListViewItem lvi = new ListViewItem(Path.GetFileName(path));
-                lvi.Tag = path;
-                lvi.ImageIndex = 0;
-                listView.Items.Add(lvi);
-            }
+            //// Push them to the list view.
+            //foreach (string path in supportedFiles)
+            //{
+            //    ListViewItem lvi = new ListViewItem(Path.GetFileName(path));
+            //    lvi.Tag = path;
+            //    lvi.ImageIndex = 0;
+            //    listView.Items.Add(lvi);
+            //}
             
-            listView.EndUpdate();
+            //listView.EndUpdate();
 
-            log.DebugFormat("[{0}] - Updated list view: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
+            //UpdateFileWatcher(folderPath);
 
-            UpdateFileWatcher(folderPath);
+            //// Even if we don't want to reload the thumbnails, we must ensure that 
+            //// the screen manager backup list is in sync with the actual file list.
+            //// desync can happen in case of renaming and deleting files.
+            //// the screenmanager backup list is used at Unhide(), when we close a screen.
+            //log.DebugFormat("[{0}] - Before sending event to thumbnail viewer: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
 
-            // Even if we don't want to reload the thumbnails, we must ensure that 
-            // the screen manager backup list is in sync with the actual file list.
-            // desync can happen in case of renaming and deleting files.
-            // the screenmanager backup list is used at Unhide(), when we close a screen.
-            log.DebugFormat("[{0}] - Before sending event to thumbnail viewer: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
+            //NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, supportedFiles, isShortcuts, doRefresh);
+            //NotificationCenter.RaiseUpdateStatus();
+            //this.Cursor = Cursors.Default;
 
-            NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, supportedFiles, isShortcuts, doRefresh);
-            NotificationCenter.RaiseUpdateStatus();
-            this.Cursor = Cursors.Default;
-
-            log.DebugFormat("[{0}] - Updated file list: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
+            //log.DebugFormat("[{0}] - Updated file list: {1} ms.", logPrefix, stopwatch.ElapsedMilliseconds);
         }
 
         /// <summary>
         /// Updates a file list with an explicit list of files.
         /// </summary>
-        private void UpdateFileList(List<string> filenames, ListView listView, bool refreshThumbnails, bool shortcuts)
+        private void UpdateCapturedFileList(List<string> filenames)
         {
+            ListView listView = lvCaptured;
+
             listView.BeginUpdate();
             listView.View = View.Details;
             listView.Items.Clear();
@@ -1174,27 +1294,33 @@ namespace Kinovea.FileBrowser
         #region Menu Event Handlers
         private void mnuAddToShortcuts_Click(object sender, EventArgs e)
         {
-            string selectedPath = activeTab == BrowserContentType.Files ? currentExplorerPath : currentShortcutPath;
-            if(string.IsNullOrWhiteSpace(selectedPath))
-                return;
+               // TODO: get current folder via current snapshot or current location.
+               // Create shortcut out of it.
+               // Add to the shortcut list and save preferences.
+               // Reload the shortcut tree root.
+        
+            //string selectedPath = activeTab == BrowserContentType.Files ? currentExplorerPath : currentShortcutPath;
+            //if(string.IsNullOrWhiteSpace(selectedPath))
+            //    return;
 
-            ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(selectedPath), selectedPath);
-            PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
-            ReloadShortcuts();
+            //ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(selectedPath), selectedPath);
+            //PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
+            //ReloadShortcuts();
         }
         private void mnuLocateFolder_Click(object sender, EventArgs e)
         {
-            string selectedPath = activeTab == BrowserContentType.Files ? currentExplorerPath : currentShortcutPath;
-            if (string.IsNullOrWhiteSpace(selectedPath))
+            if (currentLocation == null)
                 return;
 
-            FilesystemHelper.LocateDirectory(selectedPath);
-        }
-        private void mnuDeleteShortcut_Click(object sender, EventArgs e)
-        {
-            RemoveSelectedShortcut();
-        }
+            if (currentLocation.Type != BrowserLocationType.FileSystem)
+                return;
 
+            if (string.IsNullOrWhiteSpace(currentLocation.Path))
+                return;
+
+            FilesystemHelper.LocateDirectory(currentLocation.Path);
+        }
+        
         private void UpdateSortAxis(FileSortAxis axis)
         {
             PreferencesManager.FileExplorerPreferences.FileSortAxis = axis;

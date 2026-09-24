@@ -18,5 +18,12 @@ namespace Kinovea.Services
         public IReadOnlyList<BrowserItem> Items { get; }
         
         public long Revision { get; }
+
+        public BrowserContentSnapshot(BrowserLocation location, IReadOnlyList<BrowserItem> items, long revision)
+        {
+            Location = location;
+            Items = items;
+            Revision = revision;
+        }
     }
 }

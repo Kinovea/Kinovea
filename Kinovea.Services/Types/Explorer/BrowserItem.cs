@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,6 @@ namespace Kinovea.Services
     /// </summary>
     public class BrowserItem
     {
-        public string Id { get; }
-        
         public string DisplayName { get; }
         
         public BrowserItemType Type { get; }
@@ -21,11 +20,29 @@ namespace Kinovea.Services
         /// <summary>
         /// Path to the item.
         /// </summary>
-        public string FileSystemPath { get; }
+        public string Path { get; }
 
         /// <summary>
         /// Clicking the item should navigate to this location.
         /// </summary>
-        public BrowserLocation TargetLocation { get; }
+        public BrowserLocation Target { get; }
+
+        public BrowserItem(string displayName, BrowserItemType type, string path, BrowserLocation target)
+        {
+            DisplayName = displayName;
+            Type = type;
+            Path = path;
+            Target = target;
+        }
+
+        public static BrowserItem FromFile(string path)
+        {
+            string displayName = System.IO.Path.GetFileName(path);
+            BrowserItemType type = BrowserItemType.File;
+            BrowserLocation target = new BrowserLocation(path);
+
+            return new BrowserItem(displayName, type, path, target);
+
+        }
     }
 }
