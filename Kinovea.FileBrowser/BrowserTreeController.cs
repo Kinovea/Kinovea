@@ -139,7 +139,11 @@ namespace Kinovea.FileBrowser
                 }
 
                 treeView.Nodes.Add(root);
-                root.Expand();
+                
+                if (!forDrives)
+                {
+                    root.Expand();
+                }
             }
             finally
             {
@@ -188,49 +192,6 @@ namespace Kinovea.FileBrowser
 
             suppressSelectionEvent = false;
         }
-
-        /// <summary>
-        /// Add a new child to the root node if it doesn't already exist.
-        /// This should only be used to add shortcuts.
-        /// </summary>
-        //public void AddShortcut(BrowserLocation location)
-        //{
-        //    if (location.Type != BrowserLocationType.FileSystem)
-        //        return;
-
-        //    string path = location.Path;
-        //    if (string.IsNullOrWhiteSpace(path))
-        //        return;
-
-        //    // Look for the path in the root's children. If not found, add it.
-        //    TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, path);
-
-        //    if (foundNode == null)
-        //    {
-        //        treeView.BeginUpdate();
-        //        TreeNode newNode = CreateNode(location, false);
-        //        shortcutsRoot.Nodes.Insert(0, newNode);
-        //        treeView.EndUpdate();
-        //    }
-        //}
-
-        /// <summary>
-        /// Remove a child of the shortcuts root if it exists.
-        /// </summary>
-        //public void RemoveShortcut(BrowserLocation location)
-        //{
-        //    if (location == null || location.Type != BrowserLocationType.FileSystem)
-        //        return;
-
-        //    // Look for the path in the root's children. If found, remove it.
-        //    TreeNode foundNode = FindChildByPath(shortcutsRoot.Nodes, location.Path);
-        //    if (foundNode != null)
-        //    {
-        //        treeView.BeginUpdate();
-        //        shortcutsRoot.Nodes.Remove(foundNode);
-        //        treeView.EndUpdate();
-        //    }
-        //}
 
         /// <summary>
         /// Make a TreeNode from a browser location.
@@ -505,7 +466,7 @@ namespace Kinovea.FileBrowser
         /// - in shortcuts, possibly as a sub-folder of a shortcut.
         /// - in drives.
         /// </summary>
-        public bool TryReveal(BrowserLocation location)
+        public bool TryReveal(BrowserLocation location, bool suppress = false)
         {
             if (location == null || !location.IsFileSystem)
                 return false;
@@ -513,14 +474,22 @@ namespace Kinovea.FileBrowser
             if (IsSelectedNode(location))
                 return true;
 
-            // This function should be called with suppressSelectionEvent if needed.
+            if (suppress)
+                suppressSelectionEvent = true;
+
             bool found = ExpandToPath(shortcutsRoot, location);
+            suppressSelectionEvent = false;
+            
             if (found)
             {
                 return true;
             }
 
+            if (suppress)
+                suppressSelectionEvent = true;
             found = ExpandToPath(drivesRoot, location);
+            suppressSelectionEvent = false;
+
             return found;
         }
 
@@ -553,38 +522,6 @@ namespace Kinovea.FileBrowser
             
             return PathsEqual(selectedLocation.Path, location.Path);
         }
-
-
-        //private TreeNode FindDeepestShortcutAncestor(string targetPath)
-        //{
-        //    string normalizedTarget = NormalizePath(targetPath);
-
-        //    TreeNode bestMatch = null;
-        //    int bestMatchLength = -1;
-
-        //    foreach (TreeNode child in shortcutsRoot.Nodes)
-        //    {
-        //        BrowserLocation childLocation = child.Tag as BrowserLocation;
-        //        if (childLocation == null || !childLocation.IsFileSystem)
-        //        {
-        //            continue;
-        //        }
-
-        //        string childPath = NormalizePath(childLocation.Path);
-        //        if (!IsDescendantOf(normalizedTarget, childPath))
-        //        {
-        //            continue;
-        //        }
-
-        //        if (childPath.Length > bestMatchLength)
-        //        {
-        //            bestMatch = child;
-        //            bestMatchLength = childPath.Length;
-        //        }
-        //    }
-
-        //    return bestMatch;
-        //}
 
         /// <summary>
         /// Find the child of a node that is an ancestor to the path.

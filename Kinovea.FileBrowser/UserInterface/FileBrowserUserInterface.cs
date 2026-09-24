@@ -368,14 +368,14 @@ namespace Kinovea.FileBrowser
             if (activeTab == BrowserContentType.Cameras)
                 return;
 
-            // Find the file and select it here.
-            ListView lv = GetFileListview();
-            lv.SelectedItems.Clear();
+            // A file has been selected via its thumbnail.
+            // In theory we are already on the right folder and the file is somewhere in the list.
+            lvExplorer.SelectedItems.Clear();
 
             if (string.IsNullOrEmpty(e.Value))
                 return;
 
-            foreach (ListViewItem item in lv.Items)
+            foreach (ListViewItem item in lvExplorer.Items)
             {
                 if ((string)item.Tag != e.Value)
                     continue;
@@ -386,20 +386,23 @@ namespace Kinovea.FileBrowser
                 break;
             }
         }
-
         private void NotificationCenter_FileOpened(object sender, EventArgs<string> e)
         {
             // Create a virtual shortcut for the folder of the opened video and select it.
-            //string pathFolder = Path.GetDirectoryName(e.Value);
-            //AddVirtualShortcut(pathFolder);
-            //shortcutsTree.SelectRootChild(pathFolder);
+            string parent = Path.GetDirectoryName(e.Value);
+            BrowserLocation location = new BrowserLocation(parent);
+            if (currentLocation != null && currentLocation.Path == location.Path)
+                return;
 
+            // Move the tree to the new location.
+            // This will trigger a NavigateTo and update the browser content snapshot.
+            explorerTree.TryReveal(location);
+            tvExplorer.Invalidate();
         }
 
         private void DoRefreshFileList(bool refreshThumbnails)
         {
             // Called when:
-            // - the user changes node in exptree, either explorer or shortcuts,
             // - the user changes the sort option.
             // - a file modification happens in the thumbnails page. (delete/rename)
             // - a capture is completed.
