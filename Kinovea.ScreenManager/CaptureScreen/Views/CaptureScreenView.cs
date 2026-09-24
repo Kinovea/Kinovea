@@ -320,7 +320,7 @@ namespace Kinovea.ScreenManager
             this.delayedDisplay = delayedDisplay;
 
             // Only show as "delayed" if there is actual delay set.
-            bool hasDelay = (sldrDelay.Value > sldrDelay.Minimum);
+            bool hasDelay = sldrDelay.AboveMin;
             if (this.delayedDisplay && hasDelay)
             {
                 btnDelayedDisplay.Image = Properties.Capture.live_photos_16;

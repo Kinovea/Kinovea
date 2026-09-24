@@ -66,9 +66,13 @@ namespace Kinovea.ScreenManager
         public double Value
         {
             get { return val;}
-            set { Update(value); }
         }
-        
+
+        public bool AboveMin
+        {
+            get { return val > min; }
+        }
+
         public bool IsSticky
         {
             get { return isSticky; }

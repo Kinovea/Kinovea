@@ -219,7 +219,6 @@ namespace Kinovea.ScreenManager
       this.sldrSpeed.IsSticky = false;
       this.sldrSpeed.TabIndex = 28;
       this.sldrSpeed.Text = "sliderLinear1";
-      this.sldrSpeed.Value = 0D;
       this.sldrSpeed.ValueChanged += new System.EventHandler(this.sldrSpeed_ValueChanged);
       // 
       // lblSpeedTuner

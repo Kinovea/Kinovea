@@ -198,7 +198,6 @@ namespace Kinovea.ScreenManager
       this.sldrDelay.Size = new System.Drawing.Size(153, 23);
       this.sldrDelay.TabIndex = 43;
       this.sldrDelay.Text = "sliderLinear1";
-      this.sldrDelay.Value = 0D;
       // 
       // pnlCaptureDock
       // 
