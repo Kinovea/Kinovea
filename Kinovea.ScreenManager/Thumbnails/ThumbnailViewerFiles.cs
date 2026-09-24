@@ -105,6 +105,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void BrowserContentUpdated(BrowserContentSnapshot snapshot)
         {
+            if (snapshot == null)
+                return;
+
             string path = snapshot.Location.Path;
             List<string> files = snapshot.Items.Select(i => i.Path).ToList();
 
