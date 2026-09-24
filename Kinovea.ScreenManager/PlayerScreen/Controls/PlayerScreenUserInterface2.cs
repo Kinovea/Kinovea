@@ -763,10 +763,12 @@ namespace Kinovea.ScreenManager
 
         private void AfterKVAImported()
         {
-            InitializeKeyframes();
-
             // Restore things like aspect ratio, image rotation, deinterlacing, stabilization, etc.
             m_FrameServer.RestoreImageOptions();
+            zoomHelper.Value = 1.0f;
+            
+            // Seek to keyframes to get thumbnails.
+            InitializeKeyframes();
 
             // Restore selection.
             // Force a reload of the cache to account for possible changes in aspect ratio, image rotation, etc.

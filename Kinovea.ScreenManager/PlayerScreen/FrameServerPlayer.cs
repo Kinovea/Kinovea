@@ -458,6 +458,11 @@ namespace Kinovea.ScreenManager
             // Options affecting render side only.
             ChangeMirror(metadata.Mirrored);
             ChangeBackgroundColor(metadata.BackgroundColor);
+
+            // Reference size may have changed.
+            Metadata.ImageSize = VideoReader.Geometry.ReferenceSize;
+            ImageTransform.SetReferenceSize(VideoReader.Geometry.ReferenceSize);
+            ImageTransform.ResetZoom();
         }
 
         private bool PublishVideoGeometryRequest()
