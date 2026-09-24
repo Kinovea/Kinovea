@@ -32,6 +32,7 @@ extern "C"
 #endif
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
+#include "libavutil/display.h"
 #include "libavutil/error.h"
 #include "libavutil/frame.h"
 #include "libavutil/imgutils.h"
@@ -81,6 +82,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         RecordingResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
     private:
+
+        /// Configure rotation flag.
+        void SetRotation(AVStream* stream, double degrees);
+
         /// Configure the codec with default parameters.
         void SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat, int quality);
 

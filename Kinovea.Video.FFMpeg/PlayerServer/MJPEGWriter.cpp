@@ -129,22 +129,6 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
         pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
         m_SavingContext->streamIndex = pOutputVideoStream->id;
 
-        switch (settings->Rotation)
-        {
-        case ImageRotation::Rotate90:
-            av_dict_set(&pOutputVideoStream->metadata, "rotate", "90", 0);
-            break;
-        case ImageRotation::Rotate180:
-            av_dict_set(&pOutputVideoStream->metadata, "rotate", "180", 0);
-            break;
-        case ImageRotation::Rotate270:
-            av_dict_set(&pOutputVideoStream->metadata, "rotate", "270", 0);
-            break;
-        case ImageRotation::Rotate0:
-        default:
-            break;
-        }
-        
         // Configure encoder.
         SetupEncoder(m_SavingContext, settings->ImageFormat, settings->Quality);
 
@@ -177,6 +161,25 @@ RecordingResult MJPEGWriter::OpenSavingContext(RecordingSettings^ settings)
         }
 
         pOutputVideoStream->time_base = m_SavingContext->pOutputCodecContext->time_base;
+
+        // Write rotation data.
+        // This must be done AFTER the call to avcodec_parameters_from_context, otherwise coded_side_data is overwritten.
+        // But it must be done BEFORE avformat_write_header.
+        switch (settings->Rotation)
+        {
+        case ImageRotation::Rotate90:
+            SetRotation(pOutputVideoStream, 90);
+            break;
+        case ImageRotation::Rotate180:
+            SetRotation(pOutputVideoStream, 180);
+            break;
+        case ImageRotation::Rotate270:
+            SetRotation(pOutputVideoStream, 270);
+            break;
+        case ImageRotation::Rotate0:
+        default:
+            break;
+        }
 
         // Open the file.
         // Temporary pinned UTF-8 buffer.
@@ -364,6 +367,26 @@ RecordingResult MJPEGWriter::SaveFrame(Kinovea::Services::ImageFormat format, ar
     return result;
 }
 
+void MJPEGWriter::SetRotation(AVStream* stream, double degrees)
+{
+    AVCodecParameters* par = stream->codecpar;
+
+    AVPacketSideData* sideData = av_packet_side_data_new(
+        &par->coded_side_data,
+        &par->nb_coded_side_data,
+        AV_PKT_DATA_DISPLAYMATRIX,
+        sizeof(int32_t) * 9,
+        0);
+
+    if (sideData == nullptr)
+        return;
+
+    int32_t* matrix = reinterpret_cast<int32_t*>(sideData->data);
+
+    av_display_rotation_set(matrix, degrees);
+
+    return;
+}
 
 void MJPEGWriter::SetupEncoder(SavingContext^ savingCtx, ImageFormat imgFormat, int quality)
 {
