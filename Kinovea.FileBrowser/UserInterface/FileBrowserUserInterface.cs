@@ -42,15 +42,13 @@ namespace Kinovea.FileBrowser
 {
     /// <summary>
     /// The user interface for the navigation pane.
-    /// We maintain the synchronization between the shortcut and exptree tab
-    /// when we move between shortcuts. We don't maintain it the other way around.
     /// </summary>
     public partial class FileBrowserUserInterface : KinoveaControl
     {
         #region Members
 
-        private FileSystemTreeController explorerTree;
-        private FileSystemTreeController shortcutsTree;
+        private BrowserTreeController explorerTree;
+        private BrowserTreeController shortcutsTree;
 
         private string currentExplorerPath; // Current path in exptree tab.
         private string currentShortcutPath; // Current path in shortcuts tab.
@@ -104,11 +102,11 @@ namespace Kinovea.FileBrowser
             splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * WindowManager.ActiveWindow.ExplorerFilesSplitterRatio);
             splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio);
             
-            explorerTree = new FileSystemTreeController(tvExplorer);
+            explorerTree = new BrowserTreeController(tvExplorer);
             explorerTree.SelectedPathChanged += ExplorerTree_SelectedPathChanged;
             explorerTree.BuildComputer();
 
-            shortcutsTree = new FileSystemTreeController(tvShortcuts);
+            shortcutsTree = new BrowserTreeController(tvShortcuts);
             shortcutsTree.SelectedPathChanged += ShortcutsTree_SelectedPathChanged;
             ReloadShortcuts();
 
@@ -1042,8 +1040,27 @@ namespace Kinovea.FileBrowser
         public bool TryGetSelectedPathAt(TreeView tv, Point loc, out string path)
         {
             TreeNode node = tv.GetNodeAt(loc);
-            path = node?.Tag as string;
-            return node != null && node == tv.SelectedNode && path != null;
+            if (node == null)
+            {
+                path = null;
+                return false;
+            }
+
+            if (node != tv.SelectedNode)
+            {
+                path = null;
+                return false;
+            }
+
+            BrowserLocation browserLocation = node.Tag as BrowserLocation;
+            if (browserLocation == null)
+            {
+                path = null;
+                return false;
+            }
+
+            path = browserLocation.Path;
+            return true;
         }
 
         private void listView_ItemDrag(object sender, ItemDragEventArgs e)

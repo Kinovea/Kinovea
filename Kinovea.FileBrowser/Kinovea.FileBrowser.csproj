@@ -200,7 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileBrowser.cs" />
-    <Compile Include="FileSystemTreeController.cs" />
+    <Compile Include="BrowserTreeController.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="ShellIconIndex.cs" />
     <Compile Include="ShellSystemImageList.cs" />

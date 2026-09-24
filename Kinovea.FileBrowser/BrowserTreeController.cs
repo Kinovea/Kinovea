@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Kinovea.FileBrowser
 {
-    public class FileSystemTreeController : IDisposable
+    public class BrowserTreeController : IDisposable
     {
         public event Action<string> SelectedPathChanged;
 
@@ -22,7 +22,7 @@ namespace Kinovea.FileBrowser
         #endregion
 
         #region Construction/Destruction
-        public FileSystemTreeController(TreeView tv)
+        public BrowserTreeController(TreeView tv)
         {
             this.treeView = tv;
 
@@ -201,10 +201,12 @@ namespace Kinovea.FileBrowser
                 iconIndex = ShellIconIndex.Get(path, false, isDrive);
                 iconIndexSelected = ShellIconIndex.Get(path, true, isDrive);
             }
-            
+
+            BrowserLocation browserLocation = BrowserLocation.FromFileSystem(path);
+
             TreeNode node = new TreeNode(name)
             {
-                Tag = path,
+                Tag = browserLocation,
                 ImageIndex = iconIndex,
                 SelectedImageIndex = iconIndexSelected
             };
@@ -218,16 +220,15 @@ namespace Kinovea.FileBrowser
         /// <summary>
         /// Build the children of a node if not done already.
         /// </summary>
-        private bool BuildChildren(TreeNode node)
+        private void BuildChildren(TreeNode node)
         {
-            string parentPath = node.Tag as string;
-            if (parentPath == null)
-                return false;
+            BrowserLocation location = node.Tag as BrowserLocation;
+            if (location == null)
+                return;
 
             List<string> directoryPaths;
-
-            if (!TryGetChildDirectories(parentPath, out directoryPaths))
-                return false;
+            if (!TryGetChildDirectories(location, out directoryPaths))
+                return;
 
             HashSet<string> wantedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (string path in directoryPaths)
@@ -239,9 +240,10 @@ namespace Kinovea.FileBrowser
             for (int i = node.Nodes.Count - 1; i >= 0; i--)
             {
                 TreeNode child = node.Nodes[i];
-                string childPath = child.Tag as string;
+                BrowserLocation childLocation = child.Tag as BrowserLocation;
+                string childPath = childLocation?.Path;
 
-                if (childPath == null || !wantedPaths.Contains(NormalizePath(childPath)))
+                if (childLocation == null || childPath == null || !wantedPaths.Contains(NormalizePath(childPath)))
                 {
                     node.Nodes.RemoveAt(i);
                 }
@@ -252,8 +254,8 @@ namespace Kinovea.FileBrowser
             Dictionary<string, TreeNode> existingNodes = new Dictionary<string, TreeNode>(StringComparer.OrdinalIgnoreCase);
             foreach (TreeNode child in node.Nodes)
             {
-                string childPath = child.Tag as string;
-
+                BrowserLocation childLocation = child.Tag as BrowserLocation;
+                string childPath = childLocation?.Path;
                 if (childPath != null)
                 { 
                     existingNodes[NormalizePath(childPath)] = child;
@@ -277,7 +279,7 @@ namespace Kinovea.FileBrowser
                 existingNodes.Add(key, newNode);
             }
 
-            return true;
+            return;
         }
         
         private static string GetDisplayName(string path, bool isDrive)
@@ -362,7 +364,8 @@ namespace Kinovea.FileBrowser
 
         private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            string path = e.Node.Tag as string;
+            BrowserLocation location = e.Node.Tag as BrowserLocation;
+            string path = location?.Path;
             if (path == null)
                 return;
 
@@ -521,12 +524,28 @@ namespace Kinovea.FileBrowser
 
         #endregion
 
-        private bool TryGetChildDirectories(string parentPath, out List<string> result)
+        /// <summary>
+        /// Get the sub-folders of the passed location.
+        /// Returns true if the operation was successful even if the result is empty.
+        /// </summary>
+        private bool TryGetChildDirectories(BrowserLocation location, out List<string> result)
         {
             result = new List<string>();
+                
+            if (location.Type == BrowserLocationType.RecentFiles)
+            {
+                // Recent files doesn't have any sub-folders, only files. Return an empty list.
+                return true;
+            }
+
+            if (string.IsNullOrWhiteSpace(location.Path))
+            {
+                return true;
+            }
 
             try
             {
+                string parentPath = location.Path;
                 foreach (string childPath in Directory.GetDirectories(parentPath))
                 {
                     try
@@ -582,7 +601,8 @@ namespace Kinovea.FileBrowser
         {
             foreach (TreeNode node in nodes)
             {
-                string nodePath = node.Tag as string;
+                BrowserLocation location = node.Tag as BrowserLocation;
+                string nodePath = location?.Path;
                 if (nodePath != null && PathsEqual(nodePath, path))
                 {
                     return node;
