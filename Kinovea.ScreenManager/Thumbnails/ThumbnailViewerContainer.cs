@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
             viewerCameras.ProgressChanged += Viewer_ProgressChanged;
             viewerCameras.AfterLoad += Viewer_AfterLoad;
 
-            ShowHideAddressBar(true);
+            ShowHideAddressBar(false);
             UpdateThumbnailsSize();
 
             this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("ThumbnailViewerContainer");
