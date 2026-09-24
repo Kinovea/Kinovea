@@ -127,12 +127,6 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                pnlScreens.Visible = true;
-                thumbnailViewerContainer.Visible = false;
-                this.AllowDrop = false;
-                
-                thumbnailViewerContainer.HideContent();
-
                 splitScreens.Panel1.Controls.Clear();
                 splitScreens.Panel2.Controls.Clear();
                 
@@ -142,6 +136,11 @@ namespace Kinovea.ScreenManager
                     PrepareRightScreen(screenList[1].UI);
                 else
                     ClearRightScreen();
+
+                this.AllowDrop = false;
+                thumbnailViewerContainer.Visible = false;
+                thumbnailViewerContainer.HideContent();
+                pnlScreens.Visible = true;
             }
         }
         public void SetFullScreen(bool isFullScreen)
