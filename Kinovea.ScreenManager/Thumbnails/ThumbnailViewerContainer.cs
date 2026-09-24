@@ -19,11 +19,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
-using System.IO;
 
 using Kinovea.Camera;
 using Kinovea.Services;
@@ -38,8 +35,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
 
         #region Members
-        private string path;
-        private List<string> files = new List<string>();
+        private BrowserContentSnapshot browserContent;
         private bool showingScreen = false;
         private BrowserContentType currentViewerType = BrowserContentType.FileSystem;
         private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles("[files]");
@@ -55,8 +51,8 @@ namespace Kinovea.ScreenManager
             Populate();
             
             NotificationCenter.BeforeLoadVideo += NotificationCenter_BeforeLoadVideo;
-            NotificationCenter.BrowserContentUpdated += NotificationCenter_CurrentDirectoryChanged;
-            NotificationCenter.BrowserContentTypeChanged += NotificationCenter_ExplorerTabChanged;
+            NotificationCenter.BrowserContentUpdated += NotificationCenter_BrowserContentUpdated;
+            NotificationCenter.BrowserContentTypeChanged += NotificationCenter_BrowserContentTypeChanged;
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten; 
@@ -127,9 +123,13 @@ namespace Kinovea.ScreenManager
             this.Cursor = Cursors.WaitCursor;
             
             if (currentViewerType == BrowserContentType.FileSystem)
-                viewerFiles.CurrentDirectoryChanged(path, files);
+            {
+                viewerFiles.BrowserContentUpdated(browserContent);
+            }
             else if(currentViewerType == BrowserContentType.Cameras)
+            {
                 viewerCameras.Unhide();
+            }
                 
             this.Cursor = Cursors.Default;
         }
@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
                 return "";
 
             if (currentViewerType == BrowserContentType.FileSystem)
-                return path;
+                return browserContent == null ? "" : browserContent.Location.Key;
             else
                 return "Camera list";
         }
@@ -158,25 +158,29 @@ namespace Kinovea.ScreenManager
             HideContent();
         }
 
-        private void NotificationCenter_ExplorerTabChanged(object sender, EventArgs<BrowserContentType> e)
+        private void NotificationCenter_BrowserContentTypeChanged(object sender, EventArgs<BrowserContentType> e)
         {
             SwitchContent(e.Value);
         }
-        private void NotificationCenter_CurrentDirectoryChanged(object sender, CurrentDirectoryChangedEventArgs e)
+        private void NotificationCenter_BrowserContentUpdated(object sender, EventArgs<BrowserContentSnapshot> e)
         {
-            // Remember where we are even if we are not visible, to restore the view when we become visible again.
-            this.path = e.Path;
-            this.files = e.Files;
-            
-            if (!e.DoRefresh || !this.Visible)
+            // The navigation pane has changed location.
+            BrowserContentSnapshot snapshot = e.Value;
+            if (snapshot == null)
                 return;
 
-            lblAddress.Text = path;
+            // Remember the content even if we are not visible.
+            // We'll show it later in UnhideContent().
+            browserContent = snapshot;
+            
+            if (!this.Visible)
+                return;
 
             if (currentViewerType == BrowserContentType.Cameras)
                 return;
 
-            viewerFiles.CurrentDirectoryChanged(path, files);
+            lblAddress.Text = browserContent.Location.Key;
+            viewerFiles.BrowserContentUpdated(snapshot);
         }
 
         private void CameraTypeManager_CamerasDiscovered(object sender,  CamerasDiscoveredEventArgs e)
@@ -346,24 +350,24 @@ namespace Kinovea.ScreenManager
             if (currentViewerType == BrowserContentType.Cameras)
                 return;
 
-            if (!Directory.Exists(path))
-                return;
+            //if (!Directory.Exists(path))
+            //    return;
 
-            DirectoryInfo info = Directory.GetParent(path);
-            if (info == null)
-                return;
+            //DirectoryInfo info = Directory.GetParent(path);
+            //if (info == null)
+            //    return;
 
-            NotificationCenter.RaiseFolderChangeAsked(info.FullName);
+            //NotificationCenter.RaiseFolderChangeAsked(info.FullName);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseFolderNavigationAsked(FolderNavigationType.Backward);
+            //NotificationCenter.RaiseFolderNavigationAsked(FolderNavigationType.Backward);
         }
 
         private void btnForward_Click(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseFolderNavigationAsked(FolderNavigationType.Forward);
+            //NotificationCenter.RaiseFolderNavigationAsked(FolderNavigationType.Forward);
         }
         #endregion
 

@@ -105,12 +105,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Reload the panel with a new list of files.
         /// </summary>
-        public void CurrentDirectoryChanged(string path, List<string> files)
+        public void BrowserContentUpdated(BrowserContentSnapshot snapshot)
         {
+            string path = snapshot.Location.Path;
+            List<string> files = snapshot.Items.Select(i => i.Path).ToList();
+
             log.DebugFormat("Thumbnail viewer directory change: {0} -> {1}. {2} files.", 
                 this.path == null ? "null" : this.path,
                 path, 
                 (files == null) ? "0" : files.Count.ToString());
+
 
             if (this.Width < 200 || this.Height < 200)
             {

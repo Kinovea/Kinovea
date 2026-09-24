@@ -68,8 +68,8 @@ namespace Kinovea.FileBrowser
 
         #region Menu
         private ContextMenuStrip popMenuFolders = new ContextMenuStrip();
-        private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocateFolder = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuFiles = new ContextMenuStrip();
@@ -133,30 +133,48 @@ namespace Kinovea.FileBrowser
 
         private void BuildContextMenu()
         {
-            // Add an item to shortcuts
-            mnuAddToShortcuts.Image = Properties.Resources.star;
-            mnuAddToShortcuts.Click += mnuAddToShortcuts_Click;
-            mnuAddToShortcuts.Visible = false;
+            #region Tree view
 
             mnuLocateFolder.Image = Properties.Resources.folder_explore;
             mnuLocateFolder.Click += mnuLocateFolder_Click;
             mnuLocateFolder.Visible = true;
+            
+            mnuAddToShortcuts.Image = Properties.Resources.star;
+            mnuAddToShortcuts.Click += mnuAddToShortcuts_Click;
+            mnuAddToShortcuts.Visible = false;
 
-            // Delete selected shortcut
             mnuDeleteShortcut.Image = Properties.Resources.folder_delete;
             mnuDeleteShortcut.Click += mnuDeleteShortcut_Click;
             mnuDeleteShortcut.Visible = false;
             
             popMenuFolders.Items.AddRange(new ToolStripItem[] 
             { 
-                mnuAddToShortcuts, 
                 mnuLocateFolder, 
+                mnuAddToShortcuts, 
                 mnuDeleteShortcut 
             });
             
             tvExplorer.ContextMenuStrip = popMenuFolders;
             tvExplorer.MouseDown += ExplorerTree_MouseDown;
 
+            #endregion
+
+            #region Camera list
+
+            mnuLaunchCamera.Image = Properties.Resources.camera_video;
+            mnuForgetCamera.Image = Properties.Resources.delete;
+            mnuLaunchCamera.Click += (s, e) => LaunchSelectedCamera();
+            mnuForgetCamera.Click += (s, e) => ForgetSelectedCamera();
+            popMenuCameras.Items.AddRange(new ToolStripItem[]
+            {
+                mnuLaunchCamera,
+                mnuForgetCamera
+            });
+
+            olvCameras.ContextMenuStrip = popMenuCameras;
+            #endregion
+
+            #region File lists
             // Sort menus
             mnuSortBy.Image = Properties.Resources.sort;
             mnuSortByName.Click += (s, e) => UpdateSortAxis(FileSortAxis.Name);
@@ -197,19 +215,10 @@ namespace Kinovea.FileBrowser
                 mnuDeleteFile
             });
 
-            mnuLaunchCamera.Image = Properties.Resources.camera_video;
-            mnuForgetCamera.Image = Properties.Resources.delete;
-            mnuLaunchCamera.Click += (s, e) => LaunchSelectedCamera();
-            mnuForgetCamera.Click += (s, e) => ForgetSelectedCamera();
-            popMenuCameras.Items.AddRange(new ToolStripItem[] 
-            { 
-                mnuLaunchCamera, 
-                mnuForgetCamera 
-            });
-
             lvExplorer.ContextMenuStrip = popMenuFiles;
             lvCaptured.ContextMenuStrip = popMenuFiles;
-            olvCameras.ContextMenuStrip = popMenuCameras;
+
+            #endregion
         }
 
         private void IdleDetector(object sender, EventArgs e)
@@ -318,12 +327,7 @@ namespace Kinovea.FileBrowser
             {
                 UpdateFileWatcher(snapshot.Location.Path);
 
-                // Publish legacy event for the thumbnail viewer.
-                string folderPath = snapshot.Location.Path;
-                List<string> files = snapshot.Items.Select(i => i.Path).ToList();
-                bool doRefresh = true;
-
-                NotificationCenter.RaiseBrowserContentUpdated(folderPath, files, doRefresh);
+                NotificationCenter.RaiseBrowserContentUpdated(snapshot);
                 NotificationCenter.RaiseUpdateStatus();
             }
 
@@ -430,8 +434,8 @@ namespace Kinovea.FileBrowser
             lblCaptureHistory.Text = FileBrowserLang.lblCaptureHistory;
 
             // Menus
-            mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
             mnuLocateFolder.Text = FileBrowserLang.mnuVideoLocate;
+            mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
             mnuDeleteShortcut.Text = FileBrowserLang.mnuRemoveFromShortcuts;
 
             mnuSortBy.Text = FileBrowserLang.mnuSortBy;
@@ -503,6 +507,7 @@ namespace Kinovea.FileBrowser
         private void TabControlSelected_IndexChanged(object sender, EventArgs e)
         {
             activeTab = (BrowserContentType)tabControl.SelectedIndex;
+
             WindowManager.ActiveWindow.ActiveTab = activeTab;
             WindowManager.SaveActiveWindow();
 
@@ -631,8 +636,8 @@ namespace Kinovea.FileBrowser
 
             if (!isOnSelected)
             {
-                mnuAddToShortcuts.Visible = false;
                 mnuLocateFolder.Visible = false;
+                mnuAddToShortcuts.Visible = false;
                 mnuDeleteShortcut.Visible = false;
             }
             else
@@ -641,12 +646,12 @@ namespace Kinovea.FileBrowser
 
                 // Name the path directly in the menu as feedback.
                 string name = Path.GetFileName(path);
-                mnuAddToShortcuts.Text = string.Format("Add \"{0}\" to shortcuts", name);
                 mnuLocateFolder.Text = string.Format("Locate \"{0}\" in Windows explorer", name);
+                mnuAddToShortcuts.Text = string.Format("Add \"{0}\" to shortcuts", name);
                 mnuDeleteShortcut.Text = string.Format("Remove \"{0}\" from shortcuts", name);
 
-                mnuAddToShortcuts.Visible = !knownShortcut;
                 mnuLocateFolder.Visible = true;
+                mnuAddToShortcuts.Visible = !knownShortcut;
                 mnuDeleteShortcut.Visible = knownShortcut;
             }
         }

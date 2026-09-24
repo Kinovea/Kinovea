@@ -80,10 +80,10 @@ namespace Kinovea.Services
         /// Event raised by the naviagtion pane when the directory was changed and the 
         /// browsed content should be synchronized to the thumbnails viewer.
         /// </summary>
-        public static EventHandler<CurrentDirectoryChangedEventArgs> BrowserContentUpdated;
-        public static void RaiseBrowserContentUpdated(string path, List<string> files, bool doRefresh)
+        public static EventHandler<EventArgs<BrowserContentSnapshot>> BrowserContentUpdated;
+        public static void RaiseBrowserContentUpdated(BrowserContentSnapshot snapshot)
         {
-            BrowserContentUpdated?.Invoke(null, new CurrentDirectoryChangedEventArgs(path, files, doRefresh));
+            BrowserContentUpdated?.Invoke(null, new EventArgs<BrowserContentSnapshot>(snapshot));
         }
 
         /// <summary>
