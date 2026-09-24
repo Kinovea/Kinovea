@@ -1163,7 +1163,7 @@ namespace Kinovea.Root
                     sdp.Autoplay = false;
                     sdp.SpeedFactorNominal = 1.0;
 
-                    LoaderVideo.LoadVideoInScreen(screenManager, path, -1, sdp);
+                    LoaderVideo.LoadVideoInScreen(screenManager, path, sdp);
                     screenManager.OrganizeScreens();
                 }
                 else

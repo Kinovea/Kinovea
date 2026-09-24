@@ -18,94 +18,72 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, int targetScreen, ScreenDescriptorPlayback screenDescriptor)
+        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, ScreenDescriptorPlayback screenDescriptor, int targetScreen = -1)
         {
             CameraTypeManager.CancelThumbnails();
             CameraTypeManager.StopDiscoveringCameras();
 
             if (targetScreen < 0)
+            {
                 LoadUnspecified(manager, path, screenDescriptor);
-            else
-                LoadInSpecificTarget(manager, targetScreen, path, screenDescriptor);
-        }
+                return;
+            }
 
-        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, ScreenDescriptorPlayback screenDescriptor)
-        {
-            CameraTypeManager.CancelThumbnails();
-            CameraTypeManager.StopDiscoveringCameras();
-
-            LoadUnspecified(manager, path, screenDescriptor);
+            // If the target is specified but icompatible, we don't load.
+            // This is less surprising than loading in a different screen.
+            AbstractScreen screen = manager.GetScreenAt(targetScreen);
+            if (screen != null && screen is PlayerScreen)
+            {
+                LoadInSpecificTarget(manager, path, screenDescriptor, targetScreen);
+            }
         }
 
         private static void LoadUnspecified(ScreenManagerKernel manager, string path, ScreenDescriptorPlayback screenDescriptor)
         {
-            if (manager.ScreenCount == 0)
-            {
-                manager.RequestScreenConfig(ScreenConfig.Player);
-                LoadInSpecificTarget(manager, 0, path, screenDescriptor);
-            }
-            else if (manager.ScreenCount == 1)
-            {
-                LoadInSpecificTarget(manager, 0, path, screenDescriptor);
-            }
-            else if (manager.ScreenCount == 2)
-            {
-                int target = manager.FindTargetScreen(typeof(PlayerScreen));
-                if (target != -1)
-                    LoadInSpecificTarget(manager, target, path, screenDescriptor);
-            }
+            int index = manager.EnsurePlayerVisible();
+            if (index < 0)
+                return;
+
+            LoadInSpecificTarget(manager, path, screenDescriptor, index);
         }
 
-        private static void LoadInSpecificTarget(ScreenManagerKernel manager, int targetScreen, string path, ScreenDescriptorPlayback screenDescriptor)
+        private static void LoadInSpecificTarget(ScreenManagerKernel manager, string path, ScreenDescriptorPlayback screenDescriptor, int targetScreen)
         {
-            AbstractScreen screen = manager.GetScreenAt(targetScreen);
+            PlayerScreen playerScreen = manager.GetScreenAt(targetScreen) as PlayerScreen;
+            if (playerScreen == null)
+                return;
+   
 
-            if (screen is CaptureScreen)
+            if (playerScreen.IsWaitingForIdle)
             {
-                // Loading a video onto a capture screen should not close the capture screen.
-                // If there is room to add a second screen, we add a playback screen and load the video there, otherwise, we don't do anything.
-                if (manager.ScreenCount == 1)
-                {
-                    manager.RequestScreenConfig(ScreenConfig.CapturePlayer);
-                    LoadInSpecificTarget(manager, 1, path, screenDescriptor);
-                }
+                // The player screen will yield its thread after having loaded the first frame and come back later.
+                // We must not launch a new video while it's waiting.
+                return;
             }
-            else if (screen is PlayerScreen)
+
+            bool confirmed = playerScreen.BeforeUnloadingAnnotations();
+            if (!confirmed)
+                return;
+
+            LoadVideo(playerScreen, path, screenDescriptor);
+
+            if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
             {
-                PlayerScreen playerScreen = screen as PlayerScreen;
-
-                if (playerScreen.IsWaitingForIdle)
-                {
-                    // The player screen will yield its thread after having loaded the first frame and come back later.
-                    // We must not launch a new video while it's waiting.
-                    log.ErrorFormat("Player screen is currently busy loading the previous video. Aborting load.");
-                    return;
-                }
-
-                bool confirmed = screen.BeforeUnloadingAnnotations();
-                if (!confirmed)
-                    return;
-
-                LoadVideo(playerScreen, path, screenDescriptor);
-
-                if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
-                {
-                    PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
-                }
-
-                if (playerScreen.FrameServer.Loaded)
-                {
-                    //string videoPath = playerScreen.FrameServer.Metadata.VideoPath;
-                    string videoPath = playerScreen.FrameServer.VideoReader.FilePath;
-                    NotificationCenter.RaiseFileOpened(videoPath);
-                    PreferencesManager.FileExplorerPreferences.AddRecentFile(videoPath);
-                }
-
-                manager.OrganizeScreens();
-                manager.OrganizeCommonControls();
-                manager.OrganizeMenus();
-                NotificationCenter.RaiseUpdateStatus();
+                PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
             }
+
+            if (playerScreen.FrameServer.Loaded)
+            {
+                //string videoPath = playerScreen.FrameServer.Metadata.VideoPath;
+                string videoPath = playerScreen.FrameServer.VideoReader.FilePath;
+                NotificationCenter.RaiseFileOpened(videoPath);
+                PreferencesManager.FileExplorerPreferences.AddRecentFile(videoPath);
+            }
+
+            manager.OrganizeScreens();
+            manager.OrganizeCommonControls();
+            manager.OrganizeMenus();
+            NotificationCenter.RaiseUpdateStatus();
         }
    
         /// <summary>
@@ -195,7 +173,9 @@ namespace Kinovea.ScreenManager
                     }
             }
 
-            if (res != OpenVideoResult.Success && player.view.ScreenDescriptor != null && player.view.ScreenDescriptor.IsReplayWatcher)
+            if (res != OpenVideoResult.Success && 
+                player.view.ScreenDescriptor != null && 
+                player.view.ScreenDescriptor.IsReplayWatcher)
             {
                 // Even if we can't load the latest video, or there's no video at all, we should still start watching this folder.
                 player.view.EnableDisableActions(false);

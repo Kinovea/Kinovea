@@ -987,7 +987,7 @@ namespace Kinovea.ScreenManager
             sdp.Autoplay = true;
             sdp.Stretch = true;
             sdp.SpeedFactorNominal = 1.0;
-            LoaderVideo.LoadVideoInScreen(this, path, index, sdp);
+            LoaderVideo.LoadVideoInScreen(this, path, sdp, index);
         }
         private void Player_Loaded(object sender, EventArgs e)
         {
@@ -2863,7 +2863,7 @@ namespace Kinovea.ScreenManager
                         }
                     }
 
-                    LoaderVideo.LoadVideoInScreen(this, path, targetScreen, sdp);
+                    LoaderVideo.LoadVideoInScreen(this, path, sdp, targetScreen);
                 }
             }
         }
@@ -3392,6 +3392,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Get the current screen configuration.
+        /// This should return what is currently visible, not the underlying screen list.
         /// </summary>
         private ScreenConfig GetCurrentScreenConfig()
         {
@@ -3476,7 +3477,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Find the most appropriate screen to load into.
-        /// Must be of the same type, and empty if possible.
+        /// Must be of the same type, and preferably empty.
         /// </summary>
         public int FindTargetScreen(Type type)
         {
@@ -3544,6 +3545,67 @@ namespace Kinovea.ScreenManager
 
             IdentifyScreens();
         }
+
+        /// <summary>
+        /// Tries to ensure that a player screen is visible and returns its index.
+        /// </summary>
+        public int EnsurePlayerVisible()
+        {
+            ScreenConfig current = GetCurrentScreenConfig();
+            switch (current)
+            {
+                case ScreenConfig.Explorer:
+                    RequestScreenConfig(ScreenConfig.Player);
+                    return 0;
+                case ScreenConfig.Player:
+                    return 0;
+                case ScreenConfig.Capture:
+                    RequestScreenConfig(ScreenConfig.CapturePlayer);
+                    return 1;
+                case ScreenConfig.PlayerPlayer:
+                    return FindTargetScreen(typeof(PlayerScreen));
+                case ScreenConfig.CaptureCapture:
+                    return -1;
+                case ScreenConfig.PlayerCapture:
+                    return 0;
+                case ScreenConfig.CapturePlayer:
+                    return 1;
+                default:
+                    return -1;
+            }
+        }
+
+        /// <summary>
+        /// Tries to ensure that a capture screen is visible and returns its index.
+        /// </summary>
+        public int EnsureCaptureVisible()
+        {
+            // We want to load a camera in a screen.
+            // Depending on the current state, add or unhide a capture screen, if possible.
+            ScreenConfig current = GetCurrentScreenConfig();
+            switch (current)
+            {
+                case ScreenConfig.Explorer:
+                    RequestScreenConfig(ScreenConfig.Capture);
+                    return 0;
+                case ScreenConfig.Player:
+                    RequestScreenConfig(ScreenConfig.PlayerCapture);
+                    return 1;
+                case ScreenConfig.Capture:
+                    return 0;
+                case ScreenConfig.PlayerPlayer:
+                    return -1;
+                case ScreenConfig.CaptureCapture:
+                    return FindTargetScreen(typeof(CaptureScreen));
+                case ScreenConfig.PlayerCapture:
+                    return 1;
+                case ScreenConfig.CapturePlayer:
+                    return 0;
+                default:
+                    return -1;
+            }
+        }
+
 
         #endregion
 

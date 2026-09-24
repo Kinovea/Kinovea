@@ -22,77 +22,62 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.StopDiscoveringCameras();
 
             if (targetScreen < 0)
+            {
                 LoadUnspecified(manager, summary, screenDescriptor);
-            else
+                return;
+            }
+
+            // If the target is specified but icompatible, we don't load.
+            // This is less surprising than loading in a different screen.
+            AbstractScreen screen = manager.GetScreenAt(targetScreen);
+            if (screen != null && screen is CaptureScreen)
+            {
                 LoadInSpecificTarget(manager, targetScreen, summary, screenDescriptor);
+            }
         }
 
         private static void LoadUnspecified(ScreenManagerKernel manager, CameraSummary summary, ScreenDescriptorCapture screenDescriptor)
         {
-            if (manager.ScreenCount == 0)
-            {
-                manager.RequestScreenConfig(ScreenConfig.Capture);
-                LoadInSpecificTarget(manager, 0, summary, screenDescriptor);
-            }
-            else if (manager.ScreenCount == 1)
-            {
-                LoadInSpecificTarget(manager, 0, summary, screenDescriptor);
-            }
-            else if (manager.ScreenCount == 2)
-            {
-                int target = manager.FindTargetScreen(typeof(CaptureScreen));
-                if (target != -1)
-                    LoadInSpecificTarget(manager, target, summary, screenDescriptor);
-            }
+            int index = manager.EnsureCaptureVisible();
+            if (index < 0)
+                return;
+            
+            LoadInSpecificTarget(manager, index, summary, screenDescriptor);
         }
 
         private static void LoadInSpecificTarget(ScreenManagerKernel manager, int targetScreen, CameraSummary summary, ScreenDescriptorCapture screenDescriptor)
         {
-            AbstractScreen screen = manager.GetScreenAt(targetScreen);
+            CaptureScreen captureScreen = manager.GetScreenAt(targetScreen) as CaptureScreen;
+            if (captureScreen == null)
+                return;
 
-            if (screen is CaptureScreen)
+            if (captureScreen.Full)
             {
-                CaptureScreen captureScreen = screen as CaptureScreen;
-
-                if (captureScreen.Full)
-                {
-                    // This is the case when we load a camera on top of another.
-                    // The incoming screen descriptor is blank (just camera name) while the one in the screen contains 
-                    // configuration, including post-recording command, that may not exist anywhere else.
-                    // Swap the screen descriptor for the one in the target screen.
-                    var cameraName = screenDescriptor.CameraName;
-                    screenDescriptor = (ScreenDescriptorCapture)captureScreen.GetScreenDescriptor();
-                    screenDescriptor.CameraName = cameraName;
-                }
-                else
-                {
-                    // This is the case when we load a camera on an empty screen, 
-                    // either for auto-launch or manually.
-                    // If we are auto-launching we keep the incoming descriptor created from the window.
-                    // If we are loading on empty in the middle of the session, the descriptor should
-                    // have been set up with the backup descriptor from the window, or as a last resort,
-                    // the default descriptor. So we also keep the incoming one.
-                    // See ScreenManager.DoLoadCameraInScreen().
-                }
-
-                captureScreen.ConfigureScreen(screenDescriptor);
-                captureScreen.LoadCamera(summary);
-
-                manager.OrganizeScreens();
-                manager.OrganizeCommonControls();
-                manager.OrganizeMenus();
+                // We load a camera on top of another.
+                // The incoming screen descriptor is blank (just camera name) while the one in the screen contains 
+                // configuration, including post-recording command, that may not exist anywhere else.
+                // Swap the screen descriptor for the one in the target screen.
+                var cameraName = screenDescriptor.CameraName;
+                screenDescriptor = (ScreenDescriptorCapture)captureScreen.GetScreenDescriptor();
+                screenDescriptor.CameraName = cameraName;
             }
-            else if (screen is PlayerScreen)
+            else
             {
-                // Loading a camera onto a video should never close the video.
-                // We only load the camera if there is room to create a new capture screen, otherwise we do nothing.
-                if (manager.ScreenCount == 1)
-                {
-                    manager.RequestScreenConfig(ScreenConfig.PlayerCapture);
-                    LoadInSpecificTarget(manager, 1, summary, screenDescriptor);
-                }
+                // We load a camera on an empty screen, 
+                // either for auto-launch or manually.
+                // If we are auto-launching we keep the incoming descriptor created from the window.
+                // If we are loading on empty in the middle of the session, the descriptor should
+                // have been set up with the backup descriptor from the window, or as a last resort,
+                // the default descriptor. So we also keep the incoming one.
+                // See ScreenManager.DoLoadCameraInScreen().
             }
+
+            captureScreen.ConfigureScreen(screenDescriptor);
+            captureScreen.LoadCamera(summary);
+
+            manager.OrganizeScreens();
+            manager.OrganizeCommonControls();
+            manager.OrganizeMenus();
         }
-
     }
 }
