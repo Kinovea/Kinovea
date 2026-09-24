@@ -2030,24 +2030,25 @@ namespace Kinovea.ScreenManager
                     maxAge, 
                     minAge, 
                     this.delay);
-
-                // Final clamp to be sure.
-                maxAge = Math.Min(maxAge, delayer.SafeCapacity - 1);
-                minAge = Math.Max(minAge, 0);
             }
             else
             {
                 // Pause-and-browse recording.
-                // Delay is not considered.
-                // Always take the section between the most recent frame until max allowed recording duration.
-                // Or the whole buffer if no max duration is set.
+                // Take the section that starts at the displayed delayed frame and goes for the recording seconds.
+                // This allows the user to browse the buffer and select the section they want to save.
+                // If there is no recording duration, save the whole buffer.
                 if (maxRecordingSeconds > 0)
                 {
-                    maxAge = Math.Min(maxAge, SecondsToAge(maxRecordingSeconds) - 1);
+                    maxAge = delay;
+                    minAge = Math.Max(delay - SecondsToAge(maxRecordingSeconds), 0);
                 }
-
-                log.DebugFormat("Recording delay buffer while the camera is paused. Min age:{0}, Max age:{1}.", minAge, maxAge);
+                
+                log.DebugFormat("Pause and browse recording: maxAge:{0} -> minAge:{1}", maxAge, minAge);
             }
+
+            // Final clamp to be sure.
+            maxAge = Math.Min(maxAge, delayer.SafeCapacity - 1);
+            minAge = Math.Max(minAge, 0);
 
             // Actual saving of the frames.
             Frame delayedFrame = new Frame(imageDescriptor.BufferSize);
