@@ -28,14 +28,12 @@ namespace Kinovea.Services
     {
         public readonly string Path;
         public readonly List<string> Files;
-        public readonly bool IsShortcuts;
         public readonly bool DoRefresh;
 
-        public CurrentDirectoryChangedEventArgs(string path, List<string> files, bool isShortcuts, bool doRefresh)
+        public CurrentDirectoryChangedEventArgs(string path, List<string> files, bool doRefresh)
         {
             this.Path = path;
             this.Files = files;
-            this.IsShortcuts = isShortcuts;
             this.DoRefresh = doRefresh;
         }
     }

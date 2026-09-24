@@ -43,13 +43,11 @@ namespace Kinovea.ScreenManager
 
         public ViewerSelector()
         {
-            ViewerSelectorOption optionFiles = new ViewerSelectorOption(Properties.Resources.explorer_video, "File system", BrowserContentType.Files);
-            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(Properties.Resources.star, "Shortcuts", BrowserContentType.Shortcuts);
+            ViewerSelectorOption optionFiles = new ViewerSelectorOption(Properties.Resources.explorer_video, "File system", BrowserContentType.FileSystem);
             ViewerSelectorOption optionCameras = new ViewerSelectorOption(Properties.Resources.webcam2b_16, "Cameras", BrowserContentType.Cameras);
 
             List<ViewerSelectorOption> options = new List<ViewerSelectorOption>();
             options.Add(optionFiles);
-            options.Add(optionShortcuts);
             options.Add(optionCameras);
 
             int defaultSelection = 0;

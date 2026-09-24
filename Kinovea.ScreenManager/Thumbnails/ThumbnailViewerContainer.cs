@@ -41,9 +41,8 @@ namespace Kinovea.ScreenManager
         private string path;
         private List<string> files = new List<string>();
         private bool showingScreen = false;
-        private BrowserContentType currentViewerType = BrowserContentType.Files;
+        private BrowserContentType currentViewerType = BrowserContentType.FileSystem;
         private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles("[files]");
-        private ThumbnailViewerFiles viewerShortcuts = new ThumbnailViewerFiles("[shortcuts]");
         private ThumbnailViewerCameras viewerCameras = new ThumbnailViewerCameras();
         private UserControl viewer;
         private SizeSelector sizeSelector = new SizeSelector();
@@ -56,7 +55,7 @@ namespace Kinovea.ScreenManager
             Populate();
             
             NotificationCenter.BeforeLoadVideo += NotificationCenter_BeforeLoadVideo;
-            NotificationCenter.CurrentDirectoryChanged += NotificationCenter_CurrentDirectoryChanged;
+            NotificationCenter.BrowserContentUpdated += NotificationCenter_CurrentDirectoryChanged;
             NotificationCenter.BrowserContentTypeChanged += NotificationCenter_ExplorerTabChanged;
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
@@ -67,11 +66,6 @@ namespace Kinovea.ScreenManager
             viewerFiles.BeforeLoad += Viewer_BeforeLoad;
             viewerFiles.ProgressChanged += Viewer_ProgressChanged;
             viewerFiles.AfterLoad += Viewer_AfterLoad;
-
-            viewerShortcuts.FileLoadAsked += Viewer_FileLoadAsked;
-            viewerShortcuts.BeforeLoad += Viewer_BeforeLoad;
-            viewerShortcuts.ProgressChanged += Viewer_ProgressChanged;
-            viewerShortcuts.AfterLoad += Viewer_AfterLoad;
 
             viewerCameras.BeforeLoad += Viewer_BeforeLoad;
             viewerCameras.ProgressChanged += Viewer_ProgressChanged;
@@ -103,7 +97,6 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             viewerFiles.RefreshUICulture();
-            viewerShortcuts.RefreshUICulture();
             viewerCameras.RefreshUICulture();
         }
 
@@ -117,7 +110,6 @@ namespace Kinovea.ScreenManager
 
             log.DebugFormat("Hiding thumbnails panel.");
             viewerFiles.CancelLoading();
-            viewerShortcuts.CancelLoading();
             viewerCameras.SetHidden();
             this.Visible = false;
             this.showingScreen = true;
@@ -134,10 +126,8 @@ namespace Kinovea.ScreenManager
 
             this.Cursor = Cursors.WaitCursor;
             
-            if (currentViewerType == BrowserContentType.Files)
+            if (currentViewerType == BrowserContentType.FileSystem)
                 viewerFiles.CurrentDirectoryChanged(path, files);
-            else if (currentViewerType == BrowserContentType.Shortcuts)
-                viewerShortcuts.CurrentDirectoryChanged(path, files);
             else if(currentViewerType == BrowserContentType.Cameras)
                 viewerCameras.Unhide();
                 
@@ -154,7 +144,7 @@ namespace Kinovea.ScreenManager
             if (viewer == null)
                 return "";
 
-            if (currentViewerType == BrowserContentType.Files || currentViewerType == BrowserContentType.Shortcuts)
+            if (currentViewerType == BrowserContentType.FileSystem)
                 return path;
             else
                 return "Camera list";
@@ -186,10 +176,7 @@ namespace Kinovea.ScreenManager
             if (currentViewerType == BrowserContentType.Cameras)
                 return;
 
-            if (e.IsShortcuts)
-                viewerShortcuts.CurrentDirectoryChanged(path, files);
-            else
-                viewerFiles.CurrentDirectoryChanged(path, files);
+            viewerFiles.CurrentDirectoryChanged(path, files);
         }
 
         private void CameraTypeManager_CamerasDiscovered(object sender,  CamerasDiscoveredEventArgs e)
@@ -252,17 +239,15 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void UpdateThumbnailsSize()
         {
-            if (currentViewerType == BrowserContentType.Files)
+            if (currentViewerType == BrowserContentType.FileSystem)
                 viewerFiles.UpdateThumbnailsSize(sizeSelector.SelectedSize);
-            else if (currentViewerType == BrowserContentType.Shortcuts)
-                viewerShortcuts.UpdateThumbnailsSize(sizeSelector.SelectedSize);
             else
                 viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
         }
 
         /// <summary>
         /// Switch to the correct type of viewer.
-        /// For files and shortcuts this does not trigger any loading operation.
+        /// For files this does not trigger any loading operation.
         /// For cameras it starts the discovery process (only if we are visible).
         /// </summary>
         private void SwitchContent(BrowserContentType viewerType)
@@ -277,16 +262,10 @@ namespace Kinovea.ScreenManager
             
             switch(viewerType)
             {
-                case BrowserContentType.Files:
+                case BrowserContentType.FileSystem:
                     {
                         viewerFiles.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerFiles;
-                        break;
-                    }
-                case BrowserContentType.Shortcuts:
-                    {
-                        viewerShortcuts.UpdateThumbnailsSize(sizeSelector.SelectedSize);
-                        viewer = viewerShortcuts;
                         break;
                     }
                 case BrowserContentType.Cameras:
@@ -309,15 +288,10 @@ namespace Kinovea.ScreenManager
         }
         private void ClearContent()
         {
-            if(currentViewerType == BrowserContentType.Files)
+            if(currentViewerType == BrowserContentType.FileSystem)
             {
                 viewerFiles.CancelLoading();
                 viewerFiles.Clear();
-            }
-            else if(currentViewerType == BrowserContentType.Shortcuts)
-            {
-                viewerShortcuts.CancelLoading();
-                viewerShortcuts.Clear();
             }
             else
             {

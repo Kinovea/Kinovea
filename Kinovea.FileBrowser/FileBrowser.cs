@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.Services;
 
-// Note: this assembly is only about the side panel for explorer tree and shortcuts tree.
+// Note: this assembly is only about the navigation pane for the file system tree view and cameras.
 // The visual explorer with animated icons is part of ScreenManager assembly.
 
 namespace Kinovea.FileBrowser

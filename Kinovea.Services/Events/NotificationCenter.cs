@@ -77,13 +77,13 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Event raised by the naviagtion pane when the directory was changed and the file list must 
-        /// be synchronized to the thumbnails viewer.
+        /// Event raised by the naviagtion pane when the directory was changed and the 
+        /// browsed content should be synchronized to the thumbnails viewer.
         /// </summary>
-        public static EventHandler<CurrentDirectoryChangedEventArgs> CurrentDirectoryChanged;
-        public static void RaiseCurrentDirectoryChanged(string path, List<string> files, bool isShortcuts, bool doRefresh)
+        public static EventHandler<CurrentDirectoryChangedEventArgs> BrowserContentUpdated;
+        public static void RaiseBrowserContentUpdated(string path, List<string> files, bool doRefresh)
         {
-            CurrentDirectoryChanged?.Invoke(null, new CurrentDirectoryChangedEventArgs(path, files, isShortcuts, doRefresh));
+            BrowserContentUpdated?.Invoke(null, new CurrentDirectoryChangedEventArgs(path, files, doRefresh));
         }
 
         /// <summary>

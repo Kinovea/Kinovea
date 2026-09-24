@@ -114,15 +114,6 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Horizontal splitter between folders and files in the shortcuts explorer tab.
-        /// </summary>
-        public float ShortcutsFilesSplitterRatio
-        {
-            get { return shortcutsFilesSplitterRatio; }
-            set { shortcutsFilesSplitterRatio = value; }
-        }
-
-        /// <summary>
         /// Active tab in the file explorer panel.
         /// </summary>
         public BrowserContentType ActiveTab
@@ -174,8 +165,7 @@ namespace Kinovea.Services
         private FormWindowState windowState = FormWindowState.Maximized;
         private Rectangle windowRectangle;
         private float explorerFilesSplitterRatio = 0.25f;
-        private float shortcutsFilesSplitterRatio = 0.25f;
-        private BrowserContentType activeTab = BrowserContentType.Files;
+        private BrowserContentType activeTab = BrowserContentType.FileSystem;
         private bool dualScreenVerticalLayout = false;
         private float dualScreenSplitterRatio = 0.5f;
 
@@ -232,7 +222,6 @@ namespace Kinovea.Services
             writer.WriteElementString("WindowState", windowState.ToString());
             writer.WriteElementString("WindowRectangle", XmlHelper.WriteRectangleF(windowRectangle));
             writer.WriteElementString("ExplorerFilesSplitterRatio", XmlHelper.WriteFloat(explorerFilesSplitterRatio));
-            writer.WriteElementString("ShortcutsFilesSplitterRatio", XmlHelper.WriteFloat(shortcutsFilesSplitterRatio));
             writer.WriteElementString("ActiveTab", activeTab.ToString());
             writer.WriteElementString("DualScreenVerticalLayout", XmlHelper.WriteBoolean(dualScreenVerticalLayout));
             writer.WriteElementString("DualScreenSplitterRatio", XmlHelper.WriteFloat(dualScreenSplitterRatio));
@@ -285,13 +274,8 @@ namespace Kinovea.Services
                         if (explorerFilesSplitterRatio <= 0)
                             explorerFilesSplitterRatio = 0.25f;
                         break;
-                    case "ShortcutsFilesSplitterRatio":
-                        shortcutsFilesSplitterRatio = XmlHelper.ParseFloat(reader.ReadElementContentAsString());
-                        if (explorerFilesSplitterRatio <= 0)
-                            explorerFilesSplitterRatio = 0.25f;
-                        break;
                     case "ActiveTab":
-                        activeTab = XmlHelper.ParseEnum<BrowserContentType>(reader.ReadElementContentAsString(), BrowserContentType.Files);
+                        activeTab = XmlHelper.ParseEnum<BrowserContentType>(reader.ReadElementContentAsString(), BrowserContentType.FileSystem);
                         break;
                     case "DualScreenVerticalLayout":
                         dualScreenVerticalLayout = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

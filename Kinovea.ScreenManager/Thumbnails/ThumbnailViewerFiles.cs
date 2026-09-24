@@ -33,10 +33,6 @@ using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// A thumbnail viewer for files.
-    /// Used for explorer and shortcuts content.
-    /// </summary>
     public partial class ThumbnailViewerFiles : KinoveaControl
     {
         #region Events

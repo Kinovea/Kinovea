@@ -27,8 +27,7 @@ namespace Kinovea.Services
     /// </summary>
     public enum BrowserContentType
     {
-    	Files,
-    	Shortcuts,
+    	FileSystem,
     	Cameras
     }
 }

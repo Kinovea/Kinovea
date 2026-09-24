@@ -48,9 +48,7 @@ namespace Kinovea.FileBrowser
         #region Members
 
         private BrowserTreeController explorerTree;
-        private BrowserTreeController shortcutsTree;
 
-        private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
         private bool isClosing = false;
         
@@ -100,7 +98,6 @@ namespace Kinovea.FileBrowser
 
             // Restore UI state.
             splitExplorerFiles.SplitterDistance = (int)(splitExplorerFiles.Height * WindowManager.ActiveWindow.ExplorerFilesSplitterRatio);
-            splitShortcutsFiles.SplitterDistance = (int)(splitShortcutsFiles.Height * WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio);
             
             // Build the tree view.
             explorerTree = new BrowserTreeController(tvExplorer);
@@ -109,17 +106,12 @@ namespace Kinovea.FileBrowser
             explorerTree.Build(shortcutLocations);
             explorerTree.LocationSelected += ExplorerTree_LocationSelected;
 
-            // Legacy shortcuts tree view.
-            shortcutsTree = new BrowserTreeController(tvShortcuts);
-
             PrepareCameraListView();
             BuildContextMenu();
 
             // Hook events from UI
             splitExplorerFiles.SplitterMoved += Splitters_SplitterMoved;
-            splitShortcutsFiles.SplitterMoved += Splitters_SplitterMoved;
             lvExplorer.ItemDrag += listView_ItemDrag;
-            lvShortcuts.ItemDrag += listView_ItemDrag;
             lvCaptured.ItemDrag += listView_ItemDrag;
 
             // Hook events from other modules.
@@ -187,7 +179,7 @@ namespace Kinovea.FileBrowser
             mnuLocateFile.Image = Properties.Resources.folder_explore;
             mnuDeleteFile.Image = Properties.Resources.delete;
 
-            mnuLaunchFile.Click += (s, e) => CommandLaunch();
+            mnuLaunchFile.Click += (s, e) => CommandLaunchVideo();
             mnuLocateFile.Click += mnuLocate_Click;
             mnuDeleteFile.Click += (s, e) => CommandDelete();
             
@@ -329,10 +321,9 @@ namespace Kinovea.FileBrowser
                 // Publish legacy event for the thumbnail viewer.
                 string folderPath = snapshot.Location.Path;
                 List<string> files = snapshot.Items.Select(i => i.Path).ToList();
-                bool isShortcuts = false;
                 bool doRefresh = true;
 
-                NotificationCenter.RaiseCurrentDirectoryChanged(folderPath, files, isShortcuts, doRefresh);
+                NotificationCenter.RaiseBrowserContentUpdated(folderPath, files, doRefresh);
                 NotificationCenter.RaiseUpdateStatus();
             }
 
@@ -419,7 +410,7 @@ namespace Kinovea.FileBrowser
                 log.DebugFormat("do not refresh thumbnails");
             }
 
-            if (activeTab == BrowserContentType.Files)
+            if (activeTab == BrowserContentType.FileSystem)
             {
                 NavigateTo(currentLocation);
             }
@@ -433,7 +424,6 @@ namespace Kinovea.FileBrowser
         public void RefreshUICulture()
         {
             tabPageClassic.Text = "";
-            tabPageShortcuts.Text = "";
             tabPageCameras.Text = "";
 
             btnManual.Text = FileBrowserLang.FormCameraWizard_Title;
@@ -459,7 +449,6 @@ namespace Kinovea.FileBrowser
             // ToolTips
             //ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
             ttTabs.SetToolTip(tabPageClassic, Kinovea.FileBrowser.Languages.FileBrowserLang.navPane_FileSystem);
-            ttTabs.SetToolTip(tabPageShortcuts, Kinovea.FileBrowser.Languages.FileBrowserLang.tabShortcuts);
             ttTabs.SetToolTip(tabPageCameras, Kinovea.FileBrowser.Languages.FileBrowserLang.tabCameras);
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
         }
@@ -469,8 +458,6 @@ namespace Kinovea.FileBrowser
         /// </summary>
         private void ReloadShortcuts()
         {
-            log.DebugFormat("ReloadShortcuts");
-
             var shortcuts = PreferencesManager.FileExplorerPreferences.ShortcutFolders;
             List<BrowserLocation> shortcutLocations = shortcuts.Select(s => new BrowserLocation(s.Path)).ToList();
             explorerTree.UpdateShortcuts(shortcutLocations);
@@ -510,7 +497,6 @@ namespace Kinovea.FileBrowser
                 return;
 
             WindowManager.ActiveWindow.ExplorerFilesSplitterRatio = (float)splitExplorerFiles.SplitterDistance / splitExplorerFiles.Height;
-            WindowManager.ActiveWindow.ShortcutsFilesSplitterRatio = (float)splitShortcutsFiles.SplitterDistance / splitShortcutsFiles.Height;
             WindowManager.SaveActiveWindow();
         }
 
@@ -1002,7 +988,7 @@ namespace Kinovea.FileBrowser
             {
                 case BrowserContentType.Cameras:
                     return lvCaptured;
-                case BrowserContentType.Files:
+                case BrowserContentType.FileSystem:
                 default:
                     return lvExplorer;
             }
@@ -1183,7 +1169,7 @@ namespace Kinovea.FileBrowser
                     // TODO.
                     break;
                 case FileExplorerCommands.LaunchSelected:
-                    CommandLaunch();
+                    CommandLaunchVideo();
                     break;
                 case FileExplorerCommands.DeleteSelected:
                     CommandDelete();
@@ -1195,24 +1181,12 @@ namespace Kinovea.FileBrowser
             return true;
         }
 
-        private void CommandLaunch()
+        private void CommandLaunchVideo()
         {
-            ListView lv = GetActiveListView();
-            LaunchSelectedVideo(lv);
-        }
-
-        private ListView GetActiveListView()
-        {
-            switch (activeTab)
-            {
-                case BrowserContentType.Shortcuts:
-                    return lvShortcuts;
-                case BrowserContentType.Cameras:
-                    return lvCaptured;
-                case BrowserContentType.Files:
-                default:
-                    return lvExplorer;
-            }
+            ListView lv = GetFileListview();
+            string path = GetSelectedVideoPath(lv);
+            if (path != null)
+                NotificationCenter.RaiseLoadVideoAsked(path, -1);
         }
 
         private string GetSelectedVideoPath(ListView lv)
@@ -1221,13 +1195,6 @@ namespace Kinovea.FileBrowser
                 return null;
 
             return lv.SelectedItems[0].Tag as string;
-        }
-
-        private void LaunchSelectedVideo(ListView lv)
-        {
-            string path = GetSelectedVideoPath(lv);
-            if (path != null)
-                NotificationCenter.RaiseLoadVideoAsked(path, -1);
         }
 
         private void CommandDelete()

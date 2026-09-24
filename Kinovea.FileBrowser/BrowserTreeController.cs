@@ -36,8 +36,11 @@ namespace Kinovea.FileBrowser
             tv.AllowDrop = false;
             tv.ItemHeight = 20;
             tv.ShowLines = false;
-            tv.FullRowSelect = true;
-            tv.HotTracking = true;
+            
+            tv.FullRowSelect = true;    // Changes the width of the highlight.
+            tv.HotTracking = true;      // Node under the mouse is highlighted.
+            tv.HideSelection = false;   // Highlight selected item even if the selection is programmatic.
+
             tv.Indent = 20;
             tv.KeyDown += (s, e) =>
             {

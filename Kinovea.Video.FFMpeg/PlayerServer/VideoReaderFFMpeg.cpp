@@ -287,7 +287,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
     
     AVFormatContext* formatCtx = avformat_alloc_context();
 
-    // If we are opening the file just to extract thumbnails we take some shortcuts.
+    // If we are opening the file just to extract thumbnails we cut some corners.
     // - Try to avoid calling avformat_find_stream_info and look for video stream manually.
     // - For the case where we can't do that, use limited probing settings.
     // - Disable multithreading which can increase buffering and latency, 

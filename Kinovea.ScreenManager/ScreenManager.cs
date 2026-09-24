@@ -2340,7 +2340,7 @@ namespace Kinovea.ScreenManager
             view.ToggleCommonControls();
 
             // Reset synchronization.
-            // This will allow the shortcuts to only be routed to the active screen if the dual controls aren't visible.
+            // This will allow the keyboard shortcuts to only be routed to the active screen if the dual controls aren't visible.
             ResetSync();
         }
         #endregion
