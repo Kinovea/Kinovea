@@ -43,7 +43,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private string identifier;
         private ExplorerThumbSize thumbSize = ExplorerThumbSize.Medium;
         private List<SummaryLoader> loaders = new List<SummaryLoader>();
         private List<ThumbnailFile> thumbnails = new List<ThumbnailFile>();
@@ -76,11 +75,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Construction/Destruction
-        public ThumbnailViewerFiles(string identifier)
+        public ThumbnailViewerFiles()
         {
             log.Debug("Constructing ThumbnailViewerFiles");
             
-            this.identifier = identifier;
             InitializeComponent();
             RefreshUICulture();
             this.Dock = DockStyle.Fill;
@@ -175,7 +173,7 @@ namespace Kinovea.ScreenManager
             // It is not clear that this is needed.
             // Currently we only come here when changing tabs.
 
-            log.DebugFormat("Clearing thumbnails from {0}", identifier);
+            log.DebugFormat("Clearing thumbnails.");
             selectedThumbnail = null;
             NotificationCenter.RaiseFileSelected(this, null);
 

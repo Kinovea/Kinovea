@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
         private BrowserContentSnapshot browserContent;
         private bool showingScreen = false;
         private BrowserContentType currentViewerType = BrowserContentType.FileSystem;
-        private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles("[files]");
+        private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles();
         private ThumbnailViewerCameras viewerCameras = new ThumbnailViewerCameras();
         private UserControl viewer;
         private SizeSelector sizeSelector = new SizeSelector();
@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
             viewerCameras.ProgressChanged += Viewer_ProgressChanged;
             viewerCameras.AfterLoad += Viewer_AfterLoad;
 
-            ShowHideAddressBar(false);
+            ShowHideAddressBar(true);
             UpdateThumbnailsSize();
 
             this.Hotkeys = HotkeySettingsManager.ActiveBindings.GetCommandBindings("ThumbnailViewerContainer");
