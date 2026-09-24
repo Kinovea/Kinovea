@@ -1082,42 +1082,6 @@ namespace Kinovea.ScreenManager
             return (index >= 0 && index < screenList.Count) ? screenList[index] : null;
         }
 
-        public void RemoveFirstEmpty()
-        {
-            foreach (AbstractScreen screen in screenList)
-            {
-                if (screen.Full)
-                    continue;
-
-                RemoveScreen(screen);
-                break;
-            }
-
-            AfterRemoveScreen();
-        }
-        public void RemoveScreen(AbstractScreen screen)
-        {
-            RemoveScreenEventHandlers(screen);
-
-            screen.BeforeClose();
-            screenList.Remove(screen);
-            screen.AfterClose();
-
-            AfterRemoveScreen();
-        }
-        private void AfterRemoveScreen()
-        {
-            if (screenList.Count > 0)
-                SetActiveScreen(screenList[0]);
-            else
-                activeScreen = null;
-
-            foreach (PlayerScreen p in playerScreens)
-                p.Synched = false;
-
-            IdentifyScreens();
-        }
-
         public void SwapScreens()
         {
             if (screenList.Count != 2)
@@ -2196,7 +2160,7 @@ namespace Kinovea.ScreenManager
         }
         private void CloseFile(int screenIndex)
         {
-            ScreenRemover.RemoveScreen(this, screenIndex);
+            RemoveScreenAt(screenIndex);
             OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
@@ -2403,428 +2367,29 @@ namespace Kinovea.ScreenManager
         {
             NotificationCenter.RaiseToggleNavigationPane();
         }
-
         private void mnuExplorer_OnClick(object sender, EventArgs e)
         {
-            // Remove all screens.
-            if (screenList.Count <= 0)
-                return;
-
-            if (ScreenRemover.RemoveScreen(this, 0))
-            {
-                // Second screen is now in [0] spot.
-                if (screenList.Count > 0)
-                    ScreenRemover.RemoveScreen(this, 0);
-            }
-
-            OrganizeScreens();
-            OrganizeCommonControls();
-            OrganizeMenus();
+            RequestScreenConfig(ScreenConfig.Explorer);
         }
         private void mnuOnePlayerOnClick(object sender, EventArgs e)
         {
-            //------------------------------------------------------------
-            // - Reorganize the list so it conforms to the asked combination.
-            // - Display the new list.
-            //
-            // Here : One player screen.
-            //------------------------------------------------------------
-
-            switch (screenList.Count)
-            {
-                case 0:
-                    {
-                        AddPlayerScreen();
-                        break;
-                    }
-                case 1:
-                    {
-                        if(screenList[0] is CaptureScreen)
-                        {
-                            // Currently : 1 capture. -> remove and add a player.
-                            ScreenRemover.RemoveScreen(this, 0);
-                            AddPlayerScreen();
-                        }
-                        else
-                        {
-                            // Currently : 1 player. -> do nothing.
-                        }
-                        break;
-                    }
-                case 2:
-                    {
-                        // We need to decide which screen(s) to remove.
-                        // Possible cases :
-                        // [capture][capture] -> remove both and add player.
-                        // [capture][player] -> remove capture.
-                        // [player][capture] -> remove capture.
-                        // [player][player] -> depends on emptiness.
-
-                        if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [capture][capture] -> remove both and add player.
-                            ScreenRemover.RemoveScreen(this, 0);
-                            ScreenRemover.RemoveScreen(this, 0);
-                            AddPlayerScreen();
-                        }
-                        else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
-                        {
-                            // [capture][player] -> remove capture.
-                            ScreenRemover.RemoveScreen(this, 0);
-                        }
-                        else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [player][capture] -> remove capture.
-                            ScreenRemover.RemoveScreen(this, 1);
-                        }
-                        else
-                        {
-                            //---------------------------------------------
-                            // [player][player] -> depends on emptiness :
-                            //
-                            // [empty][full] -> remove empty.
-                            // [full][full] -> remove second one (right).
-                            // [full][empty] -> remove empty (right).
-                            // [empty][empty] -> remove second one (right).
-                            //---------------------------------------------
-
-                            if(!screenList[0].Full && screenList[1].Full)
-                                ScreenRemover.RemoveScreen(this, 0);
-                            else
-                                ScreenRemover.RemoveScreen(this, 1);
-                        }
-                        break;
-                    }
-                default:
-                    break;
-            }
-
-            OrganizeScreens();
-            OrganizeCommonControls();
-            OrganizeMenus();
+            RequestScreenConfig(ScreenConfig.Player);
         }
         private void mnuTwoPlayersOnClick(object sender, EventArgs e)
         {
-            //------------------------------------------------------------
-            // - Reorganize the list so it conforms to the asked combination.
-            // - Display the new list.
-            //
-            // Here : Two player screens.
-            //------------------------------------------------------------
-
-            switch (screenList.Count)
-            {
-                case 0:
-                    {
-                        // Currently : 0 screens. -> add two players.
-                        // We use two different commands to keep the undo history working.
-                        AddPlayerScreen();
-                        AddPlayerScreen();
-                        break;
-                    }
-                case 1:
-                    {
-                        if(screenList[0] is CaptureScreen)
-                        {
-                            // Currently : 1 capture. -> remove and add 2 players.
-                            ScreenRemover.RemoveScreen(this, 0);
-                            AddPlayerScreen();
-                            AddPlayerScreen();
-                        }
-                        else
-                        {
-                            // Currently : 1 player. -> add another.
-                            AddPlayerScreen();
-                        }
-                        break;
-                    }
-                case 2:
-                    {
-                        // We need to decide which screen(s) to remove.
-                        // Possible cases :
-                        // [capture][capture] -> remove both and add two players.
-                        // [capture][player] -> remove capture and add player.
-                        // [player][capture] -> remove capture and add player.
-                        // [player][player] -> do nothing.
-
-                        if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [capture][capture] -> remove both and add two players.
-                            ScreenRemover.RemoveScreen(this, 0);
-                            ScreenRemover.RemoveScreen(this, 0);
-                            AddPlayerScreen();
-                            AddPlayerScreen();
-                        }
-                        else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
-                        {
-                            // [capture][player] -> remove capture and add player.
-                            ScreenRemover.RemoveScreen(this, 0);
-                            AddPlayerScreen();
-                        }
-                        else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [player][capture] -> remove capture and add player.
-                            ScreenRemover.RemoveScreen(this, 1);
-                            AddPlayerScreen();
-                        }
-                        else
-                        {
-                            // [player][player] -> do nothing.
-                        }
-
-                        break;
-                    }
-                default:
-                    break;
-            }
-
-            OrganizeScreens();
-            OrganizeCommonControls();
-            OrganizeMenus();
+            RequestScreenConfig(ScreenConfig.PlayerPlayer);
         }
         private void mnuOneCaptureOnClick(object sender, EventArgs e)
         {
-            //------------------------------------------------------------
-            // - Reorganize the list so it conforms to the asked combination.
-            // - Display the new list.
-            //
-            // Here : One capture screens.
-            //------------------------------------------------------------
-
-            switch (screenList.Count)
-            {
-                case 0:
-                    {
-                        // Currently : 0 screens. -> add a capture.
-                        AddCaptureScreen();
-                        break;
-                    }
-                case 1:
-                    {
-                        if(screenList[0] is PlayerScreen)
-                        {
-                            // Currently : 1 player. -> remove and add a capture.
-                            if(ScreenRemover.RemoveScreen(this, 0))
-                                AddCaptureScreen();
-                        }
-                        else
-                        {
-                            // Currently : 1 capture. -> do nothing.
-                        }
-                        break;
-                    }
-                case 2:
-                    {
-                        // We need to decide which screen(s) to remove.
-                        // Possible cases :
-                        // [capture][capture] -> depends on emptiness.
-                        // [capture][player] -> remove player.
-                        // [player][capture] -> remove player.
-                        // [player][player] -> remove both and add capture.
-
-                        if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
-                        {
-                            //---------------------------------------------
-                            // [capture][capture] -> depends on emptiness.
-                            //
-                            // [empty][full] -> remove empty.
-                            // [full][full] -> remove second one (right).
-                            // [full][empty] -> remove empty (right).
-                            // [empty][empty] -> remove second one (right).
-                            //---------------------------------------------
-
-                            if(!screenList[0].Full && screenList[1].Full)
-                                ScreenRemover.RemoveScreen(this, 0);
-                            else
-                                ScreenRemover.RemoveScreen(this, 1);
-                        }
-                        else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
-                        {
-                            // [capture][player] -> remove player.
-                            ScreenRemover.RemoveScreen(this, 1);
-                        }
-                        else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [player][capture] -> remove player.
-                            ScreenRemover.RemoveScreen(this, 0);
-                        }
-                        else
-                        {
-                            // remove both and add one capture.
-                            if(ScreenRemover.RemoveScreen(this, 0))
-                            {
-                                // remaining player has moved in [0] spot.
-                                if(ScreenRemover.RemoveScreen(this, 0))
-                                    AddCaptureScreen();
-                            }
-                        }
-                        break;
-                    }
-                default:
-                    break;
-            }
-
-            AfterSharedBufferChange();
-
-            OrganizeScreens();
-            OrganizeCommonControls();
-            OrganizeMenus();
+            RequestScreenConfig(ScreenConfig.Capture);
         }
         private void mnuTwoCapturesOnClick(object sender, EventArgs e)
         {
-            //------------------------------------------------------------
-            // - Reorganize the list so it conforms to the asked combination.
-            // - Display the new list.
-            //
-            // Here : Two capture screens.
-            //------------------------------------------------------------
-
-            switch (screenList.Count)
-            {
-                case 0:
-                    {
-                        // Currently : 0 screens. -> add two capture.
-                        AddCaptureScreen();
-                        AddCaptureScreen();
-                        break;
-                    }
-                case 1:
-                    {
-                        if(screenList[0] is CaptureScreen)
-                        {
-                            // Currently : 1 capture. -> add another.
-                            AddCaptureScreen();
-                        }
-                        else
-                        {
-                            // Currently : 1 player. -> remove and add 2 capture.
-                            if(ScreenRemover.RemoveScreen(this, 0))
-                            {
-                                AddCaptureScreen();
-                                AddCaptureScreen();
-                            }
-                        }
-                        break;
-                    }
-                case 2:
-                    {
-                        // We need to decide which screen(s) to remove.
-                        // Possible cases :
-                        // [capture][capture] -> do nothing.
-                        // [capture][player] -> remove player and add capture.
-                        // [player][capture] -> remove player and add capture.
-                        // [player][player] -> remove both and add 2 capture.
-
-                        if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [capture][capture] -> do nothing.
-                        }
-                        else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
-                        {
-                            // [capture][player] -> remove player and add capture.
-                            if(ScreenRemover.RemoveScreen(this, 1))
-                                AddCaptureScreen();
-                        }
-                        else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [player][capture] -> remove player and add capture.
-                            if(ScreenRemover.RemoveScreen(this, 0))
-                                AddCaptureScreen();
-                        }
-                        else
-                        {
-                            // [player][player] -> remove both and add 2 capture.
-                            if(ScreenRemover.RemoveScreen(this, 0))
-                            {
-                                // remaining player has moved in [0] spot.
-                                if(ScreenRemover.RemoveScreen(this, 0))
-                                {
-                                    AddCaptureScreen();
-                                    AddCaptureScreen();
-                                }
-                            }
-                        }
-
-                        break;
-                    }
-                default:
-                    break;
-            }
-
-            AfterSharedBufferChange();
-
-            OrganizeScreens();
-            OrganizeCommonControls();
-            OrganizeMenus();
+            RequestScreenConfig(ScreenConfig.CaptureCapture);
         }
         private void mnuTwoMixedOnClick(object sender, EventArgs e)
         {
-            //------------------------------------------------------------
-            // - Reorganize the list so it conforms to the asked combination.
-            // - Display the new list.
-            //
-            // Here : Mixed screen. The workspace preset is : [capture][player]
-            //------------------------------------------------------------
-
-            switch (screenList.Count)
-            {
-                case 0:
-                    {
-                        // Currently : 0 screens. -> add a capture and a player.
-                        AddCaptureScreen();
-                        AddPlayerScreen();
-                        break;
-                    }
-                case 1:
-                    {
-                        if(screenList[0] is CaptureScreen)
-                        {
-                            // Currently : 1 capture. -> add a player.
-                            AddPlayerScreen();
-                        }
-                        else
-                        {
-                            // Currently : 1 player. -> add a capture.
-                            AddCaptureScreen();
-                        }
-                        break;
-                    }
-                case 2:
-                    {
-                        // We need to decide which screen(s) to remove/replace.
-
-                        if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [capture][capture] -> remove right and add player.
-                            ScreenRemover.RemoveScreen(this, 1);
-                            AddPlayerScreen();
-                        }
-                        else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
-                        {
-                            // [capture][player] -> do nothing.
-                        }
-                        else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
-                        {
-                            // [player][capture] -> do nothing.
-                        }
-                        else
-                        {
-                            // [player][player] -> remove right and add capture.
-                            if(ScreenRemover.RemoveScreen(this, 1))
-                                AddCaptureScreen();
-                        }
-
-                        break;
-                    }
-                default:
-                    break;
-            }
-
-            AfterSharedBufferChange();
-
-            OrganizeScreens();
-            OrganizeCommonControls();
-            OrganizeMenus();
+            RequestScreenConfig(ScreenConfig.CapturePlayer);
         }
 
         private void mnuVerticalLayout_Click(object sender, EventArgs e)
@@ -2832,7 +2397,6 @@ namespace Kinovea.ScreenManager
             view.ToggleDualScreenOrientation();
             mnuVerticalLayout.Checked = view.IsTopBottomLayout;
         }
-
 
         private void mnuSwapScreensOnClick(object sender, EventArgs e)
         {
@@ -3486,6 +3050,389 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Screen organization
+
+        /// <summary>
+        /// Configure the screen collection to match the requested configuration.
+        /// </summary>
+        public void RequestScreenConfig(ScreenConfig request)
+        {
+            // This is the main screen configuration handling.
+            // going from the current config to the requested one.
+            ScreenConfig current = GetCurrentScreenConfig();
+
+            // Refactoring coming.
+            // Currently we treat the requests as "add/remove".
+            // We will be moving to a "show/hide" model.
+            // Removing a screen will only be done when the user explictly closes it,
+            // in other cases we will just hide the screen in the background.
+            if (current == request)
+                return;
+
+            switch (request)
+            {
+                case ScreenConfig.Explorer:
+                    {
+                        if (RemoveScreenAt(0))
+                        {
+                            // Second screen is now in [0] spot.
+                            if (screenList.Count > 0)
+                                RemoveScreenAt(0);
+                        }
+                        break;
+                    }
+                case ScreenConfig.Player:
+                    {
+                        switch (current)
+                        {
+                            case ScreenConfig.Explorer:
+                                {
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Player:
+                                {
+                                    // [player] -> [player]
+                                    break;
+                                }
+                            case ScreenConfig.Capture:
+                                {
+                                    // [capture] -> [player]
+                                    RemoveScreenAt(0);
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.PlayerPlayer:
+                                {
+                                    //---------------------------------------------
+                                    // [player][player] -> depends on emptiness :
+                                    // [empty][full] -> remove A.
+                                    // [full][full] -> remove B.
+                                    // [full][empty] -> remove B.
+                                    // [empty][empty] -> remove B.
+                                    //---------------------------------------------
+                                    if (!screenList[0].Full && screenList[1].Full)
+                                        RemoveScreenAt(0);
+                                    else
+                                        RemoveScreenAt(1);
+                                    break;
+                                }
+                            case ScreenConfig.CaptureCapture:
+                                {
+                                    // [capture][capture] -> [player].
+                                    RemoveScreenAt(0);
+                                    RemoveScreenAt(0);
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.PlayerCapture:
+                                {
+                                    // [player][capture] -> [player].
+                                    RemoveScreenAt(1);
+                                    break;
+                                }
+                            case ScreenConfig.CapturePlayer:
+                                {
+                                    // [capture][player] -> [player]
+                                    RemoveScreenAt(0);
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+                        break;
+                    }
+                case ScreenConfig.PlayerPlayer:
+                    {
+                        switch (current)
+                        {
+                            case ScreenConfig.Explorer:
+                                {
+                                    // [] -> [player][player]
+                                    // We use two different commands to keep the undo history working.
+                                    AddPlayerScreen();
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Player:
+                                {
+                                    // [player] -> [player][player]
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Capture:
+                                {
+                                    // [capture] -> [player][player]
+                                    RemoveScreenAt(0);
+                                    AddPlayerScreen();
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.CaptureCapture:
+                                {
+                                    // [capture][capture] -> [player][player]
+                                    RemoveScreenAt(0);
+                                    RemoveScreenAt(0);
+                                    AddPlayerScreen();
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.CapturePlayer:
+                                {
+                                    // [capture][player] -> [player][player]
+                                    RemoveScreenAt(0);
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.PlayerCapture:
+                                {
+                                    // [player][capture] -> [player][player]
+                                    RemoveScreenAt(1);
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.PlayerPlayer:
+                            default:
+                                break;
+                        }
+                        break;
+                    }
+                case ScreenConfig.Capture:
+                    {
+                        switch (current)
+                        {
+                            case ScreenConfig.Explorer:
+                                {
+                                    // [] -> [capture].
+                                    AddCaptureScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Player:
+                                {
+                                    // [player] -> [capture]
+                                    if (RemoveScreenAt(0))
+                                        AddCaptureScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Capture:
+                                {
+                                    // [capture] -> [capture]
+                                    break;
+                                }
+                            case ScreenConfig.PlayerPlayer:
+                                {
+                                    // [player][player]-> [capture]
+                                    if (RemoveScreenAt(0))
+                                    {
+                                        // Remaining player has moved in [0] spot.
+                                        if (RemoveScreenAt(0))
+                                            AddCaptureScreen();
+                                    }
+                                    break;
+                                }
+                            case ScreenConfig.CaptureCapture:
+                                {
+                                    //---------------------------------------------
+                                    // [capture][capture] -> [capture]
+                                    //
+                                    // [empty][full]    -> remove A.
+                                    // [full][full]     -> remove B.
+                                    // [full][empty]    -> remove B.
+                                    // [empty][empty]   -> remove B.
+                                    //---------------------------------------------
+                                    int index = (!screenList[0].Full && screenList[1].Full) ? 0 : 1;
+                                    RemoveScreenAt(index);
+                                    break;
+                                }
+                            case ScreenConfig.PlayerCapture:
+                                {
+                                    // [player][capture] -> [capture]
+                                    RemoveScreenAt(0);
+                                    break;
+                                }
+                            case ScreenConfig.CapturePlayer:
+                                {
+                                    // [capture][player] -> [capture]
+                                    RemoveScreenAt(1);
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+                        break;
+                    }
+                case ScreenConfig.CaptureCapture:
+                    {
+                        switch (current)
+                        {
+                            case ScreenConfig.Explorer:
+                                {
+                                    // [] -> [capture][capture]
+                                    AddCaptureScreen();
+                                    AddCaptureScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Player:
+                                {
+                                    // [player] -> [capture][capture]
+                                    if (RemoveScreenAt(0))
+                                    {
+                                        AddCaptureScreen();
+                                        AddCaptureScreen();
+                                    }
+                                    break;
+                                }
+                            case ScreenConfig.Capture:
+                                {
+                                    // [capture] -> [capture][capture]
+                                    AddCaptureScreen();
+                                    break;
+                                }
+                            case ScreenConfig.PlayerPlayer:
+                                {
+                                    // [player][player] -> [capture][capture]
+                                    if (RemoveScreenAt(0))
+                                    {
+                                        // remaining player has moved in [0] spot.
+                                        if (RemoveScreenAt(0))
+                                        {
+                                            AddCaptureScreen();
+                                            AddCaptureScreen();
+                                        }
+                                    }
+                                    break;
+                                }
+                            case ScreenConfig.CaptureCapture:
+                                {
+                                    // [capture][capture] -> [capture][capture]
+                                    break;
+                                }
+                            case ScreenConfig.PlayerCapture:
+                                {
+                                    // [player][capture] -> [capture][capture]
+                                    if (RemoveScreenAt(0))
+                                        AddCaptureScreen();
+                                    break;
+                                }
+                            case ScreenConfig.CapturePlayer:
+                                {
+                                    // [capture][player] -> [capture][capture]
+                                    if (RemoveScreenAt(1))
+                                        AddCaptureScreen();
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+                        break;
+                    }
+                case ScreenConfig.PlayerCapture:
+                case ScreenConfig.CapturePlayer:
+                    {
+                        // Note that we don't differentiate between the two cases, we just make sure we have one of each.
+                        // When in doubt the canonical config is [capture][player].
+                        switch (current)
+                        {
+                            case ScreenConfig.Explorer:
+                                {
+                                    // [] -> [capture][player]
+                                    AddCaptureScreen();
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Player:
+                                {
+                                    // [player] -> [player][capture]
+                                    AddCaptureScreen();
+                                    break;
+                                }
+                            case ScreenConfig.Capture:
+                                {
+                                    // [capture] -> [capture][player]
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.PlayerPlayer:
+                                {
+                                    // [player][player] -> [player][capture]
+                                    if (RemoveScreenAt(1))
+                                        AddCaptureScreen();
+                                    break;
+                                }
+                            case ScreenConfig.CaptureCapture:
+                                {
+                                    // [capture][capture] -> [capture][player]
+                                    RemoveScreenAt(1);
+                                    AddPlayerScreen();
+                                    break;
+                                }
+                            case ScreenConfig.PlayerCapture:
+                                {
+                                    // [player][capture] -> [player][capture]
+                                    break;
+                                }
+                            case ScreenConfig.CapturePlayer:
+                                {
+                                    // [capture][player] -> [capture][player]
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+                        break;
+                    }
+                default:
+                    return;
+            }
+
+            AfterSharedBufferChange();
+            OrganizeScreens();
+            OrganizeCommonControls();
+            OrganizeMenus();
+        }
+
+        /// <summary>
+        /// Get the current screen configuration.
+        /// </summary>
+        private ScreenConfig GetCurrentScreenConfig()
+        {
+            if (screenList.Count == 0)
+            {
+                return ScreenConfig.Explorer;
+            }
+            else if (screenList.Count == 1)
+            {
+                if (screenList[0] is PlayerScreen)
+                {
+                    return ScreenConfig.Player;
+                }
+                else
+                {
+                    return ScreenConfig.Capture;
+                }
+            }
+            else
+            {
+                if (screenList[0] is PlayerScreen && screenList[1] is PlayerScreen)
+                {
+                    return ScreenConfig.PlayerPlayer;
+                }
+                else if (screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
+                {
+                    return ScreenConfig.CaptureCapture;
+                }
+                else if (screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
+                {
+                    return ScreenConfig.PlayerCapture;
+                }
+                else if (screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
+                {
+                    return ScreenConfig.CapturePlayer;
+                }
+            }
+
+            return ScreenConfig.Explorer;
+        }
+
         /// <summary>
         /// Disable synchronization or reset it to the screens' time origins.
         /// This should be called any time the screen list change, working zones change, dual controls visiblity changes.
@@ -3498,13 +3445,15 @@ namespace Kinovea.ScreenManager
             if (view.CommonControlsVisible)
                 dualPlayer.ResetSync();
         }
-        public void AddPlayerScreen()
+
+        private void AddPlayerScreen()
         {
             PlayerScreen screen = new PlayerScreen();
             screen.RefreshUICulture();
             AddScreen(screen);
         }
-        public void AddCaptureScreen()
+        
+        private void AddCaptureScreen()
         {
             CaptureScreen screen = new CaptureScreen();
             if (screenList.Count > 0)
@@ -3514,6 +3463,17 @@ namespace Kinovea.ScreenManager
             AddScreen(screen);
         }
 
+        private void AddScreen(AbstractScreen screen)
+        {
+            // We are about to add a new screen, signal it to a potential existing capture screen for buffer memory management.
+            foreach (CaptureScreen captureScreen in captureScreens)
+                captureScreen.SetShared(true);
+
+            AddScreenEventHandlers(screen);
+            screenList.Add(screen);
+            IdentifyScreens();
+        }
+
         /// <summary>
         /// Find the most appropriate screen to load into.
         /// Must be of the same type, and empty if possible.
@@ -3521,10 +3481,10 @@ namespace Kinovea.ScreenManager
         public int FindTargetScreen(Type type)
         {
             AbstractScreen screen0 = GetScreenAt(0);
-            AbstractScreen screen1 = GetScreenAt(1);
             if (screen0 != null && !screen0.Full && screen0.GetType() == type)
                 return 0;
 
+            AbstractScreen screen1 = GetScreenAt(1);
             if (screen1 != null && !screen1.Full && screen1.GetType() == type)
                 return 1;
 
@@ -3539,16 +3499,55 @@ namespace Kinovea.ScreenManager
             return -1;
         }
 
-        private void AddScreen(AbstractScreen screen)
+        private bool RemoveScreenAt(int index)
         {
-            // We are about to add a new screen, signal it to a potential existing capture screen for buffer memory management.
-            foreach (CaptureScreen captureScreen in captureScreens)
-                captureScreen.SetShared(true);
+            if (index < 0 || index >= screenList.Count)
+                return false;
 
-            AddScreenEventHandlers(screen);
-            screenList.Add(screen);
+            SetAllToInactive();
+
+            AbstractScreen screenToRemove = GetScreenAt(index);
+            bool confirmed = screenToRemove.BeforeUnloadingAnnotations();
+            if (!confirmed)
+                return false;
+
+            RemoveScreen(screenToRemove);
+            return true;
+        }
+
+        private void RemoveScreen(AbstractScreen screen)
+        {
+            RemoveScreenEventHandlers(screen);
+
+            screen.BeforeClose();
+            screenList.Remove(screen);
+            screen.AfterClose();
+
+            AfterScreenRemoved();
+        }
+
+        private void AfterScreenRemoved()
+        {
+            if (screenList.Count > 0)
+            {
+                SetActiveScreen(screenList[0]);
+            }
+            else
+            {
+                activeScreen = null;
+            }
+
+            foreach (PlayerScreen p in playerScreens)
+            {
+                p.Synched = false;
+            }
+
             IdentifyScreens();
         }
+
+        #endregion
+
+        #region Add/Remove screen event handlers
         private void AddScreenEventHandlers(AbstractScreen screen)
         {
             screen.Activated += Screen_Activated;
@@ -3597,12 +3596,10 @@ namespace Kinovea.ScreenManager
             screen.FilterExited -= Player_FilterExited;
             screen.ResetAsked -= Player_ResetAsked;
         }
-
         private void RemoveCaptureScreenEventHandlers(CaptureScreen screen)
         {
             screen.CameraDiscoveryComplete -= Capture_CameraDiscoveryComplete;
         }
-
         #endregion
     }
 }

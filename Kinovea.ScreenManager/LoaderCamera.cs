@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
         {
             if (manager.ScreenCount == 0)
             {
-                manager.AddCaptureScreen();
+                manager.RequestScreenConfig(ScreenConfig.Capture);
                 LoadInSpecificTarget(manager, 0, summary, screenDescriptor);
             }
             else if (manager.ScreenCount == 1)
@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager
                 // We only load the camera if there is room to create a new capture screen, otherwise we do nothing.
                 if (manager.ScreenCount == 1)
                 {
-                    manager.AddCaptureScreen();
+                    manager.RequestScreenConfig(ScreenConfig.PlayerCapture);
                     LoadInSpecificTarget(manager, 1, summary, screenDescriptor);
                 }
             }

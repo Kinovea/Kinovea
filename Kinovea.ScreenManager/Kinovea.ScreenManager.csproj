@@ -377,6 +377,7 @@
     <Compile Include="PlayerScreen\Forms\FormConfigureDrawingName.Designer.cs">
       <DependentUpon>FormConfigureDrawingName.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScreenConfig.cs" />
     <Compile Include="Tracking\Trackability\TrackablePoint.cs" />
     <Compile Include="Variables\CsvTextFieldParser.cs" />
     <Compile Include="Variables\DynamicPathResolver.cs" />
@@ -683,7 +684,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RecoveryManager.cs" />
-    <Compile Include="ScreenRemover.cs" />
     <Compile Include="Thumbnails\FileDetails.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />

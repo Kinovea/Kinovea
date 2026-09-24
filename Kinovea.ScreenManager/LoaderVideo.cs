@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
         {
             if (manager.ScreenCount == 0)
             {
-                manager.AddPlayerScreen();
+                manager.RequestScreenConfig(ScreenConfig.Player);
                 LoadInSpecificTarget(manager, 0, path, screenDescriptor);
             }
             else if (manager.ScreenCount == 1)
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
                 // If there is room to add a second screen, we add a playback screen and load the video there, otherwise, we don't do anything.
                 if (manager.ScreenCount == 1)
                 {
-                    manager.AddPlayerScreen();
+                    manager.RequestScreenConfig(ScreenConfig.CapturePlayer);
                     LoadInSpecificTarget(manager, 1, path, screenDescriptor);
                 }
             }
