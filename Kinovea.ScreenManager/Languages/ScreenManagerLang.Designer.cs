@@ -5108,5 +5108,76 @@ namespace Kinovea.ScreenManager.Languages {
                 return ResourceManager.GetString("VideoFilterLensCalibration_ShowReprojectedCorners", resourceCulture);
             }
         }
+        internal static string dlgExportVideo_Preset {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_Preset", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_Custom {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_Custom", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_Format {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_Format", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_VideoCodec {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_VideoCodec", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_EncodingQuality {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_EncodingQuality", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_EncodingSpeed {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_EncodingSpeed", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_GOPSize {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_GOPSize", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_QualityPerceptuallyLossless {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_QualityPerceptuallyLossless", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_QualityHigh {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_QualityHigh", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_QualityGood {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_QualityGood", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_QualityMedium {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_QualityMedium", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_SpeedFast {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_SpeedFast", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_SpeedMedium {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_SpeedMedium", resourceCulture);
+            }
+        }
+        internal static string dlgExportVideo_SpeedSlow {
+            get {
+                return ResourceManager.GetString("dlgExportVideo_SpeedSlow", resourceCulture);
+            }
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Kinovea.Services;
+﻿using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,44 +31,44 @@ namespace Kinovea.ScreenManager.Exporters.Video
         private void Initialize()
         {
             // TODO: Populate the list of presets.
-            lblPreset.Text = "Preset:";
+            lblPreset.Text = ScreenManagerLang.dlgExportVideo_Preset;
             for (int i = 0; i < ExportProfile.NamedProfilesCount; i++)
             {
                 cbPreset.Items.Add(ExportProfile.ExportProfiles[i].Name);
             }
-            cbPreset.Items.Add("Custom");
+            cbPreset.Items.Add(ScreenManagerLang.dlgExportVideo_Custom);
             cbPreset.SelectedIndex = 0;
 
             // Video containers.
-            lblContainer.Text = "Format:";
+            lblContainer.Text = ScreenManagerLang.dlgExportVideo_Format;
             cbContainer.Items.Add("MP4");
             cbContainer.Items.Add("MKV");
             cbContainer.Items.Add("AVI");
             cbContainer.SelectedIndex = 0;
 
             // Video codecs.
-            lblCodec.Text = "Video codec:";
+            lblCodec.Text = ScreenManagerLang.dlgExportVideo_VideoCodec;
             cbCodec.Items.Add("MJPEG");
             cbCodec.Items.Add("H.264");
             cbCodec.Items.Add("H.265");
             cbCodec.SelectedIndex = 0;
 
             // Encoding Quality
-            lblEncodingQuality.Text = "Encoding quality:";
-            cbEncodingQuality.Items.Add("Perceptually lossless");
-            cbEncodingQuality.Items.Add("High");
-            cbEncodingQuality.Items.Add("Good");
-            cbEncodingQuality.Items.Add("Medium");
+            lblEncodingQuality.Text = ScreenManagerLang.dlgExportVideo_EncodingQuality;
+            cbEncodingQuality.Items.Add(ScreenManagerLang.dlgExportVideo_QualityPerceptuallyLossless);
+            cbEncodingQuality.Items.Add(ScreenManagerLang.dlgExportVideo_QualityHigh);
+            cbEncodingQuality.Items.Add(ScreenManagerLang.dlgExportVideo_QualityGood);
+            cbEncodingQuality.Items.Add(ScreenManagerLang.dlgExportVideo_QualityMedium);
             cbEncodingQuality.SelectedIndex = 1;
 
             // Encoding speed.
-            lblEncodingSpeed.Text = "Encoding speed:";
-            cbEncodingSpeed.Items.Add("Fast");
-            cbEncodingSpeed.Items.Add("Medium");
-            cbEncodingSpeed.Items.Add("Slow");
+            lblEncodingSpeed.Text = ScreenManagerLang.dlgExportVideo_EncodingSpeed;
+            cbEncodingSpeed.Items.Add(ScreenManagerLang.dlgExportVideo_SpeedFast);
+            cbEncodingSpeed.Items.Add(ScreenManagerLang.dlgExportVideo_SpeedMedium);
+            cbEncodingSpeed.Items.Add(ScreenManagerLang.dlgExportVideo_SpeedSlow);
             cbEncodingSpeed.SelectedIndex = 1;
 
-            lblGOPSize.Text = "GOP size:";
+            lblGOPSize.Text = ScreenManagerLang.dlgExportVideo_GOPSize;
         }
 
         public void FillValues(ExportProfile profile, string filename = null)

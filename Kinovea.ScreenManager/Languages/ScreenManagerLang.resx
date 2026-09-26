@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1799,5 +1799,47 @@
   </data>
   <data name="infobar_Drops0" xml:space="preserve">
     <value>Drops:{0}</value>
+  </data>
+  <data name="dlgExportVideo_Preset" xml:space="preserve">
+    <value>Preset:</value>
+  </data>
+  <data name="dlgExportVideo_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="dlgExportVideo_Format" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="dlgExportVideo_VideoCodec" xml:space="preserve">
+    <value>Video codec:</value>
+  </data>
+  <data name="dlgExportVideo_EncodingQuality" xml:space="preserve">
+    <value>Encoding quality:</value>
+  </data>
+  <data name="dlgExportVideo_EncodingSpeed" xml:space="preserve">
+    <value>Encoding speed:</value>
+  </data>
+  <data name="dlgExportVideo_GOPSize" xml:space="preserve">
+    <value>GOP size:</value>
+  </data>
+  <data name="dlgExportVideo_QualityPerceptuallyLossless" xml:space="preserve">
+    <value>Perceptually lossless</value>
+  </data>
+  <data name="dlgExportVideo_QualityHigh" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="dlgExportVideo_QualityGood" xml:space="preserve">
+    <value>Good</value>
+  </data>
+  <data name="dlgExportVideo_QualityMedium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="dlgExportVideo_SpeedFast" xml:space="preserve">
+    <value>Fast</value>
+  </data>
+  <data name="dlgExportVideo_SpeedMedium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="dlgExportVideo_SpeedSlow" xml:space="preserve">
+    <value>Slow</value>
   </data>
 </root>
