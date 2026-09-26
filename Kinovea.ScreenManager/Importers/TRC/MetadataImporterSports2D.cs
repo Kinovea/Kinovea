@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,8 +49,11 @@ namespace Kinovea.ScreenManager
             //string[] head5 = allLines[4].Split(delim);
 
             // Only pick the relevant info and assume the layout from Sports2D, which is also the standard layout.
-            float dataRate = float.Parse(head3[0]);
-            float cameraRate = float.Parse(head3[1]);
+            // TRC files are a fixed ASCII format with '.' as the decimal separator.
+            // Parse with the invariant culture so the import does not break on
+            // locales that use a comma as the decimal separator (de, fr, ...).
+            float dataRate = float.Parse(head3[0], CultureInfo.InvariantCulture);
+            float cameraRate = float.Parse(head3[1], CultureInfo.InvariantCulture);
             int numFrames = int.Parse(head3[2]);
             int numMarkers = int.Parse(head3[3]);
 
@@ -173,8 +177,8 @@ namespace Kinovea.ScreenManager
                 // Parse values.
                 // Coordinate system of Sports2D:
                 // - Y inverted, Values divided by 1000, Z always 0.
-                float x = float.Parse(values[i + 0]) * 1000;
-                float y = float.Parse(values[i + 1]) * (-1000);
+                float x = float.Parse(values[i + 0], CultureInfo.InvariantCulture) * 1000;
+                float y = float.Parse(values[i + 1], CultureInfo.InvariantCulture) * (-1000);
 
                 // Assign the value to the matching point.
                 posture.AssignValue(markers[markerIndex], new PointF(x, y));
