@@ -409,7 +409,7 @@ namespace Kinovea.Services
             writer.WriteElementString("CadenceUnit", cadenceUnit.ToString());
             writer.WriteElementString("CSVDecimalSeparator", csvDecimalSeparator.ToString());
             writer.WriteElementString("ExportSpace", exportSpace.ToString());
-            writer.WriteElementString("ExportImagesInDocuments", exportSpace.ToString());
+            writer.WriteElementString("ExportImagesInDocuments", XmlHelper.WriteBoolean(exportImagesInDocuments));
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
             writer.WriteElementString("DeinterlaceByDefault", XmlHelper.WriteBoolean(deinterlaceByDefault));
             writer.WriteElementString("InteractiveFrameTracker", XmlHelper.WriteBoolean(interactiveFrameTracker));
