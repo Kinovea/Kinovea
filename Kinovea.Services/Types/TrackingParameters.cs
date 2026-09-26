@@ -257,6 +257,14 @@ namespace Kinovea.Services
         }
 
         /// <summary>
+        /// Upper bound for the search window size, whatever the algorithm.
+        /// </summary>
+        public int MaxWindowSize
+        {
+            get { return maxWindowSize; }
+        }
+
+        /// <summary>
         /// Make sure the search window is at least as large as the template window.
         /// </summary>
         private void FitBlockWindow()
