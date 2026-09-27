@@ -121,9 +121,6 @@ namespace Kinovea.ScreenManager
         {
             base.OnPaint(e);
 
-            if (showRecordingIndicator)
-                DrawRecordingIndicator(e.Graphics);
-            
             if(controller.Bitmap == null)
                 return;
                 
@@ -132,6 +129,10 @@ namespace Kinovea.ScreenManager
             DrawImage(e.Graphics);
             DrawKVA(e.Graphics);
             DrawResizers(e.Graphics);
+
+            if (showRecordingIndicator)
+                DrawRecordingIndicator(e.Graphics);
+
             toaster.Draw(e.Graphics);
         }
         private void ConfigureCanvas(Graphics canvas)
