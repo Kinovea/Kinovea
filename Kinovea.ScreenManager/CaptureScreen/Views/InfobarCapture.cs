@@ -24,7 +24,7 @@ namespace Kinovea.ScreenManager
             lblSignal.Text = string.Format("Signal:{0} ({1})", signal, bandwidth);
             lblLoad.Text = string.Format(Languages.ScreenManagerLang.infobar_Load0, load);
             lblDrops.Text = string.Format(Languages.ScreenManagerLang.infobar_Drops0, drops);
-            lblBacklog.Text = string.Format("Queue:{0}", backlog);
+            lblQueue.Text = string.Format("Queue:{0}", backlog);
         }
 
         public void UpdateLoadStatus(LoadStatus status)
