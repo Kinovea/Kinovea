@@ -229,7 +229,7 @@ namespace Kinovea.Root
 
         private void InitPageJumping()
         {
-            tabJumping.Text = "Jumping";
+            tabJumping.Text = "Jump size";
             grpJumping.Text = "Timeline jumping";
 
             lblSmallJump.Text = "Small jump size:";
