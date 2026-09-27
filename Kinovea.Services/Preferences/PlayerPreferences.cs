@@ -338,7 +338,7 @@ namespace Kinovea.Services
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
         private bool interactiveFrameTracker = true;
-        private int workingZoneMemory = 768;
+        private int workingZoneMemory = 1024;
         private InfosFading defaultFading = new InfosFading();
         private bool enablePixelFiltering = true;
         private bool drawOnPlay = true;
