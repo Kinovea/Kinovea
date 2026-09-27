@@ -1606,15 +1606,13 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.IncreaseSpeed1:
                     ChangeSpeed(false, true);
                     break;
-                case PlayerScreenCommands.IncreaseSpeedRoundTo10:
-                case PlayerScreenCommands.IncreaseSpeedRoundTo25:
+                case PlayerScreenCommands.IncreaseSpeed10:
                     ChangeSpeed(true, true);
                     break;
                 case PlayerScreenCommands.DecreaseSpeed1:
                     ChangeSpeed(false, false);
                     break;
-                case PlayerScreenCommands.DecreaseSpeedRoundTo10:
-                case PlayerScreenCommands.DecreaseSpeedRoundTo25:
+                case PlayerScreenCommands.DecreaseSpeed10:
                     ChangeSpeed(true, false);
                     break;
 

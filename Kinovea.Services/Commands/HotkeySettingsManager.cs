@@ -143,12 +143,10 @@ namespace Kinovea.Services
                 make(PlayerScreenCommands.TogglePlay, Keys.Space),
 
                 // Speed control
-                make(PlayerScreenCommands.IncreaseSpeed1, Keys.Control | Keys.Up),
-                make(PlayerScreenCommands.IncreaseSpeedRoundTo10, Keys.Shift | Keys.Up),
-                make(PlayerScreenCommands.IncreaseSpeedRoundTo25, Keys.Up),
-                make(PlayerScreenCommands.DecreaseSpeed1, Keys.Control | Keys.Down),
-                make(PlayerScreenCommands.DecreaseSpeedRoundTo10, Keys.Shift | Keys.Down),
-                make(PlayerScreenCommands.DecreaseSpeedRoundTo25, Keys.Down),
+                make(PlayerScreenCommands.IncreaseSpeed10, Keys.Up),
+                make(PlayerScreenCommands.DecreaseSpeed10, Keys.Down),
+                make(PlayerScreenCommands.IncreaseSpeed1, Keys.Shift | Keys.Up),
+                make(PlayerScreenCommands.DecreaseSpeed1, Keys.Shift | Keys.Down),
 
                 // Frame navigation
                 make(PlayerScreenCommands.GotoPreviousImage, Keys.Left),

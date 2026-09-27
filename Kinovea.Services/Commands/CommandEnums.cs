@@ -61,12 +61,10 @@ namespace Kinovea.Services
         TogglePlay,
 
         // Speed control
+        IncreaseSpeed10,
+        DecreaseSpeed10,
         IncreaseSpeed1,
-        IncreaseSpeedRoundTo10,
-        IncreaseSpeedRoundTo25,
         DecreaseSpeed1,
-        DecreaseSpeedRoundTo10,
-        DecreaseSpeedRoundTo25,
 
         // Frame navigation
         GotoPreviousImage,
