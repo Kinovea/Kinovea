@@ -10,23 +10,15 @@ namespace Kinovea.Services
     public static class MemoryHelper
     {
         /// <summary>
-        /// Returns a reasonable maximum amount of memory usable by memory buffers.
-        /// Each screen will automatically halve this in case of a two-screen setup.
+        /// Returns the total physical memory of the system in megabytes.
         /// </summary>
-        /// <returns></returns>
-        public static int MaxMemoryBuffer()
+        public static int TotalPhysicalMemory()
         {
             // Max allocation of memory is based on bitness and physical memory.
             ulong megabytes = 1024 * 1024;
             ComputerInfo ci = new ComputerInfo();
-            int maxMemory = (int)(ci.TotalPhysicalMemory / megabytes);
-            int thresholdLargeMemory = 3072;
-            int reserve = 2048;
-
-            if (Software.Is32bit || maxMemory < thresholdLargeMemory)
-                return 1024;
-            else
-                return maxMemory - reserve;
+            int total = (int)(ci.TotalPhysicalMemory / megabytes);
+            return total;
         }
     }
 }

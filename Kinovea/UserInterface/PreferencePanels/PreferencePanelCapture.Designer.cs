@@ -66,8 +66,9 @@ namespace Kinovea.Root
       this.lblFramerate = new System.Windows.Forms.Label();
       this.tbFramerate = new System.Windows.Forms.TextBox();
       this.tabMemory = new System.Windows.Forms.TabPage();
-      this.lblMemoryBuffer = new System.Windows.Forms.Label();
-      this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
+      this.lblCameraMemoryDescription = new System.Windows.Forms.Label();
+      this.nudCameraMemory = new System.Windows.Forms.NumericUpDown();
+      this.lblCameraMemory = new System.Windows.Forms.Label();
       this.tabRecording = new System.Windows.Forms.TabPage();
       this.gbHighspeedCameras = new System.Windows.Forms.GroupBox();
       this.btnHighspeedHelp = new System.Windows.Forms.Button();
@@ -139,7 +140,7 @@ namespace Kinovea.Root
       this.tabGeneral.SuspendLayout();
       this.grpFormats.SuspendLayout();
       this.tabMemory.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCameraMemory)).BeginInit();
       this.tabRecording.SuspendLayout();
       this.gbHighspeedCameras.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementFramerate)).BeginInit();
@@ -343,8 +344,9 @@ namespace Kinovea.Root
       // 
       // tabMemory
       // 
-      this.tabMemory.Controls.Add(this.lblMemoryBuffer);
-      this.tabMemory.Controls.Add(this.trkMemoryBuffer);
+      this.tabMemory.Controls.Add(this.lblCameraMemoryDescription);
+      this.tabMemory.Controls.Add(this.nudCameraMemory);
+      this.tabMemory.Controls.Add(this.lblCameraMemory);
       this.tabMemory.Location = new System.Drawing.Point(4, 22);
       this.tabMemory.Name = "tabMemory";
       this.tabMemory.Size = new System.Drawing.Size(482, 296);
@@ -352,27 +354,46 @@ namespace Kinovea.Root
       this.tabMemory.Text = "Memory";
       this.tabMemory.UseVisualStyleBackColor = true;
       // 
-      // lblMemoryBuffer
+      // lblCameraMemoryDescription
       // 
-      this.lblMemoryBuffer.AutoSize = true;
-      this.lblMemoryBuffer.Location = new System.Drawing.Point(15, 30);
-      this.lblMemoryBuffer.Name = "lblMemoryBuffer";
-      this.lblMemoryBuffer.Size = new System.Drawing.Size(221, 13);
-      this.lblMemoryBuffer.TabIndex = 36;
-      this.lblMemoryBuffer.Text = "Memory allocated for capture buffers : {0} MB";
+      this.lblCameraMemoryDescription.Location = new System.Drawing.Point(17, 66);
+      this.lblCameraMemoryDescription.Name = "lblCameraMemoryDescription";
+      this.lblCameraMemoryDescription.Size = new System.Drawing.Size(452, 60);
+      this.lblCameraMemoryDescription.TabIndex = 56;
+      this.lblCameraMemoryDescription.Text = "Description";
       // 
-      // trkMemoryBuffer
+      // nudCameraMemory
       // 
-      this.trkMemoryBuffer.BackColor = System.Drawing.Color.White;
-      this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
-      this.trkMemoryBuffer.Maximum = 1024;
-      this.trkMemoryBuffer.Minimum = 16;
-      this.trkMemoryBuffer.Name = "trkMemoryBuffer";
-      this.trkMemoryBuffer.Size = new System.Drawing.Size(452, 45);
-      this.trkMemoryBuffer.TabIndex = 38;
-      this.trkMemoryBuffer.TickFrequency = 50;
-      this.trkMemoryBuffer.Value = 16;
-      this.trkMemoryBuffer.ValueChanged += new System.EventHandler(this.trkMemoryBuffer_ValueChanged);
+      this.nudCameraMemory.DecimalPlaces = 1;
+      this.nudCameraMemory.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+      this.nudCameraMemory.Location = new System.Drawing.Point(295, 32);
+      this.nudCameraMemory.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+      this.nudCameraMemory.Name = "nudCameraMemory";
+      this.nudCameraMemory.Size = new System.Drawing.Size(45, 20);
+      this.nudCameraMemory.TabIndex = 55;
+      this.nudCameraMemory.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+      this.nudCameraMemory.ValueChanged += new System.EventHandler(this.nudCameraMemory_ValueChanged);
+      // 
+      // lblCameraMemory
+      // 
+      this.lblCameraMemory.AutoSize = true;
+      this.lblCameraMemory.Location = new System.Drawing.Point(17, 36);
+      this.lblCameraMemory.Name = "lblCameraMemory";
+      this.lblCameraMemory.Size = new System.Drawing.Size(166, 13);
+      this.lblCameraMemory.TabIndex = 39;
+      this.lblCameraMemory.Text = "Total capture buffer memory (GB):";
       // 
       // tabRecording
       // 
@@ -1233,7 +1254,7 @@ namespace Kinovea.Root
       this.grpFormats.PerformLayout();
       this.tabMemory.ResumeLayout(false);
       this.tabMemory.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCameraMemory)).EndInit();
       this.tabRecording.ResumeLayout(false);
       this.gbHighspeedCameras.ResumeLayout(false);
       this.gbHighspeedCameras.PerformLayout();
@@ -1263,8 +1284,6 @@ namespace Kinovea.Root
       this.ResumeLayout(false);
 
 		}
-		private System.Windows.Forms.Label lblMemoryBuffer;
-		private System.Windows.Forms.TrackBar trkMemoryBuffer;
         private System.Windows.Forms.TabPage tabMemory;
         private System.Windows.Forms.Label lblImageFormat;
         private System.Windows.Forms.ComboBox cmbImageFormat;
@@ -1349,5 +1368,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.CheckBox chkExportDrawings;
         private System.Windows.Forms.CheckBox chkHighspeedRecording;
         private System.Windows.Forms.Button btnHighspeedHelp;
+        private System.Windows.Forms.Label lblCameraMemory;
+        private System.Windows.Forms.Label lblCameraMemoryDescription;
+        private System.Windows.Forms.NumericUpDown nudCameraMemory;
     }
 }

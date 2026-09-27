@@ -48,8 +48,6 @@ namespace Kinovea.Root
         /// </summary>
         private void InitializeComponent()
         {
-      this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
-      this.lblWorkingZoneMemory = new System.Windows.Forms.Label();
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
       this.lblPlaybackKVA = new System.Windows.Forms.Label();
@@ -57,8 +55,12 @@ namespace Kinovea.Root
       this.btnPlaybackKVA = new System.Windows.Forms.Button();
       this.chkDetectImageSequences = new System.Windows.Forms.CheckBox();
       this.tabMemory = new System.Windows.Forms.TabPage();
+      this.lblCacheMemoryDescription = new System.Windows.Forms.Label();
+      this.nudCacheMemory = new System.Windows.Forms.NumericUpDown();
+      this.lblCacheMemory = new System.Windows.Forms.Label();
       this.cbCacheInTimeline = new System.Windows.Forms.CheckBox();
       this.tabPlayer = new System.Windows.Forms.TabPage();
+      this.chkPreviewScaling = new System.Windows.Forms.CheckBox();
       this.chkHardwareScaling = new System.Windows.Forms.CheckBox();
       this.chkHardwareDecoding = new System.Windows.Forms.CheckBox();
       this.chkLoopPlayback = new System.Windows.Forms.CheckBox();
@@ -73,6 +75,7 @@ namespace Kinovea.Root
       this.lvCommands = new System.Windows.Forms.ListView();
       this.colCommand = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.colKey = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.tbHotkey = new Kinovea.Services.TextboxHotkey();
       this.btnClear = new System.Windows.Forms.Button();
       this.btnApply = new System.Windows.Forms.Button();
       this.grpJumping = new System.Windows.Forms.GroupBox();
@@ -87,12 +90,10 @@ namespace Kinovea.Root
       this.cmbImageFormats = new System.Windows.Forms.ComboBox();
       this.lblAspectRatio = new System.Windows.Forms.Label();
       this.chkDeinterlace = new System.Windows.Forms.CheckBox();
-      this.chkPreviewScaling = new System.Windows.Forms.CheckBox();
-      this.tbHotkey = new Kinovea.Services.TextboxHotkey();
-      ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCacheMemory)).BeginInit();
       this.tabPlayer.SuspendLayout();
       this.tabJumping.SuspendLayout();
       this.grpShortcut.SuspendLayout();
@@ -101,30 +102,6 @@ namespace Kinovea.Root
       ((System.ComponentModel.ISupportInitialize)(this.nudSmallJump)).BeginInit();
       this.tabImage.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // trkMemoryBuffer
-      // 
-      this.trkMemoryBuffer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.trkMemoryBuffer.BackColor = System.Drawing.Color.White;
-      this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
-      this.trkMemoryBuffer.Maximum = 1024;
-      this.trkMemoryBuffer.Minimum = 16;
-      this.trkMemoryBuffer.Name = "trkMemoryBuffer";
-      this.trkMemoryBuffer.Size = new System.Drawing.Size(452, 45);
-      this.trkMemoryBuffer.TabIndex = 35;
-      this.trkMemoryBuffer.TickFrequency = 50;
-      this.trkMemoryBuffer.Value = 512;
-      this.trkMemoryBuffer.ValueChanged += new System.EventHandler(this.trkWorkingZoneMemory_ValueChanged);
-      // 
-      // lblWorkingZoneMemory
-      // 
-      this.lblWorkingZoneMemory.AutoSize = true;
-      this.lblWorkingZoneMemory.Location = new System.Drawing.Point(15, 30);
-      this.lblWorkingZoneMemory.Name = "lblWorkingZoneMemory";
-      this.lblWorkingZoneMemory.Size = new System.Drawing.Size(208, 13);
-      this.lblWorkingZoneMemory.TabIndex = 17;
-      this.lblWorkingZoneMemory.Text = "Memory allocated for frame buffers: {0} MB";
       // 
       // tabSubPages
       // 
@@ -203,9 +180,10 @@ namespace Kinovea.Root
       // 
       // tabMemory
       // 
+      this.tabMemory.Controls.Add(this.lblCacheMemoryDescription);
+      this.tabMemory.Controls.Add(this.nudCacheMemory);
+      this.tabMemory.Controls.Add(this.lblCacheMemory);
       this.tabMemory.Controls.Add(this.cbCacheInTimeline);
-      this.tabMemory.Controls.Add(this.trkMemoryBuffer);
-      this.tabMemory.Controls.Add(this.lblWorkingZoneMemory);
       this.tabMemory.Location = new System.Drawing.Point(4, 22);
       this.tabMemory.Name = "tabMemory";
       this.tabMemory.Padding = new System.Windows.Forms.Padding(3);
@@ -214,9 +192,50 @@ namespace Kinovea.Root
       this.tabMemory.Text = "Memory";
       this.tabMemory.UseVisualStyleBackColor = true;
       // 
+      // lblCacheMemoryDescription
+      // 
+      this.lblCacheMemoryDescription.Location = new System.Drawing.Point(15, 52);
+      this.lblCacheMemoryDescription.Name = "lblCacheMemoryDescription";
+      this.lblCacheMemoryDescription.Size = new System.Drawing.Size(452, 37);
+      this.lblCacheMemoryDescription.TabIndex = 59;
+      this.lblCacheMemoryDescription.Text = "Description";
+      // 
+      // nudCacheMemory
+      // 
+      this.nudCacheMemory.DecimalPlaces = 1;
+      this.nudCacheMemory.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+      this.nudCacheMemory.Location = new System.Drawing.Point(293, 18);
+      this.nudCacheMemory.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+      this.nudCacheMemory.Name = "nudCacheMemory";
+      this.nudCacheMemory.Size = new System.Drawing.Size(45, 20);
+      this.nudCacheMemory.TabIndex = 58;
+      this.nudCacheMemory.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+      this.nudCacheMemory.ValueChanged += new System.EventHandler(this.nudCacheMemory_ValueChanged);
+      // 
+      // lblCacheMemory
+      // 
+      this.lblCacheMemory.AutoSize = true;
+      this.lblCacheMemory.Location = new System.Drawing.Point(15, 22);
+      this.lblCacheMemory.Name = "lblCacheMemory";
+      this.lblCacheMemory.Size = new System.Drawing.Size(176, 13);
+      this.lblCacheMemory.TabIndex = 57;
+      this.lblCacheMemory.Text = "Total playback cache memory (GB):";
+      // 
       // cbCacheInTimeline
       // 
-      this.cbCacheInTimeline.Location = new System.Drawing.Point(18, 115);
+      this.cbCacheInTimeline.Location = new System.Drawing.Point(18, 92);
       this.cbCacheInTimeline.Name = "cbCacheInTimeline";
       this.cbCacheInTimeline.Size = new System.Drawing.Size(369, 20);
       this.cbCacheInTimeline.TabIndex = 36;
@@ -241,6 +260,18 @@ namespace Kinovea.Root
       this.tabPlayer.TabIndex = 4;
       this.tabPlayer.Text = "Player";
       this.tabPlayer.UseVisualStyleBackColor = true;
+      // 
+      // chkPreviewScaling
+      // 
+      this.chkPreviewScaling.Checked = true;
+      this.chkPreviewScaling.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.chkPreviewScaling.Location = new System.Drawing.Point(18, 46);
+      this.chkPreviewScaling.Name = "chkPreviewScaling";
+      this.chkPreviewScaling.Size = new System.Drawing.Size(369, 20);
+      this.chkPreviewScaling.TabIndex = 72;
+      this.chkPreviewScaling.Text = "Enable preview scaling";
+      this.chkPreviewScaling.UseVisualStyleBackColor = true;
+      this.chkPreviewScaling.CheckedChanged += new System.EventHandler(this.chkPreviewScaling_CheckedChanged);
       // 
       // chkHardwareScaling
       // 
@@ -392,6 +423,14 @@ namespace Kinovea.Root
       // 
       this.colKey.Text = "";
       this.colKey.Width = 129;
+      // 
+      // tbHotkey
+      // 
+      this.tbHotkey.Location = new System.Drawing.Point(6, 117);
+      this.tbHotkey.Name = "tbHotkey";
+      this.tbHotkey.Size = new System.Drawing.Size(218, 20);
+      this.tbHotkey.TabIndex = 70;
+      this.tbHotkey.Text = "None";
       // 
       // btnClear
       // 
@@ -574,26 +613,6 @@ namespace Kinovea.Root
       this.chkDeinterlace.UseVisualStyleBackColor = true;
       this.chkDeinterlace.CheckedChanged += new System.EventHandler(this.chkDeinterlace_CheckedChanged);
       // 
-      // chkPreviewScaling
-      // 
-      this.chkPreviewScaling.Checked = true;
-      this.chkPreviewScaling.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.chkPreviewScaling.Location = new System.Drawing.Point(18, 46);
-      this.chkPreviewScaling.Name = "chkPreviewScaling";
-      this.chkPreviewScaling.Size = new System.Drawing.Size(369, 20);
-      this.chkPreviewScaling.TabIndex = 72;
-      this.chkPreviewScaling.Text = "Enable preview scaling";
-      this.chkPreviewScaling.UseVisualStyleBackColor = true;
-      this.chkPreviewScaling.CheckedChanged += new System.EventHandler(this.chkPreviewScaling_CheckedChanged);
-      // 
-      // tbHotkey
-      // 
-      this.tbHotkey.Location = new System.Drawing.Point(6, 117);
-      this.tbHotkey.Name = "tbHotkey";
-      this.tbHotkey.Size = new System.Drawing.Size(218, 20);
-      this.tbHotkey.TabIndex = 70;
-      this.tbHotkey.Text = "None";
-      // 
       // PreferencePanelPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -602,12 +621,12 @@ namespace Kinovea.Root
       this.Controls.Add(this.tabSubPages);
       this.Name = "PreferencePanelPlayer";
       this.Size = new System.Drawing.Size(490, 322);
-      ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
       this.tabSubPages.ResumeLayout(false);
       this.tabGeneral.ResumeLayout(false);
       this.tabGeneral.PerformLayout();
       this.tabMemory.ResumeLayout(false);
       this.tabMemory.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCacheMemory)).EndInit();
       this.tabPlayer.ResumeLayout(false);
       this.tabJumping.ResumeLayout(false);
       this.grpShortcut.ResumeLayout(false);
@@ -624,8 +643,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.TabPage tabMemory;
         private System.Windows.Forms.TabPage tabGeneral;
         private System.Windows.Forms.TabControl tabSubPages;
-        private System.Windows.Forms.Label lblWorkingZoneMemory;
-        private System.Windows.Forms.TrackBar trkMemoryBuffer;
         private System.Windows.Forms.CheckBox chkDetectImageSequences;
         private System.Windows.Forms.Label lblPlaybackKVA;
         private System.Windows.Forms.TextBox tbPlaybackKVA;
@@ -662,5 +679,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.CheckBox chkHardwareDecoding;
         private System.Windows.Forms.CheckBox chkHardwareScaling;
         private System.Windows.Forms.CheckBox chkPreviewScaling;
+        private System.Windows.Forms.Label lblCacheMemoryDescription;
+        private System.Windows.Forms.NumericUpDown nudCacheMemory;
+        private System.Windows.Forms.Label lblCacheMemory;
     }
 }

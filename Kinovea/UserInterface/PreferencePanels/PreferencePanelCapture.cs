@@ -70,7 +70,7 @@ namespace Kinovea.Root
         private string captureKVA;
 
         // Memory
-        private int memoryBuffer;
+        private int memoryMegabytes;
 
         // Recording
         private CaptureRecordingMode recordingMode;
@@ -153,9 +153,9 @@ namespace Kinovea.Root
             // General
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             captureKVA = PreferencesManager.CapturePreferences.CaptureKVA;
-            
+
             // Memory
-            memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
+            memoryMegabytes = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
             
             // Recording
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
@@ -247,13 +247,24 @@ namespace Kinovea.Root
         private void InitTabMemory()
         {
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
+            lblCameraMemory.Text = "Total capture buffer memory (GB):";
+            lblCameraMemoryDescription.Text = "Memory reserved for camera delay and recording." +
+            " Shared equally when two capture screens are open.";
 
-            int maxMemoryBuffer = MemoryHelper.MaxMemoryBuffer();
-            trkMemoryBuffer.Maximum = maxMemoryBuffer;
+            // Cap at 50% of physical memory.
+            int total = MemoryHelper.TotalPhysicalMemory();
+            int max = (int)(total * 0.5);
+            memoryMegabytes = Math.Min(memoryMegabytes, max);
 
-            memoryBuffer = Math.Min(memoryBuffer, trkMemoryBuffer.Maximum);
-            trkMemoryBuffer.Value = memoryBuffer;
-            UpdateMemoryLabel();
+            // The value is shown in GB to the user, but stored in MB in the preferences.
+            // Align max to nearest 0.5 GB.
+            decimal maxValue = (decimal)(max / 1024.0);
+            maxValue = Math.Round(maxValue * 2.0m) / 2.0m;
+
+            nudCameraMemory.Minimum = 0;
+            nudCameraMemory.Maximum = maxValue;
+            nudCameraMemory.Value = (decimal)(memoryMegabytes / 1024.0);
+            NudHelper.FixNudScroll(nudCameraMemory);
         }
 
         private void InitTabRecording()
@@ -672,19 +683,9 @@ namespace Kinovea.Root
         #endregion
 
         #region Tab Memory
-        private void trkMemoryBuffer_ValueChanged(object sender, EventArgs e)
+        private void nudCameraMemory_ValueChanged(object sender, EventArgs e)
         {
-            memoryBuffer = trkMemoryBuffer.Value;
-            UpdateMemoryLabel();
-        }
-
-        private void UpdateMemoryLabel()
-        {
-            var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
-            nfi.NumberGroupSeparator = " ";
-            string formatted = memoryBuffer.ToString("#,0", nfi);
-
-            lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, formatted);
+            memoryMegabytes = (int)(nudCameraMemory.Value * 1024);
         }
         #endregion
 
@@ -998,7 +999,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureKVA = captureKVA;
 
             // Memory
-            PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
+            PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryMegabytes;
 
             // Recording
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;

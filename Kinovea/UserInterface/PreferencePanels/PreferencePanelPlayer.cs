@@ -69,7 +69,7 @@ namespace Kinovea.Root
         private string playbackKVA;
 
         // Memory
-        private int memoryBuffer;
+        private int memoryMegabytes;
         private bool showCacheInTimeline;
 
         // Player
@@ -132,7 +132,7 @@ namespace Kinovea.Root
             playbackKVA = PreferencesManager.PlayerPreferences.PlaybackKVA;
             
             // Memory
-            memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
+            memoryMegabytes = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
             showCacheInTimeline = PreferencesManager.PlayerPreferences.ShowCacheInTimeline;
             
             // Player
@@ -180,12 +180,24 @@ namespace Kinovea.Root
         {
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
 
-            int maxMemoryBuffer = MemoryHelper.MaxMemoryBuffer();
-            trkMemoryBuffer.Maximum = maxMemoryBuffer;
+            lblCacheMemory.Text = "Total playback cache memory (GB):";
+            lblCacheMemoryDescription.Text = "Memory reserved for playback cache." +
+            " Shared equally when two playback screens are open.";
 
-            memoryBuffer = Math.Min(memoryBuffer, trkMemoryBuffer.Maximum);
-            trkMemoryBuffer.Value = memoryBuffer;
-            UpdateMemoryLabel();
+            // Cap at 50% of physical memory.
+            int total = MemoryHelper.TotalPhysicalMemory();
+            int max = (int)(total * 0.5);
+            memoryMegabytes = Math.Min(memoryMegabytes, max);
+
+            // The value is shown in GB to the user, but stored in MB in the preferences.
+            // Align max to nearest 0.5 GB.
+            decimal maxValue = (decimal)(max / 1024.0);
+            maxValue = Math.Round(maxValue * 2.0m) / 2.0m;
+
+            nudCacheMemory.Minimum = 0;
+            nudCacheMemory.Maximum = maxValue;
+            nudCacheMemory.Value = (decimal)(memoryMegabytes / 1024.0);
+            NudHelper.FixNudScroll(nudCacheMemory);
 
             cbCacheInTimeline.Text = "Show cache memory in the timeline";
             cbCacheInTimeline.Checked = showCacheInTimeline;
@@ -300,18 +312,9 @@ namespace Kinovea.Root
         #endregion
 
         #region Memory
-        private void trkWorkingZoneMemory_ValueChanged(object sender, EventArgs e)
+        private void nudCacheMemory_ValueChanged(object sender, EventArgs e)
         {
-            memoryBuffer = trkMemoryBuffer.Value;
-            UpdateMemoryLabel();
-        }
-        private void UpdateMemoryLabel()
-        {
-            var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
-            nfi.NumberGroupSeparator = " ";
-            string formatted = memoryBuffer.ToString("#,0", nfi);
-
-            lblWorkingZoneMemory.Text = string.Format(RootLang.dlgPreferences_Player_lblMemory, formatted);
+            memoryMegabytes = (int)(nudCacheMemory.Value * 1024.0m);
         }
         private void cbCacheInTimeline_CheckedChanged(object sender, EventArgs e)
         {
@@ -499,7 +502,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.PlaybackKVA = playbackKVA;
 
             // Memory
-            PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
+            PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryMegabytes;
             PreferencesManager.PlayerPreferences.ShowCacheInTimeline = showCacheInTimeline;
 
             // Player
@@ -524,5 +527,6 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
         }
+
     }
 }
