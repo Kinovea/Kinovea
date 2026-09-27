@@ -226,7 +226,7 @@ namespace Kinovea.ScreenManager
             // Update the descriptor with the speed from the UI.
             screenDescriptor.SpeedFactorNominal = player.view.SpeedFactorNominal;
 
-            if (player.IsWaitingForIdle)
+            if (player.IsLoading)
             {
                 log.ErrorFormat("Player screen is currently busy loading the previous video. Aborting load.");
                 return;

@@ -291,14 +291,6 @@ namespace Kinovea.ScreenManager
         }
 
         #region Public methods
-
-        public void SetShared(bool shared)
-        {
-            log.DebugFormat("Set shared: {0}", shared);
-            this.shared = shared;
-            AllocateDelayer();
-        }
-
         public void ForceGrabbingStatus(bool grab)
         {
             if (cameraGrabber == null || cameraGrabber.Grabbing == grab)
@@ -406,7 +398,7 @@ namespace Kinovea.ScreenManager
 
             view.DisplayAsActiveScreen(active);
         }
-        public override void RefreshUICulture() 
+        public override void AfterPreferencesChanged() 
         {
             // Bail out if we are currently manually changing the context in the screen.
             // Changing the context triggers a preferences update that can be ignored here.
@@ -542,6 +534,13 @@ namespace Kinovea.ScreenManager
             s.Load(metadata, path, true);
         }
 
+        public override void SetShared(bool shared)
+        {
+            log.DebugFormat("Set shared: {0}", shared);
+            this.shared = shared;
+            AllocateDelayer();
+        }
+
         /// <summary>
         /// Unload the current annotations and replace them with the ones coming from
         /// the last exported video.
@@ -567,7 +566,6 @@ namespace Kinovea.ScreenManager
         {
             metadata.AddCaptureKeyframe();
         }
-
         #endregion
 
         #region Methods called from the view. These could also be events or commands.

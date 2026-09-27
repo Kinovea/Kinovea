@@ -229,9 +229,9 @@ namespace Kinovea.ScreenManager
                     return view.IsCurrentlyPlaying;
             }
         }
-        public bool IsWaitingForIdle
+        public bool IsLoading
         {
-            get { return view.IsWaitingForIdle; }
+            get { return view.IsLoading; }
         }
         public bool IsSingleFrame
         {
@@ -389,7 +389,8 @@ namespace Kinovea.ScreenManager
         private DrawingToolbarPresenter drawingToolbarPresenter = new DrawingToolbarPresenter();
         private HistoryStack historyStack; 
         private FrameServerPlayer frameServer;
-        private bool synched;
+        private bool synched;   // there is another player screen with a video loaded.
+
         private ReplayWatcher replayWatcher;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -658,12 +659,9 @@ namespace Kinovea.ScreenManager
             drawingToolbarPresenter.Dispose();
         }
 
-        /// <summary>
-        /// Called after a change in preferences.
-        /// </summary>
-        public override void RefreshUICulture()
+        public override void AfterPreferencesChanged()
         {
-            // After preferences change, the actual folder pointed by a replay watcher may have changed.
+            // The actual folder pointed by a replay watcher may have changed.
             // We need to restart the watcher on the new folder.
             if (replayWatcher.IsEnabled && view.ScreenDescriptor.IsReplayWatcher)
             {
@@ -697,7 +695,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            view.RefreshUICulture();
+            view.AfterPreferencesChanged();
             drawingToolbarPresenter.RefreshUICulture();
         }
         public override void RefreshImage()
@@ -761,7 +759,6 @@ namespace Kinovea.ScreenManager
             return sd.Clone(); 
         }
 
-
         public override void LoadKVA(string path)
         {
             view.StopPlaying();
@@ -769,8 +766,14 @@ namespace Kinovea.ScreenManager
             MetadataSerializer s = new MetadataSerializer();
             s.Load(frameServer.Metadata, path, true);
         }
+
+        public override void SetShared(bool shared)
+        {
+            view.Shared = shared;
+        }
+
         #endregion
-        
+
         #region Other public methods called from the ScreenManager
         public void EnsurePlaying()
         {

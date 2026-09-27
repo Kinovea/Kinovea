@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Called after a change in preferences.
         /// </summary>
-        public abstract void RefreshUICulture();
+        public abstract void AfterPreferencesChanged();
         public abstract void BeforeClose();
         public abstract void AfterClose();
         public abstract void RefreshImage();
@@ -182,6 +182,7 @@ namespace Kinovea.ScreenManager
         public abstract void ExecuteScreenCommand(string name);
         public abstract void LoadKVA(string path);
 
+        public abstract void SetShared(bool shared);
 
         /// <summary>
         /// Return a screen descriptor to be used for startup mechanics.
@@ -190,7 +191,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
 
         /// <summary>
         /// Returns the index of the screen in the screen list.

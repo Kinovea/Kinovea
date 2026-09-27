@@ -842,7 +842,9 @@ namespace Kinovea.ScreenManager
 
             // Screens
             foreach (AbstractScreen screen in screenList)
-                screen.RefreshUICulture();
+            {
+                screen.AfterPreferencesChanged();
+            }
         }
 
         /// <summary>
@@ -856,7 +858,6 @@ namespace Kinovea.ScreenManager
             {
                 screenList[i].BeforeClose();
                 CloseFile(i);
-                AfterSharedBufferChange();
             }
 
             bool cancelled = screenList.Count > 0;
@@ -901,8 +902,6 @@ namespace Kinovea.ScreenManager
                 CloseFile(0);
             else
                 CloseFile(1);
-
-            AfterSharedBufferChange();
         }
         private void Player_OpenVideoAsked(object sender, EventArgs e)
         {
@@ -1128,12 +1127,28 @@ namespace Kinovea.ScreenManager
                 canShowCommonControls = false;
             }
         }
-        public void AfterSharedBufferChange()
+        public void AfterScreenCountChange()
         {
-            // The screen list has changed and involve capture screens.
-            // Update their shared state to trigger a memory buffer reset.
-            foreach (CaptureScreen screen in captureScreens)
-                screen.SetShared(screenList.Count == 2);
+            // The number of screens changed.
+            // Alert the individual screens for memory allowance and other updates.
+            if (screenList.Count == 0)
+            {
+                activeScreen = null;
+            }
+            else if (screenList.Count == 1)
+            {
+                SetActiveScreen(screenList[0]);
+                screenList[0].SetShared(false);
+            }
+            else
+            {
+                foreach (AbstractScreen screen in screenList)
+                {
+                    screen.SetShared(true);
+                }
+            }
+
+            IdentifyScreens();
         }
         public void FullScreen(bool fullScreen)
         {
@@ -2091,6 +2106,7 @@ namespace Kinovea.ScreenManager
         private void CloseFile(int screenIndex)
         {
             RemoveScreenAt(screenIndex);
+
             OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
@@ -2993,6 +3009,8 @@ namespace Kinovea.ScreenManager
             if (current == request)
                 return;
 
+            int count = screenList.Count;
+
             switch (request)
             {
                 case ScreenConfig.Explorer:
@@ -3309,7 +3327,6 @@ namespace Kinovea.ScreenManager
                     return;
             }
 
-            AfterSharedBufferChange();
             OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
@@ -3433,7 +3450,7 @@ namespace Kinovea.ScreenManager
         private void AddPlayerScreen()
         {
             PlayerScreen screen = new PlayerScreen();
-            screen.RefreshUICulture();
+            screen.AfterPreferencesChanged();
             AddScreen(screen);
         }
         
@@ -3443,7 +3460,7 @@ namespace Kinovea.ScreenManager
             if (screenList.Count > 0)
                 screen.SetShared(true);
 
-            screen.RefreshUICulture();
+            screen.AfterPreferencesChanged();
             AddScreen(screen);
         }
 
@@ -3455,6 +3472,7 @@ namespace Kinovea.ScreenManager
 
             AddScreenEventHandlers(screen);
             screenList.Add(screen);
+            AfterScreenCountChange();
             IdentifyScreens();
         }
 
@@ -3507,26 +3525,7 @@ namespace Kinovea.ScreenManager
             screenList.Remove(screen);
             screen.AfterClose();
 
-            AfterScreenRemoved();
-        }
-
-        private void AfterScreenRemoved()
-        {
-            if (screenList.Count > 0)
-            {
-                SetActiveScreen(screenList[0]);
-            }
-            else
-            {
-                activeScreen = null;
-            }
-
-            foreach (PlayerScreen p in playerScreens)
-            {
-                p.Synched = false;
-            }
-
-            IdentifyScreens();
+            AfterScreenCountChange();
         }
 
         /// <summary>

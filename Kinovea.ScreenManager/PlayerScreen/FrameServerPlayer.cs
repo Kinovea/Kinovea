@@ -243,8 +243,6 @@ namespace Kinovea.ScreenManager
             }
 
             metadata.PostSetupVideo(init);
-            
-            log.Debug("Setup metadata.");
         }
 
         /// <summary>

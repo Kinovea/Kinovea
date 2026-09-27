@@ -1913,20 +1913,20 @@ namespace Kinovea.ScreenManager
             ResetContentHash();
             DeleteAutosaveFile();
         }
-        public bool Recover(Guid id)
+        public string Recover(Guid id)
         {
             DeleteTempDirectory();
             SetupTempDirectory(id);
+            
             string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
-            bool recovered = false;
             if (File.Exists(autosaveFile))
             {
-                MetadataSerializer s = new MetadataSerializer();
-                s.Load(this, autosaveFile, true);
-                recovered = true;
+                //MetadataSerializer s = new MetadataSerializer();
+                //s.Load(this, autosaveFile, true);
+                return autosaveFile;
             }
 
-            return recovered;
+            return null;
         }
 
         public List<List<PointF>> GetCameraCalibrationPoints()
@@ -2236,6 +2236,9 @@ namespace Kinovea.ScreenManager
             // avg timestamps per frame and per second,
             // + calibration helper capture frames per second.
             // The user-modifiable time info will be set later in InitTime().
+
+            double captureInterval = 1000 / calibrationHelper.CaptureFramesPerSecond;
+            highSpeedFactor = baselineFrameInterval / captureInterval;
 
             if (init)
             {

@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
                 return;
    
 
-            if (playerScreen.IsWaitingForIdle)
+            if (playerScreen.IsLoading)
             {
                 // The player screen will yield its thread after having loaded the first frame and come back later.
                 // We must not launch a new video while it's waiting.

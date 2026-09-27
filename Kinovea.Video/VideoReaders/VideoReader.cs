@@ -390,10 +390,11 @@ namespace Kinovea.Video
         #region Video geometry
 
         /// <summary>
-        /// Requests the reader to recalculate the video geometry and
-        /// invalidate any cache if necessary.
+        /// Asks the reader to recalculate the video geometry and invalidate any cache if necessary.
         /// The resulting geometry is published in the VideoGeometry property.
         /// Returns true if a cache has been invalidated.
+        /// This does not reload the working zone or buffer, if the cache is invalidate it switches to on-demand mode,
+        /// the caller is responsible for reloading the working zone or restarting the prebuffer thread.
         /// 
         /// This is public but should only be called from FrameServerPlayer.PublishVideoGeometryRequest().
         /// </summary>

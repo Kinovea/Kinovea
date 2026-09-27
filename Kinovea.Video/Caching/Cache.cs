@@ -168,6 +168,7 @@ namespace Kinovea.Video
         public void Trim(long start, long end)
         {
             VideoSection section = new VideoSection(start, end);
+            bool currentWasInRange = current != null && section.Contains(current.Timestamp);
             for (int i = frames.Count - 1; i >= 0; i--)
             {
                 VideoFrame frame = frames.Values[i];
@@ -178,7 +179,11 @@ namespace Kinovea.Video
                 }
             }
 
-            current = frames.Count > 0 ? frames.Values[0] : null;
+            if (!currentWasInRange)
+            {
+                current = frames.Count > 0 ? frames.Values[0] : null;
+            }
+
             UpdateCacheSnapshot();
         }
 

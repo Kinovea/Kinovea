@@ -106,7 +106,10 @@ namespace Kinovea.ScreenManager
         {
             get { return isCurrentlyPlaying; }
         }
-        public bool IsWaitingForIdle { get; private set; }
+        public bool IsLoading 
+        { 
+            get { return isLoading; }
+        }
 
         public bool ImageFill
         {
@@ -185,6 +188,24 @@ namespace Kinovea.ScreenManager
         {
             get { return m_FrameServer?.CurrentImage; }
         }
+        
+        public bool Shared
+        {
+            get { return isShared; }
+            set
+            {
+                if (value == isShared)
+                    return;
+
+                isShared = value;
+                UpdateWorkingZone(CacheLoadMode.Keep);
+
+                if (!Shared)
+                {
+                    Synched = false;
+                }
+            }
+        }
 
 
         #region Synchronization support
@@ -193,6 +214,9 @@ namespace Kinovea.ScreenManager
             //get { return m_bSynched; }
             set
             {
+                if (value == isSynchronized)
+                    return;
+
                 isSynchronized = value;
 
                 if (!isSynchronized)
@@ -296,6 +320,8 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private FrameServerPlayer m_FrameServer;
+        private bool isLoading; // true between the first frame request and first idle.
+        private bool isConstructed; // false after the first idle.
 
         // Player state
         private bool isBusyRendering;
@@ -324,7 +350,8 @@ namespace Kinovea.ScreenManager
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
 
         // Synchronisation
-        private bool isSynchronized;
+        private bool isShared;          // There is another screen.
+        private bool isSynchronized;    // There is another player.
         private bool m_bSyncMerge;
         private Bitmap m_SyncMergeImage;
         private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
@@ -355,6 +382,8 @@ namespace Kinovea.ScreenManager
         private long memoTimestamp;          // Used during export to backup/restore the active frame timestamp.
 
         // Keyframes, Drawings, etc.
+        private string recoveredKVAPath;    // KVA recovered after a crash.
+        private bool workingZoneInitializedFromKVA; 
         private List<KeyframeBox> keyframeBoxes = new List<KeyframeBox>();
         private int m_iActiveKeyFrameIndex = -1;	// The index of the keyframe we are on, or -1 if not a KF.
         private AbstractDrawingTool m_ActiveTool;
@@ -376,8 +405,7 @@ namespace Kinovea.ScreenManager
         private MessageToaster m_MessageToaster;
         private float jumpByTimeAcc;
         private TimelineJumpUnit jumpByTimeLastUnit = TimelineJumpUnit.Second;
-        private bool m_Constructed;
-        private bool workingZoneInitializedFromKVA; // The working zone has been ingested during init from a KVA sidecar. 
+        
         private ScreenPointerManager cursorManager = new ScreenPointerManager();
 
         #region Context Menus
@@ -542,6 +570,8 @@ namespace Kinovea.ScreenManager
             // 1. Reset all data.
             m_FrameServer.VideoReader.RequestFulfilled -= VideoReader_RequestFulfilled;
             m_FrameServer.Unload();
+            isLoading = false;
+            recoveredKVAPath = null;
 
             ResetInternalData();
             videoFilterIsActive = false;
@@ -570,7 +600,7 @@ namespace Kinovea.ScreenManager
             
             infobar.Visible = false;
             ResetAsked?.Invoke(this, EventArgs.Empty);
-
+            
             log.DebugFormat("Screen reset to empty state: {0} ms.", stopwatchLoad.ElapsedMilliseconds);
             stopwatchLoad.Restart();
         }
@@ -614,6 +644,7 @@ namespace Kinovea.ScreenManager
             //---------------------------------------------------------------------------
             log.DebugFormat("Video file loaded: {0} ms --------------------", stopwatchLoad.ElapsedMilliseconds);
             stopwatchLoad.Restart();
+            isLoading = true;
 
             //-----------------------------
             // Read/decode the first frame.
@@ -689,47 +720,19 @@ namespace Kinovea.ScreenManager
 
             // Check for launch description and startup kva.
             // This is also how we can backup and restore stuff between loads in the same screen.
-            bool recoveredMetadata = false;
             if (screenDescriptor != null)
             {
                 // Starting the filesystem watcher for .IsReplayWatcher is done in PlayerScreen.
                 // Starting the video for .Play is done later at first Idle.
                 if (screenDescriptor.Id != Guid.Empty)
-                    recoveredMetadata = m_FrameServer.Metadata.Recover(screenDescriptor.Id);
+                {
+                    recoveredKVAPath = m_FrameServer.Metadata.Recover(screenDescriptor.Id);
+                }
 
                 if (screenDescriptor.Stretch)
                 {
                     m_fill = true;
                     ResizeFinished();
-                }
-            }
-
-            if (!recoveredMetadata)
-            {
-                // Note: the order of load between the sidecar kva and the default player kva is important.
-                // Generally we want to load the more general file first (default kva) and the more specific one later, 
-                // as the last to load overwrites the values.
-                // This is not relevant for drawings because keyframes and detached drawings are merged, not replaced.
-                // It is important for the top level data like time origin, working zone, calibration, etc. as well 
-                // as the singleton drawings like the coordinate system.
-                // If the overwrite is undesirable the file should not contain the info in the first place.
-                // See for example the case of capture recording, things like working zone bounds are not 
-                // included, and attached drawings and calibration are optionally included according to preferences.
-
-                Metadata metadata = m_FrameServer.Metadata;
-
-                // 1. Load the default player KVA.
-                LoadDefaultAnnotationsAsked?.Invoke(this, EventArgs.Empty);
-
-                // 2. Load the sidecar KVA if it exists.
-                // Note: we don't stop at the first one found, load all of them.
-                foreach (string extension in MetadataSerializer.SupportedFileFormats())
-                {
-                    string pathSidecar = Path.Combine(
-                        Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), 
-                        Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
-
-                    LoadKVA(pathSidecar);
                 }
             }
 
@@ -745,72 +748,58 @@ namespace Kinovea.ScreenManager
             sldrSpeed.Update(timeMapper.GetInputFromSpeedFactor(speedFactorNominal));
             sldrSpeed.Enabled = true;
 
-            if (!recoveredMetadata)
-                m_FrameServer.Metadata.ResetContentHash();
-
-            m_FrameServer.Metadata.StartAutosave();
-
             // We are done.
             // Some of the UI calls take some time and we'll wait until everything 
             // is set up and the UI thread is idle again to continue.
             // Next step is to try to load the working zone to memory.
             log.DebugFormat("End of post load process: {0} ms. -----------------", stopwatchLoad.ElapsedMilliseconds);
-            IsWaitingForIdle = true;
             Application.Idle += PostLoad_Idle;
-
+            
             return 0;
         }
 
         private void AfterKVAImported()
         {
             // Restore things like aspect ratio, image rotation, deinterlacing, stabilization, etc.
+            // This may invalidate the cache and switch back to on-demand mode but it will not reload the working zone.
             m_FrameServer.RestoreImageOptions();
             zoomHelper.Value = 1.0f;
-            
-            // Seek to keyframes to get thumbnails.
-            InitializeKeyframes();
 
-            // Restore selection.
-            // Force a reload of the cache to account for possible changes in aspect ratio, image rotation, etc.
+            // Update the working zone bounds without actually loading it.
             workingZone = new VideoSection(m_FrameServer.Metadata.SelectionStart, m_FrameServer.Metadata.SelectionEnd);
 
-            // For replay watchers we disable full caching mode
-            // to avoid disrupting the instant-replay feedback loop.
-            CacheLoadMode mode = screenDescriptor.IsReplayWatcher ?
-                CacheLoadMode.DoNotLoad :
-                CacheLoadMode.Reload;
-
-            UpdateWorkingZone(mode);
-
-            // Remember that we already loaded the working zone,
-            // to avoid double load during initialization.
-            // This is only used for the first load into this screen.
-            workingZoneInitializedFromKVA = true;
-
-            RestoreActiveVideoFilter();
-
-            UpdateInfobar();
+            // Seek to keyframes to get thumbnails.
+            // This is time consuming, should be done in another thread and probably only if not loading.
+            InitializeKeyframes();
             OrganizeKeyframes();
             if (m_FrameServer.Metadata.Count > 0 && !m_bKeyframePanelCollapsedManual)
                 CollapseKeyframePanel(false);
 
-            PresentFrame(workingZone.Start);
-            
-            double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
-            double captureInterval = 1000 / m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond;
+            // Suppress the working zone update if we are still loading the video.
+            if (!isLoading)
+            {
+                // First Working Zone update after KVA import.
+                // For replay watchers we disable full caching mode to avoid disrupting the instant-replay feedback loop.
+                CacheLoadMode mode = screenDescriptor.IsReplayWatcher ? CacheLoadMode.DoNotLoad : CacheLoadMode.Reload;
+                UpdateWorkingZone(mode);
+                PresentFrame(workingZone.Start);
+            }
 
-            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.BaselineFrameInterval / captureInterval;
-            UpdateTimebase();
-
+            // This will set up the high speed factor.
             m_FrameServer.SetupMetadata(false);
+            
+            // Time mapper.
+            UpdateTimebase();
 
             ImportEditboxes();
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
 
             KVAImported?.Invoke(this, EventArgs.Empty);
 
+            // Timeline
             trkFrame.UpdateMetadata(m_FrameServer.Metadata);
             UpdateTimeLabels();
+
             DoInvalidate();
         }
 
@@ -849,7 +838,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Updates all labels displaying time-related info, including the speed slider.
+        /// Updates all labels displaying time-related info: selection, position, speed, infobar.
         /// </summary>
         public void UpdateTimeLabels()
         {
@@ -908,7 +897,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void UpdateWorkingZone(CacheLoadMode loadMode)
         {
-            if (!m_FrameServer.Loaded)
+            if (!m_FrameServer.Loaded || isLoading)
                 return;
 
             if (!m_FrameServer.VideoReader.CanChangeWorkingZone)
@@ -919,31 +908,38 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            VideoSection newZone = workingZone;
+            
             // Remember if we were previously aligned with the start of the working zone.
             // If so, keep it that way, otherwise use the absolute value.
             // A side effect of this approach is that when the start of the zone is moved
             // forward so as to overtake the current time origin, it will scoop it and drag it along with it.
             bool timeOriginWasAligned = m_FrameServer.Metadata.TimeOrigin == workingZone.Start;
-
-            VideoSection newZone = workingZone;
             VideoDecodingMode oldCachingMode = m_FrameServer.VideoReader.DecodingMode;
             long oldTimestamp = currentTimestamp;
-
+            
             log.DebugFormat("Working zone update. {0} -> {1}.", m_FrameServer.VideoReader.WorkingZone, newZone);
 
             BeforeManualMove();
             
+            int totalMemoryMB = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
+            int availableMemory = isShared ? totalMemoryMB / 2 : totalMemoryMB;
+            WorkingZoneRequest request = new WorkingZoneRequest(newZone, loadMode, availableMemory);
+            
             // Threading: for full caching the loading happens in a background thread but somewhat synchronously.
             // The control is returned to the UI thread in the modal dialog that shows the progress bar.
             // When the loading is done or cancelled the call below returns and we continue.
-
-            int maxMemory = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
-            WorkingZoneRequest request = new WorkingZoneRequest(newZone, loadMode, maxMemory);
-            
             m_FrameServer.VideoReader.WorkingZoneUpdateRequest(request, WorkingZoneCacheLoadWorker);
 
-            // By this point the first frame of the new working zone is in the cache and its timestamp is resolved.
-            currentTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
+            // Update our local zone values with the resolved one.
+            // Note: the end may still be in "request" space if we are not in caching mode.
+            workingZone = m_FrameServer.VideoReader.WorkingZone;
+
+            // Move to start if the current frame was evicted.
+            if (!workingZone.Contains(oldTimestamp))
+            {
+                currentTimestamp = m_FrameServer.VideoReader.WorkingZone.Start;
+            }
 
             // If we changed mode the decoding size may have changed.
             VideoDecodingMode newCachingMode = m_FrameServer.VideoReader.DecodingMode;
@@ -952,19 +948,13 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Working zone update changed caching mode: {0} -> {1}.", 
                     oldCachingMode, newCachingMode);
                 
-                // This will trigger a PresentFrame.
                 ResizeFinished();
-            }
-            else if (currentTimestamp != oldTimestamp)
-            {
-                // If we are still on the same timestamp there shouldn't be
-                // any need to re-decode the frame.
                 PresentFrame(currentTimestamp);
             }
-
-            // Update our local zone values with the resolved one.
-            // Note: the end may still be in "request" space if we are not in caching mode.
-            workingZone = m_FrameServer.VideoReader.WorkingZone;
+            else if (currentTimestamp != oldTimestamp || request.CacheLoadMode == CacheLoadMode.Reload)
+            {
+                PresentFrame(currentTimestamp);
+            }
 
             // Update metadata.
             if (timeOriginWasAligned)
@@ -1048,7 +1038,7 @@ namespace Kinovea.ScreenManager
                 PresentFrame(currentTimestamp);
             }
         }
-        public void RefreshUICulture()
+        public void AfterPreferencesChanged()
         {
             // Update from core preferences.
             interactiveFrameTracker = PreferencesManager.PlayerPreferences.InteractiveFrameTracker;
@@ -1058,6 +1048,9 @@ namespace Kinovea.ScreenManager
             enablePixelFiltering = PreferencesManager.PlayerPreferences.EnablePixelFiltering;
             UpdateAllowPreScaling();
             UpdateShowCacheInTimeline();
+
+            // Update working zone in case memory allowance changed.
+            UpdateWorkingZone(CacheLoadMode.Keep);
 
             // Update default fading for all drawings.
 
@@ -1469,20 +1462,25 @@ namespace Kinovea.ScreenManager
         private void PostLoad_Idle(object sender, EventArgs e)
         {
             Application.Idle -= PostLoad_Idle;
-            m_Constructed = true;
-            IsWaitingForIdle = false;
+            isConstructed = true;
 
-            log.DebugFormat("Video file fully ready: {0} ms. -----------------", stopwatchLoad.ElapsedMilliseconds);
+            log.DebugFormat("Video ready: {0} ms. -----------------", stopwatchLoad.ElapsedMilliseconds);
 
             if (!m_FrameServer.Loaded)
                 return;
 
-            // If we haven't send the working zone from a KVA do it now.
+            
+            // Since we are still in the loading phase the wz update should be suppressed.
+            RestoreKVA();
+
+            isLoading = false;
+            
             if (!workingZoneInitializedFromKVA)
             {
-                // In replay mode we focus on simple playback and synchronization,
-                // and we want the video to load as fast as possible. So no caching.
                 CacheLoadMode mode = CacheLoadMode.Reload;
+
+                // In replay mode we focus on simple playback and synchronization,
+                // and we want the video to load as fast as possible so we disable caching on first load.
                 if (screenDescriptor != null && screenDescriptor.IsReplayWatcher)
                 {
                     mode = CacheLoadMode.DoNotLoad;
@@ -1491,11 +1489,13 @@ namespace Kinovea.ScreenManager
                 UpdateWorkingZone(mode);
             }
 
-            // On the first call to UpdateWorkingZone prebuffering is disallowed 
+            // On the first call to UpdateWorkingZone prebuffering was disallowed 
             // because we can't reliably know the preferred decoding size.
             // At this point we should be either in full caching mode (only for files 
             // and if it fits in memory), or in on-demand mode.
             // Make sure the reader recalculates the decoding size.
+            // TODO: we should probably review this now that initial KVA loading has moved here
+            // and update working zone is suppressed during the initial KVA loading.
             bool cacheInvalidated = StretchSqueezeSurface(true);
             if (!cacheInvalidated)
             {
@@ -1512,7 +1512,9 @@ namespace Kinovea.ScreenManager
             ShowHideRenderingSurface(true);
             ResizeFinished();
             PresentFrame(currentTimestamp);
-            
+
+            m_FrameServer.Metadata.StartAutosave();
+
             // Handle auto-playback for replay watchers.
             if (screenDescriptor != null && screenDescriptor.Autoplay)
             {
@@ -1539,6 +1541,51 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+
+        /// <summary>
+        /// Restore KVA from crash recovery, default KVA or sidecar KVA.
+        /// </summary>
+        private void RestoreKVA()
+        {
+            // Loading a KVA will trigger AfterKVAImported() before coming back here.
+            if (!string.IsNullOrWhiteSpace(recoveredKVAPath))
+            {
+                LoadKVA(recoveredKVAPath);
+
+                // Do not reset the content hash, we just recovered this data, it's not saved anywhere else. 
+                // If the user closes now they will get asked to save.
+            }
+            else
+            {
+                // The loading order between the default player kva and the sidecar KVA is important.
+                // Generally we want to load the more general file first (default kva) and the more specific one later, 
+                // as the last to load overwrites the values.
+                // This is not relevant for drawings because keyframes and detached drawings are merged, not replaced.
+                // It is important for the top level data like time origin, working zone, calibration, etc. as well 
+                // as the singleton drawings like the coordinate system.
+                // If the overwrite is undesirable the file should not contain the info in the first place.
+                // See for example the case of capture recording, things like working zone bounds are not 
+                // included, and attached drawings and calibration are optionally included according to preferences.
+
+                // 1. Load the default player KVA.
+                LoadDefaultAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+
+                // 2. Load the sidecar KVA if it exists.
+                // Note: we don't stop at the first one found, load all of them.
+                foreach (string extension in MetadataSerializer.SupportedFileFormats())
+                {
+                    string pathSidecar = Path.Combine(
+                        Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath),
+                        Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
+
+                    LoadKVA(pathSidecar);
+                }
+
+                // Save reference hash.
+                m_FrameServer.Metadata.ResetContentHash();
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -4946,8 +4993,10 @@ namespace Kinovea.ScreenManager
         }
         private void PanelCenter_Resize(object sender, EventArgs e)
         {
-            if (m_Constructed)
-                ResizeFinished();
+            if (!isConstructed)
+                return;
+            
+            ResizeFinished();
         }
         private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
         {
@@ -4989,6 +5038,10 @@ namespace Kinovea.ScreenManager
                 OnPoke();
             }
         }
+
+        /// <summary>
+        /// Update the keyframe controls.
+        /// </summary>
         public void OrganizeKeyframes()
         {
             //-----------------------------------------------------------------    
