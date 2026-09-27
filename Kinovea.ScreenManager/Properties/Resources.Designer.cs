@@ -1533,6 +1533,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap missed_call_16 {
+            get {
+                object obj = ResourceManager.GetObject("missed_call_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap mosaic {
             get {
                 object obj = ResourceManager.GetObject("mosaic", resourceCulture);
@@ -2326,6 +2336,16 @@ namespace Kinovea.ScreenManager.Properties {
         public static System.Drawing.Bitmap wand {
             get {
                 object obj = ResourceManager.GetObject("wand", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap water_16 {
+            get {
+                object obj = ResourceManager.GetObject("water_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

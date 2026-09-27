@@ -145,6 +145,7 @@ namespace Kinovea.ScreenManager
             contextEnabled = PreferencesManager.CapturePreferences.ContextEnabled;
             UpdateContextBar();
             UpdateCaptureFolder();
+            infobarCapture.RefreshUICulture();
         }
         
         public void AddImageDrawing(string filename, bool svg)
@@ -182,10 +183,10 @@ namespace Kinovea.ScreenManager
             infobarCapture.Left = lblCameraTitle.Right + 5;
         }
         
-        public void UpdateInfo(string signal, string bandwidth, string load, string drops, string backlog)
+        public void UpdateInfo(double signal, double load, int drops, int queue)
         {
             infobarCapture.Visible = true;
-            infobarCapture.UpdateValues(signal, bandwidth, load, drops, backlog);
+            infobarCapture.UpdateValues(signal, load, drops, queue);
         }
 
         /// <summary>

@@ -1907,4 +1907,10 @@
   <data name="application_common_controls2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\application_common_controls2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="water_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\water-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="missed_call_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\missed-call-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
