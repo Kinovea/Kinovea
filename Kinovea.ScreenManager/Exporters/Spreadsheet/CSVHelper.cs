@@ -76,6 +76,18 @@ namespace Kinovea.ScreenManager
             return string.Join(listSeparator, cells.ToArray());
         }
 
+        /// <summary>
+        /// Encoding used when writing text export files (CSV, TXT).
+        /// A byte order mark is written so that spreadsheet applications detect
+        /// UTF-8 and do not mangle non-ASCII characters (accents, CJK, ...) when
+        /// the file is opened by double-clicking it.
+        /// Not used for JSON, where a BOM is not part of the format.
+        /// </summary>
+        public static Encoding GetTextEncoding()
+        {
+            return new UTF8Encoding(true);
+        }
+
         public static void CopyToClipboard(List<string> csv)
         {
             if (csv.Count <= 1)

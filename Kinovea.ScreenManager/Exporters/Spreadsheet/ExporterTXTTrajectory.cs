@@ -52,7 +52,7 @@ namespace Kinovea.ScreenManager
                 txt.Add("");
             }
 
-            File.WriteAllLines(path, txt);
+            File.WriteAllLines(path, txt, CSVHelper.GetTextEncoding());
         }
     }
 }
