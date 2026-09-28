@@ -157,6 +157,31 @@ namespace Kinovea.ScreenManager
             // Perform the template matching.
             TemplateMatchResult result = MatchTemplate(cvImage, lastTemplate.Template, lastTrackPoint.Point);
 
+            // If the nominal search window didn't find the object, try again with a
+            // larger one before declaring a failure: fast movement can push the object
+            // outside the nominal window in a single frame. This only runs where we
+            // would otherwise fail, so the nominal behaviour is unchanged.
+            if (result.Similarity < parameters.SimilarityThreshold)
+            {
+                double[] factors = new double[] { 1.5, 2.0 };
+                foreach (double factor in factors)
+                {
+                    System.Drawing.Size enlarged = new System.Drawing.Size(
+                        Math.Min((int)Math.Round(parameters.SearchWindow.Width * factor), parameters.MaxWindowSize),
+                        Math.Min((int)Math.Round(parameters.SearchWindow.Height * factor), parameters.MaxWindowSize));
+
+                    if (enlarged.Width <= parameters.SearchWindow.Width && enlarged.Height <= parameters.SearchWindow.Height)
+                        break;
+
+                    TemplateMatchResult retry = MatchTemplate(cvImage, lastTemplate.Template, lastTrackPoint.Point, enlarged);
+                    if (retry.Similarity > result.Similarity)
+                        result = retry;
+
+                    if (result.Similarity >= parameters.SimilarityThreshold)
+                        break;
+                }
+            }
+
             bool matched = false;
             currentPoint = null;
             if (result.Similarity == 0)
@@ -422,7 +447,7 @@ namespace Kinovea.ScreenManager
         /// This function returns a TrackResult which is just the location and score.
         /// It is the responsibility of the caller to update the template or not.
         /// </summary>
-        private TemplateMatchResult MatchTemplate(Mat cvImage, Bitmap template, PointF lastPoint)
+        private TemplateMatchResult MatchTemplate(Mat cvImage, Bitmap template, PointF lastPoint, System.Drawing.Size? searchWindow = null)
         {
             TemplateMatchResult result;
 
@@ -433,7 +458,8 @@ namespace Kinovea.ScreenManager
             PointF lastPointAligned = new PointF((int)Math.Round(lastPoint.X), (int)Math.Round(lastPoint.Y));
 
             // The boxes themselves may have odd or even sizes.
-            System.Drawing.Size srchSize = parameters.SearchWindow;
+            // The search window can be overridden by the caller (failure recovery).
+            System.Drawing.Size srchSize = searchWindow ?? parameters.SearchWindow;
             System.Drawing.Size tmplSize = parameters.BlockWindow;
             PointF srchTopLeft = new PointF(lastPointAligned.X - (int)(srchSize.Width / 2.0f), lastPointAligned.Y - (int)(srchSize.Height / 2.0f));
             PointF tmplTopLeft = new PointF(lastPointAligned.X - (int)(tmplSize.Width / 2.0f), lastPointAligned.Y - (int)(tmplSize.Height / 2.0f));
