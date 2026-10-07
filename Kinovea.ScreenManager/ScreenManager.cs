@@ -2656,6 +2656,9 @@ namespace Kinovea.ScreenManager
                 return;
 
             ps.ShowCameraCalibration();
+
+            // We may have saved a new calibration file from the dialog.
+            BuildLensCalibrationMenu();
             ConfigureLensCalibrationMenus(ps);
         }
 
