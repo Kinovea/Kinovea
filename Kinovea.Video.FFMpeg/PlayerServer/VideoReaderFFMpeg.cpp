@@ -556,8 +556,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         mVideoInfo.OriginalRotation,
         Demosaicing::None,
         false,
-        false,
-        0);
+        false);
 
     if (!forSummary)
     {
@@ -1510,8 +1509,7 @@ void VideoReaderFFMpeg::ResolveGeometry(VideoGeometryRequest^ request)
         request->Rotation,
         request->Demosaicing,
         request->Deinterlace,
-        true,
-        0);
+        true);
 
     log->DebugFormat("Video geometry resolved: Original: {0}x{1}, Scaled:{2}x{3}, Presentation:{4}x{5}, Prescaling: {6}.",
         mOriginalSize.Width, mOriginalSize.Height,

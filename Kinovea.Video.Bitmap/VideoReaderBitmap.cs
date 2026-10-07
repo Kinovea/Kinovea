@@ -151,7 +151,8 @@ namespace Kinovea.Video.Bitmap
                 target = (long)Math.Round(Current.Timestamp - videoInfo.AverageTimeStampsPerFrame);
             }
 
-            return UpdateCurrent(target);
+            UpdateCurrent(target);
+            return true;
         }
 
         public override bool MoveRequest(bool next, long target)
@@ -166,9 +167,15 @@ namespace Kinovea.Video.Bitmap
                     target = 0;
                     firstFrame = false;
                 }
+
+                if (target > workingZone.End)
+                {
+                    return false;
+                }
             }
             
-            return UpdateCurrent(target);
+            UpdateCurrent(target);
+            return true;
         }
         #endregion
 
@@ -198,8 +205,6 @@ namespace Kinovea.Video.Bitmap
 
             bool isPreScaled = outputSize == request.PresentationSize;
 
-            int generation = 0;
-
             videoGeometry = new VideoGeometry(
                 referenceSize,
                 outputSize,
@@ -209,8 +214,7 @@ namespace Kinovea.Video.Bitmap
                 videoInfo.OriginalRotation,
                 Demosaicing.None,
                 false,
-                false,
-                generation);
+                false);
             
             return false;
         }
@@ -257,24 +261,31 @@ namespace Kinovea.Video.Bitmap
             videoInfo.OriginalSize = generator.OriginalSize;
             videoInfo.OriginalRotation = generator.OriginalRotation;
         }
-        private bool UpdateCurrent(long timestamp)
+        private void UpdateCurrent(long timestamp)
         {
             // We can generate at any timestamp, but we still need to report when the
             // end of the working zone is reached. Otherwise frame enumerators like
             // in video save would just go on for ever.
             if(generator == null || !workingZone.Contains(timestamp))
-                return false;
-            
-            if(current != null && current.Image != null)
-                generator.DisposePrevious(current.Image);
+                return;
 
+            if (current != null)
+            {
+                if (current.Timestamp == timestamp)
+                {
+                    return;
+                }
+                else if (current.Image != null)
+                {
+                    generator.DisposePrevious(current.Image);
+                }
+            }
+            
             long avgtspf = (long)videoInfo.AverageTimeStampsPerFrame;
+            long previousTimestamp = timestamp - avgtspf;
 
             SystemBitmap bmp = generator.Generate(timestamp);
-            current = new VideoFrame(bmp, timestamp, timestamp - avgtspf);
-
-            bool hasMore = workingZone.Contains(timestamp + avgtspf);
-            return hasMore;
+            current = new VideoFrame(bmp, timestamp, previousTimestamp);
         }
         #endregion
     }

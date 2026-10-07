@@ -223,8 +223,7 @@ namespace Kinovea.Video.GIF
                     ImageRotation.Rotate0,
                     Demosaicing.None,
                     false,
-                    false,
-                    0);
+                    false);
 
                 if (!forSummary)
                 {

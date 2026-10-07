@@ -191,8 +191,7 @@ namespace Kinovea.Video.SVG
                 ImageRotation.Rotate0,
                 Demosaicing.None,
                 false,
-                false,
-                0);
+                false);
 
             this.outputSize = videoGeometry.OutputSize;
         }
@@ -238,8 +237,7 @@ namespace Kinovea.Video.SVG
                 ImageRotation.Rotate0,
                 Demosaicing.None,
                 false,
-                false,
-                0);
+                false);
 
             outputSize = videoGeometry.OutputSize;
         }

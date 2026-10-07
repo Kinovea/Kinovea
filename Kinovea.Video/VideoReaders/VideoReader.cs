@@ -195,6 +195,9 @@ namespace Kinovea.Video
         /// set asynchronously and the FrameAcquired event will be raised when the frame is ready.
         /// 
         /// This should be used for all timeline navigation and starting playback.
+        /// 
+        /// Return true if a frame was acquired, false if it's going to be acquired asynchronously.
+        /// Synchronous readers should always return true.
         /// </summary>
         public abstract bool PlayerRequest(PlayerState newState);
 
@@ -207,6 +210,8 @@ namespace Kinovea.Video
         /// This should be called:
         /// - during playback to get a close-enough frame or the next frame immediately.
         /// - during frame enumeration when we know we are in on-demand or cached mode.
+        /// 
+        /// Return true if the frame was acquired, false in case of error.
         /// </summary>
         public abstract bool MoveRequest(bool next, long timestamp);
 

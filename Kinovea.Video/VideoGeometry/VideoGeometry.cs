@@ -63,8 +63,6 @@ namespace Kinovea.Video
         /// </summary>
         public bool StabilizationApplied { get; }
 
-        public int Generation { get; }
-
         public VideoGeometry(
             Size referenceSize,
             Size outputSize,
@@ -74,8 +72,7 @@ namespace Kinovea.Video
             ImageRotation imageRotation,
             Demosaicing demosaicing,
             bool deinterlacing,
-            bool stabilizationApplied,
-            int generation)
+            bool stabilizationApplied)
         {
             ReferenceSize = referenceSize;
             OutputSize = outputSize;
@@ -86,7 +83,6 @@ namespace Kinovea.Video
             Demosaicing = demosaicing;
             Deinterlacing = deinterlacing;
             StabilizationApplied = stabilizationApplied;
-            Generation = generation;
         }
 
         public VideoGeometry()
@@ -100,7 +96,6 @@ namespace Kinovea.Video
             Demosaicing = Demosaicing.None;
             Deinterlacing = false;
             StabilizationApplied = false;
-            Generation = 0;
         }
     }
 }

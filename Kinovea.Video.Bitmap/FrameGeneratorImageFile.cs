@@ -114,6 +114,9 @@ namespace Kinovea.Video.Bitmap
 
         public void SetRotation(ImageRotation rotation)
         {
+            if (rotation  == this.rotation)
+                return;
+            
             // Re-initialize with different rotation.
             this.rotation = rotation;
             customRotation = true;
