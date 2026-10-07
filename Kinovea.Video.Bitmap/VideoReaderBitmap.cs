@@ -263,9 +263,6 @@ namespace Kinovea.Video.Bitmap
         }
         private void UpdateCurrent(long timestamp)
         {
-            // We can generate at any timestamp, but we still need to report when the
-            // end of the working zone is reached. Otherwise frame enumerators like
-            // in video save would just go on for ever.
             if(generator == null || !workingZone.Contains(timestamp))
                 return;
 

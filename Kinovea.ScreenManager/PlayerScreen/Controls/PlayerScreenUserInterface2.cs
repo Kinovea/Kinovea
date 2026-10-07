@@ -2857,10 +2857,10 @@ namespace Kinovea.ScreenManager
         /// Resize the image in the viewport based on current presentation geometry.
         /// May trigger a decoding size change at the reader level.
         /// </summary>
-        private bool ResizeFinished()
+        private void ResizeFinished()
         {
             if (!m_FrameServer.Loaded)
-                return false;
+                return;
 
             bool cacheInvalidated = StretchSqueezeSurface(true);
 
@@ -2869,8 +2869,11 @@ namespace Kinovea.ScreenManager
             {
                 PresentFrame(currentTimestamp);
             }
-
-            return cacheInvalidated;
+            else
+            {
+                // Make sure we always refresh the image.
+                DoInvalidate();
+            }
         }
 
         /// <summary>

@@ -139,7 +139,8 @@ namespace Kinovea.Video.SVG
                 target = (long)Math.Round(Current.Timestamp - videoInfo.AverageTimeStampsPerFrame);
             }
 
-            return UpdateCurrent(target);
+            UpdateCurrent(target);
+            return true;
         }
 
         public override bool MoveRequest(bool next, long target)
@@ -154,9 +155,15 @@ namespace Kinovea.Video.SVG
                     target = 0;
                     firstFrame = false;
                 }
+
+                if (target > workingZone.End)
+                {
+                    return false;
+                }
             }
 
-            return UpdateCurrent(target);
+            UpdateCurrent(target);
+            return true;
         }
         #endregion 
 
@@ -242,24 +249,28 @@ namespace Kinovea.Video.SVG
             outputSize = videoGeometry.OutputSize;
         }
 
-        private bool UpdateCurrent(long timestamp)
+        private void UpdateCurrent(long timestamp)
         {
-            // We can generate at any timestamp, but we still need to report when the
-            // end of the working zone is reached. Otherwise frame enumerators like
-            // in video save would just go on for ever.
             if (generator == null || !workingZone.Contains(timestamp))
-                return false;
+                return;
 
-            if (current != null && current.Image != null)
-                generator.DisposePrevious(current.Image);
+            if (current != null)
+            {
+                if (current.Timestamp == timestamp && current.Image != null && current.Image.Size == outputSize)
+                {
+                    return;
+                }
+                else if (current.Image != null)
+                {
+                    generator.DisposePrevious(current.Image);
+                }
+            }
 
             long avgtspf = (long)videoInfo.AverageTimeStampsPerFrame;
+            long previousTimestamp = timestamp - avgtspf;
 
             Bitmap bmp = generator.Generate(timestamp, outputSize);
-            current = new VideoFrame(bmp, timestamp, timestamp - avgtspf);
-
-            bool hasMore = workingZone.Contains(timestamp + avgtspf);
-            return hasMore;
+            current = new VideoFrame(bmp, timestamp, previousTimestamp);
         }
         #endregion
     }
