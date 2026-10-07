@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the between vectors ab and cd in the range [-π..+π], positive CCW.
+        /// Returns the angle between vectors ab and cd in the range [-π..+π], positive CCW.
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c, PointF d)
         {

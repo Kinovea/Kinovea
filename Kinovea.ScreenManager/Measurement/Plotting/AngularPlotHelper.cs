@@ -13,6 +13,8 @@ namespace Kinovea.ScreenManager
     public static class AngularPlotHelper
     {
         private static AngularKinematics angularKinematics = new AngularKinematics();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 
         public static void ImportData(Metadata metadata, List<TimeSeriesPlotData> timeSeriesData)
         {
@@ -67,37 +69,25 @@ namespace Kinovea.ScreenManager
                     string keyA = gpa.Leg1.ToString();
                     string keyB = gpa.Leg2.ToString();
 
-                    // In some tools like angle-to-horizontal or angle-to-vertical, one of the point is static
-                    // and doesn't have a track associated with it.
-                    // For these missing keys we will reconstruct a trajectory with a single point in it.
+                    // The angle we are interested in is not necessarily based on three tracked points.
+                    // In the case of angle-to-horizontal or angle-to-vertical, one of the points is static.
+                    // In the case of Goniometer, one of the points is moved by an alignment constraint.
                     List<string> keys = new List<string>() { keyO, keyA, keyB };
                     List<string> missingKeys = keys.Where(k => !trajs.ContainsKey(k)).ToList();
-                    
-                    // At the moment we don't allow the O key to be missing as it's used later as a reference
+
+                    // At the moment we don't allow the O key to be missing as it's used as a reference
                     // for the time coordinates and length.
-                    if (missingKeys.Contains(keyO))
+                    // We also only allow one missing key for now.
+                    if (missingKeys.Contains(keyO) || missingKeys.Count > 1)
                     {
                         continue;
                     }
 
-                    // Create a single-point "trajectory" for the missing keys.
-                    // The rest of the code needs to handle the fact that the angle is supported
-                    // by trajectories with possibly varying lengths.
-                    List<PointF> points = drawing.GenericPosture.PointList;
-                    foreach (string key in missingKeys)
+                    if (missingKeys.Count > 0)
                     {
-                        int index = int.Parse(key);
-                        PointF point = PointF.Empty;
-                        if (index >= 0 && index < points.Count)
-                            point = points[index];
-
-                        TimedPoint timedPoint = new TimedPoint(point.X, point.Y, 0);
-                        FilteredTrajectory traj = new FilteredTrajectory();
-                        traj.Initialize(new List<TimedPoint>() { timedPoint }, metadata.CalibrationHelper);
-                        trajs.Add(key, traj);
+                        FillMissingTrajectory(drawing, metadata, missingKeys, trajs, keyO, tracks);
                     }
-                    
-                    // Remap to oab.
+
                     Dictionary<string, FilteredTrajectory> angleTrajs = new Dictionary<string, FilteredTrajectory>();
                     angleTrajs["o"] = trajs[keyO];
                     angleTrajs["a"] = trajs[keyA];
@@ -108,7 +98,9 @@ namespace Kinovea.ScreenManager
 
                     string name = drawing.Name;
                     if (!string.IsNullOrEmpty(gpa.Name))
+                    {
                         name = name + " - " + gpa.Name;
+                    }
 
                     Color color = gpa.Color == Color.Transparent ? drawing.Color : gpa.Color;
                     TimeSeriesPlotData data = new TimeSeriesPlotData(name, color, tsc);
@@ -116,6 +108,41 @@ namespace Kinovea.ScreenManager
                     timeSeriesData.Add(data);
                 }
             }
+        }
+
+        private static void FillMissingTrajectory(DrawingGenericPosture drawing, Metadata metadata, List<string> missingKeys, Dictionary<string, FilteredTrajectory> trajs, string keyO, Dictionary<string, DrawingTrack> tracks)
+        {
+            string missingKey = missingKeys.FirstOrDefault();
+            if (missingKey == null)
+                return;
+
+            int missingIndex = int.Parse(missingKeys.First());
+            
+            // Update the drawing according to the tracking data as if we were moving on the timeline.
+            // Note that we need to move all the tracked points, or at least all the points
+            // that are impacting the alignment constraint of our missing point.
+            List<TimedPoint> positions = new List<TimedPoint>();
+            foreach (var time in trajs[keyO].Times)
+            {
+                // Update all tracked points.
+                // This will trigger the constraint engine.
+                for (int i = 0; i < tracks.Count; i++)
+                {
+                    var track = tracks.ElementAt(i);
+                    TimedPoint tp = track.Value.GetTimedPoint(time);
+                    drawing.SetTrackablePointValue(track.Key, tp.Point, tp.T - time);
+                }
+
+                // Get the position of the non tracked point.
+                PointF p = drawing.GenericPosture.PointList[missingIndex];
+                TimedPoint tpMissing = new TimedPoint(p.X, p.Y, time);
+                positions.Add(tpMissing);
+            }
+
+            // Rebuild the trajectory of the non-tracked point.
+            FilteredTrajectory filteredTrajectory = new FilteredTrajectory();
+            filteredTrajectory.Initialize(positions, metadata.CalibrationHelper);
+            trajs[missingKey] = filteredTrajectory;
         }
     }
 }
