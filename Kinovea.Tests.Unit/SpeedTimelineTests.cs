@@ -181,5 +181,50 @@ namespace Kinovea.Tests.Unit
             SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
             Assert.Equal(-1, timeline.SecondsToTimestamp(double.NaN));
         }
+
+        [Fact]
+        public void SecondsToTimestampMulti_UsesTimelineContainingTheTime()
+        {
+            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+            SpeedTimeline b = SpeedTimeline.Build(new long[] { 3000, 5000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+
+            Assert.Equal(500, SpeedTimeline.SecondsToTimestamp(new[] { a, b }, 0.5));
+            Assert.Equal(4000, SpeedTimeline.SecondsToTimestamp(new[] { a, b }, 4.0));
+        }
+
+        [Fact]
+        public void SecondsToTimestampMulti_ClampsToUnionOfRanges()
+        {
+            SpeedTimeline a = SpeedTimeline.Build(new long[] { 1000, 2000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+            SpeedTimeline b = SpeedTimeline.Build(new long[] { 3000, 5000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+            SpeedTimeline[] both = { a, b };
+
+            Assert.Equal(1000, SpeedTimeline.SecondsToTimestamp(both, 0.0));
+            Assert.Equal(5000, SpeedTimeline.SecondsToTimestamp(both, 9.0));
+            Assert.Equal(1000, SpeedTimeline.SecondsToTimestamp(both, double.NegativeInfinity));
+            Assert.Equal(5000, SpeedTimeline.SecondsToTimestamp(both, double.PositiveInfinity));
+        }
+
+        [Fact]
+        public void SecondsToTimestampMulti_GapGoesToClosestEnd()
+        {
+            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+            SpeedTimeline b = SpeedTimeline.Build(new long[] { 3000, 5000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+            SpeedTimeline[] both = { a, b };
+
+            Assert.Equal(1000, SpeedTimeline.SecondsToTimestamp(both, 1.4));
+            Assert.Equal(3000, SpeedTimeline.SecondsToTimestamp(both, 2.6));
+        }
+
+        [Fact]
+        public void SecondsToTimestampMulti_SkipsEmptyTimelines()
+        {
+            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+
+            Assert.Equal(500, SpeedTimeline.SecondsToTimestamp(new[] { SpeedTimeline.Empty(), a }, 0.5));
+            Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new[] { SpeedTimeline.Empty() }, 0.5));
+            Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new SpeedTimeline[0], 0.5));
+            Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new[] { a }, double.NaN));
+        }
     }
 }

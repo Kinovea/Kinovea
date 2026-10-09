@@ -129,6 +129,46 @@ namespace Kinovea.ScreenManager
             return (long)timestamp;
         }
 
+        /// <summary>
+        /// Convert a time coordinate, in seconds, to a video timestamp for a plot showing several timelines.
+        /// The timelines must have been built with the same time origin and time scale (same video).
+        /// The result is clamped to the union of the sample ranges: a time inside a gap between two
+        /// non-overlapping timelines goes to the closest end of either of them.
+        /// Returns -1 if there is no usable timeline or the time is NaN.
+        /// </summary>
+        public static long SecondsToTimestamp(IEnumerable<SpeedTimeline> timelines, double seconds)
+        {
+            if (timelines == null)
+                throw new ArgumentNullException("timelines");
+
+            long best = -1;
+            double bestDistance = double.PositiveInfinity;
+            foreach (SpeedTimeline timeline in timelines)
+            {
+                long candidate = timeline.SecondsToTimestamp(seconds);
+                if (candidate < 0)
+                    continue;
+
+                if (double.IsInfinity(seconds))
+                {
+                    // Every candidate is infinitely far, keep the extreme one in the requested direction.
+                    if (best < 0 || (seconds > 0 ? candidate > best : candidate < best))
+                        best = candidate;
+
+                    continue;
+                }
+
+                double distance = Math.Abs(timeline.TimestampToSeconds(candidate) - seconds);
+                if (distance < bestDistance)
+                {
+                    best = candidate;
+                    bestDistance = distance;
+                }
+            }
+
+            return best;
+        }
+
         private static double ToSeconds(long timestamp, long timeOrigin, double timestampsPerSecond, double highSpeedFactor)
         {
             return (timestamp - timeOrigin) / timestampsPerSecond / highSpeedFactor;

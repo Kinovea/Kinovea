@@ -2561,10 +2561,30 @@ namespace Kinovea.ScreenManager
             if (speedTimelinePanel == null)
                 return;
 
-            speedTimelinePanel.SetTrack(track, m_FrameServer.Metadata);
+            speedTimelinePanel.AddTrack(track, m_FrameServer.Metadata);
             speedTimelineSplitter.Visible = true;
             speedTimelinePanel.Visible = true;
             speedTimelinePanel.UpdateCursor(currentTimestamp);
+        }
+
+        /// <summary>
+        /// Add the track to the speed graph, or remove it if it is already there.
+        /// The graph is closed when its last track is removed.
+        /// </summary>
+        private void ToggleSpeedTimeline(DrawingTrack track)
+        {
+            if (speedTimelinePanel == null)
+                return;
+
+            if (!speedTimelinePanel.Visible || !speedTimelinePanel.Contains(track))
+            {
+                ShowSpeedTimeline(track);
+                return;
+            }
+
+            speedTimelinePanel.RemoveTrack(track);
+            if (speedTimelinePanel.TrackCount == 0)
+                HideSpeedTimeline();
         }
 
         /// <summary>
@@ -4067,7 +4087,7 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
 
-            if (speedTimelinePanel != null && speedTimelinePanel.Visible && !speedTimelinePanel.IsTrackAlive())
+            if (speedTimelinePanel != null && speedTimelinePanel.Visible && speedTimelinePanel.RemoveDeadTracks() && speedTimelinePanel.TrackCount == 0)
                 HideSpeedTimeline();
         }
         private void CreateNewMultiDrawingItem(AbstractMultiDrawing manager)
@@ -4468,6 +4488,7 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
             AddDrawingTitleMenu(track, popMenu);
             popMenu.Items.Add(mnuConfigureTrajectory);
+            mnuShowSpeedTimeline.Checked = speedTimelinePanel != null && speedTimelinePanel.Visible && speedTimelinePanel.Contains(track);
             popMenu.Items.Add(mnuShowSpeedTimeline);
             popMenu.Items.Add(new ToolStripSeparator());
 
@@ -6208,7 +6229,7 @@ namespace Kinovea.ScreenManager
             if (track == null)
                 return;
 
-            ShowSpeedTimeline(track);
+            ToggleSpeedTimeline(track);
         }
         private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
         {
