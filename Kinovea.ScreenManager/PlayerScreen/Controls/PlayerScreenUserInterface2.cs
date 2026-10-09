@@ -3776,7 +3776,9 @@ namespace Kinovea.ScreenManager
             // Tracking pop menu (Restart, Stop tracking)
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteDrawing;
-            mnuShowSpeedTimeline.Text = "Speed graph";
+            mnuShowSpeedTimeline.Text = ScreenManagerLang.mnuShowSpeedGraph;
+            if (speedTimelinePanel != null)
+                speedTimelinePanel.ReloadCulture();
             mnuDeleteTrajectory.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", "DeleteDrawing");
 
             // Magnifier.

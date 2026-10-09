@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
 
             btnRefresh.Dock = DockStyle.Right;
             btnRefresh.Width = 90;
-            btnRefresh.Text = "Refresh";
+            btnRefresh.Text = ScreenManagerLang.SpeedGraph_Refresh;
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += (s, e) => RefreshData();
 
@@ -173,9 +173,29 @@ namespace Kinovea.ScreenManager
             }
 
             string abbreviation = metadata.CalibrationHelper.GetSpeedAbbreviation();
+            UpdateTitle(abbreviation);
+            plotView.Model = CreatePlot(abbreviation);
+        }
+
+        /// <summary>
+        /// Update the texts after the user changed the interface language.
+        /// The data is not recomputed.
+        /// </summary>
+        public void ReloadCulture()
+        {
+            btnRefresh.Text = ScreenManagerLang.SpeedGraph_Refresh;
+            if (tracks.Count == 0 || xAxis == null)
+                return;
+
+            UpdateTitle(metadata.CalibrationHelper.GetSpeedAbbreviation());
+            xAxis.Title = ScreenManagerLang.DataAnalysis_TimeAxisSeconds;
+            plotView.InvalidatePlot(false);
+        }
+
+        private void UpdateTitle(string abbreviation)
+        {
             string names = string.Join(", ", tracks.Select(t => t.Name));
             lblTitle.Text = string.Format("{0} - {1} ({2})", names, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed, abbreviation);
-            plotView.Model = CreatePlot(abbreviation);
         }
 
         /// <summary>
@@ -316,7 +336,7 @@ namespace Kinovea.ScreenManager
 
             xAxis = new LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
-            xAxis.Title = "Time (s)";
+            xAxis.Title = ScreenManagerLang.DataAnalysis_TimeAxisSeconds;
             xAxis.MajorGridlineStyle = OxyPlot.LineStyle.Solid;
             xAxis.MinorGridlineStyle = OxyPlot.LineStyle.Dot;
             model.Axes.Add(xAxis);
