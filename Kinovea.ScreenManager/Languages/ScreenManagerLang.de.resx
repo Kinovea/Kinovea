@@ -1696,4 +1696,13 @@
   <data name="formConfigureKinogram_Title" xml:space="preserve">
     <value>Bildreihe konfigurieren</value>
   </data>
+  <data name="DataAnalysis_TimeAxisSeconds" xml:space="preserve">
+    <value>Zeit (s)</value>
+  </data>
+  <data name="mnuShowSpeedGraph" xml:space="preserve">
+    <value>Geschwindigkeitsdiagramm</value>
+  </data>
+  <data name="SpeedGraph_Refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
 </root>

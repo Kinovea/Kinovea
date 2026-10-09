@@ -35,12 +35,14 @@ namespace Kinovea.ScreenManager
             get { return Times.Length == 0; }
         }
 
+        private readonly long[] timestamps;
         private readonly long timeOrigin;
         private readonly double timestampsPerSecond;
         private readonly double highSpeedFactor;
 
-        private SpeedTimeline(double[] times, double[] values, long timeOrigin, double timestampsPerSecond, double highSpeedFactor)
+        private SpeedTimeline(long[] timestamps, double[] times, double[] values, long timeOrigin, double timestampsPerSecond, double highSpeedFactor)
         {
+            this.timestamps = timestamps;
             this.Times = times;
             this.Values = values;
             this.timeOrigin = timeOrigin;
@@ -70,6 +72,7 @@ namespace Kinovea.ScreenManager
             if (!IsPositiveFinite(highSpeedFactor))
                 throw new ArgumentOutOfRangeException("highSpeedFactor");
 
+            List<long> validTimestamps = new List<long>(timestamps.Length);
             List<double> times = new List<double>(timestamps.Length);
             List<double> values = new List<double>(timestamps.Length);
             for (int i = 0; i < timestamps.Length; i++)
@@ -78,16 +81,17 @@ namespace Kinovea.ScreenManager
                 if (double.IsNaN(v) || double.IsInfinity(v))
                     continue;
 
+                validTimestamps.Add(timestamps[i]);
                 times.Add(ToSeconds(timestamps[i], timeOrigin, timestampsPerSecond, highSpeedFactor));
                 values.Add(v);
             }
 
-            return new SpeedTimeline(times.ToArray(), values.ToArray(), timeOrigin, timestampsPerSecond, highSpeedFactor);
+            return new SpeedTimeline(validTimestamps.ToArray(), times.ToArray(), values.ToArray(), timeOrigin, timestampsPerSecond, highSpeedFactor);
         }
 
         public static SpeedTimeline Empty()
         {
-            return new SpeedTimeline(new double[0], new double[0], 0, 1, 1);
+            return new SpeedTimeline(new long[0], new double[0], new double[0], 0, 1, 1);
         }
 
         /// <summary>
@@ -96,6 +100,73 @@ namespace Kinovea.ScreenManager
         public double TimestampToSeconds(long timestamp)
         {
             return ToSeconds(timestamp, timeOrigin, timestampsPerSecond, highSpeedFactor);
+        }
+
+        /// <summary>
+        /// Convert a time coordinate of this timeline, in seconds, back to a video timestamp.
+        /// The result is rounded to the nearest timestamp and clamped to the range covered by the samples,
+        /// so a click anywhere in the plot always lands on a frame of the track.
+        /// Returns -1 if the timeline is empty.
+        /// </summary>
+        public long SecondsToTimestamp(double seconds)
+        {
+            if (IsEmpty || double.IsNaN(seconds))
+                return -1;
+
+            long first = timestamps[0];
+            long last = timestamps[timestamps.Length - 1];
+
+            if (double.IsInfinity(seconds))
+                return seconds > 0 ? last : first;
+
+            double offset = Math.Round(seconds * highSpeedFactor * timestampsPerSecond);
+            double timestamp = timeOrigin + offset;
+            if (timestamp <= first)
+                return first;
+            if (timestamp >= last)
+                return last;
+
+            return (long)timestamp;
+        }
+
+        /// <summary>
+        /// Convert a time coordinate, in seconds, to a video timestamp for a plot showing several timelines.
+        /// The timelines must have been built with the same time origin and time scale (same video).
+        /// The result is clamped to the union of the sample ranges: a time inside a gap between two
+        /// non-overlapping timelines goes to the closest end of either of them.
+        /// Returns -1 if there is no usable timeline or the time is NaN.
+        /// </summary>
+        public static long SecondsToTimestamp(IEnumerable<SpeedTimeline> timelines, double seconds)
+        {
+            if (timelines == null)
+                throw new ArgumentNullException("timelines");
+
+            long best = -1;
+            double bestDistance = double.PositiveInfinity;
+            foreach (SpeedTimeline timeline in timelines)
+            {
+                long candidate = timeline.SecondsToTimestamp(seconds);
+                if (candidate < 0)
+                    continue;
+
+                if (double.IsInfinity(seconds))
+                {
+                    // Every candidate is infinitely far, keep the extreme one in the requested direction.
+                    if (best < 0 || (seconds > 0 ? candidate > best : candidate < best))
+                        best = candidate;
+
+                    continue;
+                }
+
+                double distance = Math.Abs(timeline.TimestampToSeconds(candidate) - seconds);
+                if (distance < bestDistance)
+                {
+                    best = candidate;
+                    bestDistance = distance;
+                }
+            }
+
+            return best;
         }
 
         private static double ToSeconds(long timestamp, long timeOrigin, double timestampsPerSecond, double highSpeedFactor)
