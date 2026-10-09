@@ -634,6 +634,7 @@
     <Compile Include="Measurement\Kinematics\Butterworth.cs" />
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
+    <Compile Include="Measurement\Kinematics\SpeedTimeline.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Thumbnails\ThumbnailHelper.cs" />
     <Compile Include="Tracking\Tracking\Circle\TrackerCircle.cs" />
@@ -674,6 +675,9 @@
     </Compile>
     <Compile Include="PlayerScreen\Controls\InfobarPlayer.Designer.cs">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\SpeedTimelinePanel.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PlayerScreen\Controls\PanelDoubleBuffer.cs">
       <SubType>Component</SubType>
