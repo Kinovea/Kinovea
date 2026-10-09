@@ -218,12 +218,15 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Same interactions as the default OxyPlot controller (pan, zoom, Ctrl/Shift tracker),
+        /// Same mouse interactions as the default OxyPlot controller (pan, zoom, Ctrl/Shift tracker),
         /// except plain left click which seeks the video instead of showing the tracker.
+        /// All keyboard bindings are removed: once the plot has focus, keys like the arrows must only
+        /// drive the player (frame stepping) and not pan or zoom the plot at the same time.
         /// </summary>
         private PlotController CreateController()
         {
             PlotController controller = new PlotController();
+            UnbindKeyboard(controller);
             controller.UnbindMouseDown(OxyMouseButton.Left);
             controller.BindMouseDown(OxyMouseButton.Left, new DelegatePlotCommand<OxyMouseDownEventArgs>((view, c, args) =>
             {
@@ -234,6 +237,22 @@ namespace Kinovea.ScreenManager
             }));
 
             return controller;
+        }
+
+        private static void UnbindKeyboard(PlotController controller)
+        {
+            // Keys bound by the default OxyPlot 1.0 controller.
+            OxyKey[] keys = { OxyKey.Left, OxyKey.Right, OxyKey.Up, OxyKey.Down, OxyKey.Add, OxyKey.Subtract, OxyKey.PageUp, OxyKey.PageDown };
+            foreach (OxyKey key in keys)
+            {
+                controller.UnbindKeyDown(key);
+                controller.UnbindKeyDown(key, OxyModifierKeys.Control);
+            }
+
+            controller.UnbindKeyDown(OxyKey.A);
+            controller.UnbindKeyDown(OxyKey.Home);
+            controller.UnbindKeyDown(OxyKey.C, OxyModifierKeys.Control | OxyModifierKeys.Alt);
+            controller.UnbindKeyDown(OxyKey.R, OxyModifierKeys.Control | OxyModifierKeys.Alt);
         }
 
         private static bool IsInPlotArea(IPlotView view, ScreenPoint p)
