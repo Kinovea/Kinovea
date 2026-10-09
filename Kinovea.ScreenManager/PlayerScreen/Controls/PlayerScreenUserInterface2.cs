@@ -2542,6 +2542,7 @@ namespace Kinovea.ScreenManager
             speedTimelinePanel.Height = 180;
             speedTimelinePanel.Visible = false;
             speedTimelinePanel.CloseAsked += (s, e) => HideSpeedTimeline();
+            speedTimelinePanel.SeekAsked += SpeedTimelinePanel_SeekAsked;
 
             speedTimelineSplitter = new Splitter();
             speedTimelineSplitter.Dock = DockStyle.Bottom;
@@ -2564,6 +2565,20 @@ namespace Kinovea.ScreenManager
             speedTimelineSplitter.Visible = true;
             speedTimelinePanel.Visible = true;
             speedTimelinePanel.UpdateCursor(currentTimestamp);
+        }
+
+        /// <summary>
+        /// The user clicked or dragged in the speed graph: move the playhead there, like the main timeline.
+        /// </summary>
+        private void SpeedTimelinePanel_SeekAsked(object sender, TimeEventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            BeforeManualMove();
+
+            if (e.Time != currentTimestamp)
+                PresentFrame(e.Time);
         }
 
         private void HideSpeedTimeline()

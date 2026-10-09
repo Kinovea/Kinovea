@@ -120,5 +120,66 @@ namespace Kinovea.Tests.Unit
         {
             Assert.True(SpeedTimeline.Empty().IsEmpty);
         }
+
+        [Fact]
+        public void SecondsToTimestamp_IsInverseOfTimestampToSeconds()
+        {
+            long[] timestamps = { 1000, 1500, 2000, 2500, 3000 };
+            SpeedTimeline timeline = SpeedTimeline.Build(timestamps, new[] { 1.0, 1.0, 1.0, 1.0, 1.0 }, 1200, 1000, 1);
+
+            foreach (long t in timestamps)
+                Assert.Equal(t, timeline.SecondsToTimestamp(timeline.TimestampToSeconds(t)));
+        }
+
+        [Fact]
+        public void SecondsToTimestamp_RoundsToNearestTimestamp()
+        {
+            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 100 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+
+            Assert.Equal(42, timeline.SecondsToTimestamp(0.0421));
+            Assert.Equal(43, timeline.SecondsToTimestamp(0.0426));
+        }
+
+        [Fact]
+        public void SecondsToTimestamp_TakesHighSpeedFactorIntoAccount()
+        {
+            // 240 fps capture encoded at 30 fps: 1 s of real time = 8 s of video.
+            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 16000 }, new[] { 1.0, 1.0 }, 0, 1000, 8);
+
+            Assert.Equal(8000, timeline.SecondsToTimestamp(1.0));
+        }
+
+        [Fact]
+        public void SecondsToTimestamp_ClampsToSampleRange()
+        {
+            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 1000, 2000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+
+            Assert.Equal(1000, timeline.SecondsToTimestamp(-3.0));
+            Assert.Equal(2000, timeline.SecondsToTimestamp(10.0));
+            Assert.Equal(1000, timeline.SecondsToTimestamp(double.NegativeInfinity));
+            Assert.Equal(2000, timeline.SecondsToTimestamp(double.PositiveInfinity));
+        }
+
+        [Fact]
+        public void SecondsToTimestamp_IgnoresDroppedSamplesForRange()
+        {
+            // The first and last samples have no speed (typical at the ends of a filtered track):
+            // seeking must stay within the visible part of the curve.
+            long[] timestamps = { 0, 1000, 2000, 3000 };
+            double[] speeds = { double.NaN, 1.0, 2.0, double.NaN };
+            SpeedTimeline timeline = SpeedTimeline.Build(timestamps, speeds, 0, 1000, 1);
+
+            Assert.Equal(1000, timeline.SecondsToTimestamp(0.0));
+            Assert.Equal(2000, timeline.SecondsToTimestamp(3.0));
+        }
+
+        [Fact]
+        public void SecondsToTimestamp_EmptyOrNaNReturnsMinusOne()
+        {
+            Assert.Equal(-1, SpeedTimeline.Empty().SecondsToTimestamp(1.0));
+
+            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
+            Assert.Equal(-1, timeline.SecondsToTimestamp(double.NaN));
+        }
     }
 }

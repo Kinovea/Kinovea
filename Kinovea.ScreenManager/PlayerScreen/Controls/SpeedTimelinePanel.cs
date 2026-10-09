@@ -14,11 +14,18 @@ namespace Kinovea.ScreenManager
     /// Panel showing the speed of a single track over time, with a vertical cursor following the playhead.
     /// The data is computed once when a track is assigned and again when the user clicks "Refresh".
     /// Only the cursor is updated during playback.
+    /// Clicking or dragging with the left button in the plot area asks the player to seek to that time.
     /// The controls are created in code to avoid touching the designer file of the player screen.
     /// </summary>
     public class SpeedTimelinePanel : UserControl
     {
         public event EventHandler CloseAsked;
+
+        /// <summary>
+        /// Raised when the user clicks or drags in the plot to move the playhead.
+        /// The time is a video timestamp within the range of the track.
+        /// </summary>
+        public event EventHandler<TimeEventArgs> SeekAsked;
 
         /// <summary>
         /// The track currently displayed, or null.
@@ -34,6 +41,8 @@ namespace Kinovea.ScreenManager
         private Button btnRefresh = new Button();
         private Button btnClose = new Button();
         private LineAnnotation cursor;
+        private LinearAxis xAxis;
+        private long lastSeekTimestamp = -1;
         private SpeedTimeline timeline = SpeedTimeline.Empty();
         private DrawingTrack track;
         private Metadata metadata;
@@ -69,6 +78,7 @@ namespace Kinovea.ScreenManager
 
             plotView.Dock = DockStyle.Fill;
             plotView.BackColor = Color.White;
+            plotView.Controller = CreateController();
 
             this.Controls.Add(plotView);
             this.Controls.Add(header);
@@ -93,6 +103,7 @@ namespace Kinovea.ScreenManager
             metadata = null;
             timeline = SpeedTimeline.Empty();
             cursor = null;
+            xAxis = null;
             lblTitle.Text = "";
             plotView.Model = null;
         }
@@ -141,6 +152,82 @@ namespace Kinovea.ScreenManager
             plotView.InvalidatePlot(false);
         }
 
+        /// <summary>
+        /// Same interactions as the default OxyPlot controller (pan, zoom, Ctrl/Shift tracker),
+        /// except plain left click which seeks the video instead of showing the tracker.
+        /// </summary>
+        private PlotController CreateController()
+        {
+            PlotController controller = new PlotController();
+            controller.UnbindMouseDown(OxyMouseButton.Left);
+            controller.BindMouseDown(OxyMouseButton.Left, new DelegatePlotCommand<OxyMouseDownEventArgs>((view, c, args) =>
+            {
+                if (!IsInPlotArea(view, args.Position))
+                    return;
+
+                c.AddMouseManipulator(view, new SeekManipulator(view, this), args);
+            }));
+
+            return controller;
+        }
+
+        private static bool IsInPlotArea(IPlotView view, ScreenPoint p)
+        {
+            if (view.ActualModel == null)
+                return false;
+
+            OxyRect area = view.ActualModel.PlotArea;
+            return p.X >= area.Left && p.X <= area.Right && p.Y >= area.Top && p.Y <= area.Bottom;
+        }
+
+        /// <summary>
+        /// Convert a horizontal screen position in the plot to a video timestamp and ask the player to go there.
+        /// </summary>
+        private void SeekToScreenX(double x)
+        {
+            if (xAxis == null || timeline.IsEmpty)
+                return;
+
+            long timestamp = timeline.SecondsToTimestamp(xAxis.InverseTransform(x));
+            if (timestamp < 0 || timestamp == lastSeekTimestamp)
+                return;
+
+            lastSeekTimestamp = timestamp;
+
+            // Move the cursor right away for immediate feedback, the player will confirm the actual frame time.
+            UpdateCursor(timestamp);
+            SeekAsked?.Invoke(this, new TimeEventArgs(timestamp));
+        }
+
+        /// <summary>
+        /// Seeks on mouse down and keeps seeking while the mouse is dragged, like scrubbing the main timeline.
+        /// </summary>
+        private class SeekManipulator : MouseManipulator
+        {
+            private readonly SpeedTimelinePanel owner;
+
+            public SeekManipulator(IPlotView view, SpeedTimelinePanel owner)
+                : base(view)
+            {
+                this.owner = owner;
+            }
+
+            public override void Started(OxyMouseEventArgs e)
+            {
+                base.Started(e);
+                owner.lastSeekTimestamp = -1;
+                owner.SeekToScreenX(e.Position.X);
+                e.Handled = true;
+            }
+
+            public override void Delta(OxyMouseEventArgs e)
+            {
+                base.Delta(e);
+                owner.SeekToScreenX(e.Position.X);
+                e.Handled = true;
+            }
+        }
+
         private static SpeedTimeline BuildTimeline(DrawingTrack track, Metadata metadata)
         {
             TimeSeriesCollection tsc = track.TimeSeriesCollection;
@@ -168,7 +255,7 @@ namespace Kinovea.ScreenManager
             PlotModel model = new PlotModel();
             model.PlotType = PlotType.XY;
 
-            LinearAxis xAxis = new LinearAxis();
+            xAxis = new LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.Title = "Time (s)";
             xAxis.MajorGridlineStyle = OxyPlot.LineStyle.Solid;
