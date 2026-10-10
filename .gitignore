@@ -367,7 +367,6 @@ Installer/*.exe
 Installer/OtherFiles/Manuals/*.chm
 Installer/build.log
 Installer/Kinovea.Portable*/*
-Installer/Kinovea-*
 Installer/build-*.txt
 
 /Installer/OtherFiles/Changelog*

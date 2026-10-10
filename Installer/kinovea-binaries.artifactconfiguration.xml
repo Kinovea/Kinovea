@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <zip-file>
+    
+    <!-- Main application -->
+    <pe-file path="Kinovea.exe">
+      <authenticode-sign />
+    </pe-file>
+    
+    <!-- Kinovea-owned assemblies -->
+    <pe-file path="Kinovea.*.dll" min-matches="0" max-matches="unbounded">
+      <authenticode-sign />
+    </pe-file>
+    
+    <!-- Satellite assemblies in all language folders -->
+    <pe-file path="Languages/**/Kinovea*.resources.dll" min-matches="0" max-matches="unbounded">
+      <authenticode-sign />
+    </pe-file>
+    
+    <!-- Exported NSIS uninstaller -->
+    <pe-file path="Uninstall-Kinovea.exe">
+      <authenticode-sign />
+    </pe-file>
+    
+  </zip-file>
+</artifact-configuration>
