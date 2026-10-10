@@ -146,7 +146,7 @@ jobs:
       run: |
         $appData = "Kinovea/bin/x64/Release/AppData"
         New-Item -ItemType Directory -Force -Path $appData | Out-Null
-        New-Item -ItemType File -Force -Path "$appData/portable" |
+        New-Item -ItemType File -Force -Path "$appData/portable" | Out-Null
 
     - name: Create Portable Archive
       shell: pwsh
