@@ -35,6 +35,31 @@ namespace Kinovea.ScreenManager
             get { return Times.Length == 0; }
         }
 
+        /// <summary>
+        /// Mean speed over the samples (each sample has the same weight). NaN if empty.
+        /// </summary>
+        public double Mean { get; private set; }
+
+        /// <summary>
+        /// Highest speed. NaN if empty.
+        /// </summary>
+        public double Maximum { get; private set; }
+
+        /// <summary>
+        /// Time of the highest speed, in seconds. The first occurrence wins on ties. NaN if empty.
+        /// </summary>
+        public double MaximumTime { get; private set; }
+
+        /// <summary>
+        /// Lowest speed. NaN if empty.
+        /// </summary>
+        public double Minimum { get; private set; }
+
+        /// <summary>
+        /// Time of the lowest speed, in seconds. The first occurrence wins on ties. NaN if empty.
+        /// </summary>
+        public double MinimumTime { get; private set; }
+
         private readonly long[] timestamps;
         private readonly long timeOrigin;
         private readonly double timestampsPerSecond;
@@ -48,6 +73,7 @@ namespace Kinovea.ScreenManager
             this.timeOrigin = timeOrigin;
             this.timestampsPerSecond = timestampsPerSecond;
             this.highSpeedFactor = highSpeedFactor;
+            ComputeStatistics();
         }
 
         /// <summary>
@@ -167,6 +193,89 @@ namespace Kinovea.ScreenManager
             }
 
             return best;
+        }
+
+        /// <summary>
+        /// Speed at the passed time, in seconds, linearly interpolated between the two closest samples.
+        /// Returns NaN outside the range covered by the samples.
+        /// </summary>
+        public double ValueAt(double seconds)
+        {
+            if (IsEmpty || double.IsNaN(seconds) || seconds < Times[0] || seconds > Times[Times.Length - 1])
+                return double.NaN;
+
+            int index = Array.BinarySearch(Times, seconds);
+            if (index >= 0)
+                return Values[index];
+
+            // Not an exact match: ~index is the first sample after the time, there is always one before it.
+            int after = ~index;
+            int before = after - 1;
+            double ratio = (seconds - Times[before]) / (Times[after] - Times[before]);
+            return Values[before] + ratio * (Values[after] - Values[before]);
+        }
+
+        /// <summary>
+        /// Merge several timelines into one table, for example to export them to a spreadsheet.
+        /// Each row is [time in seconds, value of timeline 0, value of timeline 1, ...], sorted by time.
+        /// A timeline without a sample at the time of the row has NaN in its column.
+        /// The timelines must have been built with the same time origin and time scale (same video).
+        /// </summary>
+        public static List<double[]> MergeRows(IList<SpeedTimeline> timelines)
+        {
+            if (timelines == null)
+                throw new ArgumentNullException("timelines");
+
+            // Rows are keyed by timestamp rather than by seconds to avoid floating point mismatches.
+            SortedDictionary<long, double[]> rows = new SortedDictionary<long, double[]>();
+            for (int column = 0; column < timelines.Count; column++)
+            {
+                SpeedTimeline timeline = timelines[column];
+                for (int i = 0; i < timeline.Count; i++)
+                {
+                    double[] row;
+                    if (!rows.TryGetValue(timeline.timestamps[i], out row))
+                    {
+                        row = new double[timelines.Count + 1];
+                        for (int j = 1; j < row.Length; j++)
+                            row[j] = double.NaN;
+
+                        row[0] = timeline.Times[i];
+                        rows.Add(timeline.timestamps[i], row);
+                    }
+
+                    row[column + 1] = timeline.Values[i];
+                }
+            }
+
+            return new List<double[]>(rows.Values);
+        }
+
+        private void ComputeStatistics()
+        {
+            if (IsEmpty)
+            {
+                Mean = Maximum = MaximumTime = Minimum = MinimumTime = double.NaN;
+                return;
+            }
+
+            int maxIndex = 0;
+            int minIndex = 0;
+            double sum = 0;
+            for (int i = 0; i < Values.Length; i++)
+            {
+                sum += Values[i];
+                if (Values[i] > Values[maxIndex])
+                    maxIndex = i;
+                if (Values[i] < Values[minIndex])
+                    minIndex = i;
+            }
+
+            Mean = sum / Values.Length;
+            Maximum = Values[maxIndex];
+            MaximumTime = Times[maxIndex];
+            Minimum = Values[minIndex];
+            MinimumTime = Times[minIndex];
         }
 
         private static double ToSeconds(long timestamp, long timeOrigin, double timestampsPerSecond, double highSpeedFactor)

@@ -1809,4 +1809,10 @@
   <data name="SpeedGraph_Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="SpeedGraph_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SpeedGraph_Statistics" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
 </root>

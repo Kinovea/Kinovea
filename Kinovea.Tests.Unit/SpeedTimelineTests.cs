@@ -226,5 +226,96 @@ namespace Kinovea.Tests.Unit
             Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new SpeedTimeline[0], 0.5));
             Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new[] { a }, double.NaN));
         }
+
+        [Fact]
+        public void Statistics_MeanMaxMinAndTheirTimes()
+        {
+            long[] timestamps = { 0, 1000, 2000, 3000 };
+            double[] speeds = { 1.0, 3.0, 0.5, 1.5 };
+            SpeedTimeline timeline = SpeedTimeline.Build(timestamps, speeds, 0, 1000, 1);
+
+            Assert.Equal(1.5, timeline.Mean, 10);
+            Assert.Equal(3.0, timeline.Maximum);
+            Assert.Equal(1.0, timeline.MaximumTime);
+            Assert.Equal(0.5, timeline.Minimum);
+            Assert.Equal(2.0, timeline.MinimumTime);
+        }
+
+        [Fact]
+        public void Statistics_IgnoreDroppedSamples()
+        {
+            long[] timestamps = { 0, 1000, 2000 };
+            double[] speeds = { double.NaN, 2.0, 4.0 };
+            SpeedTimeline timeline = SpeedTimeline.Build(timestamps, speeds, 0, 1000, 1);
+
+            Assert.Equal(3.0, timeline.Mean, 10);
+            Assert.Equal(2.0, timeline.Minimum);
+            Assert.Equal(1.0, timeline.MinimumTime);
+        }
+
+        [Fact]
+        public void Statistics_FirstOccurrenceWinsOnTies()
+        {
+            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 1000, 2000 }, new[] { 2.0, 2.0, 2.0 }, 0, 1000, 1);
+
+            Assert.Equal(0.0, timeline.MaximumTime);
+            Assert.Equal(0.0, timeline.MinimumTime);
+        }
+
+        [Fact]
+        public void Statistics_EmptyIsNaN()
+        {
+            SpeedTimeline timeline = SpeedTimeline.Empty();
+
+            Assert.True(double.IsNaN(timeline.Mean));
+            Assert.True(double.IsNaN(timeline.Maximum));
+            Assert.True(double.IsNaN(timeline.MaximumTime));
+            Assert.True(double.IsNaN(timeline.Minimum));
+            Assert.True(double.IsNaN(timeline.MinimumTime));
+        }
+
+        [Fact]
+        public void ValueAt_ExactSampleAndInterpolation()
+        {
+            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 1000, 2000 }, new[] { 1.0, 3.0, 2.0 }, 0, 1000, 1);
+
+            Assert.Equal(3.0, timeline.ValueAt(1.0));
+            Assert.Equal(2.0, timeline.ValueAt(0.5), 10);
+            Assert.Equal(2.5, timeline.ValueAt(1.5), 10);
+            Assert.Equal(1.0, timeline.ValueAt(0.0));
+            Assert.Equal(2.0, timeline.ValueAt(2.0));
+        }
+
+        [Fact]
+        public void ValueAt_OutsideRangeOrEmptyIsNaN()
+        {
+            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 1000, 2000 }, new[] { 1.0, 2.0 }, 0, 1000, 1);
+
+            Assert.True(double.IsNaN(timeline.ValueAt(0.5)));
+            Assert.True(double.IsNaN(timeline.ValueAt(2.5)));
+            Assert.True(double.IsNaN(timeline.ValueAt(double.NaN)));
+            Assert.True(double.IsNaN(SpeedTimeline.Empty().ValueAt(0)));
+        }
+
+        [Fact]
+        public void MergeRows_UnionOfTimesWithNaNForMissing()
+        {
+            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 2.0 }, 0, 1000, 1);
+            SpeedTimeline b = SpeedTimeline.Build(new long[] { 1000, 2000 }, new[] { 5.0, 6.0 }, 0, 1000, 1);
+
+            var rows = SpeedTimeline.MergeRows(new[] { a, b });
+
+            Assert.Equal(3, rows.Count);
+            Assert.Equal(new[] { 0.0, 1.0, double.NaN }, rows[0]);
+            Assert.Equal(new[] { 1.0, 2.0, 5.0 }, rows[1]);
+            Assert.Equal(new[] { 2.0, double.NaN, 6.0 }, rows[2]);
+        }
+
+        [Fact]
+        public void MergeRows_EmptyInput()
+        {
+            Assert.Empty(SpeedTimeline.MergeRows(new SpeedTimeline[0]));
+            Assert.Empty(SpeedTimeline.MergeRows(new[] { SpeedTimeline.Empty() }));
+        }
     }
 }

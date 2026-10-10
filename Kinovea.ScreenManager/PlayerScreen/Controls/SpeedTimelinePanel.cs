@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using OxyPlot;
@@ -9,6 +11,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -16,7 +19,9 @@ namespace Kinovea.ScreenManager
     /// Panel showing the speed of one or more tracks over time, with a vertical cursor following the playhead.
     /// Each track is drawn in its own color, a legend is shown when there is more than one.
     /// The data is computed when a track is added and again for all tracks when the user clicks "Refresh".
-    /// Only the cursor is updated during playback.
+    /// Only the cursor and the value markers on the curves are updated during playback.
+    /// Optional statistics per track: mean line, peak and low markers, values in the legend.
+    /// The graph can be exported as an image and the data as CSV, with the helpers shared with the analysis dialogs.
     /// Clicking or dragging with the left button in the plot area asks the player to seek to that time.
     /// The controls are created in code to avoid touching the designer file of the player screen.
     /// </summary>
@@ -41,9 +46,20 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private PlotView plotView = new PlotView();
         private Label lblTitle = new Label();
+        private CheckBox chkStatistics = new CheckBox();
+        private Button btnExport = new Button();
         private Button btnRefresh = new Button();
         private Button btnClose = new Button();
+        private ContextMenuStrip exportMenu = new ContextMenuStrip();
+        private ToolStripMenuItem mnuExportGraph = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportGraphCopy = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportGraphSave = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportData = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportDataCopy = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportDataSave = new ToolStripMenuItem();
         private LineAnnotation cursor;
+        private List<PointAnnotation> valueMarkers = new List<PointAnnotation>();
+        private string speedAbbreviation = "";
         private LinearAxis xAxis;
         private long lastSeekTimestamp = -1;
         private long cursorTimestamp = -1;
@@ -63,9 +79,26 @@ namespace Kinovea.ScreenManager
             lblTitle.TextAlign = ContentAlignment.MiddleLeft;
             lblTitle.AutoEllipsis = true;
 
+            chkStatistics.Dock = DockStyle.Right;
+            chkStatistics.Width = 100;
+            chkStatistics.Checked = true;
+            chkStatistics.CheckedChanged += (s, e) => RebuildPlot();
+
+            btnExport.Dock = DockStyle.Right;
+            btnExport.Width = 90;
+            btnExport.UseVisualStyleBackColor = true;
+            btnExport.Click += (s, e) => exportMenu.Show(btnExport, new Point(0, btnExport.Height));
+
+            mnuExportGraphCopy.Click += (s, e) => CopyGraph();
+            mnuExportGraphSave.Click += (s, e) => SaveGraph();
+            mnuExportDataCopy.Click += (s, e) => CopyData();
+            mnuExportDataSave.Click += (s, e) => SaveData();
+            mnuExportGraph.DropDownItems.AddRange(new ToolStripItem[] { mnuExportGraphCopy, mnuExportGraphSave });
+            mnuExportData.DropDownItems.AddRange(new ToolStripItem[] { mnuExportDataCopy, mnuExportDataSave });
+            exportMenu.Items.AddRange(new ToolStripItem[] { mnuExportGraph, mnuExportData });
+
             btnRefresh.Dock = DockStyle.Right;
             btnRefresh.Width = 90;
-            btnRefresh.Text = ScreenManagerLang.SpeedGraph_Refresh;
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += (s, e) => RefreshData();
 
@@ -77,6 +110,8 @@ namespace Kinovea.ScreenManager
 
             // Docking is resolved in reverse order of addition: the Fill control must be added first.
             header.Controls.Add(lblTitle);
+            header.Controls.Add(chkStatistics);
+            header.Controls.Add(btnExport);
             header.Controls.Add(btnRefresh);
             header.Controls.Add(btnClose);
 
@@ -86,6 +121,8 @@ namespace Kinovea.ScreenManager
 
             this.Controls.Add(plotView);
             this.Controls.Add(header);
+
+            ReloadCulture();
         }
 
         /// <summary>
@@ -148,6 +185,7 @@ namespace Kinovea.ScreenManager
             metadata = null;
             cursor = null;
             cursorTimestamp = -1;
+            valueMarkers.Clear();
             xAxis = null;
             lblTitle.Text = "";
             plotView.Model = null;
@@ -172,9 +210,20 @@ namespace Kinovea.ScreenManager
                 timelines.Add(BuildTimeline(track, metadata));
             }
 
-            string abbreviation = metadata.CalibrationHelper.GetSpeedAbbreviation();
-            UpdateTitle(abbreviation);
-            plotView.Model = CreatePlot(abbreviation);
+            speedAbbreviation = metadata.CalibrationHelper.GetSpeedAbbreviation();
+            UpdateTitle(speedAbbreviation);
+            plotView.Model = CreatePlot(speedAbbreviation);
+        }
+
+        /// <summary>
+        /// Rebuild the plot from the current data, without recomputing the kinematics.
+        /// </summary>
+        private void RebuildPlot()
+        {
+            if (tracks.Count == 0 || timelines.Count != tracks.Count)
+                return;
+
+            plotView.Model = CreatePlot(speedAbbreviation);
         }
 
         /// <summary>
@@ -184,6 +233,15 @@ namespace Kinovea.ScreenManager
         public void ReloadCulture()
         {
             btnRefresh.Text = ScreenManagerLang.SpeedGraph_Refresh;
+            btnExport.Text = ScreenManagerLang.SpeedGraph_Export;
+            chkStatistics.Text = ScreenManagerLang.SpeedGraph_Statistics;
+            mnuExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
+            mnuExportGraphCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
+            mnuExportGraphSave.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
+            mnuExportData.Text = ScreenManagerLang.DataAnalysis_ExportData;
+            mnuExportDataCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
+            mnuExportDataSave.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
+
             if (tracks.Count == 0 || xAxis == null)
                 return;
 
@@ -214,12 +272,45 @@ namespace Kinovea.ScreenManager
                 return;
 
             cursor.X = x;
+            UpdateValueMarkers(plotView.Model, x);
             plotView.InvalidatePlot(false);
+        }
+
+        /// <summary>
+        /// Move the marker of each curve to the passed time and show the value there.
+        /// A marker is removed from the plot while the time is outside the range of its track.
+        /// </summary>
+        private void UpdateValueMarkers(PlotModel model, double x)
+        {
+            if (model == null)
+                return;
+
+            for (int i = 0; i < valueMarkers.Count && i < timelines.Count; i++)
+            {
+                PointAnnotation marker = valueMarkers[i];
+                double value = timelines[i].ValueAt(x);
+                bool shown = model.Annotations.Contains(marker);
+
+                if (double.IsNaN(value))
+                {
+                    if (shown)
+                        model.Annotations.Remove(marker);
+
+                    continue;
+                }
+
+                marker.X = x;
+                marker.Y = value;
+                marker.Text = FormatValue(value);
+                if (!shown)
+                    model.Annotations.Add(marker);
+            }
         }
 
         /// <summary>
         /// Same mouse interactions as the default OxyPlot controller (pan, zoom, Ctrl/Shift tracker),
         /// except plain left click which seeks the video instead of showing the tracker.
+        /// The tracker (time and value under the mouse) is shown on hover instead.
         /// All keyboard bindings are removed: once the plot has focus, keys like the arrows must only
         /// drive the player (frame stepping) and not pan or zoom the plot at the same time.
         /// </summary>
@@ -227,6 +318,7 @@ namespace Kinovea.ScreenManager
         {
             PlotController controller = new PlotController();
             UnbindKeyboard(controller);
+            controller.BindMouseEnter(PlotCommands.HoverSnapTrack);
             controller.UnbindMouseDown(OxyMouseButton.Left);
             controller.BindMouseDown(OxyMouseButton.Left, new DelegatePlotCommand<OxyMouseDownEventArgs>((view, c, args) =>
             {
@@ -369,10 +461,15 @@ namespace Kinovea.ScreenManager
             yAxis.MaximumPadding = 0.1;
             model.Axes.Add(yAxis);
 
+            bool statistics = chkStatistics.Checked;
             for (int i = 0; i < tracks.Count; i++)
-                model.Series.Add(CreateSeries(tracks[i], timelines[i]));
+            {
+                model.Series.Add(CreateSeries(tracks[i], timelines[i], abbreviation, statistics));
+                if (statistics)
+                    AddStatistics(model, tracks[i], timelines[i]);
+            }
 
-            if (tracks.Count > 1)
+            if (tracks.Count > 1 || statistics)
             {
                 model.IsLegendVisible = true;
                 model.LegendPlacement = LegendPlacement.Inside;
@@ -394,15 +491,75 @@ namespace Kinovea.ScreenManager
             cursor.X = (reference != null && cursorTimestamp >= 0) ? reference.TimestampToSeconds(cursorTimestamp) : 0;
             model.Annotations.Add(cursor);
 
+            // The value markers are added to the model by UpdateValueMarkers when the cursor is within their track.
+            valueMarkers.Clear();
+            foreach (DrawingTrack track in tracks)
+            {
+                PointAnnotation marker = new PointAnnotation();
+                marker.Shape = MarkerType.Circle;
+                marker.Size = 4;
+                marker.Fill = ToOxyColor(track.MainColor);
+                marker.Stroke = OxyColors.White;
+                marker.StrokeThickness = 1;
+                marker.FontWeight = FontWeights.Bold;
+                valueMarkers.Add(marker);
+            }
+
+            UpdateValueMarkers(model, cursor.X);
+
             return model;
         }
 
-        private static LineSeries CreateSeries(DrawingTrack track, SpeedTimeline timeline)
+        /// <summary>
+        /// Mean as a dashed horizontal line, peak and low as labelled markers, all in the color of the track.
+        /// </summary>
+        private void AddStatistics(PlotModel model, DrawingTrack track, SpeedTimeline timeline)
+        {
+            if (timeline.IsEmpty)
+                return;
+
+            OxyColor color = ToOxyColor(track.MainColor);
+
+            LineAnnotation mean = new LineAnnotation();
+            mean.Type = LineAnnotationType.Horizontal;
+            mean.Y = timeline.Mean;
+            mean.Color = color;
+            mean.LineStyle = OxyPlot.LineStyle.Dash;
+            mean.StrokeThickness = 1;
+            mean.Text = "\u00D8 " + FormatValue(timeline.Mean);
+            mean.TextColor = color;
+            model.Annotations.Add(mean);
+
+            model.Annotations.Add(CreateExtremumMarker(color, MarkerType.Triangle, timeline.MaximumTime, timeline.Maximum, "max"));
+            model.Annotations.Add(CreateExtremumMarker(color, MarkerType.Diamond, timeline.MinimumTime, timeline.Minimum, "min"));
+        }
+
+        private static PointAnnotation CreateExtremumMarker(OxyColor color, MarkerType shape, double x, double y, string label)
+        {
+            PointAnnotation marker = new PointAnnotation();
+            marker.X = x;
+            marker.Y = y;
+            marker.Shape = shape;
+            marker.Size = 5;
+            marker.Fill = color;
+            marker.Text = label + " " + FormatValue(y);
+            marker.TextColor = color;
+            return marker;
+        }
+
+        private static LineSeries CreateSeries(DrawingTrack track, SpeedTimeline timeline, string abbreviation, bool statistics)
         {
             LineSeries series = new LineSeries();
             series.Title = track.Name;
-            Color c = track.MainColor;
-            series.Color = OxyColor.FromArgb(255, c.R, c.G, c.B);
+            if (statistics && !timeline.IsEmpty)
+            {
+                series.Title = string.Format("{0}   \u00D8 {1}   max {2}   min {3}",
+                    track.Name, FormatValue(timeline.Mean), FormatValue(timeline.Maximum), FormatValue(timeline.Minimum));
+            }
+
+            // The tracker shows the track name, not the title with the statistics.
+            series.TrackerFormatString = EscapeFormat(track.Name) + "\n{2:0.000} s\n{4:0.00} " + EscapeFormat(abbreviation);
+            series.Color = ToOxyColor(track.MainColor);
             series.StrokeThickness = 1.5;
             series.MarkerType = MarkerType.None;
             for (int i = 0; i < timeline.Count; i++)
@@ -410,5 +567,116 @@ namespace Kinovea.ScreenManager
 
             return series;
         }
+
+        private static OxyColor ToOxyColor(Color c)
+        {
+            return OxyColor.FromArgb(255, c.R, c.G, c.B);
+        }
+
+        private static string FormatValue(double value)
+        {
+            return value.ToString("0.00", CultureInfo.CurrentCulture);
+        }
+
+        private static string EscapeFormat(string text)
+        {
+            return (text ?? "").Replace("{", "{{").Replace("}", "}}");
+        }
+
+        #region Export
+        private void CopyGraph()
+        {
+            if (plotView.Model == null)
+                return;
+
+            new PlotHelper(plotView).CopyGraph(ExportWidth(), ExportHeight());
+        }
+
+        private void SaveGraph()
+        {
+            if (plotView.Model == null)
+                return;
+
+            new PlotHelper(plotView).ExportGraph(ExportWidth(), ExportHeight());
+        }
+
+        /// <summary>
+        /// The image keeps the proportions of the panel, with a minimum size so it stays readable in a document.
+        /// </summary>
+        private int ExportWidth()
+        {
+            return Math.Max(plotView.Width, 1000);
+        }
+
+        private int ExportHeight()
+        {
+            double ratio = plotView.Width > 0 ? (double)plotView.Height / plotView.Width : 0.4;
+            return Math.Max((int)(ExportWidth() * ratio), 300);
+        }
+
+        private void CopyData()
+        {
+            List<string> csv = GetCSV();
+            CSVHelper.CopyToClipboard(csv);
+        }
+
+        private void SaveData()
+        {
+            if (tracks.Count == 0)
+                return;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = ScreenManagerLang.DataAnalysis_ExportData;
+            saveFileDialog.Filter = FilesystemHelper.SaveCSVFilter();
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            try
+            {
+                List<string> csv = GetCSV();
+                if (csv.Count > 1)
+                    File.WriteAllLines(saveFileDialog.FileName, csv);
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// One row per time, one column per track, using the decimal separator configured in the preferences.
+        /// </summary>
+        private List<string> GetCSV()
+        {
+            List<string> csv = new List<string>();
+            if (tracks.Count == 0 || timelines.Count != tracks.Count)
+                return csv;
+
+            NumberFormatInfo nfi = CSVHelper.GetCSVNFI();
+            string listSeparator = CSVHelper.GetListSeparator(nfi);
+
+            List<string> headers = new List<string>();
+            headers.Add(CSVHelper.WriteCell(ScreenManagerLang.DataAnalysis_TimeAxisSeconds));
+            foreach (DrawingTrack track in tracks)
+                headers.Add(CSVHelper.WriteCell(string.Format("{0} ({1})", track.Name, speedAbbreviation)));
+
+            csv.Add(CSVHelper.MakeRow(headers, listSeparator));
+
+            foreach (double[] row in SpeedTimeline.MergeRows(timelines))
+            {
+                List<string> cells = new List<string>(row.Length);
+                cells.Add(CSVHelper.WriteCell(row[0].ToString("0.000", nfi)));
+                for (int i = 1; i < row.Length; i++)
+                    cells.Add(double.IsNaN(row[i]) ? "" : CSVHelper.WriteCell(row[i].ToString("0.000", nfi)));
+
+                csv.Add(CSVHelper.MakeRow(cells, listSeparator));
+            }
+
+            return csv;
+        }
+        #endregion
     }
 }

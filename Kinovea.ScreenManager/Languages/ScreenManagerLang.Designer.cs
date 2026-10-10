@@ -4174,11 +4174,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string SpeedGraph_Export {
+            get {
+                return ResourceManager.GetString("SpeedGraph_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
         public static string SpeedGraph_Refresh {
             get {
                 return ResourceManager.GetString("SpeedGraph_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statistics.
+        /// </summary>
+        public static string SpeedGraph_Statistics {
+            get {
+                return ResourceManager.GetString("SpeedGraph_Statistics", resourceCulture);
             }
         }
         
