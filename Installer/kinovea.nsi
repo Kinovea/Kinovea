@@ -8,7 +8,7 @@
 !define VERSION "2026.1.0"
 !define EXTRADIR "OtherFiles"
 !define BUILDDIR "..\Kinovea\Bin\x64\Release"
-    
+
 ;--------------------------------
 ;General
 ;--------------------------------
@@ -26,6 +26,8 @@
     ;Install dir stored in registry for previous install.
     InstallDirRegKey HKCU "Software\Kinovea" "InstallDirectory" 
     BrandingText " "
+    
+    
 
 ;--------------------------------
 ;Variables
@@ -69,6 +71,30 @@
     !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
     ;Finish
     !define MUI_FINISHPAGE_RUN "$INSTDIR\Kinovea.exe"
+
+
+;--------------------------------
+; Uninstaller signing handling
+;--------------------------------
+; We first do a build to export the uninstaller, then we makesign it, and then we do 
+; a build to include the signed uninstaller in the final installer.
+;
+; Produce a normal installer and export the uninstaller.
+; > makensis /DEXPORT_UNINST Installer\kinovea.nsi
+; Create the final installer with the signed uninstaller.
+; > makensis /DIMPORT_UNINST Installer\kinovea.nsi
+
+!ifndef SIGNED_UNINSTALLER
+    ; Define the path to the signed uninstaller.
+    !define SIGNED_UNINSTALLER "Uninstall-Kinovea.exe"
+!endif
+
+!ifdef EXPORT_UNINST
+    !uninstfinalize 'cmd /C copy /Y "%1" "Uninstall-Kinovea.exe"'
+!endif
+    
+
+
 
 
 ;--------------------------------
@@ -182,7 +208,6 @@
     ;It is possible to build your installer with only one section, but if you want to use the components page and let the user choose what to install, you'll have to use more than one section.
 
 ;Main installer section.
-;TODO: terminate app.
 Section ""
 
     ; Main directory
@@ -193,8 +218,12 @@ Section ""
     ; Store installation folder
     WriteRegStr HKCU "Software\Kinovea" "InstallDirectory" $INSTDIR
 
-    ; Create uninstaller
+; Create uninstaller
+!ifdef IMPORT_UNINST
+    File "/oname=Uninstall-Kinovea.exe" "${SIGNED_UNINSTALLER}"
+!else
     WriteUninstaller "$INSTDIR\Uninstall-Kinovea.exe"
+!endif
 
     ; Register uninstaller to Windows.
     !define AppRemovePath "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kinovea"
@@ -230,6 +259,11 @@ FunctionEnd
     Delete "${TargetDir}\*.*"
     RMDir "${TargetDir}"
 !macroend
+
+
+; Only include the uninstall section if we are not importing the signed uninstaller. 
+; The signed uninstaller will have its own uninstall section.
+!ifndef IMPORT_UNINST
 
 Section "Uninstall"
 
@@ -292,10 +326,15 @@ Section "Uninstall"
     Delete "$INSTDIR\Aforge.Video.DirectShow.dll"
     Delete "$INSTDIR\Aforge.Video.dll"
     Delete "$INSTDIR\avcodec-56.dll"
+    Delete "$INSTDIR\avcodec-62.dll"
     Delete "$INSTDIR\avdevice-56.dll"
+    Delete "$INSTDIR\avdevice-62.dll"
     Delete "$INSTDIR\avfilter-5.dll"
+    Delete "$INSTDIR\avfilter-11.dll"
     Delete "$INSTDIR\avformat-56.dll"
+    Delete "$INSTDIR\avformat-62.dll"
     Delete "$INSTDIR\avutil-54.dll"
+    Delete "$INSTDIR\avutil-60.dll"
     Delete "$INSTDIR\DocumentFormat.OpenXml.dll"
     Delete "$INSTDIR\DocumentFormat.OpenXml.Framework.dll"
     Delete "$INSTDIR\ExpTreeLib.dll"
@@ -351,6 +390,7 @@ Section "Uninstall"
     Delete "$INSTDIR\SharpVectorRenderingEngine.dll"
     Delete "$INSTDIR\SharpVectorUtil.dll"
     Delete "$INSTDIR\SharpVectors.Converters.dll"
+    Delete "$INSTDIR\SharpVectors.Converters.Wpf.dll"
     Delete "$INSTDIR\SharpVectors.Core.dll"
     Delete "$INSTDIR\SharpVectors.Css.dll"
     Delete "$INSTDIR\SharpVectors.Dom.dll"
@@ -360,7 +400,9 @@ Section "Uninstall"
     Delete "$INSTDIR\SharpVectors.Runtime.Wpf.dll"
     Delete "$INSTDIR\SpreadsheetLight.dll"
     Delete "$INSTDIR\swresample-1.dll"
+    Delete "$INSTDIR\swresample-6.dll"
     Delete "$INSTDIR\swscale-3.dll"
+    Delete "$INSTDIR\swscale-9.dll"
     Delete "$INSTDIR\System.Buffers.dll"
     Delete "$INSTDIR\System.Memory.dll"
     Delete "$INSTDIR\System.Numerics.Vectors.dll"
@@ -408,6 +450,8 @@ Section "Uninstall"
         DeleteRegKey /ifempty HKCU "Software\Kinovea"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kinovea"
 SectionEnd
+
+!endif
 
 ;--------------------------------
 ;Uninstaller Functions
