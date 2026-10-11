@@ -64,4 +64,595 @@
   <data name="dlgAbout_License" xml:space="preserve">
     <value>Licencia</value>
   </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>Stavebné prvky</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>Citácia</value>
+  </data>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>Snímanie</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>Kresby</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>Všeobecné</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>Prehrávanie</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>Klávesnica</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>Zobrazovaná snímková frekvencia (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>Formát obrázka:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>Formát videa:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>Formát nekomprimovaného videa:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>Nahrávať nekomprimované video</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>Nahrávanie</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>Režim nahrávania a oneskorenie</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>Kamera: zaznamenáva snímky v reálnom čase.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>Oneskorene: zaznamenáva oneskorené snímky.</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve">
+    <value>Spätne: zaznamená snímky pri zastavení snímania.</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve">
+    <value>Pamäť</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve">
+    <value>Pamäť vyhradená pre medzipamäte oneskorenia: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve">
+    <value>Ignorovať upozornenie na prepísanie súboru</value>
+  </data>
+  <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve">
+    <value>Vysokorýchlostné kamery</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve">
+    <value>Prah nahradenia snímkovej frekvencie (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve">
+    <value>Náhradná snímková frekvencia (fps):</value>
+  </data>
+  <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve">
+    <value>Automatizácia</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve">
+    <value>Zapnúť zvukovú spúšť</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve">
+    <value>Vstupné zariadenie:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve">
+    <value>Prah spúšte:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblIdleTime" xml:space="preserve">
+    <value>Čas nečinnosti (s):</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve">
+    <value>Zobrazovať kresby počas prehrávania videa</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve">
+    <value>Zapnúť filtrovanie súradníc</value>
+  </data>
+  <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve">
+    <value>Zapnúť ladiaci režim vlastných nástrojov</value>
+  </data>
+  <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve">
+    <value>Predvolené krytie nových kresieb:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve">
+    <value>Viditeľné počas celého videa</value>
+  </data>
+  <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve">
+    <value>Importovať postupnosti snímok ako videá</value>
+  </data>
+  <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve">
+    <value>Pri otvorení nového videa vždy odstrániť prekladanie</value>
+  </data>
+  <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve">
+    <value>Aktualizovať obraz pri pohybe časového kurzora</value>
+  </data>
+  <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve">
+    <value>Prepojiť posuvníky rýchlosti pri porovnávaní videí</value>
+  </data>
+  <data name="dlgPreferences_Player_DefaultKVA" xml:space="preserve">
+    <value>Predvolený súbor anotácií:</value>
+  </data>
+  <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve">
+    <value>Počet súborov v histórii:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve">
+    <value>Predvolený pomer strán:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve">
+    <value>Jazyk:</value>
+  </data>
+  <data name="dlgPreferences_Player_lblMemory" xml:space="preserve">
+    <value>Vyrovnávacia pamäť pridelená každej obrazovke prehrávania: {0} MB.</value>
+  </data>
+  <data name="dlgPreferences_Player_tabUnits" xml:space="preserve">
+    <value>Jednotky</value>
+  </data>
+  <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve">
+    <value>Metre za sekundu ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve">
+    <value>Kilometre za hodinu ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve">
+    <value>Stopy za sekundu ({0})</value>
+  </data>
+  <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve">
+    <value>Míle za hodinu ({0})</value>
+  </data>
+  <data name="dlgPreferences_Title" xml:space="preserve">
+    <value>Predvoľby</value>
+  </data>
+  <data name="mnuTimeFormat" xml:space="preserve">
+    <value>Čas</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitTime" xml:space="preserve">
+    <value>Čas:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve">
+    <value>Rýchlosť:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve">
+    <value>Zrýchlenie:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve">
+    <value>Uhol:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve">
+    <value>Uhlová rýchlosť:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve">
+    <value>Uhlové zrýchlenie:</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve">
+    <value>Metre za sekundu na druhú ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve">
+    <value>Stopy za sekundu na druhú ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve">
+    <value>Stupne ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve">
+    <value>Radiány ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve">
+    <value>Stupne za sekundu ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve">
+    <value>Radiány za sekundu ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve">
+    <value>Otáčky za minútu ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve">
+    <value>Stupne za sekundu na druhú ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve">
+    <value>Radiány za sekundu na druhú ({0})</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve">
+    <value>Vlastná jednotka dĺžky :</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve">
+    <value>Predvolené parametre sledovania</value>
+  </data>
+  <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve">
+    <value>Percentá</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve">
+    <value>Kategórie</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve">
+    <value>Príkazy</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve">
+    <value>Klávesová skratka pre {0}.{1}</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve">
+    <value>Použiť</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve">
+    <value>Vymazať</value>
+  </data>
+  <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve">
+    <value>Predvolené</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Zrušiť</value>
+  </data>
+  <data name="Generic_Quit" xml:space="preserve">
+    <value>Ukončiť</value>
+  </data>
+  <data name="Generic_Save" xml:space="preserve">
+    <value>Uložiť</value>
+  </data>
+  <data name="mnuAbout" xml:space="preserve">
+    <value>O programe Kinovea…</value>
+  </data>
+  <data name="mnuEdit" xml:space="preserve">
+    <value>Upraviť</value>
+  </data>
+  <data name="mnuFile" xml:space="preserve">
+    <value>Súbor</value>
+  </data>
+  <data name="mnuFullScreen" xml:space="preserve">
+    <value>Celá obrazovka</value>
+  </data>
+  <data name="mnuHelp" xml:space="preserve">
+    <value>Pomocník</value>
+  </data>
+  <data name="mnuHelpContents" xml:space="preserve">
+    <value>Pomocník Kinovea...</value>
+  </data>
+  <data name="mnuHistory" xml:space="preserve">
+    <value>Nedávne</value>
+  </data>
+  <data name="mnuHistoryReset" xml:space="preserve">
+    <value>Vymazať históriu</value>
+  </data>
+  <data name="mnuImage" xml:space="preserve">
+    <value>Obrázok</value>
+  </data>
+  <data name="mnuLanguages" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="mnuVideo" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="mnuTools" xml:space="preserve">
+    <value>Nástroje</value>
+  </data>
+  <data name="mnuOptions" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="mnuPreferences" xml:space="preserve">
+    <value>Predvoľby…</value>
+  </data>
+  <data name="mnuWorkspace" xml:space="preserve">
+    <value>Pracovný priestor</value>
+  </data>
+  <data name="mnuScreens" xml:space="preserve">
+    <value>Zobraziť</value>
+  </data>
+  <data name="mnuUndo" xml:space="preserve">
+    <value>Späť</value>
+  </data>
+  <data name="mnuRedo" xml:space="preserve">
+    <value>Znova</value>
+  </data>
+  <data name="TimeCodeFormat_Frames" xml:space="preserve">
+    <value>Číslo snímky</value>
+  </data>
+  <data name="TimeCodeFormat_Milliseconds" xml:space="preserve">
+    <value>Celkové milisekundy</value>
+  </data>
+  <data name="TimeCodeFormat_Microseconds" xml:space="preserve">
+    <value>Celkové mikrosekundy</value>
+  </data>
+  <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve">
+    <value>Stotina minúty</value>
+  </data>
+  <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve">
+    <value>Desaťtisícina hodiny</value>
+  </data>
+  <data name="dlgPreferences_Capture_TriggerAction" xml:space="preserve">
+    <value>Akcia spúšte:</value>
+  </data>
+  <data name="dlgPreferences_General_PathToPandoc" xml:space="preserve">
+    <value>Cesta k pandoc:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVComma" xml:space="preserve">
+    <value>Čiarka</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVDelimiter" xml:space="preserve">
+    <value>Oddeľovač desatinných miest v súboroch CSV:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_CSVPoint" xml:space="preserve">
+    <value>Bodka</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportCalibrated" xml:space="preserve">
+    <value>Kalibrované merania</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportPixels" xml:space="preserve">
+    <value>Pixely</value>
+  </data>
+  <data name="dlgPreferences_Drawings_ExportSpace" xml:space="preserve">
+    <value>Režim exportu:</value>
+  </data>
+  <data name="dlgPreferences_Drawings_TabExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="dlgPreferences_Drawing_CSVSystem" xml:space="preserve">
+    <value>Systém ({0})</value>
+  </data>
+  <data name="mnuBigArrow" xml:space="preserve">
+    <value>Veľká šípka</value>
+  </data>
+  <data name="mnuBigHand" xml:space="preserve">
+    <value>Veľká ukazujúca ruka</value>
+  </data>
+  <data name="mnuDefaultPointer" xml:space="preserve">
+    <value>Predvolené</value>
+  </data>
+  <data name="mnuPointer" xml:space="preserve">
+    <value>Ukazovateľ</value>
+  </data>
+  <data name="mnuTranslate" xml:space="preserve">
+    <value>Preložiť Kinovea…</value>
+  </data>
+  <data name="dlgPreferences_Player_UnitsHertz" xml:space="preserve">
+    <value>Hertze ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerSecond" xml:space="preserve">
+    <value>Cykly za sekundu ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_CyclesPerMinute" xml:space="preserve">
+    <value>Cykly za minútu ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerSecond" xml:space="preserve">
+    <value>Kroky za sekundu ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StepsPerMinute" xml:space="preserve">
+    <value>Kroky za minútu ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerSecond" xml:space="preserve">
+    <value>Zábery za sekundu ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabUnits_StrokesPerMinute" xml:space="preserve">
+    <value>Zábery za minútu ({0})</value>
+  </data>
+  <data name="PreferencePanelDrawings_InitTabExport_IncludeImages" xml:space="preserve">
+    <value>Zahrnúť snímky</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Otvoriť priečinok…</value>
+  </data>
+  <data name="NavigationPane" xml:space="preserve">
+    <value>Navigačná tabla</value>
+  </data>
+  <data name="mnuWindow" xml:space="preserve">
+    <value>Okno</value>
+  </data>
+  <data name="mnuWindowProperties" xml:space="preserve">
+    <value>Vlastnosti okna…</value>
+  </data>
+  <data name="mnuOpenNewWindow" xml:space="preserve">
+    <value>Otvoriť nové okno</value>
+  </data>
+  <data name="mnuReopenWindow" xml:space="preserve">
+    <value>Znova otvoriť okno</value>
+  </data>
+  <data name="mnuManageWindows" xml:space="preserve">
+    <value>Spravovať okná…</value>
+  </data>
+  <data name="mnuManageWorkspaces" xml:space="preserve">
+    <value>Spravovať pracovné priestory…</value>
+  </data>
+  <data name="mnuOpenApplicationDataFolder" xml:space="preserve">
+    <value>Otvoriť priečinok údajov aplikácie…</value>
+  </data>
+  <data name="mnuDisableDebugLogs" xml:space="preserve">
+    <value>Vypnúť denníky ladenia</value>
+  </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>Zapnúť denníky ladenia</value>
+  </data>
+  <data name="mnuRefresh" xml:space="preserve">
+    <value>Obnoviť</value>
+  </data>
+  <data name="mnuConfigureCaptureFolders" xml:space="preserve">
+    <value>Nastaviť priečinky snímania</value>
+  </data>
+  <data name="dlgTitle_ManageWindows" xml:space="preserve">
+    <value>Spravovať okná</value>
+  </data>
+  <data name="formWindowManager_StopProcess" xml:space="preserve">
+    <value>Zastaviť proces</value>
+  </data>
+  <data name="formWindowManager_DeleteWindow" xml:space="preserve">
+    <value>Odstrániť okno</value>
+  </data>
+  <data name="formWindowManager_RefreshWindowList" xml:space="preserve">
+    <value>Obnoviť zoznam okien</value>
+  </data>
+  <data name="formWindowProperties_ActiveWindowProperties" xml:space="preserve">
+    <value>Vlastnosti aktívneho okna</value>
+  </data>
+  <data name="formWindowProperties_OpenTheFileBrowser" xml:space="preserve">
+    <value>Otvoriť prehliadač súborov</value>
+  </data>
+  <data name="formWindowProperties_ContinueWhereYouLeftOff" xml:space="preserve">
+    <value>Pokračovať tam, kde ste prestali</value>
+  </data>
+  <data name="formWindowProperties_OpenSpecificContent" xml:space="preserve">
+    <value>Otvoriť konkrétny obsah</value>
+  </data>
+  <data name="formWindowProperties_FileBrowser" xml:space="preserve">
+    <value>Prehliadač súborov</value>
+  </data>
+  <data name="formWindowProperties_Replay0" xml:space="preserve">
+    <value>Prehratie: {0}</value>
+  </data>
+  <data name="formWindowProperties_Playback0" xml:space="preserve">
+    <value>Prehrávanie: {0}</value>
+  </data>
+  <data name="formWindowProperties_Capture0" xml:space="preserve">
+    <value>Snímanie: {0}</value>
+  </data>
+  <data name="formWorkspaceManager_ManageWorkspaces" xml:space="preserve">
+    <value>Spravovať pracovné priestory</value>
+  </data>
+  <data name="formWorkspaceManager_Windows" xml:space="preserve">
+    <value>Okná</value>
+  </data>
+  <data name="formWorkspaceManager_CreateADesktopShortcut" xml:space="preserve">
+    <value>Vytvoriť odkaz na ploche</value>
+  </data>
+  <data name="formWorkspaceManager_CreateAWorkspaceFromTheActiveWindows" xml:space="preserve">
+    <value>Vytvoriť pracovný priestor z aktívnych okien</value>
+  </data>
+  <data name="formWorkspaceManager_RenameTheSelectedWorkspace" xml:space="preserve">
+    <value>Premenovať vybratý pracovný priestor</value>
+  </data>
+  <data name="formWorkspaceManager_DeleteTheSelectedWorkspace" xml:space="preserve">
+    <value>Odstrániť vybratý pracovný priestor</value>
+  </data>
+  <data name="formWorkspaceName_WorkspaceName" xml:space="preserve">
+    <value>Názov pracovného priestoru</value>
+  </data>
+  <data name="formWorkspaceName_Name" xml:space="preserve">
+    <value>Názov:</value>
+  </data>
+  <data name="prefPanelCapture_Folders" xml:space="preserve">
+    <value>Priečinky</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolders" xml:space="preserve">
+    <value>Priečinky snímania</value>
+  </data>
+  <data name="prefPanelCapture_CaptureFolderDetails" xml:space="preserve">
+    <value>Podrobnosti priečinka snímania</value>
+  </data>
+  <data name="prefPanelCapture_ShortName" xml:space="preserve">
+    <value>Krátky názov:</value>
+  </data>
+  <data name="prefPanelCapture_Path" xml:space="preserve">
+    <value>Cesta:</value>
+  </data>
+  <data name="prefPanelCapture_InsertAVariable" xml:space="preserve">
+    <value>Vložiť premennú…</value>
+  </data>
+  <data name="prefPanelCapture_InsertABackslash" xml:space="preserve">
+    <value>Vložiť spätnú lomku</value>
+  </data>
+  <data name="prefPanelCapture_InsertAHyphen" xml:space="preserve">
+    <value>Vložiť spojovník</value>
+  </data>
+  <data name="prefPanelCapture_InsertAnUnderscore" xml:space="preserve">
+    <value>Vložiť podčiarkovník</value>
+  </data>
+  <data name="prefPanelCapture_PreviewDynamicPath" xml:space="preserve">
+    <value>Náhľad dynamickej cesty</value>
+  </data>
+  <data name="prefPanelCapture_BrowseForFolder" xml:space="preserve">
+    <value>Prehľadať priečinok</value>
+  </data>
+  <data name="prefPanelCapture_RemoveTheCaptureFolderFromTheList" xml:space="preserve">
+    <value>Odstrániť priečinok snímania zo zoznamu</value>
+  </data>
+  <data name="prefPanelCapture_AddANewCaptureFolder" xml:space="preserve">
+    <value>Pridať nový priečinok snímania</value>
+  </data>
+  <data name="prefPanelCapture_MoveUp" xml:space="preserve">
+    <value>Posunúť nahor</value>
+  </data>
+  <data name="prefPanelCapture_MoveDown" xml:space="preserve">
+    <value>Posunúť nadol</value>
+  </data>
+  <data name="prefPanelCapture_PostRecordingCommandHelp" xml:space="preserve">
+    <value>Ak chcete po nahrávaní spustiť externé programy, použite dialógové okno príkazu po nahrávaní na príslušnej obrazovke snímania.\n\nKliknite pravým tlačidlom na pozadie zobrazovacej plochy a vyberte {0}.</value>
+  </data>
+  <data name="mnuPostRecordingCommand" xml:space="preserve">
+    <value>Príkaz po nahrávaní…</value>
+  </data>
+  <data name="prefPanelCapture_Files" xml:space="preserve">
+    <value>Súbory</value>
+  </data>
+  <data name="prefPanelCapture_DefaultFileName" xml:space="preserve">
+    <value>Predvolený názov súboru:</value>
+  </data>
+  <data name="prefPanelCapture_EnableAutoNumbering" xml:space="preserve">
+    <value>Zapnúť automatické číslovanie</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipAutoNumbering" xml:space="preserve">
+    <value>Po každom nahrávaní automaticky aktualizovať názov súboru o poradové číslo.\nTáto voľba sa ignoruje, ak názov súboru používa dynamické premenné.</value>
+  </data>
+  <data name="prefPanelCapture_ToolTipIgnoreOverwriteWarning" xml:space="preserve">
+    <value>Nezobrazovať potvrdzovacie dialógové okno, keď sa nahrávanie chystá prepísať existujúci súbor.</value>
+  </data>
+  <data name="prefPanelCapture_Trigger" xml:space="preserve">
+    <value>Spúšť</value>
+  </data>
+  <data name="prefPanelCapture_EnableUDPTrigger" xml:space="preserve">
+    <value>Zapnúť spúšť UDP</value>
+  </data>
+  <data name="prefPanelCapture_UDPPort" xml:space="preserve">
+    <value>Port UDP:</value>
+  </data>
+  <data name="prefPanelCapture_DefaultTriggerState" xml:space="preserve">
+    <value>Predvolený stav spúšte:</value>
+  </data>
+  <data name="prefPanelCapture_Armed" xml:space="preserve">
+    <value>Aktivovaná</value>
+  </data>
+  <data name="prefPanelCapture_Disarmed" xml:space="preserve">
+    <value>Deaktivovaná</value>
+  </data>
+  <data name="prefPanelPlayer_Image" xml:space="preserve">
+    <value>Obrázok</value>
+  </data>
+  <data name="prefPanelPlayer_EnablePixelFiltering" xml:space="preserve">
+    <value>Zapnúť filtrovanie pixelov</value>
+  </data>
+  <data name="prefPanelDrawings_lblPreset" xml:space="preserve">
+    <value>Predvoľba {0}:</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Názov</value>
+  </data>
+  <data name="formWindowProperties_OnStartup" xml:space="preserve">
+    <value>Pri spustení</value>
+  </data>
+  <data name="formWindowProperties_ScreenList" xml:space="preserve">
+    <value>Zoznam obrazoviek</value>
+  </data>
+  <data name="formWindowProperties_ImportCurrentScreens" xml:space="preserve">
+    <value>Importovať aktuálne obrazovky</value>
+  </data>
+  <data name="formWindowManager_SavedWindows" xml:space="preserve">
+    <value>Uložené okná</value>
+  </data>
+  <data name="prefPanelCapture_ExportedAnnotations" xml:space="preserve">
+    <value>Exportované anotácie</value>
+  </data>
+  <data name="prefPanelCapture_ExportDrawings" xml:space="preserve">
+    <value>Exportovať kresby</value>
+  </data>
+  <data name="prefPanelCapture_ExportCalibration" xml:space="preserve">
+    <value>Exportovať kalibráciu</value>
+  </data>
+  <data name="prefPanelDrawings_EnableSmoothingOfDerivativesForHighSpeedFootage" xml:space="preserve">
+    <value>Zapnúť vyhladzovanie derivácií pri vysokorýchlostných záznamoch</value>
+  </data>
+  <data name="formWindowProperties_StartProcess" xml:space="preserve">
+    <value>Spustiť proces</value>
+  </data>
+  <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
+    <value>Zobraziť všetky jazyky</value>
+  </data>
 </root>
