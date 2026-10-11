@@ -349,6 +349,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time (s).
+        /// </summary>
+        public static string DataAnalysis_TimeAxisSeconds {
+            get {
+                return ResourceManager.GetString("DataAnalysis_TimeAxisSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time :.
         /// </summary>
         public static string DataAnalysis_TimeModel {
@@ -3859,6 +3868,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speed graph.
+        /// </summary>
+        public static string mnuShowSpeedGraph {
+            get {
+                return ResourceManager.GetString("mnuShowSpeedGraph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Signed angle.
         /// </summary>
         public static string mnuSignedAngle {
@@ -4152,6 +4170,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ScreenManagerKernel_LensCalibration_None {
             get {
                 return ResourceManager.GetString("ScreenManagerKernel_LensCalibration_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string SpeedGraph_Refresh {
+            get {
+                return ResourceManager.GetString("SpeedGraph_Refresh", resourceCulture);
             }
         }
         

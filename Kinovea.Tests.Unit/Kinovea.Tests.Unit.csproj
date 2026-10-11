@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Cross-platform unit tests for UI-free code of Kinovea.
+    Source files are linked from the main projects instead of referencing the .NET Framework assemblies,
+    so these tests run with `dotnet test` on Windows, macOS and Linux.
+    This project is intentionally not part of Kinovea.VS2019.sln.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Nullable>disable</Nullable>
+    <RootNamespace>Kinovea.Tests.Unit</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Kinovea.ScreenManager\Measurement\Kinematics\SpeedTimeline.cs" Link="Linked\SpeedTimeline.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+</Project>

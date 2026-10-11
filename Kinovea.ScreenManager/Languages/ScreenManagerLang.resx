@@ -1800,4 +1800,13 @@
   <data name="infobar_Drops0" xml:space="preserve">
     <value>Drops:{0}</value>
   </data>
+  <data name="DataAnalysis_TimeAxisSeconds" xml:space="preserve">
+    <value>Time (s)</value>
+  </data>
+  <data name="mnuShowSpeedGraph" xml:space="preserve">
+    <value>Speed graph</value>
+  </data>
+  <data name="SpeedGraph_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>
