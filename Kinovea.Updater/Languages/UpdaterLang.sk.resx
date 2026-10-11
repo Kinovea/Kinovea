@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="mnuCheckForUpdates" xml:space="preserve">
+    <value>Vyhľadať aktualizácie…</value>
+  </data>
+  <data name="Updater_Behind" xml:space="preserve">
+    <value>K dispozícii je nová verzia!</value>
+  </data>
+  <data name="Updater_CurrentVersion" xml:space="preserve">
+    <value>Aktuálna verzia :</value>
+  </data>
+  <data name="Updater_Download" xml:space="preserve">
+    <value>Stiahnuť</value>
+  </data>
+  <data name="Updater_InternetError" xml:space="preserve">
+    <value>Pri vyhľadávaní aktualizácií sa vyskytla chyba. Skontrolujte, či je k dispozícii pripojenie na internet.</value>
+  </data>
+  <data name="Updater_LblChangeLog" xml:space="preserve">
+    <value>Zoznam zmien:</value>
+  </data>
+  <data name="Updater_NewVersion" xml:space="preserve">
+    <value>Nová verzia</value>
+  </data>
+  <data name="Updater_Quit" xml:space="preserve">
+    <value>Ukončiť</value>
+  </data>
+  <data name="Updater_Title" xml:space="preserve">
+    <value>Kinovea - Kontrola novej verzie.</value>
+  </data>
+  <data name="Updater_UpToDate" xml:space="preserve">
+    <value>Vaša verzia je aktuálna!</value>
+  </data>
 </root>
