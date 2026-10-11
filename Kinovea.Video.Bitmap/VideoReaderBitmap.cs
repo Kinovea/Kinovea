@@ -201,7 +201,7 @@ namespace Kinovea.Video.Bitmap
             }
 
             Size outputSize = referenceSize;
-            float decodingScale = 1.0f;
+            double decodingScale = 1.0;
 
             bool isPreScaled = outputSize == request.PresentationSize;
 

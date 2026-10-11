@@ -89,7 +89,6 @@ namespace Kinovea.Root
         private float largeJumpSize;
         private TimelineJumpUnit largeJumpUnit;
 
-        private List<HotkeyCommand> hotkeys;
         private string category = "PlayerScreen";
         private string selectedCommand;
 

@@ -652,8 +652,7 @@ namespace Kinovea.ScreenManager
             ResetAttachPoint();
             InvalidateFromMenu(tsmi);
 
-            if (ShowMeasurableInfoChanged != null)
-                ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
+            ShowMeasurableInfoChanged?.Invoke(this, new EventArgs<MeasureLabelType>(measureLabelType));
         }
         private string GetMeasureLabelOptionText(MeasureLabelType data)
         {

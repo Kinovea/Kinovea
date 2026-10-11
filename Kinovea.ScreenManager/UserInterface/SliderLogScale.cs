@@ -93,7 +93,6 @@ namespace Kinovea.ScreenManager
 
         private bool isSticky;
         private double stickyValue;
-        private double stickyRadius;
 
         private Bitmap cursor;
         private Bitmap gutterLeft;

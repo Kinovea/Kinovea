@@ -212,7 +212,7 @@ namespace Kinovea.Video.GIF
                 Cache.Tolerance = tolerance;
 
                 bool isPreScaled = false; // We don't have a presentation size yet.
-                float scale = 1.0f;
+                double scale = 1.0;
 
                 videoGeometry = new VideoGeometry(
                     videoInfo.OriginalSize,

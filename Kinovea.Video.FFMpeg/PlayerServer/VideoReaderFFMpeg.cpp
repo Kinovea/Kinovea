@@ -326,7 +326,7 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         // It fails for a few formats that have auto-descriptive frames like transport streams,
         // and for files with multiple video streams it may use the wrong stream.
         // This is rare and not catastrophic, we'll use the full workflow when opening the file.
-        for (int i = 0; i < formatCtx->nb_streams; i++)
+        for (int i = 0; i < (int)formatCtx->nb_streams; i++)
         {
             AVStream* stream = formatCtx->streams[i];
             AVCodecParameters* codecpar = stream->codecpar;
@@ -464,16 +464,16 @@ OpenVideoResult VideoReaderFFMpeg::Load(String^ filePath, bool forSummary)
         mCache->Tolerance = tolerance;
         mPreBuffer->Tolerance = tolerance;
         mPreBuffer->FarAheadThreshold = 50.0 * mVideoInfo.AverageTimeStampsPerFrame;
-        mPreRollTimestamps = (mPreBuffer->RetentionWindow + 2) * mVideoInfo.AverageTimeStampsPerFrame;
+        mPreRollTimestamps = (int64_t)Math::Round((mPreBuffer->RetentionWindow + 2) * mVideoInfo.AverageTimeStampsPerFrame);
     }
 
     // Initial working zone representing the whole video.
     // For the end timestamp we can calculate from either frame count or duration.
     // Compute both and use the max.
-    int64_t lastTimestamp = mVideoInfo.FirstTimeStamp + mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame;
+    int64_t lastTimestamp = (int64_t)Math::Round(mVideoInfo.FirstTimeStamp + mVideoInfo.DurationTimeStamps - mVideoInfo.AverageTimeStampsPerFrame);
     if (videoStream->nb_frames > 0)
     {
-        int64_t lastFrameTimestamp = mVideoInfo.FirstTimeStamp + (videoStream->nb_frames - 1) * mVideoInfo.AverageTimeStampsPerFrame;
+        int64_t lastFrameTimestamp = (int64_t)Math::Round(mVideoInfo.FirstTimeStamp + (videoStream->nb_frames - 1) * mVideoInfo.AverageTimeStampsPerFrame);
         lastTimestamp = Math::Max(lastTimestamp, lastFrameTimestamp);
     }
     
@@ -1018,11 +1018,11 @@ bool VideoReaderFFMpeg::PlayerRequest(PlayerState^ newState)
             int64_t target = mRequestedPlayerState->ReferenceTimestamp;
             if (mRequestedPlayerState->Action == PlayerAction::StepForward)
             {
-                target = target + mVideoInfo.AverageTimeStampsPerFrame;
+                target = (int64_t)Math::Round(target + mVideoInfo.AverageTimeStampsPerFrame);
             }
             else if (mRequestedPlayerState->Action == PlayerAction::StepBackward)
             {
-                target = target - mVideoInfo.AverageTimeStampsPerFrame;
+                target = (int64_t)Math::Round(target - mVideoInfo.AverageTimeStampsPerFrame);
             }
 
             // Move to the target location and restart the thread, which will immediately
@@ -1080,6 +1080,10 @@ bool VideoReaderFFMpeg::MoveRequest(bool next, int64_t target)
     else if (mCachingMode == VideoDecodingMode::PreBuffering)
     {
         return MoveRequestPrebuffer(next, target);
+    }
+    else
+    {
+        return false;
     }
 }
 
@@ -3168,7 +3172,7 @@ void VideoReaderFFMpeg::UpdateFrameSkippingPolicy()
 
     // Estimate how far behind we are compared to the player.
     // Note: this lag is in presentation space and independent from the speed slider.
-    long expectedTimestamp = this->GetPlaybackTimestamp(mWorkingPlayerState);
+    int64_t expectedTimestamp = this->GetPlaybackTimestamp(mWorkingPlayerState);
     double lag = (expectedTimestamp - mCachedTimestamp) / mVideoInfo.AverageTimeStampsPerSeconds;
 
     String^ logLine = String::Format("UpdateFrameSkippingPolicy. Lag: {0:0.000} s, Cache: {1}/{2}. Frame: {3}.",
@@ -3418,7 +3422,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
     {
         if (state->Action == PlayerAction::StepForward)
         {
-            targetTimestamp = state->ReferenceTimestamp + mVideoInfo.AverageTimeStampsPerFrame;
+            targetTimestamp = (int64_t)Math::Round(state->ReferenceTimestamp + mVideoInfo.AverageTimeStampsPerFrame);
             plan->TargetTimestamp = targetTimestamp;
 
             if (!isContiguous)
@@ -3432,7 +3436,7 @@ DecodingJobPlan^ VideoReaderFFMpeg::GetDecodingJobPlan(PlayerState^ state, TryAc
         }
         else if (state->Action == PlayerAction::StepBackward)
         {
-            targetTimestamp = state->ReferenceTimestamp - mVideoInfo.AverageTimeStampsPerFrame;
+            targetTimestamp = (int64_t)Math::Round(state->ReferenceTimestamp - mVideoInfo.AverageTimeStampsPerFrame);
             plan->TargetTimestamp = targetTimestamp;
 
             if (!isContiguous)

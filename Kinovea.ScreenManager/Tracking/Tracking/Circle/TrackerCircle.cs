@@ -74,7 +74,6 @@ namespace Kinovea.ScreenManager
         private double houghParam1 = 50; // Used for the canny edge transform.
 
         // Debugging.
-        private static readonly bool debugging = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 

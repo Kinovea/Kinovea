@@ -36,7 +36,7 @@ namespace Kinovea.Video
         /// <summary>
         /// The scale factor applied to the reference size to produce the output size.
         /// </summary>
-        public float Scale { get; }
+        public double Scale { get; }
 
         /// <summary>
         /// Aspect ratio option used by the reader.
@@ -67,7 +67,7 @@ namespace Kinovea.Video
             Size referenceSize,
             Size outputSize,
             bool isPreScaled,
-            float scale,
+            double scale,
             ImageAspectRatio imageAspectRatio,
             ImageRotation imageRotation,
             Demosaicing demosaicing,
@@ -90,7 +90,7 @@ namespace Kinovea.Video
             ReferenceSize = Size.Empty;
             OutputSize = Size.Empty;
             IsPreScaled = false;
-            Scale = 1.0f;
+            Scale = 1.0;
             ImageAspectRatio = ImageAspectRatio.Auto;
             ImageRotation = ImageRotation.Rotate0;
             Demosaicing = Demosaicing.None;

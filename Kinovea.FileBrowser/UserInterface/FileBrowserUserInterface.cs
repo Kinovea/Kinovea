@@ -448,7 +448,7 @@ namespace Kinovea.FileBrowser
             // ToolTips
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.navPane_FileSystem);
             ttTabs.SetToolTip(tabPageCameras, FileBrowserLang.tabCameras);
-            ttTabs.SetToolTip(btnAddFavorite, FileBrowserLang.mnuAddShortcut);
+            ttTabs.SetToolTip(btnAddFavorite, "Add favorite");
         }
         
         /// <summary>

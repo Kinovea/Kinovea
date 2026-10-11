@@ -187,7 +187,7 @@ namespace Kinovea.Video.SVG
             Size referenceSize = videoInfo.OriginalSize;
             Size outputSize = FitHelper.Fit(videoInfo.OriginalSize, request.PresentationSize, true);
             bool isPrescaled = true;
-            float scale = outputSize.Width / (float)referenceSize.Width;
+            double scale = outputSize.Width / (double)referenceSize.Width;
 
             videoGeometry = new VideoGeometry(
                 referenceSize,
@@ -233,7 +233,7 @@ namespace Kinovea.Video.SVG
             videoInfo.OriginalSize = generator.OriginalSize != Size.Empty ? generator.OriginalSize : new Size(640, 480);
 
             bool isPreScaled = false; // We don't have a presentation size yet.
-            float scale = 1.0f;
+            double scale = 1.0;
 
             videoGeometry = new VideoGeometry(
                 videoInfo.OriginalSize,

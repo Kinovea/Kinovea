@@ -519,8 +519,7 @@ namespace Kinovea.ScreenManager
             if (measureLabelType == MeasureLabelType.None)
             {
                 measureLabelType = MeasureLabelType.TravelDistance;
-                if (ShowMeasurableInfoChanged != null)
-                    ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
+                ShowMeasurableInfoChanged?.Invoke(this, new EventArgs<MeasureLabelType>(measureLabelType));
             }
             
             FormCalibrateLine fcm = new FormCalibrateLine(CalibrationHelper, this);
@@ -662,8 +661,7 @@ namespace Kinovea.ScreenManager
             this.measureLabelType = measureLabelType;
             InvalidateFromMenu(tsmi);
 
-            if (ShowMeasurableInfoChanged != null)
-                ShowMeasurableInfoChanged(this, new EventArgs<MeasureLabelType>(measureLabelType));
+            ShowMeasurableInfoChanged?.Invoke(this, new EventArgs<MeasureLabelType>(measureLabelType));
         }
 
         /// <summary>

@@ -586,7 +586,7 @@ namespace Kinovea.ScreenManager
         private Guid stabilizationTrack = Guid.Empty;
         private Color backgroundColor = defaultBackgroundColor;
         private Magnifier magnifier = new Magnifier();
-        private MeasureLabelType mesureLabelType;
+        private MeasureLabelType lastUsedMesureLabelType;
 
         // Video filters
         private Dictionary<VideoFilterType, IVideoFilter> videoFilters = new Dictionary<VideoFilterType, IVideoFilter>();
@@ -1837,7 +1837,7 @@ namespace Kinovea.ScreenManager
                 IMeasurable measurableDrawing = drawing as IMeasurable;
                 measurableDrawing.CalibrationHelper = calibrationHelper;
 
-                measurableDrawing.InitializeMeasurableData(mesureLabelType);
+                measurableDrawing.InitializeMeasurableData(lastUsedMesureLabelType);
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
 
@@ -2748,7 +2748,8 @@ namespace Kinovea.ScreenManager
 
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<MeasureLabelType> e)
         {
-            mesureLabelType = e.Value;
+            // Recall the last used measure label type so that new drawings will use the same type.
+            lastUsedMesureLabelType = e.Value;
         }
 
         /// <summary>
