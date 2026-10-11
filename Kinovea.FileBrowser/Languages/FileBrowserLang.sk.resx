@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,85 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Zrušiť</value>
+  </data>
+  <data name="lblFolders" xml:space="preserve">
+    <value>Priečinky</value>
+  </data>
+  <data name="lblVideoFiles" xml:space="preserve">
+    <value>Videosúbory</value>
+  </data>
+  <data name="lblCaptureHistory" xml:space="preserve">
+    <value>História snímania</value>
+  </data>
+  <data name="lblCameras" xml:space="preserve">
+    <value>Kamery</value>
+  </data>
+  <data name="mnuAddShortcut" xml:space="preserve">
+    <value>Pridať odkaz</value>
+  </data>
+  <data name="mnuAddToShortcuts" xml:space="preserve">
+    <value>Pridať medzi odkazy</value>
+  </data>
+  <data name="mnuDeleteShortcut" xml:space="preserve">
+    <value>Odstrániť odkaz</value>
+  </data>
+  <data name="mnuVideoLocate" xml:space="preserve">
+    <value>Zobraziť v Prieskumníkovi Windows </value>
+  </data>
+  <data name="mnuVideoDelete" xml:space="preserve">
+    <value>Odstrániť súbor</value>
+  </data>
+  <data name="ForgetCustomSettings" xml:space="preserve">
+    <value>Zabudnúť vlastné nastavenia</value>
+  </data>
+  <data name="Generic_Open" xml:space="preserve">
+    <value>Otvoriť</value>
+  </data>
+  <data name="tabShortcuts" xml:space="preserve">
+    <value>Odkazy</value>
+  </data>
+  <data name="FormCameraWizard_Title" xml:space="preserve">
+    <value>Ručné pripojenie</value>
+  </data>
+  <data name="FormCameraWizard_CameraType" xml:space="preserve">
+    <value>Typ kamery</value>
+  </data>
+  <data name="FormCameraWizard_Parameters" xml:space="preserve">
+    <value>Parametre</value>
+  </data>
+  <data name="FormCameraWizard_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormCameraWizard_Create" xml:space="preserve">
+    <value>Vytvoriť kameru</value>
+  </data>
+  <data name="mnuSortBy_Ascending" xml:space="preserve">
+    <value>Vzostupne</value>
+  </data>
+  <data name="mnuSortBy" xml:space="preserve">
+    <value>Zoradiť podľa</value>
+  </data>
+  <data name="mnuSortBy_Date" xml:space="preserve">
+    <value>Dátum</value>
+  </data>
+  <data name="mnuSortBy_Name" xml:space="preserve">
+    <value>Názov</value>
+  </data>
+  <data name="mnuSortBy_Size" xml:space="preserve">
+    <value>Veľkosť</value>
+  </data>
+  <data name="mnuSortBy_Descending" xml:space="preserve">
+    <value>Zostupne</value>
+  </data>
+  <data name="mnuRemoveFromShortcuts" xml:space="preserve">
+    <value>Odstrániť z odkazov</value>
+  </data>
+  <data name="navPane_FileSystem" xml:space="preserve">
+    <value>Súborový systém</value>
+  </data>
+  <data name="tabCameras" xml:space="preserve">
+    <value>Kamery</value>
+  </data>
 </root>
