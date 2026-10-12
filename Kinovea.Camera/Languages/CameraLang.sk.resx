@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,103 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Zrušiť</value>
+  </data>
+  <data name="Generic_Apply" xml:space="preserve">
+    <value>Použiť</value>
+  </data>
+  <data name="FormHandshakeResult_Title" xml:space="preserve">
+    <value>Test pripojenia</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Title" xml:space="preserve">
+    <value>Test pripojenia zlyhal</value>
+  </data>
+  <data name="FormHandshakeResult_Failure_Message" xml:space="preserve">
+    <value>Počas testu pripojenia sa vyskytla chyba.</value>
+  </data>
+  <data name="FormConfiguration_Title" xml:space="preserve">
+    <value>Konfigurácia kamery</value>
+  </data>
+  <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve">
+    <value>Formát streamu:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve">
+    <value>Veľkosť obrazu:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve">
+    <value>Šírka:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve">
+    <value>Výška:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Framerate" xml:space="preserve">
+    <value>Snímková frekvencia:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Exposure" xml:space="preserve">
+    <value>Expozícia:</value>
+  </data>
+  <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve">
+    <value>Expozícia (µs):</value>
+  </data>
+  <data name="FormConfiguration_Properties_Gain" xml:space="preserve">
+    <value>Zosilnenie:</value>
+  </data>
+  <data name="FormConfiguration_Properties_Focus" xml:space="preserve">
+    <value>Zaostrenie:</value>
+  </data>
+  <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve">
+    <value>Konverzia formátu Bayer:</value>
+  </data>
+  <data name="FormConfiguration_Auto" xml:space="preserve">
+    <value>Automaticky</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve">
+    <value>Stránky vlastností zariadenia</value>
+  </data>
+  <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve">
+    <value>Pri pokuse o zobrazenie stránky vlastností zariadenia {0} sa vyskytla chyba.</value>
+  </data>
+  <data name="FormConfiguration_Reconnect" xml:space="preserve">
+    <value>Pripojiť znova</value>
+  </data>
+  <data name="FormConfiguration_ImportParameters" xml:space="preserve">
+    <value>Importovať parametre</value>
+  </data>
+  <data name="FormConfiguration_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormConnectionWizard_Network" xml:space="preserve">
+    <value>Sieť</value>
+  </data>
+  <data name="FormConnectionWizard_Host" xml:space="preserve">
+    <value>Hostiteľ (IP adresa)</value>
+  </data>
+  <data name="FormConnectionWizard_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="FormConnectionWizard_Format" xml:space="preserve">
+    <value>Formát</value>
+  </data>
+  <data name="FormConnectionWizard_Authentication" xml:space="preserve">
+    <value>Overenie</value>
+  </data>
+  <data name="FormConnectionWizard_User" xml:space="preserve">
+    <value>Používateľ</value>
+  </data>
+  <data name="FormConnectionWizard_Password" xml:space="preserve">
+    <value>Heslo</value>
+  </data>
+  <data name="FormConnectionWizard_URL" xml:space="preserve">
+    <value>Výsledná URL</value>
+  </data>
+  <data name="FormConfiguration_EnableHardwareCompression" xml:space="preserve">
+    <value>Zapnúť hardvérovú kompresiu</value>
+  </data>
+  <data name="FormConfiguration_EnableSoftwareDemosaicing" xml:space="preserve">
+    <value>Zapnúť softvérové demosaicovanie</value>
+  </data>
+  <data name="FormConfiguration_ResultingFramerate" xml:space="preserve">
+    <value>Výsledná snímková frekvencia:</value>
+  </data>
 </root>
