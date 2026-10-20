@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -58,4 +58,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="dlgAbout_Translation" xml:space="preserve">
+    <value>dlgAbout_অনুবাদ</value>
+  </data>
+  <data name="dlgAbout_License" xml:space="preserve">
+    <value>dlgAbout_লাইসেন্স</value>
+  </data>
+  <data name="dlgAbout_BuildingBlocks" xml:space="preserve">
+    <value>বিল্ডিং ব্লকস (or মূল উপাদান)</value>
+  </data>
+  <data name="dlgAbout_Citation" xml:space="preserve">
+    <value>সাইটেশন (or উদ্ধৃতি)</value>
+  </data>
+  <data name="dlgPreferences_tabCapture" xml:space="preserve">
+    <value>ক্যাপচার</value>
+  </data>
+  <data name="dlgPreferences_tabDrawings" xml:space="preserve">
+    <value>ড্রয়িংস (or অঙ্কনসমূহ)</value>
+  </data>
+  <data name="dlgPreferences_tabGeneral" xml:space="preserve">
+    <value>সাধারণ</value>
+  </data>
+  <data name="dlgPreferences_tabPlayback" xml:space="preserve">
+    <value>প্লেব্যাক</value>
+  </data>
+  <data name="dlgPreferences_tabKeyboard" xml:space="preserve">
+    <value>কিবোর্ড</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve">
+    <value>ফোর্সড ফ্রেমরেট (or বাধ্যতামূলক ফ্রেমরেট):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve">
+    <value>ইমেজ ফরম্যাট ( ছবি ফরম্যাট):</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve">
+    <value>ভিডিও ফরম্যাট:</value>
+  </data>
+  <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve">
+    <value>আনকমপ্রেসড ভিডিও ফরম্যাট:</value>
+  </data>
+  <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve">
+    <value>আনকমপ্রেসড ভিডিও রেকর্ড করুন</value>
+  </data>
+  <data name="dlgPreferences_Capture_Recording" xml:space="preserve">
+    <value>রেকর্ডিং</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve">
+    <value>রেকর্ডিং মোড এবং বিলম্ব</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve">
+    <value>ক্যামেরা: রিয়েল টাইম ফ্রেম রেকর্ড করে।</value>
+  </data>
+  <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve">
+    <value>ডিলেড: বিলম্বিত ফ্রেম রেকর্ড করে।</value>
+  </data>
 </root>
