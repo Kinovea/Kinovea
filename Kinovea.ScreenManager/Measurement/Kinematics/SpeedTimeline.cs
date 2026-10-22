@@ -60,14 +60,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public double MinimumTime { get; private set; }
 
-        private readonly long[] timestamps;
         private readonly long timeOrigin;
         private readonly double timestampsPerSecond;
         private readonly double highSpeedFactor;
 
-        private SpeedTimeline(long[] timestamps, double[] times, double[] values, long timeOrigin, double timestampsPerSecond, double highSpeedFactor)
+        private SpeedTimeline(double[] times, double[] values, long timeOrigin, double timestampsPerSecond, double highSpeedFactor)
         {
-            this.timestamps = timestamps;
             this.Times = times;
             this.Values = values;
             this.timeOrigin = timeOrigin;
@@ -98,7 +96,6 @@ namespace Kinovea.ScreenManager
             if (!IsPositiveFinite(highSpeedFactor))
                 throw new ArgumentOutOfRangeException("highSpeedFactor");
 
-            List<long> validTimestamps = new List<long>(timestamps.Length);
             List<double> times = new List<double>(timestamps.Length);
             List<double> values = new List<double>(timestamps.Length);
             for (int i = 0; i < timestamps.Length; i++)
@@ -107,17 +104,16 @@ namespace Kinovea.ScreenManager
                 if (double.IsNaN(v) || double.IsInfinity(v))
                     continue;
 
-                validTimestamps.Add(timestamps[i]);
                 times.Add(ToSeconds(timestamps[i], timeOrigin, timestampsPerSecond, highSpeedFactor));
                 values.Add(v);
             }
 
-            return new SpeedTimeline(validTimestamps.ToArray(), times.ToArray(), values.ToArray(), timeOrigin, timestampsPerSecond, highSpeedFactor);
+            return new SpeedTimeline(times.ToArray(), values.ToArray(), timeOrigin, timestampsPerSecond, highSpeedFactor);
         }
 
         public static SpeedTimeline Empty()
         {
-            return new SpeedTimeline(new long[0], new double[0], new double[0], 0, 1, 1);
+            return new SpeedTimeline(new double[0], new double[0], 0, 1, 1);
         }
 
         /// <summary>
@@ -130,34 +126,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Convert a time coordinate of this timeline, in seconds, back to a video timestamp.
-        /// The result is rounded to the nearest timestamp and clamped to the range covered by the samples,
-        /// so a click anywhere in the plot always lands on a frame of the track.
-        /// Returns -1 if the timeline is empty.
-        /// </summary>
-        public long SecondsToTimestamp(double seconds)
-        {
-            if (IsEmpty || double.IsNaN(seconds))
-                return -1;
-
-            long first = timestamps[0];
-            long last = timestamps[timestamps.Length - 1];
-
-            if (double.IsInfinity(seconds))
-                return seconds > 0 ? last : first;
-
-            double offset = Math.Round(seconds * highSpeedFactor * timestampsPerSecond);
-            double timestamp = timeOrigin + offset;
-            if (timestamp <= first)
-                return first;
-            if (timestamp >= last)
-                return last;
-
-            return (long)timestamp;
-        }
-
-        /// <summary>
-        /// Convert a time coordinate of this timeline, in seconds, back to a video timestamp.
-        /// Unlike the other overload, the result is not limited to the range covered by the samples,
+        /// The result is rounded to the nearest timestamp. It is not limited to the range covered by the samples,
         /// only to [minTimestamp, maxTimestamp] (the working zone).
         /// Returns -1 if the timeline is empty, the time is NaN or minTimestamp is greater than maxTimestamp.
         /// </summary>
@@ -182,46 +151,6 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Convert a time coordinate, in seconds, to a video timestamp for a plot showing several timelines.
-        /// The timelines must have been built with the same time origin and time scale (same video).
-        /// The result is clamped to the union of the sample ranges: a time inside a gap between two
-        /// non-overlapping timelines goes to the closest end of either of them.
-        /// Returns -1 if there is no usable timeline or the time is NaN.
-        /// </summary>
-        public static long SecondsToTimestamp(IEnumerable<SpeedTimeline> timelines, double seconds)
-        {
-            if (timelines == null)
-                throw new ArgumentNullException("timelines");
-
-            long best = -1;
-            double bestDistance = double.PositiveInfinity;
-            foreach (SpeedTimeline timeline in timelines)
-            {
-                long candidate = timeline.SecondsToTimestamp(seconds);
-                if (candidate < 0)
-                    continue;
-
-                if (double.IsInfinity(seconds))
-                {
-                    // Every candidate is infinitely far, keep the extreme one in the requested direction.
-                    if (best < 0 || (seconds > 0 ? candidate > best : candidate < best))
-                        best = candidate;
-
-                    continue;
-                }
-
-                double distance = Math.Abs(timeline.TimestampToSeconds(candidate) - seconds);
-                if (distance < bestDistance)
-                {
-                    best = candidate;
-                    bestDistance = distance;
-                }
-            }
-
-            return best;
-        }
-
-        /// <summary>
         /// Speed at the passed time, in seconds, linearly interpolated between the two closest samples.
         /// Returns NaN outside the range covered by the samples.
         /// </summary>
@@ -239,42 +168,6 @@ namespace Kinovea.ScreenManager
             int before = after - 1;
             double ratio = (seconds - Times[before]) / (Times[after] - Times[before]);
             return Values[before] + ratio * (Values[after] - Values[before]);
-        }
-
-        /// <summary>
-        /// Merge several timelines into one table, for example to export them to a spreadsheet.
-        /// Each row is [time in seconds, value of timeline 0, value of timeline 1, ...], sorted by time.
-        /// A timeline without a sample at the time of the row has NaN in its column.
-        /// The timelines must have been built with the same time origin and time scale (same video).
-        /// </summary>
-        public static List<double[]> MergeRows(IList<SpeedTimeline> timelines)
-        {
-            if (timelines == null)
-                throw new ArgumentNullException("timelines");
-
-            // Rows are keyed by timestamp rather than by seconds to avoid floating point mismatches.
-            SortedDictionary<long, double[]> rows = new SortedDictionary<long, double[]>();
-            for (int column = 0; column < timelines.Count; column++)
-            {
-                SpeedTimeline timeline = timelines[column];
-                for (int i = 0; i < timeline.Count; i++)
-                {
-                    double[] row;
-                    if (!rows.TryGetValue(timeline.timestamps[i], out row))
-                    {
-                        row = new double[timelines.Count + 1];
-                        for (int j = 1; j < row.Length; j++)
-                            row[j] = double.NaN;
-
-                        row[0] = timeline.Times[i];
-                        rows.Add(timeline.timestamps[i], row);
-                    }
-
-                    row[column + 1] = timeline.Values[i];
-                }
-            }
-
-            return new List<double[]>(rows.Values);
         }
 
         private void ComputeStatistics()

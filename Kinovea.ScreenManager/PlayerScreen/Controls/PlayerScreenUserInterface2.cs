@@ -2561,30 +2561,26 @@ namespace Kinovea.ScreenManager
             if (kinematicsPanel == null)
                 return;
 
-            kinematicsPanel.AddTrack(track, m_FrameServer.Metadata);
+            kinematicsPanel.SetMetadata(m_FrameServer.Metadata);
+            kinematicsPanel.SelectTrack(track);
+            kinematicsPanel.SetSeekRange(workingZone.Start, workingZone.End);
             kinematicsSplitter.Visible = true;
             kinematicsPanel.Visible = true;
             kinematicsPanel.UpdateCursor(currentTimestamp);
         }
 
         /// <summary>
-        /// Add the track to the kinematics panel, or remove it if it is already there.
-        /// The graph is closed when its last track is removed.
+        /// Show the kinematics panel with the track selected, or hide it if it is already showing that track.
         /// </summary>
         private void ToggleKinematicsPanel(DrawingTrack track)
         {
             if (kinematicsPanel == null)
                 return;
 
-            if (!kinematicsPanel.Visible || !kinematicsPanel.Contains(track))
-            {
-                ShowKinematicsPanel(track);
-                return;
-            }
-
-            kinematicsPanel.RemoveTrack(track);
-            if (kinematicsPanel.TrackCount == 0)
+            if (kinematicsPanel.Visible && kinematicsPanel.SelectedTrack == track)
                 HideKinematicsPanel();
+            else
+                ShowKinematicsPanel(track);
         }
 
         /// <summary>
@@ -4089,8 +4085,8 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
 
-            if (kinematicsPanel != null && kinematicsPanel.Visible && kinematicsPanel.RemoveDeadTracks() && kinematicsPanel.TrackCount == 0)
-                HideKinematicsPanel();
+            if (kinematicsPanel != null && kinematicsPanel.Visible)
+                kinematicsPanel.UpdateTrackList();
         }
         private void CreateNewMultiDrawingItem(AbstractMultiDrawing manager)
         {
@@ -4490,7 +4486,7 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
             AddDrawingTitleMenu(track, popMenu);
             popMenu.Items.Add(mnuConfigureTrajectory);
-            mnuShowKinematicsPanel.Checked = kinematicsPanel != null && kinematicsPanel.Visible && kinematicsPanel.Contains(track);
+            mnuShowKinematicsPanel.Checked = kinematicsPanel != null && kinematicsPanel.Visible && kinematicsPanel.SelectedTrack == track;
             popMenu.Items.Add(mnuShowKinematicsPanel);
             popMenu.Items.Add(new ToolStripSeparator());
 

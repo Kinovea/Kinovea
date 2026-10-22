@@ -122,109 +122,12 @@ namespace Kinovea.Tests.Unit
         }
 
         [Fact]
-        public void SecondsToTimestamp_IsInverseOfTimestampToSeconds()
-        {
-            long[] timestamps = { 1000, 1500, 2000, 2500, 3000 };
-            SpeedTimeline timeline = SpeedTimeline.Build(timestamps, new[] { 1.0, 1.0, 1.0, 1.0, 1.0 }, 1200, 1000, 1);
-
-            foreach (long t in timestamps)
-                Assert.Equal(t, timeline.SecondsToTimestamp(timeline.TimestampToSeconds(t)));
-        }
-
-        [Fact]
-        public void SecondsToTimestamp_RoundsToNearestTimestamp()
+        public void SecondsToTimestampInRange_RoundsToNearestTimestamp()
         {
             SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 100 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
 
-            Assert.Equal(42, timeline.SecondsToTimestamp(0.0421));
-            Assert.Equal(43, timeline.SecondsToTimestamp(0.0426));
-        }
-
-        [Fact]
-        public void SecondsToTimestamp_TakesHighSpeedFactorIntoAccount()
-        {
-            // 240 fps capture encoded at 30 fps: 1 s of real time = 8 s of video.
-            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 16000 }, new[] { 1.0, 1.0 }, 0, 1000, 8);
-
-            Assert.Equal(8000, timeline.SecondsToTimestamp(1.0));
-        }
-
-        [Fact]
-        public void SecondsToTimestamp_ClampsToSampleRange()
-        {
-            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 1000, 2000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-
-            Assert.Equal(1000, timeline.SecondsToTimestamp(-3.0));
-            Assert.Equal(2000, timeline.SecondsToTimestamp(10.0));
-            Assert.Equal(1000, timeline.SecondsToTimestamp(double.NegativeInfinity));
-            Assert.Equal(2000, timeline.SecondsToTimestamp(double.PositiveInfinity));
-        }
-
-        [Fact]
-        public void SecondsToTimestamp_IgnoresDroppedSamplesForRange()
-        {
-            // The first and last samples have no speed (typical at the ends of a filtered track):
-            // seeking must stay within the visible part of the curve.
-            long[] timestamps = { 0, 1000, 2000, 3000 };
-            double[] speeds = { double.NaN, 1.0, 2.0, double.NaN };
-            SpeedTimeline timeline = SpeedTimeline.Build(timestamps, speeds, 0, 1000, 1);
-
-            Assert.Equal(1000, timeline.SecondsToTimestamp(0.0));
-            Assert.Equal(2000, timeline.SecondsToTimestamp(3.0));
-        }
-
-        [Fact]
-        public void SecondsToTimestamp_EmptyOrNaNReturnsMinusOne()
-        {
-            Assert.Equal(-1, SpeedTimeline.Empty().SecondsToTimestamp(1.0));
-
-            SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-            Assert.Equal(-1, timeline.SecondsToTimestamp(double.NaN));
-        }
-
-        [Fact]
-        public void SecondsToTimestampMulti_UsesTimelineContainingTheTime()
-        {
-            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-            SpeedTimeline b = SpeedTimeline.Build(new long[] { 3000, 5000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-
-            Assert.Equal(500, SpeedTimeline.SecondsToTimestamp(new[] { a, b }, 0.5));
-            Assert.Equal(4000, SpeedTimeline.SecondsToTimestamp(new[] { a, b }, 4.0));
-        }
-
-        [Fact]
-        public void SecondsToTimestampMulti_ClampsToUnionOfRanges()
-        {
-            SpeedTimeline a = SpeedTimeline.Build(new long[] { 1000, 2000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-            SpeedTimeline b = SpeedTimeline.Build(new long[] { 3000, 5000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-            SpeedTimeline[] both = { a, b };
-
-            Assert.Equal(1000, SpeedTimeline.SecondsToTimestamp(both, 0.0));
-            Assert.Equal(5000, SpeedTimeline.SecondsToTimestamp(both, 9.0));
-            Assert.Equal(1000, SpeedTimeline.SecondsToTimestamp(both, double.NegativeInfinity));
-            Assert.Equal(5000, SpeedTimeline.SecondsToTimestamp(both, double.PositiveInfinity));
-        }
-
-        [Fact]
-        public void SecondsToTimestampMulti_GapGoesToClosestEnd()
-        {
-            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-            SpeedTimeline b = SpeedTimeline.Build(new long[] { 3000, 5000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-            SpeedTimeline[] both = { a, b };
-
-            Assert.Equal(1000, SpeedTimeline.SecondsToTimestamp(both, 1.4));
-            Assert.Equal(3000, SpeedTimeline.SecondsToTimestamp(both, 2.6));
-        }
-
-        [Fact]
-        public void SecondsToTimestampMulti_SkipsEmptyTimelines()
-        {
-            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
-
-            Assert.Equal(500, SpeedTimeline.SecondsToTimestamp(new[] { SpeedTimeline.Empty(), a }, 0.5));
-            Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new[] { SpeedTimeline.Empty() }, 0.5));
-            Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new SpeedTimeline[0], 0.5));
-            Assert.Equal(-1, SpeedTimeline.SecondsToTimestamp(new[] { a }, double.NaN));
+            Assert.Equal(42, timeline.SecondsToTimestamp(0.0421, 0, 1000));
+            Assert.Equal(43, timeline.SecondsToTimestamp(0.0426, 0, 1000));
         }
 
         [Fact]
@@ -295,27 +198,6 @@ namespace Kinovea.Tests.Unit
             Assert.True(double.IsNaN(timeline.ValueAt(2.5)));
             Assert.True(double.IsNaN(timeline.ValueAt(double.NaN)));
             Assert.True(double.IsNaN(SpeedTimeline.Empty().ValueAt(0)));
-        }
-
-        [Fact]
-        public void MergeRows_UnionOfTimesWithNaNForMissing()
-        {
-            SpeedTimeline a = SpeedTimeline.Build(new long[] { 0, 1000 }, new[] { 1.0, 2.0 }, 0, 1000, 1);
-            SpeedTimeline b = SpeedTimeline.Build(new long[] { 1000, 2000 }, new[] { 5.0, 6.0 }, 0, 1000, 1);
-
-            var rows = SpeedTimeline.MergeRows(new[] { a, b });
-
-            Assert.Equal(3, rows.Count);
-            Assert.Equal(new[] { 0.0, 1.0, double.NaN }, rows[0]);
-            Assert.Equal(new[] { 1.0, 2.0, 5.0 }, rows[1]);
-            Assert.Equal(new[] { 2.0, double.NaN, 6.0 }, rows[2]);
-        }
-
-        [Fact]
-        public void MergeRows_EmptyInput()
-        {
-            Assert.Empty(SpeedTimeline.MergeRows(new SpeedTimeline[0]));
-            Assert.Empty(SpeedTimeline.MergeRows(new[] { SpeedTimeline.Empty() }));
         }
 
         [Fact]

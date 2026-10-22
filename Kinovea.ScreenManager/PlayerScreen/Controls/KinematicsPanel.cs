@@ -16,35 +16,40 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Panel showing the speed of one or more tracks over time, with a vertical cursor following the playhead.
-    /// Each track is drawn in its own color, a legend is shown when there is more than one.
-    /// The data is computed when a track is added and again for all tracks when the user clicks "Refresh".
-    /// Only the cursor and the value markers on the curves are updated during playback.
-    /// Optional statistics per track: mean line, peak and low markers, values in the legend.
+    /// Panel showing the speed of one trajectory over time, with a vertical cursor following the playhead.
+    /// The trajectory is chosen in a drop-down listing the trajectories of the video.
+    /// The data is taken from the kinematics already computed by the trajectory, and recomputed when the user clicks "Refresh".
+    /// Only the cursor and the value marker on the curve are updated during playback.
+    /// Optional statistics: mean line, peak and low markers, values in the legend.
     /// The graph can be exported as an image and the data as CSV, with the helpers shared with the analysis dialogs.
-    /// Clicking or dragging with the left button in the plot area asks the player to seek to that time.
+    /// Clicking or dragging with the left button in the plot area asks the player to seek to that time,
+    /// anywhere within the seek range (the working zone), even outside the trajectory.
     /// The controls are created in code to avoid touching the designer file of the player screen.
     /// </summary>
     public class KinematicsPanel : UserControl
     {
+        /// <summary>
+        /// Raised when the user clicks the close button.
+        /// </summary>
         public event EventHandler CloseAsked;
 
         /// <summary>
         /// Raised when the user clicks or drags in the plot to move the playhead.
-        /// The time is a video timestamp within the range covered by the tracks.
+        /// The time is a video timestamp within the seek range.
         /// </summary>
         public event EventHandler<TimeEventArgs> SeekAsked;
 
         /// <summary>
-        /// Number of tracks currently displayed.
+        /// The trajectory shown in the plot, null if there is none.
         /// </summary>
-        public int TrackCount
+        public DrawingTrack SelectedTrack
         {
-            get { return tracks.Count; }
+            get { return selectedTrack; }
         }
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private PlotView plotView = new PlotView();
+        private ComboBox cmbTrack = new ComboBox();
         private Label lblTitle = new Label();
         private CheckBox chkStatistics = new CheckBox();
         private Button btnExport = new Button();
@@ -58,14 +63,17 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportDataCopy = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportDataSave = new ToolStripMenuItem();
         private LineAnnotation cursor;
-        private List<PointAnnotation> valueMarkers = new List<PointAnnotation>();
+        private PointAnnotation valueMarker;
         private string speedAbbreviation = "";
         private LinearAxis xAxis;
         private long lastSeekTimestamp = -1;
         private long cursorTimestamp = -1;
-        private List<DrawingTrack> tracks = new List<DrawingTrack>();
-        private List<SpeedTimeline> timelines = new List<SpeedTimeline>();
+        private long seekStart = -1;
+        private long seekEnd = -1;
         private Metadata metadata;
+        private List<DrawingTrack> listedTracks = new List<DrawingTrack>();
+        private DrawingTrack selectedTrack;
+        private SpeedTimeline timeline;
 
         public KinematicsPanel()
         {
@@ -75,16 +83,23 @@ namespace Kinovea.ScreenManager
             header.Dock = DockStyle.Top;
             header.Height = 26;
 
+            cmbTrack.Dock = DockStyle.Left;
+            cmbTrack.Width = 180;
+            cmbTrack.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTrack.SelectionChangeCommitted += cmbTrack_SelectionChangeCommitted;
+
             lblTitle.Dock = DockStyle.Fill;
             lblTitle.TextAlign = ContentAlignment.MiddleLeft;
             lblTitle.AutoEllipsis = true;
+            lblTitle.Padding = new Padding(8, 0, 0, 0);
 
-            chkStatistics.Dock = DockStyle.Right;
+            chkStatistics.Dock = DockStyle.Left;
             chkStatistics.Width = 100;
             chkStatistics.Checked = true;
-            chkStatistics.CheckedChanged += (s, e) => RebuildPlot();
+            chkStatistics.Padding = new Padding(8, 0, 0, 0);
+            chkStatistics.CheckedChanged += (s, e) => RebuildPlot(true);
 
-            btnExport.Dock = DockStyle.Right;
+            btnExport.Dock = DockStyle.Left;
             btnExport.Width = 90;
             btnExport.UseVisualStyleBackColor = true;
             btnExport.Click += (s, e) => exportMenu.Show(btnExport, new Point(0, btnExport.Height));
@@ -100,7 +115,7 @@ namespace Kinovea.ScreenManager
             btnRefresh.Dock = DockStyle.Right;
             btnRefresh.Width = 90;
             btnRefresh.UseVisualStyleBackColor = true;
-            btnRefresh.Click += (s, e) => RefreshData();
+            btnRefresh.Click += (s, e) => RefreshSelected(true);
 
             btnClose.Dock = DockStyle.Right;
             btnClose.Width = 30;
@@ -109,9 +124,12 @@ namespace Kinovea.ScreenManager
             btnClose.Click += (s, e) => CloseAsked?.Invoke(this, EventArgs.Empty);
 
             // Docking is resolved in reverse order of addition: the Fill control must be added first.
+            // Left docked controls end up left to right in reverse order of addition (drop-down, statistics, export),
+            // right docked controls end up right to left in reverse order of addition (close, refresh).
             header.Controls.Add(lblTitle);
-            header.Controls.Add(chkStatistics);
             header.Controls.Add(btnExport);
+            header.Controls.Add(chkStatistics);
+            header.Controls.Add(cmbTrack);
             header.Controls.Add(btnRefresh);
             header.Controls.Add(btnClose);
 
@@ -126,104 +144,166 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns true if the passed track is displayed in the plot.
+        /// Set the metadata of the video whose trajectories are listed, and update the list.
         /// </summary>
-        public bool Contains(DrawingTrack track)
+        public void SetMetadata(Metadata metadata)
         {
-            return tracks.Contains(track);
-        }
-
-        /// <summary>
-        /// Add a track to the plot. Does nothing if it is already displayed.
-        /// </summary>
-        public void AddTrack(DrawingTrack track, Metadata metadata)
-        {
-            if (track == null || tracks.Contains(track))
-                return;
-
-            // All the tracks must come from the same video so they share the same time axis.
             if (this.metadata != metadata)
-                tracks.Clear();
+            {
+                // Another video: start over, the plot is rebuilt by UpdateTrackList.
+                selectedTrack = null;
+                timeline = null;
+                xAxis = null;
+                cursor = null;
+                valueMarker = null;
+                plotView.Model = null;
+            }
 
             this.metadata = metadata;
-            tracks.Add(track);
-            RefreshData();
+            UpdateTrackList();
         }
 
         /// <summary>
-        /// Remove a track from the plot.
+        /// Rebuild the drop-down from the trajectories of the metadata and choose the one to show:
+        /// the current one if it still exists, otherwise the first one with data, otherwise the first one.
+        /// The plot is rebuilt only if the selection or its data changed.
         /// </summary>
-        public void RemoveTrack(DrawingTrack track)
+        public void UpdateTrackList()
         {
-            if (!tracks.Remove(track))
+            listedTracks = metadata != null ? metadata.Tracks() : new List<DrawingTrack>();
+
+            List<SpeedTimeline> timelines = listedTracks.Select(t => BuildTimeline(t, metadata)).ToList();
+            List<Guid> ids = listedTracks.Select(t => t.Id).ToList();
+            List<bool> hasData = timelines.Select(t => HasEnoughData(t)).ToList();
+            Guid current = selectedTrack != null ? selectedTrack.Id : Guid.Empty;
+            int index = KinematicsTrackSelection.Pick(ids, hasData, current);
+
+            cmbTrack.BeginUpdate();
+            cmbTrack.Items.Clear();
+            foreach (DrawingTrack track in listedTracks)
+                cmbTrack.Items.Add(track.Name ?? "");
+
+            cmbTrack.SelectedIndex = index;
+            cmbTrack.EndUpdate();
+
+            DrawingTrack newTrack = index >= 0 ? listedTracks[index] : null;
+            SpeedTimeline newTimeline = index >= 0 ? timelines[index] : null;
+            bool selectionChanged = newTrack != selectedTrack;
+            bool dataChanged = !SameData(timeline, newTimeline);
+
+            selectedTrack = newTrack;
+            timeline = newTimeline;
+            if (selectionChanged || dataChanged || plotView.Model == null)
+                RebuildPlot(!selectionChanged);
+        }
+
+        /// <summary>
+        /// Select the passed trajectory in the drop-down and show it.
+        /// Does nothing if the trajectory is not part of the metadata passed to SetMetadata.
+        /// </summary>
+        public void SelectTrack(DrawingTrack track)
+        {
+            if (track == null || metadata == null || !metadata.Tracks().Contains(track))
                 return;
 
-            RefreshData();
+            selectedTrack = track;
+            UpdateTrackList();
         }
 
         /// <summary>
-        /// Remove the tracks that are no longer part of the metadata, for example after they were deleted.
-        /// Returns true if at least one track was removed.
+        /// Recompute the kinematics of the selected trajectory and rebuild the plot with the default view.
         /// </summary>
-        public bool RemoveDeadTracks()
+        public void RefreshData()
         {
-            int removed = tracks.RemoveAll(t => !IsTrackAlive(t));
-            if (removed == 0)
-                return false;
-
-            RefreshData();
-            return true;
+            RefreshSelected(false);
         }
 
         /// <summary>
-        /// Forget all tracks and clear the plot.
+        /// Set the range of video timestamps the user can seek to from the plot, typically the working zone.
+        /// </summary>
+        public void SetSeekRange(long start, long end)
+        {
+            seekStart = start;
+            seekEnd = end;
+        }
+
+        /// <summary>
+        /// Forget the trajectories and clear the plot. The seek range is kept.
         /// </summary>
         public void Clear()
         {
-            tracks.Clear();
-            timelines.Clear();
             metadata = null;
+            listedTracks.Clear();
+            selectedTrack = null;
+            timeline = null;
             cursor = null;
             cursorTimestamp = -1;
-            valueMarkers.Clear();
+            valueMarker = null;
             xAxis = null;
+            cmbTrack.Items.Clear();
             lblTitle.Text = "";
             plotView.Model = null;
         }
 
         /// <summary>
-        /// Recompute the kinematics of all the tracks and rebuild the plot.
+        /// Recompute the kinematics of the selected trajectory and rebuild the plot.
+        /// When keepZoom is true the time range currently visible is kept, otherwise the plot shows the whole trajectory.
         /// </summary>
-        public void RefreshData()
+        private void RefreshSelected(bool keepZoom)
         {
-            tracks.RemoveAll(t => !IsTrackAlive(t));
-            if (tracks.Count == 0)
-            {
-                Clear();
+            if (selectedTrack == null || metadata == null)
                 return;
-            }
 
-            timelines.Clear();
-            foreach (DrawingTrack track in tracks)
-            {
-                track.UpdateKinematics();
-                timelines.Add(BuildTimeline(track, metadata));
-            }
+            selectedTrack.UpdateKinematics();
+            timeline = BuildTimeline(selectedTrack, metadata);
+            RebuildPlot(keepZoom);
+        }
 
-            speedAbbreviation = metadata.CalibrationHelper.GetSpeedAbbreviation();
-            UpdateTitle(speedAbbreviation);
-            plotView.Model = CreatePlot(speedAbbreviation);
+        private void cmbTrack_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            int index = cmbTrack.SelectedIndex;
+            if (index < 0 || index >= listedTracks.Count || listedTracks[index] == selectedTrack)
+                return;
+
+            selectedTrack = listedTracks[index];
+            timeline = BuildTimeline(selectedTrack, metadata);
+            RebuildPlot(false);
+
+            // Give the focus back to the plot so the arrow keys step the video instead of changing the trajectory.
+            plotView.Focus();
         }
 
         /// <summary>
         /// Rebuild the plot from the current data, without recomputing the kinematics.
+        /// Without usable data the plot only shows a hint and seeking is disabled.
         /// </summary>
-        private void RebuildPlot()
+        private void RebuildPlot(bool keepZoom)
         {
-            if (tracks.Count == 0 || timelines.Count != tracks.Count)
-                return;
+            double visibleMinimum = double.NaN;
+            double visibleMaximum = double.NaN;
+            if (keepZoom && xAxis != null)
+            {
+                visibleMinimum = xAxis.ActualMinimum;
+                visibleMaximum = xAxis.ActualMaximum;
+            }
 
-            plotView.Model = CreatePlot(speedAbbreviation);
+            UpdateTitle();
+
+            if (!HasData())
+            {
+                xAxis = null;
+                cursor = null;
+                valueMarker = null;
+                string hint = selectedTrack == null ? ScreenManagerLang.KinematicsPanel_NoTrajectory : ScreenManagerLang.KinematicsPanel_NoData;
+                plotView.Model = CreateHintPlot(hint);
+                return;
+            }
+
+            PlotModel model = CreatePlot(speedAbbreviation);
+            if (!double.IsNaN(visibleMinimum) && !double.IsNaN(visibleMaximum) && visibleMinimum < visibleMaximum)
+                xAxis.Zoom(visibleMinimum, visibleMaximum);
+
+            plotView.Model = model;
         }
 
         /// <summary>
@@ -242,69 +322,78 @@ namespace Kinovea.ScreenManager
             mnuExportDataCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
             mnuExportDataSave.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
 
-            if (tracks.Count == 0 || xAxis == null)
+            if (metadata == null || plotView.Model == null)
                 return;
 
-            UpdateTitle(metadata.CalibrationHelper.GetSpeedAbbreviation());
+            if (xAxis == null)
+            {
+                // The hint is the only text of the empty plot.
+                RebuildPlot(false);
+                return;
+            }
+
+            UpdateTitle();
             xAxis.Title = ScreenManagerLang.DataAnalysis_TimeAxisSeconds;
             plotView.InvalidatePlot(false);
         }
 
-        private void UpdateTitle(string abbreviation)
+        private void UpdateTitle()
         {
-            string names = string.Join(", ", tracks.Select(t => t.Name));
-            lblTitle.Text = string.Format("{0} - {1} ({2})", names, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed, abbreviation);
+            if (metadata == null)
+            {
+                lblTitle.Text = "";
+                return;
+            }
+
+            speedAbbreviation = metadata.CalibrationHelper.GetSpeedAbbreviation();
+            lblTitle.Text = string.Format("{0} ({1})", ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed, speedAbbreviation);
         }
 
         /// <summary>
         /// Move the cursor to the passed video timestamp.
         /// Called on the UI thread every time the current frame changes.
+        /// The cursor is drawn even outside the range of the trajectory.
         /// </summary>
         public void UpdateCursor(long timestamp)
         {
             cursorTimestamp = timestamp;
-            SpeedTimeline reference = ReferenceTimeline();
-            if (cursor == null || reference == null)
+            if (cursor == null || !HasData())
                 return;
 
-            double x = reference.TimestampToSeconds(timestamp);
+            double x = timeline.TimestampToSeconds(timestamp);
             if (x == cursor.X)
                 return;
 
             cursor.X = x;
-            UpdateValueMarkers(plotView.Model, x);
+            UpdateValueMarker(plotView.Model, x);
             plotView.InvalidatePlot(false);
         }
 
         /// <summary>
-        /// Move the marker of each curve to the passed time and show the value there.
-        /// A marker is removed from the plot while the time is outside the range of its track.
+        /// Move the marker on the curve to the passed time and show the value there.
+        /// The marker is removed from the plot while the time is outside the range of the trajectory.
         /// </summary>
-        private void UpdateValueMarkers(PlotModel model, double x)
+        private void UpdateValueMarker(PlotModel model, double x)
         {
-            if (model == null)
+            if (model == null || valueMarker == null || timeline == null)
                 return;
 
-            for (int i = 0; i < valueMarkers.Count && i < timelines.Count; i++)
+            double value = timeline.ValueAt(x);
+            bool shown = model.Annotations.Contains(valueMarker);
+
+            if (double.IsNaN(value))
             {
-                PointAnnotation marker = valueMarkers[i];
-                double value = timelines[i].ValueAt(x);
-                bool shown = model.Annotations.Contains(marker);
+                if (shown)
+                    model.Annotations.Remove(valueMarker);
 
-                if (double.IsNaN(value))
-                {
-                    if (shown)
-                        model.Annotations.Remove(marker);
-
-                    continue;
-                }
-
-                marker.X = x;
-                marker.Y = value;
-                marker.Text = FormatValue(value);
-                if (!shown)
-                    model.Annotations.Add(marker);
+                return;
             }
+
+            valueMarker.X = x;
+            valueMarker.Y = value;
+            valueMarker.Text = FormatValue(value);
+            if (!shown)
+                model.Annotations.Add(valueMarker);
         }
 
         /// <summary>
@@ -358,13 +447,14 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Convert a horizontal screen position in the plot to a video timestamp and ask the player to go there.
+        /// The time is only limited to the seek range, so the playhead can go before or after the trajectory.
         /// </summary>
         private void SeekToScreenX(double x)
         {
-            if (xAxis == null || timelines.Count == 0)
+            if (xAxis == null || !HasData() || seekStart < 0 || seekEnd < seekStart)
                 return;
 
-            long timestamp = SpeedTimeline.SecondsToTimestamp(timelines, xAxis.InverseTransform(x));
+            long timestamp = timeline.SecondsToTimestamp(xAxis.InverseTransform(x), seekStart, seekEnd);
             if (timestamp < 0 || timestamp == lastSeekTimestamp)
                 return;
 
@@ -405,23 +495,30 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// All non empty timelines share the same time axis, any of them can convert the playhead time.
-        /// Empty timelines are skipped as they are not built with the time scale of the video.
+        /// True if the selected trajectory has enough samples to draw a curve.
         /// </summary>
-        private SpeedTimeline ReferenceTimeline()
+        private bool HasData()
         {
-            return timelines.FirstOrDefault(t => !t.IsEmpty);
+            return HasEnoughData(timeline);
         }
 
-        private bool IsTrackAlive(DrawingTrack track)
+        private static bool HasEnoughData(SpeedTimeline timeline)
         {
-            return metadata != null && metadata.Tracks().Contains(track);
+            return timeline != null && timeline.Count >= 2;
+        }
+
+        private static bool SameData(SpeedTimeline a, SpeedTimeline b)
+        {
+            if (a == null || b == null)
+                return a == b;
+
+            return a.Times.SequenceEqual(b.Times) && a.Values.SequenceEqual(b.Values);
         }
 
         private static SpeedTimeline BuildTimeline(DrawingTrack track, Metadata metadata)
         {
             TimeSeriesCollection tsc = track.TimeSeriesCollection;
-            if (tsc == null || tsc.Length == 0)
+            if (metadata == null || tsc == null || tsc.Length == 0)
                 return SpeedTimeline.Empty();
 
             try
@@ -462,15 +559,10 @@ namespace Kinovea.ScreenManager
             model.Axes.Add(yAxis);
 
             bool statistics = chkStatistics.Checked;
-            for (int i = 0; i < tracks.Count; i++)
+            model.Series.Add(CreateSeries(selectedTrack, timeline, abbreviation, statistics));
+            if (statistics)
             {
-                model.Series.Add(CreateSeries(tracks[i], timelines[i], abbreviation, statistics));
-                if (statistics)
-                    AddStatistics(model, tracks[i], timelines[i]);
-            }
-
-            if (tracks.Count > 1 || statistics)
-            {
+                AddStatistics(model, selectedTrack, timeline);
                 model.IsLegendVisible = true;
                 model.LegendPlacement = LegendPlacement.Inside;
                 model.LegendPosition = LegendPosition.TopRight;
@@ -487,27 +579,56 @@ namespace Kinovea.ScreenManager
             cursor.Color = OxyColors.Red;
             cursor.LineStyle = OxyPlot.LineStyle.Solid;
             cursor.StrokeThickness = 1.5;
-            SpeedTimeline reference = ReferenceTimeline();
-            cursor.X = (reference != null && cursorTimestamp >= 0) ? reference.TimestampToSeconds(cursorTimestamp) : 0;
+            cursor.X = cursorTimestamp >= 0 ? timeline.TimestampToSeconds(cursorTimestamp) : 0;
             model.Annotations.Add(cursor);
 
-            // The value markers are added to the model by UpdateValueMarkers when the cursor is within their track.
-            valueMarkers.Clear();
-            foreach (DrawingTrack track in tracks)
-            {
-                PointAnnotation marker = new PointAnnotation();
-                marker.Shape = MarkerType.Circle;
-                marker.Size = 4;
-                marker.Fill = ToOxyColor(track.MainColor);
-                marker.Stroke = OxyColors.White;
-                marker.StrokeThickness = 1;
-                marker.FontWeight = FontWeights.Bold;
-                valueMarkers.Add(marker);
-            }
+            // The value marker is added to the model by UpdateValueMarker when the cursor is within the trajectory.
+            valueMarker = new PointAnnotation();
+            valueMarker.Shape = MarkerType.Circle;
+            valueMarker.Size = 4;
+            valueMarker.Fill = ToOxyColor(selectedTrack.MainColor);
+            valueMarker.Stroke = OxyColors.White;
+            valueMarker.StrokeThickness = 1;
+            valueMarker.FontWeight = FontWeights.Bold;
 
-            UpdateValueMarkers(model, cursor.X);
+            UpdateValueMarker(model, cursor.X);
 
             return model;
+        }
+
+        /// <summary>
+        /// Empty plot with a message in the middle, shown when there is no trajectory or no data to draw.
+        /// The axes are hidden and fixed so the message stays centered and the plot cannot be panned or zoomed.
+        /// </summary>
+        private static PlotModel CreateHintPlot(string text)
+        {
+            PlotModel model = new PlotModel();
+            model.PlotAreaBorderColor = OxyColors.Transparent;
+            model.Axes.Add(CreateHiddenAxis(AxisPosition.Bottom));
+            model.Axes.Add(CreateHiddenAxis(AxisPosition.Left));
+
+            TextAnnotation hint = new TextAnnotation();
+            hint.Text = text;
+            hint.TextPosition = new DataPoint(0.5, 0.5);
+            hint.TextHorizontalAlignment = OxyPlot.HorizontalAlignment.Center;
+            hint.TextVerticalAlignment = OxyPlot.VerticalAlignment.Middle;
+            hint.TextColor = OxyColors.Gray;
+            hint.StrokeThickness = 0;
+            model.Annotations.Add(hint);
+
+            return model;
+        }
+
+        private static LinearAxis CreateHiddenAxis(AxisPosition position)
+        {
+            LinearAxis axis = new LinearAxis();
+            axis.Position = position;
+            axis.Minimum = 0;
+            axis.Maximum = 1;
+            axis.IsAxisVisible = false;
+            axis.IsPanEnabled = false;
+            axis.IsZoomEnabled = false;
+            return axis;
         }
 
         /// <summary>
@@ -622,7 +743,7 @@ namespace Kinovea.ScreenManager
 
         private void SaveData()
         {
-            if (tracks.Count == 0)
+            if (!HasData())
                 return;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -647,12 +768,12 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// One row per time, one column per track, using the decimal separator configured in the preferences.
+        /// One row per sample: time and speed of the selected trajectory, using the decimal separator configured in the preferences.
         /// </summary>
         private List<string> GetCSV()
         {
             List<string> csv = new List<string>();
-            if (tracks.Count == 0 || timelines.Count != tracks.Count)
+            if (!HasData())
                 return csv;
 
             NumberFormatInfo nfi = CSVHelper.GetCSVNFI();
@@ -660,18 +781,14 @@ namespace Kinovea.ScreenManager
 
             List<string> headers = new List<string>();
             headers.Add(CSVHelper.WriteCell(ScreenManagerLang.DataAnalysis_TimeAxisSeconds));
-            foreach (DrawingTrack track in tracks)
-                headers.Add(CSVHelper.WriteCell(string.Format("{0} ({1})", track.Name, speedAbbreviation)));
-
+            headers.Add(CSVHelper.WriteCell(string.Format("{0} ({1})", selectedTrack.Name, speedAbbreviation)));
             csv.Add(CSVHelper.MakeRow(headers, listSeparator));
 
-            foreach (double[] row in SpeedTimeline.MergeRows(timelines))
+            for (int i = 0; i < timeline.Count; i++)
             {
-                List<string> cells = new List<string>(row.Length);
-                cells.Add(CSVHelper.WriteCell(row[0].ToString("0.000", nfi)));
-                for (int i = 1; i < row.Length; i++)
-                    cells.Add(double.IsNaN(row[i]) ? "" : CSVHelper.WriteCell(row[i].ToString("0.000", nfi)));
-
+                List<string> cells = new List<string>(2);
+                cells.Add(CSVHelper.WriteCell(timeline.Times[i].ToString("0.000", nfi)));
+                cells.Add(CSVHelper.WriteCell(timeline.Values[i].ToString("0.000", nfi)));
                 csv.Add(CSVHelper.MakeRow(cells, listSeparator));
             }
 
