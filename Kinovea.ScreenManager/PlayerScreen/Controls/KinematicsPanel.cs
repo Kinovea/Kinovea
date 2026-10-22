@@ -121,7 +121,12 @@ namespace Kinovea.ScreenManager
             ConfigureIconButton(btnRefit, Properties.Resources.resettimescale);
             btnRefit.Click += (s, e) => RefitView();
 
-            ConfigureIconButton(btnClose, Properties.Resources.bullet_close_black);
+            // Same look as the close button of the player screen.
+            ConfigureIconButton(btnClose, Properties.Resources.close2d_16);
+            btnClose.Size = new Size(20, 20);
+            btnClose.Cursor = Cursors.Hand;
+            btnClose.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            btnClose.FlatAppearance.MouseOverBackColor = Color.Transparent;
             btnClose.Click += (s, e) => CloseAsked?.Invoke(this, EventArgs.Empty);
 
             // Docking is resolved in reverse order of addition: the Fill control must be added first.
@@ -282,7 +287,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Flat, borderless 20x16 button showing only an icon, like the close button of the keyframe boxes.
+        /// Flat, borderless 20x16 button showing only an icon.
         /// </summary>
         private void ConfigureIconButton(Button button, Image icon)
         {
