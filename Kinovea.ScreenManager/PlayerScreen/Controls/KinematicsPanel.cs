@@ -82,9 +82,11 @@ namespace Kinovea.ScreenManager
         {
             this.BackColor = Color.White;
 
+            // The padding centers the 22 px high controls vertically.
             Panel header = new Panel();
             header.Dock = DockStyle.Top;
-            header.Height = 26;
+            header.Height = 28;
+            header.Padding = new Padding(4, 3, 4, 3);
 
             cmbTrack.Dock = DockStyle.Left;
             cmbTrack.Width = 180;
@@ -96,14 +98,17 @@ namespace Kinovea.ScreenManager
             lblTitle.AutoEllipsis = true;
             lblTitle.Padding = new Padding(8, 0, 0, 0);
 
+            // Controls docked to the left take their width from their text, the padding spaces them evenly.
             chkStatistics.Dock = DockStyle.Left;
-            chkStatistics.Width = 100;
+            chkStatistics.AutoSize = true;
             chkStatistics.Checked = true;
-            chkStatistics.Padding = new Padding(8, 0, 0, 0);
+            chkStatistics.Padding = new Padding(8, 0, 8, 0);
             chkStatistics.CheckedChanged += (s, e) => RebuildPlot(true);
 
             btnExport.Dock = DockStyle.Left;
-            btnExport.Width = 90;
+            btnExport.AutoSize = true;
+            btnExport.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnExport.Padding = new Padding(4, 0, 4, 0);
             btnExport.UseVisualStyleBackColor = true;
             btnExport.Click += (s, e) => exportMenu.Show(btnExport, new Point(0, btnExport.Height));
 
@@ -462,9 +467,15 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            // Show the text above the point, except near the top of the plot where it would be cut.
+            Axis yAxis = model.DefaultYAxis;
+            double range = yAxis == null ? 0 : yAxis.ActualMaximum - yAxis.ActualMinimum;
+            bool nearTop = range > 0 && value > yAxis.ActualMinimum + 0.85 * range;
+            valueMarker.TextVerticalAlignment = nearTop ? OxyPlot.VerticalAlignment.Top : OxyPlot.VerticalAlignment.Bottom;
+
             valueMarker.X = x;
             valueMarker.Y = value;
-            valueMarker.Text = FormatValue(value);
+            valueMarker.Text = string.Format("{0} {1}", FormatValue(value), speedAbbreviation);
             if (!shown)
                 model.Annotations.Add(valueMarker);
         }
@@ -663,6 +674,7 @@ namespace Kinovea.ScreenManager
             valueMarker.Stroke = OxyColors.White;
             valueMarker.StrokeThickness = 1;
             valueMarker.FontWeight = FontWeights.Bold;
+            valueMarker.TextMargin = 4;
 
             UpdateValueMarker(model, cursor.X);
 
