@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
             ConfigureIconButton(btnRefresh, Properties.Resources.arrow_refresh);
             btnRefresh.Click += (s, e) => { RefreshSelected(true); plotView.Focus(); };
 
-            ConfigureIconButton(btnRefit, Properties.Resources.resettimescale);
+            ConfigureIconButton(btnRefit, Properties.Resources.expand_16);
             btnRefit.Click += (s, e) => RefitView();
 
             // Same look as the close button of the player screen.
