@@ -483,7 +483,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Same mouse interactions as the default OxyPlot controller (pan, zoom, Ctrl/Shift tracker),
         /// except plain left click which seeks the video instead of showing the tracker.
-        /// The tracker (time and value under the mouse) is shown on hover instead.
+        /// Nothing is shown on hover: the value at the playhead is already displayed on the curve.
         /// All keyboard bindings are removed: once the plot has focus, keys like the arrows must only
         /// drive the player (frame stepping) and not pan or zoom the plot at the same time.
         /// </summary>
@@ -491,7 +491,6 @@ namespace Kinovea.ScreenManager
         {
             PlotController controller = new PlotController();
             UnbindKeyboard(controller);
-            controller.BindMouseEnter(PlotCommands.HoverSnapTrack);
             controller.UnbindMouseDown(OxyMouseButton.Left);
             controller.BindMouseDown(OxyMouseButton.Left, new DelegatePlotCommand<OxyMouseDownEventArgs>((view, c, args) =>
             {
