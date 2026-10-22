@@ -2536,6 +2536,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to max.
+        /// </summary>
+        public static string KinematicsPanel_Max {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Max", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to min.
+        /// </summary>
+        public static string KinematicsPanel_Min {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Min", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No speed data for this trajectory yet.
         /// </summary>
         public static string KinematicsPanel_NoData {

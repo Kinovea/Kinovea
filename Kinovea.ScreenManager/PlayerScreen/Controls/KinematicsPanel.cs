@@ -18,7 +18,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Panel showing the speed of one trajectory over time, with a vertical cursor following the playhead.
     /// The trajectory is chosen in a drop-down listing the trajectories of the video.
-    /// The data is taken from the kinematics already computed by the trajectory, and recomputed when the user clicks "Refresh".
+    /// The data is taken from the kinematics already computed by the trajectory, and recomputed automatically when the trajectories change (the Refresh button remains as a manual fallback).
     /// Only the cursor and the value marker on the curve are updated during playback.
     /// Optional statistics: mean line, peak and low markers, values in the legend.
     /// The graph can be exported as an image and the data as CSV, with the helpers shared with the analysis dialogs.
@@ -282,12 +282,11 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Flat, borderless 16x16 button showing only an icon, like the close button of the keyframe boxes.
+        /// Flat, borderless 20x16 button showing only an icon, like the close button of the keyframe boxes.
         /// </summary>
         private void ConfigureIconButton(Button button, Image icon)
         {
             button.Dock = DockStyle.Right;
-            button.Width = 20;
             button.Size = new Size(20, 16);
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
@@ -720,8 +719,8 @@ namespace Kinovea.ScreenManager
             mean.TextColor = color;
             model.Annotations.Add(mean);
 
-            model.Annotations.Add(CreateExtremumMarker(color, MarkerType.Triangle, timeline.MaximumTime, timeline.Maximum, "max"));
-            model.Annotations.Add(CreateExtremumMarker(color, MarkerType.Diamond, timeline.MinimumTime, timeline.Minimum, "min"));
+            model.Annotations.Add(CreateExtremumMarker(color, MarkerType.Triangle, timeline.MaximumTime, timeline.Maximum, ScreenManagerLang.KinematicsPanel_Max));
+            model.Annotations.Add(CreateExtremumMarker(color, MarkerType.Diamond, timeline.MinimumTime, timeline.Minimum, ScreenManagerLang.KinematicsPanel_Min));
         }
 
         private static PointAnnotation CreateExtremumMarker(OxyColor color, MarkerType shape, double x, double y, string label)

@@ -1720,6 +1720,12 @@
   <data name="KinematicsPanel_NoData" xml:space="preserve">
     <value>Noch keine Geschwindigkeitsdaten für diese Trajektorie.</value>
   </data>
+  <data name="KinematicsPanel_Max" xml:space="preserve">
+    <value>max</value>
+  </data>
+  <data name="KinematicsPanel_Min" xml:space="preserve">
+    <value>min</value>
+  </data>
   <data name="ToolTip_ShowKinematicsPanel" xml:space="preserve">
     <value>Kinematik-Panel anzeigen</value>
   </data>

@@ -904,6 +904,7 @@ namespace Kinovea.ScreenManager
         {
             trkFrame.UpdateMetadata(m_FrameServer.Metadata);
             UpdateCurrentPositionLabels(currentTimestamp);
+            RefreshKinematicsPanelTimes();
         }
 
         /// <summary>
@@ -980,6 +981,7 @@ namespace Kinovea.ScreenManager
             }
 
             m_FrameServer.Metadata.InitTime(workingZone.Start, workingZone.End, m_FrameServer.Metadata.TimeOrigin);
+            RefreshKinematicsPanelTimes();
             
             // Update Timeline and selection UI with resolved values.
             trkSelection.SelStart = workingZone.Start;
@@ -2372,6 +2374,7 @@ namespace Kinovea.ScreenManager
             // Keyframes that don't have a custom name use the relative time
             // as their label in the UI so we must update them here.
             UpdateKeyframeControls();
+            RefreshKinematicsPanelTimes();
 
             // This will update the timecode on any clock object still using the overall time origin.
             DoInvalidate();
@@ -2544,6 +2547,7 @@ namespace Kinovea.ScreenManager
             //UpdateFramePrimarySelection();
             UpdateKeyframeControls();
             ActivateKeyframe(currentTimestamp);
+            RefreshKinematicsPanelTimes();
         }
         #endregion
 
@@ -2619,6 +2623,16 @@ namespace Kinovea.ScreenManager
         {
             if (kinematicsPanel != null)
                 kinematicsPanel.SetSeekRange(workingZone.Start, workingZone.End);
+        }
+
+        /// <summary>
+        /// The time origin or the time mapping changed: the times of the trajectories shift,
+        /// rebuild the plot so the x-axis keeps matching the main timeline. The zoom is kept.
+        /// </summary>
+        private void RefreshKinematicsPanelTimes()
+        {
+            if (kinematicsPanel != null && kinematicsPanel.Visible)
+                kinematicsPanel.UpdateTrackList();
         }
 
         /// <summary>

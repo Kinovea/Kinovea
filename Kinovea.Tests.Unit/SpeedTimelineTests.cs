@@ -122,7 +122,7 @@ namespace Kinovea.Tests.Unit
         }
 
         [Fact]
-        public void SecondsToTimestampInRange_RoundsToNearestTimestamp()
+        public void SecondsToTimestamp_InRange_RoundsToNearestTimestamp()
         {
             SpeedTimeline timeline = SpeedTimeline.Build(new long[] { 0, 100 }, new[] { 1.0, 1.0 }, 0, 1000, 1);
 
@@ -201,7 +201,7 @@ namespace Kinovea.Tests.Unit
         }
 
         [Fact]
-        public void SecondsToTimestampInRange_GoesOutsideTrackSamples()
+        public void SecondsToTimestamp_InRange_GoesOutsideTrackSamples()
         {
             var t = SpeedTimeline.Build(new long[] { 2000, 3000 }, new[] { 1.0, 2.0 }, 1000, 1000, 1);
             Assert.Equal(500, t.SecondsToTimestamp(-0.5, 0, 10000));
@@ -209,7 +209,7 @@ namespace Kinovea.Tests.Unit
         }
 
         [Fact]
-        public void SecondsToTimestampInRange_ClampsToRange()
+        public void SecondsToTimestamp_InRange_ClampsToRange()
         {
             var t = SpeedTimeline.Build(new long[] { 2000, 3000 }, new[] { 1.0, 2.0 }, 1000, 1000, 1);
             Assert.Equal(1500, t.SecondsToTimestamp(-10, 1500, 4000));
@@ -219,7 +219,7 @@ namespace Kinovea.Tests.Unit
         }
 
         [Fact]
-        public void SecondsToTimestampInRange_RoundTripsWithHighSpeedFactorAndOrigin()
+        public void SecondsToTimestamp_InRange_RoundTripsWithHighSpeedFactorAndOrigin()
         {
             var t = SpeedTimeline.Build(new long[] { 5000, 6000 }, new[] { 1.0, 2.0 }, 4000, 1000, 4);
             foreach (long ts in new long[] { 0, 3999, 4000, 4321, 9000 })
@@ -227,7 +227,7 @@ namespace Kinovea.Tests.Unit
         }
 
         [Fact]
-        public void SecondsToTimestampInRange_InvalidInputsReturnMinusOne()
+        public void SecondsToTimestamp_InRange_InvalidInputsReturnMinusOne()
         {
             var t = SpeedTimeline.Build(new long[] { 2000, 3000 }, new[] { 1.0, 2.0 }, 1000, 1000, 1);
             Assert.Equal(-1, t.SecondsToTimestamp(double.NaN, 0, 10000));
