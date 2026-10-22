@@ -156,6 +156,32 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Convert a time coordinate of this timeline, in seconds, back to a video timestamp.
+        /// Unlike the other overload, the result is not limited to the range covered by the samples,
+        /// only to [minTimestamp, maxTimestamp] (the working zone).
+        /// Returns -1 if the timeline is empty, the time is NaN or minTimestamp is greater than maxTimestamp.
+        /// </summary>
+        public long SecondsToTimestamp(double seconds, long minTimestamp, long maxTimestamp)
+        {
+            if (IsEmpty || double.IsNaN(seconds) || minTimestamp > maxTimestamp)
+                return -1;
+
+            if (double.IsPositiveInfinity(seconds))
+                return maxTimestamp;
+            if (double.IsNegativeInfinity(seconds))
+                return minTimestamp;
+
+            double offset = Math.Round(seconds * highSpeedFactor * timestampsPerSecond);
+            double timestamp = timeOrigin + offset;
+            if (timestamp <= minTimestamp)
+                return minTimestamp;
+            if (timestamp >= maxTimestamp)
+                return maxTimestamp;
+
+            return (long)timestamp;
+        }
+
+        /// <summary>
         /// Convert a time coordinate, in seconds, to a video timestamp for a plot showing several timelines.
         /// The timelines must have been built with the same time origin and time scale (same video).
         /// The result is clamped to the union of the sample ranges: a time inside a gap between two

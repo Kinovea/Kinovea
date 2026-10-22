@@ -317,5 +317,40 @@ namespace Kinovea.Tests.Unit
             Assert.Empty(SpeedTimeline.MergeRows(new SpeedTimeline[0]));
             Assert.Empty(SpeedTimeline.MergeRows(new[] { SpeedTimeline.Empty() }));
         }
+
+        [Fact]
+        public void SecondsToTimestampInRange_GoesOutsideTrackSamples()
+        {
+            var t = SpeedTimeline.Build(new long[] { 2000, 3000 }, new[] { 1.0, 2.0 }, 1000, 1000, 1);
+            Assert.Equal(500, t.SecondsToTimestamp(-0.5, 0, 10000));
+            Assert.Equal(6000, t.SecondsToTimestamp(5.0, 0, 10000));
+        }
+
+        [Fact]
+        public void SecondsToTimestampInRange_ClampsToRange()
+        {
+            var t = SpeedTimeline.Build(new long[] { 2000, 3000 }, new[] { 1.0, 2.0 }, 1000, 1000, 1);
+            Assert.Equal(1500, t.SecondsToTimestamp(-10, 1500, 4000));
+            Assert.Equal(4000, t.SecondsToTimestamp(10, 1500, 4000));
+            Assert.Equal(4000, t.SecondsToTimestamp(double.PositiveInfinity, 1500, 4000));
+            Assert.Equal(1500, t.SecondsToTimestamp(double.NegativeInfinity, 1500, 4000));
+        }
+
+        [Fact]
+        public void SecondsToTimestampInRange_RoundTripsWithHighSpeedFactorAndOrigin()
+        {
+            var t = SpeedTimeline.Build(new long[] { 5000, 6000 }, new[] { 1.0, 2.0 }, 4000, 1000, 4);
+            foreach (long ts in new long[] { 0, 3999, 4000, 4321, 9000 })
+                Assert.Equal(ts, t.SecondsToTimestamp(t.TimestampToSeconds(ts), 0, 10000));
+        }
+
+        [Fact]
+        public void SecondsToTimestampInRange_InvalidInputsReturnMinusOne()
+        {
+            var t = SpeedTimeline.Build(new long[] { 2000, 3000 }, new[] { 1.0, 2.0 }, 1000, 1000, 1);
+            Assert.Equal(-1, t.SecondsToTimestamp(double.NaN, 0, 10000));
+            Assert.Equal(-1, t.SecondsToTimestamp(1.0, 5000, 4000));
+            Assert.Equal(-1, SpeedTimeline.Empty().SecondsToTimestamp(1.0, 0, 10000));
+        }
     }
 }
