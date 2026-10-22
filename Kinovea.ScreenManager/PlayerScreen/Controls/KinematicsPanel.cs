@@ -112,6 +112,14 @@ namespace Kinovea.ScreenManager
             btnExport.UseVisualStyleBackColor = true;
             btnExport.Click += (s, e) => exportMenu.Show(btnExport, new Point(0, btnExport.Height));
 
+            // Same icons as the matching export and copy menus of the player and the main menu.
+            mnuExportGraph.Image = Properties.Resources.picture_save;
+            mnuExportGraphCopy.Image = Properties.Resources.clipboard_block;
+            mnuExportGraphSave.Image = Properties.Resources.disk;
+            mnuExportData.Image = Properties.Resources.export_spreadsheet;
+            mnuExportDataCopy.Image = Properties.Resources.clipboard_block;
+            mnuExportDataSave.Image = Properties.Resources.file_csv;
+
             mnuExportGraphCopy.Click += (s, e) => CopyGraph();
             mnuExportGraphSave.Click += (s, e) => SaveGraph();
             mnuExportDataCopy.Click += (s, e) => CopyData();
