@@ -170,13 +170,22 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void UpdateTrackList()
         {
+            UpdateTrackList(selectedTrack != null ? selectedTrack.Id : Guid.Empty);
+        }
+
+        /// <summary>
+        /// Rebuild the drop-down and select the trajectory with the passed id if it exists.
+        /// The selected trajectory is only replaced after the comparison with the one currently plotted,
+        /// so a change of trajectory always gets the default view.
+        /// </summary>
+        private void UpdateTrackList(Guid preferred)
+        {
             listedTracks = metadata != null ? metadata.Tracks() : new List<DrawingTrack>();
 
             List<SpeedTimeline> timelines = listedTracks.Select(t => BuildTimeline(t, metadata)).ToList();
             List<Guid> ids = listedTracks.Select(t => t.Id).ToList();
             List<bool> hasData = timelines.Select(t => HasEnoughData(t)).ToList();
-            Guid current = selectedTrack != null ? selectedTrack.Id : Guid.Empty;
-            int index = KinematicsTrackSelection.Pick(ids, hasData, current);
+            int index = KinematicsTrackSelection.Pick(ids, hasData, preferred);
 
             cmbTrack.BeginUpdate();
             cmbTrack.Items.Clear();
@@ -206,8 +215,7 @@ namespace Kinovea.ScreenManager
             if (track == null || metadata == null || !metadata.Tracks().Contains(track))
                 return;
 
-            selectedTrack = track;
-            UpdateTrackList();
+            UpdateTrackList(track.Id);
         }
 
         /// <summary>
