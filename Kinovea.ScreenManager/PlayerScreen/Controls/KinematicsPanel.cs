@@ -55,6 +55,8 @@ namespace Kinovea.ScreenManager
         private Button btnExport = new Button();
         private Button btnRefresh = new Button();
         private Button btnClose = new Button();
+        private Button btnRefit = new Button();
+        private ToolTip toolTips = new ToolTip();
         private ContextMenuStrip exportMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuExportGraph = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportGraphCopy = new ToolStripMenuItem();
@@ -112,24 +114,23 @@ namespace Kinovea.ScreenManager
             mnuExportData.DropDownItems.AddRange(new ToolStripItem[] { mnuExportDataCopy, mnuExportDataSave });
             exportMenu.Items.AddRange(new ToolStripItem[] { mnuExportGraph, mnuExportData });
 
-            btnRefresh.Dock = DockStyle.Right;
-            btnRefresh.Width = 90;
-            btnRefresh.UseVisualStyleBackColor = true;
-            btnRefresh.Click += (s, e) => RefreshSelected(true);
+            ConfigureIconButton(btnRefresh, Properties.Resources.arrow_refresh);
+            btnRefresh.Click += (s, e) => { RefreshSelected(true); plotView.Focus(); };
 
-            btnClose.Dock = DockStyle.Right;
-            btnClose.Width = 30;
-            btnClose.Text = "X";
-            btnClose.UseVisualStyleBackColor = true;
+            ConfigureIconButton(btnRefit, Properties.Resources.resettimescale);
+            btnRefit.Click += (s, e) => RefitView();
+
+            ConfigureIconButton(btnClose, Properties.Resources.bullet_close_black);
             btnClose.Click += (s, e) => CloseAsked?.Invoke(this, EventArgs.Empty);
 
             // Docking is resolved in reverse order of addition: the Fill control must be added first.
             // Left docked controls end up left to right in reverse order of addition (drop-down, statistics, export),
-            // right docked controls end up right to left in reverse order of addition (close, refresh).
+            // right docked controls end up right to left in reverse order of addition (close, refresh, refit).
             header.Controls.Add(lblTitle);
             header.Controls.Add(btnExport);
             header.Controls.Add(chkStatistics);
             header.Controls.Add(cmbTrack);
+            header.Controls.Add(btnRefit);
             header.Controls.Add(btnRefresh);
             header.Controls.Add(btnClose);
 
@@ -254,6 +255,36 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Flat, borderless 16x16 button showing only an icon, like the close button of the keyframe boxes.
+        /// </summary>
+        private void ConfigureIconButton(Button button, Image icon)
+        {
+            button.Dock = DockStyle.Right;
+            button.Width = 20;
+            button.Size = new Size(20, 16);
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 0;
+            button.BackColor = Color.Transparent;
+            button.BackgroundImage = icon;
+            button.BackgroundImageLayout = ImageLayout.Center;
+            button.TabStop = false;
+        }
+
+        /// <summary>
+        /// Show the whole time range of the trajectory again. This is the default view, obtained by the auto-range of the time axis.
+        /// </summary>
+        private void RefitView()
+        {
+            if (plotView.Model != null)
+            {
+                plotView.Model.ResetAllAxes();
+                plotView.InvalidatePlot(false);
+            }
+
+            plotView.Focus();
+        }
+
+        /// <summary>
         /// Recompute the kinematics of the selected trajectory and rebuild the plot.
         /// When keepZoom is true the time range currently visible is kept, otherwise the plot shows the whole trajectory.
         /// </summary>
@@ -320,7 +351,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void ReloadCulture()
         {
-            btnRefresh.Text = ScreenManagerLang.KinematicsPanel_Refresh;
+            toolTips.SetToolTip(btnRefresh, ScreenManagerLang.KinematicsPanel_Refresh);
+            toolTips.SetToolTip(btnRefit, ScreenManagerLang.KinematicsPanel_Refit);
+            toolTips.SetToolTip(btnClose, ScreenManagerLang.Generic_Close);
             btnExport.Text = ScreenManagerLang.KinematicsPanel_Export;
             chkStatistics.Text = ScreenManagerLang.KinematicsPanel_Statistics;
             mnuExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;

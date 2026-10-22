@@ -2270,6 +2270,9 @@
     <None Include="Resources\1f632.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\arrow_refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\close-square.png" />
   </ItemGroup>
   <ItemGroup>
