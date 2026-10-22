@@ -1800,4 +1800,37 @@
   <data name="infobar_Drops0" xml:space="preserve">
     <value>Drops:{0}</value>
   </data>
+  <data name="DataAnalysis_TimeAxisSeconds" xml:space="preserve">
+    <value>Time (s)</value>
+  </data>
+  <data name="mnuShowInKinematicsPanel" xml:space="preserve">
+    <value>Show in kinematics panel</value>
+  </data>
+  <data name="KinematicsPanel_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="KinematicsPanel_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="KinematicsPanel_Statistics" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="KinematicsPanel_Refit" xml:space="preserve">
+    <value>Fit to trajectory</value>
+  </data>
+  <data name="KinematicsPanel_NoTrajectory" xml:space="preserve">
+    <value>No trajectory in this video.</value>
+  </data>
+  <data name="KinematicsPanel_NoData" xml:space="preserve">
+    <value>No speed data for this trajectory yet.</value>
+  </data>
+  <data name="KinematicsPanel_Max" xml:space="preserve">
+    <value>max</value>
+  </data>
+  <data name="KinematicsPanel_Min" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="ToolTip_ShowKinematicsPanel" xml:space="preserve">
+    <value>Show kinematics panel</value>
+  </data>
 </root>

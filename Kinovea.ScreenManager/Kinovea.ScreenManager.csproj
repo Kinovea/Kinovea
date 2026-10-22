@@ -634,6 +634,8 @@
     <Compile Include="Measurement\Kinematics\Butterworth.cs" />
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
+    <Compile Include="Measurement\Kinematics\SpeedTimeline.cs" />
+    <Compile Include="Measurement\Kinematics\KinematicsTrackSelection.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Thumbnails\ThumbnailHelper.cs" />
     <Compile Include="Tracking\Tracking\Circle\TrackerCircle.cs" />
@@ -674,6 +676,9 @@
     </Compile>
     <Compile Include="PlayerScreen\Controls\InfobarPlayer.Designer.cs">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Controls\KinematicsPanel.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PlayerScreen\Controls\PanelDoubleBuffer.cs">
       <SubType>Component</SubType>
@@ -2263,6 +2268,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\1f632.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow_refresh.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\close-square.png" />

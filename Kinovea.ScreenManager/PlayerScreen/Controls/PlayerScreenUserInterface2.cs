@@ -456,6 +456,11 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenuTrack = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteTrajectory = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowKinematicsPanel = new ToolStripMenuItem();
+
+        // Kinematics panel below the video.
+        private KinematicsPanel kinematicsPanel;
+        private Splitter kinematicsSplitter;
 
         private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
         private ToolStripMenuItem mnuMagnifierFreeze = new ToolStripMenuItem();
@@ -468,6 +473,7 @@ namespace Kinovea.ScreenManager
 
         private ToolStripButton btnAddKeyFrame;
         private ToolStripButton btnToggleSidePanel;
+        private ToolStripButton btnToggleKinematicsPanel;
         private ToolStripButton btnToolPresets;
         private InfobarPlayer infobar = new InfobarPlayer();
         private bool isSidePanelVisible;
@@ -510,6 +516,7 @@ namespace Kinovea.ScreenManager
             InitializeDrawingTools(drawingToolbarPresenter);
             BuildContextMenus();
             BuildExportButtons();
+            InitializeKinematicsPanel();
             AfterSyncAlphaChange();
             allowPreScaling = PreferencesManager.PlayerPreferences.EnablePreviewScaling;
 
@@ -594,6 +601,8 @@ namespace Kinovea.ScreenManager
             sldrSpeed.Enabled = false;
             UpdateShowCacheInTimeline();
             allowPreScaling = PreferencesManager.PlayerPreferences.EnablePreviewScaling;
+
+            HideKinematicsPanel();
 
             screenDescriptor = null;
             infobar.ScreenDescriptor = null;
@@ -685,6 +694,7 @@ namespace Kinovea.ScreenManager
 
             firstTimestamp = currentTimestamp;
             workingZone = new VideoSection(firstTimestamp, m_FrameServer.VideoReader.WorkingZone.End);
+            UpdateKinematicsPanelSeekRange();
             if (!m_FrameServer.VideoReader.CanChangeWorkingZone)
             {
                 EnableDisableWorkingZoneControls(false);
@@ -767,6 +777,7 @@ namespace Kinovea.ScreenManager
 
             // Update the working zone bounds without actually loading it.
             workingZone = new VideoSection(m_FrameServer.Metadata.SelectionStart, m_FrameServer.Metadata.SelectionEnd);
+            UpdateKinematicsPanelSeekRange();
 
             // Seek to keyframes to get thumbnails.
             // This is time consuming, should be done in another thread and probably only if not loading.
@@ -795,6 +806,10 @@ namespace Kinovea.ScreenManager
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
 
             KVAImported?.Invoke(this, EventArgs.Empty);
+
+            // The imported trajectories replace or join the listed ones.
+            if (kinematicsPanel != null && kinematicsPanel.Visible)
+                kinematicsPanel.UpdateTrackList();
 
             // Timeline
             trkFrame.UpdateMetadata(m_FrameServer.Metadata);
@@ -889,6 +904,7 @@ namespace Kinovea.ScreenManager
         {
             trkFrame.UpdateMetadata(m_FrameServer.Metadata);
             UpdateCurrentPositionLabels(currentTimestamp);
+            RefreshKinematicsPanelTimes();
         }
 
         /// <summary>
@@ -904,6 +920,7 @@ namespace Kinovea.ScreenManager
             {
                 // We still need to initialize the timeline control.
                 workingZone = m_FrameServer.VideoReader.WorkingZone;
+                UpdateKinematicsPanelSeekRange();
                 trkFrame.SetBounds(workingZone, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
                 return;
             }
@@ -934,6 +951,7 @@ namespace Kinovea.ScreenManager
             // Update our local zone values with the resolved one.
             // Note: the end may still be in "request" space if we are not in caching mode.
             workingZone = m_FrameServer.VideoReader.WorkingZone;
+            UpdateKinematicsPanelSeekRange();
 
             // Move to start if the current frame was evicted.
             if (!workingZone.Contains(oldTimestamp))
@@ -963,6 +981,7 @@ namespace Kinovea.ScreenManager
             }
 
             m_FrameServer.Metadata.InitTime(workingZone.Start, workingZone.End, m_FrameServer.Metadata.TimeOrigin);
+            RefreshKinematicsPanelTimes();
             
             // Update Timeline and selection UI with resolved values.
             trkSelection.SelStart = workingZone.Start;
@@ -1228,6 +1247,13 @@ namespace Kinovea.ScreenManager
             btnToggleSidePanel.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
             drawingToolbarPresenter.AddSpecialButton(btnToggleSidePanel);
 
+            // Kinematics panel toggle.
+            btnToggleKinematicsPanel = CreateToolButton();
+            btnToggleKinematicsPanel.Image = Properties.Resources.plot_16;
+            btnToggleKinematicsPanel.Click += (s, e) => ToggleKinematicsPanel();
+            btnToggleKinematicsPanel.ToolTipText = ScreenManagerLang.ToolTip_ShowKinematicsPanel;
+            drawingToolbarPresenter.AddSpecialButton(btnToggleKinematicsPanel);
+
             drawingToolbarPresenter.AddSeparator();
 
             // All drawing tools.
@@ -1276,6 +1302,7 @@ namespace Kinovea.ScreenManager
             m_bShowImageBorder = false;
 
             workingZone = VideoSection.MakeDefault();
+            UpdateKinematicsPanelSeekRange();
             selectionIsLocked = false;
             
             currentTimestamp = 0;
@@ -1432,6 +1459,8 @@ namespace Kinovea.ScreenManager
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
             mnuDeleteTrajectory.Click += new EventHandler(mnuDeleteTrajectory_Click);
             mnuDeleteTrajectory.Image = Properties.Drawings.delete;
+            mnuShowKinematicsPanel.Click += new EventHandler(mnuShowKinematicsPanel_Click);
+            mnuShowKinematicsPanel.Image = Properties.Resources.plot_16;
 
             // Magnifier
             mnuMagnifierFreeze.Click += mnuMagnifierFreeze_Click;
@@ -2345,6 +2374,7 @@ namespace Kinovea.ScreenManager
             // Keyframes that don't have a custom name use the relative time
             // as their label in the UI so we must update them here.
             UpdateKeyframeControls();
+            RefreshKinematicsPanelTimes();
 
             // This will update the timecode on any clock object still using the overall time origin.
             DoInvalidate();
@@ -2499,6 +2529,7 @@ namespace Kinovea.ScreenManager
             }
 
             workingZone = new VideoSection(trkSelection.SelStart, trkSelection.SelEnd);
+            UpdateKinematicsPanelSeekRange();
         }
 
         private void AfterWorkingZoneChanged()
@@ -2516,6 +2547,148 @@ namespace Kinovea.ScreenManager
             //UpdateFramePrimarySelection();
             UpdateKeyframeControls();
             ActivateKeyframe(currentTimestamp);
+            RefreshKinematicsPanelTimes();
+        }
+        #endregion
+
+        #region Kinematics panel
+        /// <summary>
+        /// Create the kinematics panel below the video.
+        /// The controls are added in code rather than in the designer file to keep the change isolated.
+        /// They are docked at the bottom of the viewport area, next to panelCenter which is docked Fill.
+        /// </summary>
+        private void InitializeKinematicsPanel()
+        {
+            kinematicsPanel = new KinematicsPanel();
+            kinematicsPanel.Dock = DockStyle.Bottom;
+            kinematicsPanel.Height = 180;
+            kinematicsPanel.Visible = false;
+            kinematicsPanel.CloseAsked += (s, e) => HideKinematicsPanel();
+            kinematicsPanel.SeekAsked += KinematicsPanel_SeekAsked;
+
+            kinematicsSplitter = new Splitter();
+            kinematicsSplitter.Dock = DockStyle.Bottom;
+            kinematicsSplitter.Height = 4;
+            kinematicsSplitter.MinSize = 80;
+            kinematicsSplitter.Visible = false;
+
+            // Docking is resolved in reverse order of addition:
+            // the panel ends up at the very bottom, the splitter right above it and panelCenter fills the rest.
+            splitViewport_Properties.Panel1.Controls.Add(kinematicsSplitter);
+            splitViewport_Properties.Panel1.Controls.Add(kinematicsPanel);
+        }
+
+        /// <summary>
+        /// Show the kinematics panel if it is hidden, then select the track if one is passed.
+        /// Without a track the panel keeps its current selection or picks a trajectory itself.
+        /// </summary>
+        private void ShowKinematicsPanel(DrawingTrack track)
+        {
+            if (kinematicsPanel == null)
+                return;
+
+            if (!kinematicsPanel.Visible)
+            {
+                kinematicsPanel.SetMetadata(m_FrameServer.Metadata);
+                kinematicsPanel.SetSeekRange(workingZone.Start, workingZone.End);
+                kinematicsSplitter.Visible = true;
+                kinematicsPanel.Visible = true;
+            }
+
+            if (track != null)
+                kinematicsPanel.SelectTrack(track);
+
+            kinematicsPanel.UpdateCursor(currentTimestamp);
+            btnToggleKinematicsPanel.Checked = true;
+        }
+
+        /// <summary>
+        /// Show or hide the kinematics panel, from the drawings toolbar.
+        /// </summary>
+        private void ToggleKinematicsPanel()
+        {
+            if (kinematicsPanel == null)
+                return;
+
+            if (kinematicsPanel.Visible)
+                HideKinematicsPanel();
+            else
+                ShowKinematicsPanel(null);
+        }
+
+        /// <summary>
+        /// Pass the working zone to the kinematics panel so seeking from the plot stays inside it.
+        /// </summary>
+        private void UpdateKinematicsPanelSeekRange()
+        {
+            if (kinematicsPanel != null)
+                kinematicsPanel.SetSeekRange(workingZone.Start, workingZone.End);
+        }
+
+        /// <summary>
+        /// The time origin or the time mapping changed: the times of the trajectories shift,
+        /// rebuild the plot so the x-axis keeps matching the main timeline. The zoom is kept.
+        /// </summary>
+        private void RefreshKinematicsPanelTimes()
+        {
+            if (kinematicsPanel != null && kinematicsPanel.Visible)
+                kinematicsPanel.UpdateTrackList();
+        }
+
+        /// <summary>
+        /// A trajectory changed (name, style, data or tracking status): update its name in the drop-down
+        /// and, if it is the one shown, its color and data. The zoom of the plot is kept.
+        /// </summary>
+        private void RefreshKinematicsPanel(AbstractDrawing drawing)
+        {
+            if (kinematicsPanel == null || !kinematicsPanel.Visible)
+                return;
+
+            DrawingTrack track = drawing as DrawingTrack;
+            if (track == null)
+                return;
+
+            kinematicsPanel.RefreshTrack(track);
+        }
+
+        /// <summary>
+        /// Tracking was started or stopped, from the tracking side panel, the context menu of the trajectory
+        /// or automatically when the tracker loses the target. The kinematics are up to date at this point.
+        /// The automatic stop happens inside the parallel tracking step, possibly on a worker thread,
+        /// so the refresh is always posted to the UI thread and runs after the tracking step.
+        /// </summary>
+        private void Track_TrackingStatusChanged(object sender, EventArgs e)
+        {
+            DrawingTrack track = sender as DrawingTrack;
+            if (track == null || !IsHandleCreated || IsDisposed)
+                return;
+
+            BeginInvoke((Action)(() => RefreshKinematicsPanel(track)));
+        }
+
+        /// <summary>
+        /// The user clicked or dragged in the kinematics panel: move the playhead there, like the main timeline.
+        /// </summary>
+        private void KinematicsPanel_SeekAsked(object sender, TimeEventArgs e)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            BeforeManualMove();
+
+            if (e.Time != currentTimestamp)
+                PresentFrame(e.Time);
+        }
+
+        private void HideKinematicsPanel()
+        {
+            if (kinematicsPanel == null)
+                return;
+
+            kinematicsPanel.Visible = false;
+            kinematicsSplitter.Visible = false;
+            kinematicsPanel.Clear();
+            btnToggleKinematicsPanel.Checked = false;
         }
         #endregion
 
@@ -2591,6 +2764,9 @@ namespace Kinovea.ScreenManager
             trkSelection.SelPos = currentTimestamp;
             trkSelection.Invalidate();
             UpdateCurrentPositionLabels(currentTimestamp);
+
+            if (kinematicsPanel != null && kinematicsPanel.Visible)
+                kinematicsPanel.UpdateCursor(currentTimestamp);
         }
 
         private void PanelVideoControls_DragDrop(object sender, DragEventArgs e)
@@ -3680,6 +3856,9 @@ namespace Kinovea.ScreenManager
             // Tracking pop menu (Restart, Stop tracking)
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteDrawing;
+            mnuShowKinematicsPanel.Text = ScreenManagerLang.mnuShowInKinematicsPanel;
+            if (kinematicsPanel != null)
+                kinematicsPanel.ReloadCulture();
             mnuDeleteTrajectory.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", "DeleteDrawing");
 
             // Magnifier.
@@ -3762,6 +3941,7 @@ namespace Kinovea.ScreenManager
 
             btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
             btnToggleSidePanel.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
+            btnToggleKinematicsPanel.ToolTipText = ScreenManagerLang.ToolTip_ShowKinematicsPanel;
             btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
         }
         #endregion
@@ -3924,6 +4104,10 @@ namespace Kinovea.ScreenManager
                 ((DrawingTrack)drawing).DisplayClosestFrame = DisplayClosestFrame;
                 ((DrawingTrack)drawing).UpdateAllowPreScaling = UpdateAllowPreScaling;
 
+                // The same track object comes back here on undo of a deletion, avoid subscribing twice.
+                ((DrawingTrack)drawing).TrackingStatusChanged -= Track_TrackingStatusChanged;
+                ((DrawingTrack)drawing).TrackingStatusChanged += Track_TrackingStatusChanged;
+
                 // TODO: move this to a tool.
                 m_ActiveTool = m_PointerTool;
                 SetCursor(m_PointerTool.GetCursor(0));
@@ -3934,6 +4118,10 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.Metadata.UpdateTrackPoint(m_FrameServer.CurrentImage);
                 UpdateFramesMarkers();
                 RefreshImage();
+
+                // During KVA import the list is updated once at the end, in AfterKVAImported.
+                if (drawing is DrawingTrack && kinematicsPanel != null && kinematicsPanel.Visible)
+                    kinematicsPanel.UpdateTrackList();
             }
         }
 
@@ -3958,6 +4146,8 @@ namespace Kinovea.ScreenManager
             var managerId = metadata.FindManagerId(drawing);
             sidePanelDrawing.SetDrawing(drawing, managerId, drawingId);
             sidePanelTracking.SetDrawing(drawing, managerId, drawingId);
+
+            RefreshKinematicsPanel(drawing);
         }
         private void AfterVideoFilterModified()
         {
@@ -3989,6 +4179,9 @@ namespace Kinovea.ScreenManager
                 UpdateFramesMarkers();
                 RefreshImage();
             }
+
+            if (kinematicsPanel != null && kinematicsPanel.Visible)
+                kinematicsPanel.UpdateTrackList();
         }
         private void CreateNewMultiDrawingItem(AbstractMultiDrawing manager)
         {
@@ -4390,9 +4583,11 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Add(mnuConfigureTrajectory);
             popMenu.Items.Add(new ToolStripSeparator());
 
-            bool customMenus = AddDrawingCustomMenus(track, popMenu.Items);
-            if (customMenus)
-                popMenu.Items.Add(new ToolStripSeparator());
+            AddDrawingCustomMenus(track, popMenu.Items);
+
+            mnuShowKinematicsPanel.Checked = kinematicsPanel != null && kinematicsPanel.Visible && kinematicsPanel.SelectedTrack == track;
+            popMenu.Items.Add(mnuShowKinematicsPanel);
+            popMenu.Items.Add(new ToolStripSeparator());
         }
         private void PrepareMagnifierContextMenu(ContextMenuStrip popMenu)
         {
@@ -5577,6 +5772,16 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            // Kinematics panel: name, color or data change.
+            // Skip the events raised for every mouse move while dragging in the mini viewport,
+            // and the tracking status changes, handled by Track_TrackingStatusChanged.
+            if (e.DrawingAction != DrawingAction.Moving &&
+                e.DrawingAction != DrawingAction.Resizing &&
+                e.DrawingAction != DrawingAction.TrackingStatusChanged)
+            {
+                RefreshKinematicsPanel(e.Drawing);
+            }
+
             // Update the image.
             DoInvalidate();
         }
@@ -6121,6 +6326,14 @@ namespace Kinovea.ScreenManager
             // This will still test if any other track is open.
             UpdateAllowPreScaling();
         }
+        private void mnuShowKinematicsPanel_Click(object sender, EventArgs e)
+        {
+            DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
+            if (track == null)
+                return;
+
+            ShowKinematicsPanel(track);
+        }
         private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
         {
             DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
@@ -6149,6 +6362,9 @@ namespace Kinovea.ScreenManager
             {
                 memento.UpdateCommandName(track.Name);
                 m_FrameServer.HistoryStack.PushNewCommand(memento);
+
+                // The dialog may have changed the name or color of the trajectory.
+                RefreshKinematicsPanel(track);
             }
 
             fctd.Dispose();

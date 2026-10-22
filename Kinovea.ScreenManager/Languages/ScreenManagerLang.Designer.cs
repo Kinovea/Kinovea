@@ -349,6 +349,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time (s).
+        /// </summary>
+        public static string DataAnalysis_TimeAxisSeconds {
+            get {
+                return ResourceManager.GetString("DataAnalysis_TimeAxisSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time :.
         /// </summary>
         public static string DataAnalysis_TimeModel {
@@ -2518,6 +2527,78 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string KinematicsPanel_Export {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to max.
+        /// </summary>
+        public static string KinematicsPanel_Max {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Max", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to min.
+        /// </summary>
+        public static string KinematicsPanel_Min {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Min", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No speed data for this trajectory yet.
+        /// </summary>
+        public static string KinematicsPanel_NoData {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_NoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No trajectory in this video.
+        /// </summary>
+        public static string KinematicsPanel_NoTrajectory {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_NoTrajectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit to trajectory.
+        /// </summary>
+        public static string KinematicsPanel_Refit {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Refit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string KinematicsPanel_Refresh {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statistics.
+        /// </summary>
+        public static string KinematicsPanel_Statistics {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Statistics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image size:.
         /// </summary>
         public static string lblConfig_ImageSize {
@@ -3850,6 +3931,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show in kinematics panel.
+        /// </summary>
+        public static string mnuShowInKinematicsPanel {
+            get {
+                return ResourceManager.GetString("mnuShowInKinematicsPanel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show label.
         /// </summary>
         public static string mnuShowLabel {
@@ -4566,6 +4656,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_ShowComments {
             get {
                 return ResourceManager.GetString("ToolTip_ShowComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show kinematics panel.
+        /// </summary>
+        public static string ToolTip_ShowKinematicsPanel {
+            get {
+                return ResourceManager.GetString("ToolTip_ShowKinematicsPanel", resourceCulture);
             }
         }
         
