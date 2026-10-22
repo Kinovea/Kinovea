@@ -76,6 +76,7 @@ namespace Kinovea.ScreenManager
         private List<DrawingTrack> listedTracks = new List<DrawingTrack>();
         private DrawingTrack selectedTrack;
         private SpeedTimeline timeline;
+        private Color plottedColor = Color.Empty;
 
         public KinematicsPanel()
         {
@@ -220,11 +221,37 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Recompute the kinematics of the selected trajectory and rebuild the plot with the default view.
+        /// A trajectory was changed outside the panel (name, color, data or tracking status).
+        /// Update its name in the drop-down and, if it is the one shown, rebuild the plot only when
+        /// its color or data changed, keeping the visible time range.
+        /// The kinematics are not recomputed, the trajectory keeps them up to date.
         /// </summary>
-        public void RefreshData()
+        public void RefreshTrack(DrawingTrack track)
         {
-            RefreshSelected(false);
+            if (track == null || metadata == null)
+                return;
+
+            int index = listedTracks.IndexOf(track);
+            if (index < 0)
+            {
+                // Not listed yet.
+                UpdateTrackList();
+                return;
+            }
+
+            string name = track.Name ?? "";
+            if ((string)cmbTrack.Items[index] != name)
+                cmbTrack.Items[index] = name;
+
+            if (track != selectedTrack)
+                return;
+
+            SpeedTimeline newTimeline = BuildTimeline(track, metadata);
+            bool dataChanged = !SameData(timeline, newTimeline);
+            bool colorChanged = track.MainColor.ToArgb() != plottedColor.ToArgb();
+            timeline = newTimeline;
+            if (dataChanged || colorChanged || plotView.Model == null)
+                RebuildPlot(true);
         }
 
         /// <summary>
@@ -327,6 +354,7 @@ namespace Kinovea.ScreenManager
             }
 
             UpdateTitle();
+            plottedColor = selectedTrack != null ? selectedTrack.MainColor : Color.Empty;
 
             if (!HasData())
             {

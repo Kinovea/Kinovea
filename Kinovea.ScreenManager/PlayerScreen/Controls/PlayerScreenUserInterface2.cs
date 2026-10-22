@@ -2622,8 +2622,8 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// A trajectory changed (name, style, data or tracking status): update the drop-down
-        /// and, if it is the one shown, rebuild the plot with its new color and data.
+        /// A trajectory changed (name, style, data or tracking status): update its name in the drop-down
+        /// and, if it is the one shown, its color and data. The zoom of the plot is kept.
         /// </summary>
         private void RefreshKinematicsPanel(AbstractDrawing drawing)
         {
@@ -2634,9 +2634,7 @@ namespace Kinovea.ScreenManager
             if (track == null)
                 return;
 
-            kinematicsPanel.UpdateTrackList();
-            if (kinematicsPanel.SelectedTrack == track)
-                kinematicsPanel.RefreshData();
+            kinematicsPanel.RefreshTrack(track);
         }
 
         /// <summary>
@@ -6350,14 +6348,14 @@ namespace Kinovea.ScreenManager
             {
                 memento.UpdateCommandName(track.Name);
                 m_FrameServer.HistoryStack.PushNewCommand(memento);
+
+                // The dialog may have changed the name or color of the trajectory.
+                RefreshKinematicsPanel(track);
             }
 
             fctd.Dispose();
             DoInvalidate();
             UpdateFramesMarkers();
-
-            // The dialog may have changed the name, color or tracking of the trajectory.
-            RefreshKinematicsPanel(track);
         }
         private void DisplayClosestFrame(Point p, List<TimedPoint> trackPoints, float timeScale, bool use3D)
         {
