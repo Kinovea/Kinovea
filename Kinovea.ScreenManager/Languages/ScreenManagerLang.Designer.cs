@@ -2527,6 +2527,60 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string KinematicsPanel_Export {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No speed data for this trajectory yet.
+        /// </summary>
+        public static string KinematicsPanel_NoData {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_NoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No trajectory in this video.
+        /// </summary>
+        public static string KinematicsPanel_NoTrajectory {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_NoTrajectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit to trajectory.
+        /// </summary>
+        public static string KinematicsPanel_Refit {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Refit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string KinematicsPanel_Refresh {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statistics.
+        /// </summary>
+        public static string KinematicsPanel_Statistics {
+            get {
+                return ResourceManager.GetString("KinematicsPanel_Statistics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image size:.
         /// </summary>
         public static string lblConfig_ImageSize {
@@ -3859,20 +3913,20 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show in kinematics panel.
+        /// </summary>
+        public static string mnuShowInKinematicsPanel {
+            get {
+                return ResourceManager.GetString("mnuShowInKinematicsPanel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show label.
         /// </summary>
         public static string mnuShowLabel {
             get {
                 return ResourceManager.GetString("mnuShowLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Speed graph.
-        /// </summary>
-        public static string mnuShowSpeedGraph {
-            get {
-                return ResourceManager.GetString("mnuShowSpeedGraph", resourceCulture);
             }
         }
         
@@ -4170,33 +4224,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ScreenManagerKernel_LensCalibration_None {
             get {
                 return ResourceManager.GetString("ScreenManagerKernel_LensCalibration_None", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export.
-        /// </summary>
-        public static string SpeedGraph_Export {
-            get {
-                return ResourceManager.GetString("SpeedGraph_Export", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        public static string SpeedGraph_Refresh {
-            get {
-                return ResourceManager.GetString("SpeedGraph_Refresh", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Statistics.
-        /// </summary>
-        public static string SpeedGraph_Statistics {
-            get {
-                return ResourceManager.GetString("SpeedGraph_Statistics", resourceCulture);
             }
         }
         
@@ -4611,6 +4638,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_ShowComments {
             get {
                 return ResourceManager.GetString("ToolTip_ShowComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show kinematics panel.
+        /// </summary>
+        public static string ToolTip_ShowKinematicsPanel {
+            get {
+                return ResourceManager.GetString("ToolTip_ShowKinematicsPanel", resourceCulture);
             }
         }
         

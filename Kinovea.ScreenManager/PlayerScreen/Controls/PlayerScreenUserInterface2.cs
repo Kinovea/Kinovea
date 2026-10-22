@@ -456,11 +456,11 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenuTrack = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteTrajectory = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowSpeedTimeline = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowKinematicsPanel = new ToolStripMenuItem();
 
-        // Speed graph below the video.
-        private SpeedTimelinePanel speedTimelinePanel;
-        private Splitter speedTimelineSplitter;
+        // Kinematics panel below the video.
+        private KinematicsPanel kinematicsPanel;
+        private Splitter kinematicsSplitter;
 
         private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
         private ToolStripMenuItem mnuMagnifierFreeze = new ToolStripMenuItem();
@@ -515,7 +515,7 @@ namespace Kinovea.ScreenManager
             InitializeDrawingTools(drawingToolbarPresenter);
             BuildContextMenus();
             BuildExportButtons();
-            InitializeSpeedTimeline();
+            InitializeKinematicsPanel();
             AfterSyncAlphaChange();
             allowPreScaling = PreferencesManager.PlayerPreferences.EnablePreviewScaling;
 
@@ -601,7 +601,7 @@ namespace Kinovea.ScreenManager
             UpdateShowCacheInTimeline();
             allowPreScaling = PreferencesManager.PlayerPreferences.EnablePreviewScaling;
 
-            HideSpeedTimeline();
+            HideKinematicsPanel();
 
             screenDescriptor = null;
             infobar.ScreenDescriptor = null;
@@ -1440,8 +1440,8 @@ namespace Kinovea.ScreenManager
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
             mnuDeleteTrajectory.Click += new EventHandler(mnuDeleteTrajectory_Click);
             mnuDeleteTrajectory.Image = Properties.Drawings.delete;
-            mnuShowSpeedTimeline.Click += new EventHandler(mnuShowSpeedTimeline_Click);
-            mnuShowSpeedTimeline.Image = Properties.Resources.plot_16;
+            mnuShowKinematicsPanel.Click += new EventHandler(mnuShowKinematicsPanel_Click);
+            mnuShowKinematicsPanel.Image = Properties.Resources.plot_16;
 
             // Magnifier
             mnuMagnifierFreeze.Click += mnuMagnifierFreeze_Click;
@@ -2529,68 +2529,68 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Speed graph
+        #region Kinematics panel
         /// <summary>
-        /// Create the speed graph panel below the video.
+        /// Create the kinematics panel below the video.
         /// The controls are added in code rather than in the designer file to keep the change isolated.
         /// They are docked at the bottom of the viewport area, next to panelCenter which is docked Fill.
         /// </summary>
-        private void InitializeSpeedTimeline()
+        private void InitializeKinematicsPanel()
         {
-            speedTimelinePanel = new SpeedTimelinePanel();
-            speedTimelinePanel.Dock = DockStyle.Bottom;
-            speedTimelinePanel.Height = 180;
-            speedTimelinePanel.Visible = false;
-            speedTimelinePanel.CloseAsked += (s, e) => HideSpeedTimeline();
-            speedTimelinePanel.SeekAsked += SpeedTimelinePanel_SeekAsked;
+            kinematicsPanel = new KinematicsPanel();
+            kinematicsPanel.Dock = DockStyle.Bottom;
+            kinematicsPanel.Height = 180;
+            kinematicsPanel.Visible = false;
+            kinematicsPanel.CloseAsked += (s, e) => HideKinematicsPanel();
+            kinematicsPanel.SeekAsked += KinematicsPanel_SeekAsked;
 
-            speedTimelineSplitter = new Splitter();
-            speedTimelineSplitter.Dock = DockStyle.Bottom;
-            speedTimelineSplitter.Height = 4;
-            speedTimelineSplitter.MinSize = 80;
-            speedTimelineSplitter.Visible = false;
+            kinematicsSplitter = new Splitter();
+            kinematicsSplitter.Dock = DockStyle.Bottom;
+            kinematicsSplitter.Height = 4;
+            kinematicsSplitter.MinSize = 80;
+            kinematicsSplitter.Visible = false;
 
             // Docking is resolved in reverse order of addition:
             // the panel ends up at the very bottom, the splitter right above it and panelCenter fills the rest.
-            splitViewport_Properties.Panel1.Controls.Add(speedTimelineSplitter);
-            splitViewport_Properties.Panel1.Controls.Add(speedTimelinePanel);
+            splitViewport_Properties.Panel1.Controls.Add(kinematicsSplitter);
+            splitViewport_Properties.Panel1.Controls.Add(kinematicsPanel);
         }
 
-        private void ShowSpeedTimeline(DrawingTrack track)
+        private void ShowKinematicsPanel(DrawingTrack track)
         {
-            if (speedTimelinePanel == null)
+            if (kinematicsPanel == null)
                 return;
 
-            speedTimelinePanel.AddTrack(track, m_FrameServer.Metadata);
-            speedTimelineSplitter.Visible = true;
-            speedTimelinePanel.Visible = true;
-            speedTimelinePanel.UpdateCursor(currentTimestamp);
+            kinematicsPanel.AddTrack(track, m_FrameServer.Metadata);
+            kinematicsSplitter.Visible = true;
+            kinematicsPanel.Visible = true;
+            kinematicsPanel.UpdateCursor(currentTimestamp);
         }
 
         /// <summary>
-        /// Add the track to the speed graph, or remove it if it is already there.
+        /// Add the track to the kinematics panel, or remove it if it is already there.
         /// The graph is closed when its last track is removed.
         /// </summary>
-        private void ToggleSpeedTimeline(DrawingTrack track)
+        private void ToggleKinematicsPanel(DrawingTrack track)
         {
-            if (speedTimelinePanel == null)
+            if (kinematicsPanel == null)
                 return;
 
-            if (!speedTimelinePanel.Visible || !speedTimelinePanel.Contains(track))
+            if (!kinematicsPanel.Visible || !kinematicsPanel.Contains(track))
             {
-                ShowSpeedTimeline(track);
+                ShowKinematicsPanel(track);
                 return;
             }
 
-            speedTimelinePanel.RemoveTrack(track);
-            if (speedTimelinePanel.TrackCount == 0)
-                HideSpeedTimeline();
+            kinematicsPanel.RemoveTrack(track);
+            if (kinematicsPanel.TrackCount == 0)
+                HideKinematicsPanel();
         }
 
         /// <summary>
-        /// The user clicked or dragged in the speed graph: move the playhead there, like the main timeline.
+        /// The user clicked or dragged in the kinematics panel: move the playhead there, like the main timeline.
         /// </summary>
-        private void SpeedTimelinePanel_SeekAsked(object sender, TimeEventArgs e)
+        private void KinematicsPanel_SeekAsked(object sender, TimeEventArgs e)
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -2601,14 +2601,14 @@ namespace Kinovea.ScreenManager
                 PresentFrame(e.Time);
         }
 
-        private void HideSpeedTimeline()
+        private void HideKinematicsPanel()
         {
-            if (speedTimelinePanel == null)
+            if (kinematicsPanel == null)
                 return;
 
-            speedTimelinePanel.Visible = false;
-            speedTimelineSplitter.Visible = false;
-            speedTimelinePanel.Clear();
+            kinematicsPanel.Visible = false;
+            kinematicsSplitter.Visible = false;
+            kinematicsPanel.Clear();
         }
         #endregion
 
@@ -2685,8 +2685,8 @@ namespace Kinovea.ScreenManager
             trkSelection.Invalidate();
             UpdateCurrentPositionLabels(currentTimestamp);
 
-            if (speedTimelinePanel != null && speedTimelinePanel.Visible)
-                speedTimelinePanel.UpdateCursor(currentTimestamp);
+            if (kinematicsPanel != null && kinematicsPanel.Visible)
+                kinematicsPanel.UpdateCursor(currentTimestamp);
         }
 
         private void PanelVideoControls_DragDrop(object sender, DragEventArgs e)
@@ -3776,9 +3776,9 @@ namespace Kinovea.ScreenManager
             // Tracking pop menu (Restart, Stop tracking)
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteDrawing;
-            mnuShowSpeedTimeline.Text = ScreenManagerLang.mnuShowSpeedGraph;
-            if (speedTimelinePanel != null)
-                speedTimelinePanel.ReloadCulture();
+            mnuShowKinematicsPanel.Text = ScreenManagerLang.mnuShowInKinematicsPanel;
+            if (kinematicsPanel != null)
+                kinematicsPanel.ReloadCulture();
             mnuDeleteTrajectory.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", "DeleteDrawing");
 
             // Magnifier.
@@ -4089,8 +4089,8 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
 
-            if (speedTimelinePanel != null && speedTimelinePanel.Visible && speedTimelinePanel.RemoveDeadTracks() && speedTimelinePanel.TrackCount == 0)
-                HideSpeedTimeline();
+            if (kinematicsPanel != null && kinematicsPanel.Visible && kinematicsPanel.RemoveDeadTracks() && kinematicsPanel.TrackCount == 0)
+                HideKinematicsPanel();
         }
         private void CreateNewMultiDrawingItem(AbstractMultiDrawing manager)
         {
@@ -4490,8 +4490,8 @@ namespace Kinovea.ScreenManager
             popMenu.Items.Clear();
             AddDrawingTitleMenu(track, popMenu);
             popMenu.Items.Add(mnuConfigureTrajectory);
-            mnuShowSpeedTimeline.Checked = speedTimelinePanel != null && speedTimelinePanel.Visible && speedTimelinePanel.Contains(track);
-            popMenu.Items.Add(mnuShowSpeedTimeline);
+            mnuShowKinematicsPanel.Checked = kinematicsPanel != null && kinematicsPanel.Visible && kinematicsPanel.Contains(track);
+            popMenu.Items.Add(mnuShowKinematicsPanel);
             popMenu.Items.Add(new ToolStripSeparator());
 
             bool customMenus = AddDrawingCustomMenus(track, popMenu.Items);
@@ -6225,13 +6225,13 @@ namespace Kinovea.ScreenManager
             // This will still test if any other track is open.
             UpdateAllowPreScaling();
         }
-        private void mnuShowSpeedTimeline_Click(object sender, EventArgs e)
+        private void mnuShowKinematicsPanel_Click(object sender, EventArgs e)
         {
             DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
             if (track == null)
                 return;
 
-            ToggleSpeedTimeline(track);
+            ToggleKinematicsPanel(track);
         }
         private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
         {

@@ -25,7 +25,7 @@ namespace Kinovea.ScreenManager
     /// Clicking or dragging with the left button in the plot area asks the player to seek to that time.
     /// The controls are created in code to avoid touching the designer file of the player screen.
     /// </summary>
-    public class SpeedTimelinePanel : UserControl
+    public class KinematicsPanel : UserControl
     {
         public event EventHandler CloseAsked;
 
@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
         private List<SpeedTimeline> timelines = new List<SpeedTimeline>();
         private Metadata metadata;
 
-        public SpeedTimelinePanel()
+        public KinematicsPanel()
         {
             this.BackColor = Color.White;
 
@@ -232,9 +232,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void ReloadCulture()
         {
-            btnRefresh.Text = ScreenManagerLang.SpeedGraph_Refresh;
-            btnExport.Text = ScreenManagerLang.SpeedGraph_Export;
-            chkStatistics.Text = ScreenManagerLang.SpeedGraph_Statistics;
+            btnRefresh.Text = ScreenManagerLang.KinematicsPanel_Refresh;
+            btnExport.Text = ScreenManagerLang.KinematicsPanel_Export;
+            chkStatistics.Text = ScreenManagerLang.KinematicsPanel_Statistics;
             mnuExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
             mnuExportGraphCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
             mnuExportGraphSave.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
@@ -380,9 +380,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private class SeekManipulator : MouseManipulator
         {
-            private readonly SpeedTimelinePanel owner;
+            private readonly KinematicsPanel owner;
 
-            public SeekManipulator(IPlotView view, SpeedTimelinePanel owner)
+            public SeekManipulator(IPlotView view, KinematicsPanel owner)
                 : base(view)
             {
                 this.owner = owner;

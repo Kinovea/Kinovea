@@ -677,7 +677,7 @@
     <Compile Include="PlayerScreen\Controls\InfobarPlayer.Designer.cs">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Controls\SpeedTimelinePanel.cs">
+    <Compile Include="PlayerScreen\Controls\KinematicsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PlayerScreen\Controls\PanelDoubleBuffer.cs">

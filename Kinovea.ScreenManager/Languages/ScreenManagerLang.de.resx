@@ -1699,16 +1699,28 @@
   <data name="DataAnalysis_TimeAxisSeconds" xml:space="preserve">
     <value>Zeit (s)</value>
   </data>
-  <data name="mnuShowSpeedGraph" xml:space="preserve">
-    <value>Geschwindigkeitsdiagramm</value>
+  <data name="mnuShowInKinematicsPanel" xml:space="preserve">
+    <value>Im Kinematik-Panel anzeigen</value>
   </data>
-  <data name="SpeedGraph_Refresh" xml:space="preserve">
+  <data name="KinematicsPanel_Refresh" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
-  <data name="SpeedGraph_Export" xml:space="preserve">
+  <data name="KinematicsPanel_Export" xml:space="preserve">
     <value>Exportieren</value>
   </data>
-  <data name="SpeedGraph_Statistics" xml:space="preserve">
+  <data name="KinematicsPanel_Statistics" xml:space="preserve">
     <value>Statistik</value>
+  </data>
+  <data name="KinematicsPanel_Refit" xml:space="preserve">
+    <value>An Trajektorie anpassen</value>
+  </data>
+  <data name="KinematicsPanel_NoTrajectory" xml:space="preserve">
+    <value>Keine Trajektorie in diesem Video.</value>
+  </data>
+  <data name="KinematicsPanel_NoData" xml:space="preserve">
+    <value>Noch keine Geschwindigkeitsdaten für diese Trajektorie.</value>
+  </data>
+  <data name="ToolTip_ShowKinematicsPanel" xml:space="preserve">
+    <value>Kinematik-Panel anzeigen</value>
   </data>
 </root>
