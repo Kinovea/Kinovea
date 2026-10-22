@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Compile Include="..\Kinovea.ScreenManager\Measurement\Kinematics\SpeedTimeline.cs" Link="Linked\SpeedTimeline.cs" />
+    <Compile Include="..\Kinovea.ScreenManager\Measurement\Kinematics\KinematicsTrackSelection.cs" Link="Linked\KinematicsTrackSelection.cs" />
   </ItemGroup>
 
   <ItemGroup>

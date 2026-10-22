@@ -635,6 +635,7 @@
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />
     <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
     <Compile Include="Measurement\Kinematics\SpeedTimeline.cs" />
+    <Compile Include="Measurement\Kinematics\KinematicsTrackSelection.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Thumbnails\ThumbnailHelper.cs" />
     <Compile Include="Tracking\Tracking\Circle\TrackerCircle.cs" />
