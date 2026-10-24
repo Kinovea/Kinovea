@@ -562,4 +562,7 @@
   <data name="prefPanelGeneral_EnableAllLanguages" xml:space="preserve">
     <value>Mostrar todos os idiomas</value>
   </data>
+  <data name="mnuEnableDebugLogs" xml:space="preserve">
+    <value>D</value>
+  </data>
 </root>
