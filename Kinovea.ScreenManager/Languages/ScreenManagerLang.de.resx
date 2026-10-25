@@ -1154,7 +1154,7 @@
     <value>Bild Intervall: {0:0.000} ms</value>
   </data>
   <data name="mnuAction_Chrono_MoveCurrentEnd" xml:space="preserve">
-    <value>Bewege das Ende der aktuellen Zeit Sektion zu diesem Bild</value>
+    <value>Das Ende des aktuellen Zeitabschnittes auf diesen Frame bewegen</value>
   </data>
   <data name="mnuAction_Chrono_Split" xml:space="preserve">
     <value>Trennpunkt/Trennung: den aktuellen Zeitabschnitt auf diesem Frame beenden und den nächsten starten</value>
@@ -1695,5 +1695,20 @@
   </data>
   <data name="formConfigureKinogram_Title" xml:space="preserve">
     <value>Bildreihe konfigurieren</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveCurrentStart" xml:space="preserve">
+    <value>Den Anfand des aktuellen Zeitabschnittes auf dieses Bild legen</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextSplit" xml:space="preserve">
+    <value>Den nächsten Trennpunkt auf dieses Bild legen</value>
+  </data>
+  <data name="mnuAction_Chrono_MoveNextStart" xml:space="preserve">
+    <value>Den Anfang des nächsten Abschnitts auf dieses Bild legen</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevEnd" xml:space="preserve">
+    <value>Das ende des vorherigen Abschnitts auf dieses Bild legen</value>
+  </data>
+  <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
+    <value>Den letzten Trennpunkt auf dieses Bild legen</value>
   </data>
 </root>
