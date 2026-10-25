@@ -1711,4 +1711,7 @@
   <data name="mnuAction_Chrono_MovePrevSplit" xml:space="preserve">
     <value>Den letzten Trennpunkt auf dieses Bild legen</value>
   </data>
+  <data name="mnuAction_Kinogram_ResetAllTiles" xml:space="preserve">
+    <value>Alle Kacheln zurücksetzen</value>
+  </data>
 </root>
