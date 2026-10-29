@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (csv.Count > 1)
-                File.WriteAllLines(path, csv);
+                File.WriteAllLines(path, csv, CSVHelper.GetTextEncoding());
         }
 
         private string WriteHeaders(MeasuredData md, string listSeparator)
