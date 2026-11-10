@@ -1030,4 +1030,7 @@
   <data name="mnuCoordinateSystem" xml:space="preserve">
     <value>Koordinera system</value>
   </data>
+  <data name="mnuRotation" xml:space="preserve">
+    <value>Rotering</value>
+  </data>
 </root>
